@@ -477,7 +477,9 @@ export function ConversationDetailsPanel({
         />
 
         {/* Breakout rooms — group-only, flag-gated, admin-only override. */}
-        {conversation.type === "group" && breakoutEnabled && isAdmin && (
+        {(conversation.type === "group" || conversation.type === "channel") &&
+          breakoutEnabled &&
+          isAdmin && (
           <BreakoutSection conversationId={conversation.id} />
         )}
 
