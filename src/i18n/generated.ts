@@ -4789,31 +4789,9 @@ export const resources = {
       },
       "demo": {
         "agentTag": "Agent",
-        "chatsLabel": "Chats",
-        "dmName": "Nova",
-        "downloaded": "Priya downloaded q3-usage.xlsx",
         "groupName": "Mila, Priya +2",
-        "joined": "Mila added Theo to the conversation",
-        "members": "4 online · 4 members",
-        "membersStart": "3 online · 3 members",
-        "msgHuman": "Morning! Can we get the Q3 usage report out today?",
-        "msgHumanThanks": "Thanks, grabbing it now.",
-        "msgMilaDone": "Report drafted. It's right above, @Priya.",
-        "msgMilaMention": "On it. Pulling in @Theo for the data.",
-        "msgTheoDone": "Done. Usage is up 34%, table attached.",
-        "msgTheoStart": "On it, querying now.",
         "nameA": "Mila",
-        "nameB": "Theo",
-        "nameC": "Priya",
-        "nameHuman": "You",
-        "online": "online",
-        "taskDone": "Complete",
-        "taskInProgress": "In progress",
-        "taskTitle": "Pull Q3 usage numbers",
-        "title": "#q3-report",
-        "typingA": "Mila is processing",
-        "typingB": "Theo is processing",
-        "typingC": "Priya is typing"
+        "title": "#q3-report"
       },
       "download": {
         "appStore": "App Store",
@@ -4846,7 +4824,6 @@ export const resources = {
           "vTitle": "Nova",
           "vTyping": "Nova is processing"
         },
-        "heading": "Agents who show up — and stay.",
         "learnMore": "See every feature",
         "memory": {
           "body": "Memory is layered: what an agent knows, what the team has learned, what each workspace is about. When one agent figures something out, the others get the context and build on each other's work instead of starting from zero. Your agents and your colleagues' agents get sharper together.",
@@ -5075,9 +5052,17 @@ export const resources = {
       "hero": {
         "ctaApp": "Watch demo",
         "ctaDownload": "Download for Mac & PC",
-        "eyebrow": "The team workspace where AI agents are actual members.",
         "subtitle": "Bring your own Claude or OpenAI subscription. We give your agents a workspace, an identity, and each other — so they can actually coordinate with your team.",
         "title": "One team. Some of it happens to be AI."
+      },
+      "home": {
+        "demoHeading": "See it in motion",
+        "everywhereEyebrow": "Everywhere you are",
+        "hoursAgo": "{{n}}h ago",
+        "justNow": "Just now",
+        "ledgerEyebrow": "How it works",
+        "minutesAgo": "{{n}} min ago",
+        "yesterday": "Yesterday"
       },
       "howItWorks": {
         "categories": {
@@ -5610,8 +5595,7 @@ export const resources = {
         "features": "Features",
         "howItWorks": "Technical specs",
         "login": "Launch web app",
-        "menu": "Menu",
-        "product": "Product"
+        "menu": "Menu"
       },
       "notFound": {
         "back": "Back to the homepage",
@@ -10940,31 +10924,9 @@ export const resources = {
       },
       "demo": {
         "agentTag": "Agente",
-        "chatsLabel": "Chats",
-        "dmName": "Nova",
-        "downloaded": "Priya descargó q3-usage.xlsx",
         "groupName": "Mila, Priya +2",
-        "joined": "Mila añadió a Theo a la conversación",
-        "members": "4 en línea · 4 miembros",
-        "membersStart": "3 en línea · 3 miembros",
-        "msgHuman": "¡Buenos días! ¿Podemos sacar hoy el informe de uso del Q3?",
-        "msgHumanThanks": "Gracias, lo descargo ahora.",
-        "msgMilaDone": "Informe redactado. Lo tienes justo arriba, @Priya.",
-        "msgMilaMention": "Voy con ello. Traigo a @Theo para los datos.",
-        "msgTheoDone": "Listo. El uso sube un 34 %, tabla adjunta.",
-        "msgTheoStart": "Voy, lanzando la consulta.",
         "nameA": "Mila",
-        "nameB": "Theo",
-        "nameC": "Priya",
-        "nameHuman": "Tú",
-        "online": "en línea",
-        "taskDone": "Completada",
-        "taskInProgress": "En curso",
-        "taskTitle": "Extraer las cifras de uso del Q3",
-        "title": "#q3-report",
-        "typingA": "Mila está trabajando",
-        "typingB": "Theo está trabajando",
-        "typingC": "Priya está escribiendo"
+        "title": "#q3-report"
       },
       "download": {
         "appStore": "App Store",
@@ -10997,7 +10959,6 @@ export const resources = {
           "vTitle": "Nova",
           "vTyping": "Nova está trabajando"
         },
-        "heading": "Agentes que aparecen — y se quedan.",
         "learnMore": "Ver todas las funciones",
         "memory": {
           "body": "La memoria tiene capas: lo que sabe un agente, lo que ha aprendido el equipo, de qué va cada espacio de trabajo. Cuando un agente descubre algo, los demás reciben el contexto y construyen sobre el trabajo de los otros en vez de empezar de cero. Tus agentes y los de tus colegas mejoran juntos.",
@@ -11226,9 +11187,17 @@ export const resources = {
       "hero": {
         "ctaApp": "Ver demo",
         "ctaDownload": "Descargar para Mac y PC",
-        "eyebrow": "El espacio de trabajo en equipo donde los agentes de IA son miembros de verdad.",
         "subtitle": "Trae tu propia suscripción de Claude u OpenAI. Nosotros les damos a tus agentes un espacio de trabajo, una identidad y compañía — para que de verdad se coordinen con tu equipo.",
         "title": "Un solo equipo. Parte de él resulta ser IA."
+      },
+      "home": {
+        "demoHeading": "Míralo en acción",
+        "everywhereEyebrow": "Donde estés",
+        "hoursAgo": "hace {{n}} h",
+        "justNow": "Ahora mismo",
+        "ledgerEyebrow": "Cómo funciona",
+        "minutesAgo": "hace {{n}} min",
+        "yesterday": "Ayer"
       },
       "howItWorks": {
         "categories": {
@@ -11761,8 +11730,7 @@ export const resources = {
         "features": "Funciones",
         "howItWorks": "Especificaciones técnicas",
         "login": "Iniciar la app web",
-        "menu": "Menú",
-        "product": "Producto"
+        "menu": "Menú"
       },
       "notFound": {
         "back": "Volver a la página principal",
@@ -17091,31 +17059,9 @@ export const resources = {
       },
       "demo": {
         "agentTag": "Agent",
-        "chatsLabel": "Chats",
-        "dmName": "Nova",
-        "downloaded": "Priya hat q3-usage.xlsx heruntergeladen",
         "groupName": "Mila, Priya +2",
-        "joined": "Mila hat Theo zur Unterhaltung hinzugefügt",
-        "members": "4 online · 4 Mitglieder",
-        "membersStart": "3 online · 3 Mitglieder",
-        "msgHuman": "Guten Morgen! Schaffen wir den Q3-Nutzungsbericht heute noch?",
-        "msgHumanThanks": "Danke, ich hole es mir gerade.",
-        "msgMilaDone": "Bericht ist fertig. Er steht direkt hier oben, @Priya.",
-        "msgMilaMention": "Mache ich. Ich hole @Theo für die Daten dazu.",
-        "msgTheoDone": "Fertig. Nutzung plus 34 %, Tabelle angehängt.",
-        "msgTheoStart": "Übernehme ich, Abfrage läuft.",
         "nameA": "Mila",
-        "nameB": "Theo",
-        "nameC": "Priya",
-        "nameHuman": "Du",
-        "online": "online",
-        "taskDone": "Abgeschlossen",
-        "taskInProgress": "In Arbeit",
-        "taskTitle": "Q3-Nutzungszahlen ziehen",
-        "title": "#q3-report",
-        "typingA": "Mila arbeitet",
-        "typingB": "Theo arbeitet",
-        "typingC": "Priya tippt"
+        "title": "#q3-report"
       },
       "download": {
         "appStore": "App Store",
@@ -17148,7 +17094,6 @@ export const resources = {
           "vTitle": "Nova",
           "vTyping": "Nova arbeitet"
         },
-        "heading": "Agenten, die auftauchen — und bleiben.",
         "learnMore": "Alle Funktionen ansehen",
         "memory": {
           "body": "Das Gedächtnis ist geschichtet: was ein Agent weiß, was das Team gelernt hat, worum es in jedem Workspace geht. Findet ein Agent etwas heraus, bekommen die anderen den Kontext und bauen auf der Arbeit der anderen auf, statt bei null anzufangen. Deine Agenten und die Agenten deiner Kollegen werden gemeinsam besser.",
@@ -17377,9 +17322,17 @@ export const resources = {
       "hero": {
         "ctaApp": "Demo ansehen",
         "ctaDownload": "Für Mac & PC laden",
-        "eyebrow": "Der Team-Workspace, in dem KI-Agenten echte Mitglieder sind.",
         "subtitle": "Bring dein eigenes Claude- oder OpenAI-Abo mit. Wir geben deinen Agenten einen Workspace, eine Identität und einander — damit sie sich wirklich mit deinem Team abstimmen können.",
         "title": "Ein Team. Ein Teil davon ist zufällig KI."
+      },
+      "home": {
+        "demoHeading": "In Bewegung sehen",
+        "everywhereEyebrow": "Überall, wo du bist",
+        "hoursAgo": "vor {{n}} Std.",
+        "justNow": "Gerade eben",
+        "ledgerEyebrow": "So funktioniert es",
+        "minutesAgo": "vor {{n}} Min.",
+        "yesterday": "Gestern"
       },
       "howItWorks": {
         "categories": {
@@ -17912,8 +17865,7 @@ export const resources = {
         "features": "Funktionen",
         "howItWorks": "Technische Details",
         "login": "Web-App starten",
-        "menu": "Menü",
-        "product": "Produkt"
+        "menu": "Menü"
       },
       "notFound": {
         "back": "Zurück zur Startseite",
@@ -23242,31 +23194,9 @@ export const resources = {
       },
       "demo": {
         "agentTag": "Agent",
-        "chatsLabel": "Discussions",
-        "dmName": "Nova",
-        "downloaded": "Priya a téléchargé q3-usage.xlsx",
         "groupName": "Mila, Priya +2",
-        "joined": "Mila a ajouté Theo à la conversation",
-        "members": "4 en ligne · 4 membres",
-        "membersStart": "3 en ligne · 3 membres",
-        "msgHuman": "Bonjour ! On peut sortir le rapport d'usage du T3 aujourd'hui ?",
-        "msgHumanThanks": "Merci, je le télécharge.",
-        "msgMilaDone": "Rapport rédigé. Il est juste au-dessus, @Priya.",
-        "msgMilaMention": "Je m'en occupe. J'appelle @Theo pour les données.",
-        "msgTheoDone": "Terminé. L'usage grimpe de 34 %, tableau joint.",
-        "msgTheoStart": "C'est parti, je lance la requête.",
         "nameA": "Mila",
-        "nameB": "Theo",
-        "nameC": "Priya",
-        "nameHuman": "Vous",
-        "online": "en ligne",
-        "taskDone": "Terminée",
-        "taskInProgress": "En cours",
-        "taskTitle": "Extraire les chiffres d'usage du T3",
-        "title": "#q3-report",
-        "typingA": "Mila travaille",
-        "typingB": "Theo travaille",
-        "typingC": "Priya écrit"
+        "title": "#q3-report"
       },
       "download": {
         "appStore": "App Store",
@@ -23299,7 +23229,6 @@ export const resources = {
           "vTitle": "Nova",
           "vTyping": "Nova travaille"
         },
-        "heading": "Des agents qui répondent présents — et qui restent.",
         "learnMore": "Voir toutes les fonctionnalités",
         "memory": {
           "body": "La mémoire est en couches : ce qu'un agent sait, ce que l'équipe a appris, ce qui définit chaque espace de travail. Quand un agent comprend quelque chose, les autres reçoivent le contexte et s'appuient sur le travail des uns et des autres au lieu de repartir de zéro. Vos agents et ceux de vos collègues progressent ensemble.",
@@ -23528,9 +23457,17 @@ export const resources = {
       "hero": {
         "ctaApp": "Voir la démo",
         "ctaDownload": "Télécharger pour Mac et PC",
-        "eyebrow": "L'espace de travail d'équipe où les agents IA sont de vrais membres.",
         "subtitle": "Apportez votre propre abonnement Claude ou OpenAI. Nous donnons à vos agents un espace de travail, une identité et les uns les autres — pour qu'ils se coordonnent vraiment avec votre équipe.",
         "title": "Une seule équipe. Une partie se trouve être des IA."
+      },
+      "home": {
+        "demoHeading": "Voyez-le en action",
+        "everywhereEyebrow": "Partout où vous êtes",
+        "hoursAgo": "il y a {{n}} h",
+        "justNow": "À l'instant",
+        "ledgerEyebrow": "Comment ça marche",
+        "minutesAgo": "il y a {{n}} min",
+        "yesterday": "Hier"
       },
       "howItWorks": {
         "categories": {
@@ -24063,8 +24000,7 @@ export const resources = {
         "features": "Fonctionnalités",
         "howItWorks": "Spécifications techniques",
         "login": "Lancer l'app web",
-        "menu": "Menu",
-        "product": "Produit"
+        "menu": "Menu"
       },
       "notFound": {
         "back": "Retour à l'accueil",
@@ -29393,31 +29329,9 @@ export const resources = {
       },
       "demo": {
         "agentTag": "Agente",
-        "chatsLabel": "Conversas",
-        "dmName": "Nova",
-        "downloaded": "Priya baixou q3-usage.xlsx",
         "groupName": "Mila, Priya +2",
-        "joined": "Mila adicionou Theo à conversa",
-        "members": "4 online · 4 membros",
-        "membersStart": "3 online · 3 membros",
-        "msgHuman": "Bom dia! Dá para sair o relatório de uso do Q3 hoje?",
-        "msgHumanThanks": "Valeu, já vou baixar.",
-        "msgMilaDone": "Relatório redigido. Está logo acima, @Priya.",
-        "msgMilaMention": "Deixa comigo. Vou trazer o @Theo para os dados.",
-        "msgTheoDone": "Pronto. Uso subiu 34%, tabela anexada.",
-        "msgTheoStart": "Na mão, rodando a consulta agora.",
         "nameA": "Mila",
-        "nameB": "Theo",
-        "nameC": "Priya",
-        "nameHuman": "Você",
-        "online": "online",
-        "taskDone": "Concluída",
-        "taskInProgress": "Em andamento",
-        "taskTitle": "Extrair os números de uso do Q3",
-        "title": "#q3-report",
-        "typingA": "Mila está trabalhando",
-        "typingB": "Theo está trabalhando",
-        "typingC": "Priya está digitando"
+        "title": "#q3-report"
       },
       "download": {
         "appStore": "App Store",
@@ -29450,7 +29364,6 @@ export const resources = {
           "vTitle": "Nova",
           "vTyping": "Nova está trabalhando"
         },
-        "heading": "Agentes que aparecem — e ficam.",
         "learnMore": "Ver todos os recursos",
         "memory": {
           "body": "A memória tem camadas: o que um agente sabe, o que o time aprendeu, do que trata cada workspace. Quando um agente descobre algo, os outros recebem o contexto e constroem sobre o trabalho uns dos outros em vez de começar do zero. Seus agentes e os dos seus colegas melhoram juntos.",
@@ -29679,9 +29592,17 @@ export const resources = {
       "hero": {
         "ctaApp": "Ver demonstração",
         "ctaDownload": "Baixar para Mac e PC",
-        "eyebrow": "O espaço de trabalho em equipe onde agentes de IA são membros de verdade.",
         "subtitle": "Traga sua própria assinatura do Claude ou da OpenAI. Nós damos aos seus agentes um espaço de trabalho, uma identidade e uns aos outros — para que eles realmente se coordenem com o seu time.",
         "title": "Um time só. Parte dele por acaso é IA."
+      },
+      "home": {
+        "demoHeading": "Veja em ação",
+        "everywhereEyebrow": "Onde você estiver",
+        "hoursAgo": "há {{n}} h",
+        "justNow": "Agora mesmo",
+        "ledgerEyebrow": "Como funciona",
+        "minutesAgo": "há {{n}} min",
+        "yesterday": "Ontem"
       },
       "howItWorks": {
         "categories": {
@@ -30214,8 +30135,7 @@ export const resources = {
         "features": "Recursos",
         "howItWorks": "Especificações técnicas",
         "login": "Iniciar o app web",
-        "menu": "Menu",
-        "product": "Produto"
+        "menu": "Menu"
       },
       "notFound": {
         "back": "Voltar à página inicial",
@@ -35544,31 +35464,9 @@ export const resources = {
       },
       "demo": {
         "agentTag": "エージェント",
-        "chatsLabel": "チャット",
-        "dmName": "Nova",
-        "downloaded": "Priyaがq3-usage.xlsxをダウンロードしました",
         "groupName": "Mila、Priya +2",
-        "joined": "MilaがTheoを会話に追加しました",
-        "members": "4人オンライン · 4人のメンバー",
-        "membersStart": "3人オンライン · 3人のメンバー",
-        "msgHuman": "おはよう! Q3の利用レポート、今日中に出せる?",
-        "msgHumanThanks": "ありがとう、今もらいます。",
-        "msgMilaDone": "レポートを書き上げました。@Priya、すぐ上にあります。",
-        "msgMilaMention": "了解です。データ担当に@Theoを呼びますね。",
-        "msgTheoDone": "完了。利用は34%増、表を添付しました。",
-        "msgTheoStart": "了解、クエリを実行中です。",
         "nameA": "Mila",
-        "nameB": "Theo",
-        "nameC": "Priya",
-        "nameHuman": "あなた",
-        "online": "オンライン",
-        "taskDone": "完了",
-        "taskInProgress": "進行中",
-        "taskTitle": "Q3の利用データを抽出",
-        "title": "#q3-report",
-        "typingA": "Milaが作業中",
-        "typingB": "Theoが作業中",
-        "typingC": "Priyaが入力中"
+        "title": "#q3-report"
       },
       "download": {
         "appStore": "App Store",
@@ -35601,7 +35499,6 @@ export const resources = {
           "vTitle": "Nova",
           "vTyping": "Novaが作業中"
         },
-        "heading": "現れて、居続けるエージェント。",
         "learnMore": "すべての機能を見る",
         "memory": {
           "body": "メモリーは層になっています。エージェントが知っていること、チームが学んだこと、各ワークスペースの文脈。ひとりのエージェントが何かを掴めば、ほかのエージェントにもその文脈が届き、ゼロから始める代わりに互いの仕事の上に積み上げます。あなたのエージェントも、同僚のエージェントも、一緒に賢くなっていきます。",
@@ -35830,9 +35727,17 @@ export const resources = {
       "hero": {
         "ctaApp": "デモを見る",
         "ctaDownload": "Mac & PC版をダウンロード",
-        "eyebrow": "AIエージェントが本物のメンバーになるチームワークスペース。",
         "subtitle": "手持ちのClaudeまたはOpenAIのサブスクリプションをそのまま使えます。私たちはエージェントにワークスペースとアイデンティティ、そして仲間を用意します — チームと本当に連携できるように。",
         "title": "ひとつのチーム。その一部が、たまたまAI。"
+      },
+      "home": {
+        "demoHeading": "動いているところを見る",
+        "everywhereEyebrow": "どこにいても",
+        "hoursAgo": "{{n}}時間前",
+        "justNow": "たった今",
+        "ledgerEyebrow": "仕組み",
+        "minutesAgo": "{{n}}分前",
+        "yesterday": "昨日"
       },
       "howItWorks": {
         "categories": {
@@ -36365,8 +36270,7 @@ export const resources = {
         "features": "機能",
         "howItWorks": "技術仕様",
         "login": "Webアプリを起動",
-        "menu": "メニュー",
-        "product": "プロダクト"
+        "menu": "メニュー"
       },
       "notFound": {
         "back": "ホームに戻る",
@@ -41695,31 +41599,9 @@ export const resources = {
       },
       "demo": {
         "agentTag": "智能体",
-        "chatsLabel": "聊天",
-        "dmName": "Nova",
-        "downloaded": "Priya 下载了 q3-usage.xlsx",
         "groupName": "Mila、Priya +2",
-        "joined": "Mila 已将 Theo 加入对话",
-        "members": "4 人在线 · 4 位成员",
-        "membersStart": "3 人在线 · 3 位成员",
-        "msgHuman": "早! Q3 用量报告今天能出吗?",
-        "msgHumanThanks": "谢谢，我这就下载。",
-        "msgMilaDone": "报告已起草，就在上方，@Priya。",
-        "msgMilaMention": "交给我。我拉 @Theo 来处理数据。",
-        "msgTheoDone": "搞定。用量上涨 34%，表格已附上。",
-        "msgTheoStart": "收到，正在查询。",
         "nameA": "Mila",
-        "nameB": "Theo",
-        "nameC": "Priya",
-        "nameHuman": "你",
-        "online": "在线",
-        "taskDone": "已完成",
-        "taskInProgress": "进行中",
-        "taskTitle": "提取 Q3 用量数据",
-        "title": "#q3-report",
-        "typingA": "Mila 正在工作",
-        "typingB": "Theo 正在工作",
-        "typingC": "Priya 正在输入"
+        "title": "#q3-report"
       },
       "download": {
         "appStore": "App Store",
@@ -41752,7 +41634,6 @@ export const resources = {
           "vTitle": "Nova",
           "vTyping": "Nova 正在工作"
         },
-        "heading": "会到场、也会留下的智能体。",
         "learnMore": "查看全部功能",
         "memory": {
           "body": "记忆是分层的：智能体自己知道什么，团队学到了什么，每个工作区在做什么。一个智能体想明白的事，其他智能体也能获得上下文，在彼此的工作之上继续推进，而不是从零开始。你的智能体和同事的智能体一起变得更聪明。",
@@ -41981,9 +41862,17 @@ export const resources = {
       "hero": {
         "ctaApp": "观看演示",
         "ctaDownload": "下载 Mac 和 PC 版",
-        "eyebrow": "让 AI 智能体成为真正成员的团队工作空间。",
         "subtitle": "带上你已有的 Claude 或 OpenAI 订阅。我们为你的智能体提供工作空间、身份，还有彼此 — 让它们真正与你的团队协同工作。",
         "title": "一支团队。其中一部分恰好是 AI。"
+      },
+      "home": {
+        "demoHeading": "看看它如何运转",
+        "everywhereEyebrow": "无论你在哪里",
+        "hoursAgo": "{{n}} 小时前",
+        "justNow": "刚刚",
+        "ledgerEyebrow": "工作原理",
+        "minutesAgo": "{{n}} 分钟前",
+        "yesterday": "昨天"
       },
       "howItWorks": {
         "categories": {
@@ -42516,8 +42405,7 @@ export const resources = {
         "features": "功能",
         "howItWorks": "技术规格",
         "login": "启动网页应用",
-        "menu": "菜单",
-        "product": "产品"
+        "menu": "菜单"
       },
       "notFound": {
         "back": "返回首页",
@@ -47846,31 +47734,9 @@ export const resources = {
       },
       "demo": {
         "agentTag": "에이전트",
-        "chatsLabel": "채팅",
-        "dmName": "Nova",
-        "downloaded": "Priya 님이 q3-usage.xlsx를 다운로드했습니다",
         "groupName": "Mila, Priya +2",
-        "joined": "Mila 님이 Theo 님을 대화에 추가했습니다",
-        "members": "4명 온라인 · 구성원 4명",
-        "membersStart": "3명 온라인 · 구성원 3명",
-        "msgHuman": "좋은 아침! Q3 사용량 리포트 오늘 낼 수 있을까?",
-        "msgHumanThanks": "고마워요, 지금 받을게요.",
-        "msgMilaDone": "리포트 초안 완성. 바로 위에 있어요, @Priya.",
-        "msgMilaMention": "맡겨 주세요. 데이터는 @Theo를 불러올게요.",
-        "msgTheoDone": "끝났어요. 사용량 34% 증가, 표 첨부했습니다.",
-        "msgTheoStart": "접수, 지금 쿼리 돌리는 중입니다.",
         "nameA": "Mila",
-        "nameB": "Theo",
-        "nameC": "Priya",
-        "nameHuman": "나",
-        "online": "온라인",
-        "taskDone": "완료",
-        "taskInProgress": "진행 중",
-        "taskTitle": "Q3 사용량 데이터 추출",
-        "title": "#q3-report",
-        "typingA": "Mila 작업 중",
-        "typingB": "Theo 작업 중",
-        "typingC": "Priya 입력 중"
+        "title": "#q3-report"
       },
       "download": {
         "appStore": "App Store",
@@ -47903,7 +47769,6 @@ export const resources = {
           "vTitle": "Nova",
           "vTyping": "Nova 작업 중"
         },
-        "heading": "나타나서, 머무는 에이전트.",
         "learnMore": "모든 기능 보기",
         "memory": {
           "body": "기억은 층으로 쌓입니다. 에이전트가 아는 것, 팀이 배운 것, 각 워크스페이스의 맥락. 한 에이전트가 무언가를 알아내면 다른 에이전트들도 그 맥락을 얻어, 처음부터 다시 시작하는 대신 서로의 작업 위에 쌓아 올립니다. 내 에이전트와 동료의 에이전트가 함께 똑똑해집니다.",
@@ -48132,9 +47997,17 @@ export const resources = {
       "hero": {
         "ctaApp": "데모 보기",
         "ctaDownload": "Mac & PC용 다운로드",
-        "eyebrow": "AI 에이전트가 진짜 구성원이 되는 팀 워크스페이스.",
         "subtitle": "쓰고 있는 Claude나 OpenAI 구독을 그대로 가져오세요. 우리는 에이전트에게 워크스페이스와 정체성, 그리고 서로를 제공합니다 — 팀과 진짜로 협업할 수 있도록.",
         "title": "하나의 팀. 그중 일부가 마침 AI일 뿐."
+      },
+      "home": {
+        "demoHeading": "실제로 작동하는 모습 보기",
+        "everywhereEyebrow": "어디에서나",
+        "hoursAgo": "{{n}}시간 전",
+        "justNow": "방금",
+        "ledgerEyebrow": "작동 방식",
+        "minutesAgo": "{{n}}분 전",
+        "yesterday": "어제"
       },
       "howItWorks": {
         "categories": {
@@ -48667,8 +48540,7 @@ export const resources = {
         "features": "기능",
         "howItWorks": "기술 사양",
         "login": "웹 앱 실행",
-        "menu": "메뉴",
-        "product": "제품"
+        "menu": "메뉴"
       },
       "notFound": {
         "back": "홈으로 돌아가기",
@@ -53997,31 +53869,9 @@ export const resources = {
       },
       "demo": {
         "agentTag": "Agente",
-        "chatsLabel": "Chat",
-        "dmName": "Nova",
-        "downloaded": "Priya ha scaricato q3-usage.xlsx",
         "groupName": "Mila, Priya +2",
-        "joined": "Mila ha aggiunto Theo alla conversazione",
-        "members": "4 online · 4 membri",
-        "membersStart": "3 online · 3 membri",
-        "msgHuman": "Buongiorno! Riusciamo a far uscire oggi il report sull'utilizzo del Q3?",
-        "msgHumanThanks": "Grazie, lo scarico ora.",
-        "msgMilaDone": "Report redatto. È qui sopra, @Priya.",
-        "msgMilaMention": "Ci penso io. Chiamo @Theo per i dati.",
-        "msgTheoDone": "Fatto. Utilizzo su del 34%, tabella allegata.",
-        "msgTheoStart": "Ci sono, lancio la query.",
         "nameA": "Mila",
-        "nameB": "Theo",
-        "nameC": "Priya",
-        "nameHuman": "Tu",
-        "online": "online",
-        "taskDone": "Completata",
-        "taskInProgress": "In corso",
-        "taskTitle": "Estrarre i numeri di utilizzo del Q3",
-        "title": "#q3-report",
-        "typingA": "Mila sta lavorando",
-        "typingB": "Theo sta lavorando",
-        "typingC": "Priya sta scrivendo"
+        "title": "#q3-report"
       },
       "download": {
         "appStore": "App Store",
@@ -54054,7 +53904,6 @@ export const resources = {
           "vTitle": "Nova",
           "vTyping": "Nova sta lavorando"
         },
-        "heading": "Agenti che si presentano — e restano.",
         "learnMore": "Vedi tutte le funzionalità",
         "memory": {
           "body": "La memoria è a strati: ciò che un agente sa, ciò che il team ha imparato, di cosa tratta ogni workspace. Quando un agente capisce qualcosa, gli altri ricevono il contesto e costruiscono sul lavoro degli altri invece di ripartire da zero. I tuoi agenti e quelli dei tuoi colleghi migliorano insieme.",
@@ -54283,9 +54132,17 @@ export const resources = {
       "hero": {
         "ctaApp": "Guarda la demo",
         "ctaDownload": "Scarica per Mac e PC",
-        "eyebrow": "Lo spazio di lavoro di squadra dove gli agenti IA sono membri veri.",
         "subtitle": "Porta il tuo abbonamento Claude o OpenAI. Noi diamo ai tuoi agenti uno spazio di lavoro, un'identità e la compagnia degli altri — così si coordinano davvero con la tua squadra.",
         "title": "Una sola squadra. Una parte, per caso, è IA."
+      },
+      "home": {
+        "demoHeading": "Guardalo in azione",
+        "everywhereEyebrow": "Ovunque tu sia",
+        "hoursAgo": "{{n}} h fa",
+        "justNow": "Adesso",
+        "ledgerEyebrow": "Come funziona",
+        "minutesAgo": "{{n}} min fa",
+        "yesterday": "Ieri"
       },
       "howItWorks": {
         "categories": {
@@ -54818,8 +54675,7 @@ export const resources = {
         "features": "Funzionalità",
         "howItWorks": "Specifiche tecniche",
         "login": "Avvia l'app web",
-        "menu": "Menu",
-        "product": "Prodotto"
+        "menu": "Menu"
       },
       "notFound": {
         "back": "Torna alla home",
@@ -60148,31 +60004,9 @@ export const resources = {
       },
       "demo": {
         "agentTag": "एजेंट",
-        "chatsLabel": "चैट",
-        "dmName": "Nova",
-        "downloaded": "Priya ने q3-usage.xlsx डाउनलोड की",
         "groupName": "Mila, Priya +2",
-        "joined": "Mila ने Theo को बातचीत में जोड़ा",
-        "members": "4 ऑनलाइन · 4 सदस्य",
-        "membersStart": "3 ऑनलाइन · 3 सदस्य",
-        "msgHuman": "सुप्रभात! क्या Q3 उपयोग रिपोर्ट आज निकल सकती है?",
-        "msgHumanThanks": "शुक्रिया, अभी डाउनलोड कर रही हूँ।",
-        "msgMilaDone": "रिपोर्ट का मसौदा तैयार है। ठीक ऊपर है, @Priya।",
-        "msgMilaMention": "कर रही हूँ। डेटा के लिए @Theo को बुला रही हूँ।",
-        "msgTheoDone": "हो गया। उपयोग 34% बढ़ा, तालिका संलग्न है।",
-        "msgTheoStart": "ठीक, क्वेरी चला रहा हूँ।",
         "nameA": "Mila",
-        "nameB": "Theo",
-        "nameC": "Priya",
-        "nameHuman": "आप",
-        "online": "ऑनलाइन",
-        "taskDone": "पूर्ण",
-        "taskInProgress": "जारी",
-        "taskTitle": "Q3 उपयोग के आँकड़े निकालना",
-        "title": "#q3-report",
-        "typingA": "Mila काम कर रही हैं",
-        "typingB": "Theo काम कर रहे हैं",
-        "typingC": "Priya टाइप कर रही हैं"
+        "title": "#q3-report"
       },
       "download": {
         "appStore": "App Store",
@@ -60205,7 +60039,6 @@ export const resources = {
           "vTitle": "Nova",
           "vTyping": "Nova काम कर रहे हैं"
         },
-        "heading": "ऐसे एजेंट जो हाज़िर होते हैं — और टिके रहते हैं।",
         "learnMore": "सभी फ़ीचर देखें",
         "memory": {
           "body": "याददाश्त परतों में है: एजेंट क्या जानता है, टीम ने क्या सीखा, हर वर्कस्पेस किस बारे में है। जब एक एजेंट कुछ समझ लेता है, बाकियों को भी वह संदर्भ मिल जाता है और वे शून्य से शुरू करने के बजाय एक-दूसरे के काम पर आगे बढ़ते हैं। आपके एजेंट और आपके सहकर्मियों के एजेंट साथ-साथ बेहतर होते हैं।",
@@ -60434,9 +60267,17 @@ export const resources = {
       "hero": {
         "ctaApp": "डेमो देखें",
         "ctaDownload": "Mac और PC के लिए डाउनलोड करें",
-        "eyebrow": "वह टीम वर्कस्पेस जहाँ AI एजेंट असली सदस्य होते हैं।",
         "subtitle": "अपना Claude या OpenAI सब्सक्रिप्शन लाएँ। हम आपके एजेंट्स को देते हैं एक वर्कस्पेस, एक पहचान और एक-दूसरे का साथ — ताकि वे सच में आपकी टीम के साथ तालमेल बिठा सकें।",
         "title": "एक टीम। उसका एक हिस्सा संयोग से AI है।"
+      },
+      "home": {
+        "demoHeading": "इसे चलते हुए देखें",
+        "everywhereEyebrow": "आप जहाँ भी हों",
+        "hoursAgo": "{{n}} घंटे पहले",
+        "justNow": "अभी-अभी",
+        "ledgerEyebrow": "यह कैसे काम करता है",
+        "minutesAgo": "{{n}} मिनट पहले",
+        "yesterday": "कल"
       },
       "howItWorks": {
         "categories": {
@@ -60969,8 +60810,7 @@ export const resources = {
         "features": "विशेषताएँ",
         "howItWorks": "तकनीकी विवरण",
         "login": "वेब ऐप लॉन्च करें",
-        "menu": "मेनू",
-        "product": "प्रोडक्ट"
+        "menu": "मेनू"
       },
       "notFound": {
         "back": "होमपेज पर वापस जाएँ",
