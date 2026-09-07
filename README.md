@@ -32,6 +32,21 @@ npm run tauri dev
 npm run dev        # http://localhost:1420
 ```
 
+**"Port 1420 is already in use"** — almost always a stale dev server from an
+earlier run. Find and stop it:
+
+```bash
+kill $(lsof -t -iTCP:1420 -sTCP:LISTEN)
+```
+
+If the port is genuinely taken, run on another one. Vite's port and Tauri's
+`devUrl` must match, so use the wrapper that sets both (it reads
+`TAURI_DEV_PORT`; PowerShell: `$env:TAURI_DEV_PORT=1500; npm run tauri:dev`):
+
+```bash
+TAURI_DEV_PORT=1500 npm run tauri:dev
+```
+
 ## Build for Production
 
 ```bash
