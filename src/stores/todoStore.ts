@@ -177,10 +177,10 @@ export const useTodoStore = create<TodoState>((set, get) => ({
       const todo = payload as unknown as TodoItem;
       if (!todo.id) return;
       // Slack-style workspace guard (mirrors taskStore): drop events for
-      // items scoped to a workspace the user isn't active in. Items with
-      // organizationId null are family-global and always pass.
+      // items in a workspace the user isn't active in. Every to-do belongs
+      // to exactly one workspace — there is no family-global tier.
       const activeOrg = useAuthStore.getState().participant?.activeOrganizationId;
-      if (todo.organizationId && activeOrg && todo.organizationId !== activeOrg) {
+      if (activeOrg && todo.organizationId !== activeOrg) {
         return;
       }
       set((s) => ({

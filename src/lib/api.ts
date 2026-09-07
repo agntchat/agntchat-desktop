@@ -3066,6 +3066,10 @@ export interface AgentReminder {
    *  (self-created). Compare against your own participant id / an
    *  agentsById map to tell which. */
   agentId: string;
+  /** The workspace this reminder belongs to. The server lists a reminder
+   *  only inside its own workspace (never the cross-workspace union), and
+   *  delivers it into that workspace's owner DM. */
+  organizationId: string | null;
   memoryId?: string;
   eventDate: string;
   eventLabel: string;
