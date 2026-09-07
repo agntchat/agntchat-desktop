@@ -24,6 +24,10 @@ import { NewConversationDialog } from "./NewConversationDialog";
 import { ChatHeaderMenu } from "./ChatHeaderMenu";
 import { GroupAvatar } from "./GroupAvatar";
 import { AgentActivityIndicator } from "../AgentActivityIndicator";
+import { PhaseOrb } from "../PhaseOrb";
+import { useConversationActivity } from "../../hooks/useConversationActivity";
+import { countActivity, hasLiveStream, type ActivityCounts } from "../../lib/conversation-activity";
+import type { AgentActivity } from "../../lib/agent-activity";
 import { ExternalAgentBadge, externalToolOf, isExternalAgent } from "../ExternalAgentBadge";
 import { SessionStateLine } from "./SessionStateLine";
 import { SessionConversationDialog } from "./SessionConversationDialog";
@@ -258,8 +262,6 @@ function ConversationPane({
   const myId = useAuthStore((s) => s.participant?.id);
 
   const online = usePresenceStore((s) => s.online);
-  const agentActivity = usePresenceStore((s) => s.agentActivity);
-  const agentActivityConvs = usePresenceStore((s) => s.agentActivityConvs);
   const agentDevices = usePresenceStore((s) => s.agentDevices);
 
   // Match web's ChatView header — show a stacked GroupAvatar for group
@@ -336,24 +338,25 @@ function ConversationPane({
         })}`
       : t("members", { count: presenceInfo.total });
 
-  // Busiest agent member's live activity — shown in the header where the
-  // status normally reads "Online", so the user sees "Thinking…/Working…".
-  // Scoped to THIS conversation via agentActivityConvs (like the
-  // conversation list): work in another conversation must not make this
-  // header claim the agent is thinking here.
-  const headerActivity = useMemo(
-    () =>
-      otherMembers
-        .map((m) =>
-          m.participant?.type === "agent" &&
-          conversation &&
-          agentActivityConvs[m.participantId]?.includes(conversation.id)
-            ? agentActivity[m.participantId]
-            : undefined
-        )
-        .find(Boolean),
-    [otherMembers, agentActivity, agentActivityConvs, conversation]
-  );
+  // Live activity in THIS conversation, shown in the header where the status
+  // normally reads "Online". A lone busy agent reads "Thinking…/Working…"; a
+  // crowd reads as counts ("3 working · 1 typing") that agree with the
+  // ActivityDock below the thread — both come from the same selector.
+  const activityEntries = useConversationActivity(conversation?.id, conversation?.members);
+  const headerActivity = useMemo<
+    { single: AgentActivity } | { counts: ActivityCounts } | null
+  >(() => {
+    const live = activityEntries.filter((e) => !e.done);
+    if (live.length === 0) return null;
+    if (live.length === 1) {
+      // A lone typing participant keeps the presence line (the dock shows
+      // it); a lone busy agent reads as its phase.
+      if (live[0].kind === "typing") return null;
+      const single = (live[0].phase ?? "working") as AgentActivity;
+      return { single };
+    }
+    return { counts: countActivity(live) };
+  }, [activityEntries]);
 
   // In a 1:1 conversation with an offline agent, offer a "bring online"
   // affordance (mirrors mobile's "tap to wake"). For an org-host agent the
@@ -454,8 +457,22 @@ function ConversationPane({
                 <ExternalAgentBadge tool={externalToolOf(conversation, otherParticipant)} />
               )}
             </p>
-            {headerActivity ? (
-              <AgentActivityIndicator activity={headerActivity} />
+            {headerActivity && "single" in headerActivity ? (
+              <AgentActivityIndicator activity={headerActivity.single} />
+            ) : headerActivity ? (
+              <span className="flex min-w-0 items-center gap-1 text-[11px] font-medium text-foreground">
+                <PhaseOrb phase="working" className="shrink-0" />
+                <span className="truncate">
+                  {[
+                    headerActivity.counts.working > 0 &&
+                      t("activityDock.working", { count: headerActivity.counts.working }),
+                    headerActivity.counts.typing > 0 &&
+                      t("activityDock.typing", { count: headerActivity.counts.typing }),
+                  ]
+                    .filter(Boolean)
+                    .join(" · ")}
+                </span>
+              </span>
             ) : sessionInfo ? (
               <SessionStateLine session={sessionInfo} />
             ) : presenceLine ? (
@@ -640,7 +657,7 @@ function ThreadSidePane({ threadId }: { threadId: string }) {
       s.conversations.find((c) => c.id === threadId) ??
       s.agentConversations.find((c) => c.id === threadId)
   );
-  const stream = useStreamingStore((s) => s.streams[threadId]);
+  const isLive = useStreamingStore((s) => hasLiveStream(s.streams[threadId]));
 
   // Drag-to-resize from the pane's left (inner) edge. Shares its width with
   // the details pane (same storage key) so switching between them is seamless.
@@ -658,7 +675,6 @@ function ThreadSidePane({ threadId }: { threadId: string }) {
   }, [threadId, refreshConversation]);
 
   const resolved = conversation ? isResolvedThread(conversation) : false;
-  const isLive = Boolean(stream);
   const topic = conversation ? threadTopic(conversation) : null;
   const title =
     topic || conversation?.title || t("threads.agentThread");

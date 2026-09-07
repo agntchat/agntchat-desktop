@@ -10,6 +10,7 @@ import {
   MessageSquare,
   Paperclip,
   Radio,
+  Users,
   Waypoints,
   Wrench,
 } from "lucide-react";
@@ -19,6 +20,8 @@ import { ArtifactCard } from "../messages/ArtifactCard";
 import { AgentConversationCard } from "../messages/AgentConversationCard";
 import { TaskActivity } from "../tasks/TaskActivity";
 import { StreamingBubble } from "../messages/StreamingBubble";
+import { ActivityDock } from "../messages/ActivityDock";
+import type { ActivityEntry } from "../../lib/conversation-activity";
 import { AgentBusyToastCard } from "../AgentBusyToast";
 import { ReminderToastCard } from "../ReminderToast";
 import { MemorySavedToastCard } from "../MemorySavedToast";
@@ -1320,6 +1323,61 @@ export function buildPreviewCategories(
       ],
     },
 
+    // ------------------------------------------------------ activity dock
+    {
+      id: "activity-dock",
+      name: "Activity dock",
+      description: "Who is streaming, working, or typing in the open conversation",
+      icon: Users,
+      items: [
+        {
+          label: "Two agents working",
+          interactive: true,
+          node: (
+            <ActivityDock
+              entries={[
+                mkEntry("a1", "Nova", "agent", { phase: "tool_call", phaseDetail: "Reading calendar for this week" }),
+                mkEntry("a2", "Atlas", "agent", { phase: "thinking" }),
+              ]}
+              onStop={() => {}}
+            />
+          ),
+        },
+        {
+          label: "Mixed: writing, typing human, one done",
+          interactive: true,
+          node: (
+            <ActivityDock
+              entries={[
+                mkEntry("a1", "Nova", "agent", { phase: "writing" }),
+                mkEntry("h1", "Priya", "human"),
+                mkEntry("a2", "Atlas", "agent", { phase: "writing", done: true }),
+                mkEntry("a3", "Sage", "agent", { kind: "activity", phase: "working" }),
+              ]}
+              onStop={() => {}}
+            />
+          ),
+        },
+        {
+          label: "Crowd (collapses to chips)",
+          interactive: true,
+          node: (
+            <ActivityDock
+              entries={[
+                mkEntry("a1", "Nova", "agent", { phase: "tool_call", phaseDetail: "Searching Drive for “Q3 deck”" }),
+                mkEntry("a2", "Atlas", "agent", { phase: "thinking" }),
+                mkEntry("a3", "Sage", "agent", { phase: "analyzing" }),
+                mkEntry("a4", "Quill", "agent", { phase: "tool_call", phaseDetail: "Reading CHANGELOG" }),
+                mkEntry("a5", "Pixel", "agent", { phase: "waiting" }),
+                mkEntry("h1", "Priya", "human"),
+              ]}
+              onStop={() => {}}
+            />
+          ),
+        },
+      ],
+    },
+
     // ------------------------------------------------------- task activity
     {
       id: "task-activity",
@@ -1559,6 +1617,23 @@ function mkThread(status: string, topic: string): Conversation {
   };
 }
 
+function mkEntry(
+  participantId: string,
+  name: string,
+  type: "human" | "agent",
+  over: Partial<ActivityEntry> = {}
+): ActivityEntry {
+  return {
+    participantId,
+    name,
+    type,
+    kind: type === "human" ? "typing" : "stream",
+    done: false,
+    startedAt: 0,
+    ...over,
+  };
+}
+
 function mkStream(over: Partial<ActiveStream>): ActiveStream {
   return {
     streamId: "preview-stream",
@@ -1569,6 +1644,7 @@ function mkStream(over: Partial<ActiveStream>): ActiveStream {
     recentSteps: [],
     thoughts: [],
     thoughtPrefix: "",
+    startedAt: 0,
     lastUpdateAt: 0,
     ...over,
   };

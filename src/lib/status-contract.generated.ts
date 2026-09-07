@@ -117,3 +117,10 @@ export const STREAM_SWEEP_INTERVAL_MS = 10000;
 // restart request is in flight): if the agent never reports online, the
 // spinner clears after this long so the UI can't get stuck.
 export const WAKING_TIMEOUT_MS = 150000;
+
+// --- Activity dock ---
+
+// The in-conversation activity dock lists one row per participant who is
+// streaming, typing, or working here. Past this many rows it collapses to
+// avatar chips behind a summary line until the user expands it.
+export const ACTIVITY_DOCK_COLLAPSE_THRESHOLD = 4;

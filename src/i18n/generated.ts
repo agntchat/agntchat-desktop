@@ -2317,6 +2317,20 @@ export const resources = {
         "working": "Working",
         "writing": "Writing"
       },
+      "activityDock": {
+        "done_one": "{{count}} done",
+        "done_other": "{{count}} done",
+        "label": "Activity",
+        "rowDone": "Done",
+        "rowProcessing": "Processing…",
+        "rowTyping": "Typing…",
+        "showAll": "Show all",
+        "showLess": "Show less",
+        "typing_one": "{{count}} typing",
+        "typing_other": "{{count}} typing",
+        "working_one": "{{count}} working",
+        "working_other": "{{count}} working"
+      },
       "agentBusy": {
         "bodyGeneric": "They're working on a task. Your message went to the work room — open it to continue the thread.",
         "bodyTask": "They're working on “{{task}}”. Your message went to the work room — open it to continue the thread.",
@@ -8464,6 +8478,20 @@ export const resources = {
         "waiting": "Esperando",
         "working": "Trabajando",
         "writing": "Escribiendo"
+      },
+      "activityDock": {
+        "done_one": "{{count}} listo",
+        "done_other": "{{count}} listos",
+        "label": "Actividad",
+        "rowDone": "Listo",
+        "rowProcessing": "Procesando…",
+        "rowTyping": "Escribiendo…",
+        "showAll": "Mostrar todo",
+        "showLess": "Mostrar menos",
+        "typing_one": "{{count}} escribiendo",
+        "typing_other": "{{count}} escribiendo",
+        "working_one": "{{count}} trabajando",
+        "working_other": "{{count}} trabajando"
       },
       "agentBusy": {
         "bodyGeneric": "Está trabajando en una tarea. Tu mensaje fue a la sala de trabajo — ábrela para continuar el hilo.",
@@ -14613,6 +14641,20 @@ export const resources = {
         "working": "Arbeitet",
         "writing": "Schreibt"
       },
+      "activityDock": {
+        "done_one": "{{count}} fertig",
+        "done_other": "{{count}} fertig",
+        "label": "Aktivität",
+        "rowDone": "Fertig",
+        "rowProcessing": "Verarbeitet…",
+        "rowTyping": "Schreibt…",
+        "showAll": "Alle anzeigen",
+        "showLess": "Weniger anzeigen",
+        "typing_one": "{{count}} schreibt",
+        "typing_other": "{{count}} schreiben",
+        "working_one": "{{count}} arbeitet",
+        "working_other": "{{count}} arbeiten"
+      },
       "agentBusy": {
         "bodyGeneric": "Der Agent arbeitet an einer Aufgabe. Ihre Nachricht wurde an den Arbeitsraum gesendet — öffnen Sie ihn, um den Thread fortzusetzen.",
         "bodyTask": "Der Agent arbeitet an „{{task}}“. Ihre Nachricht wurde an den Arbeitsraum gesendet — öffnen Sie ihn, um den Thread fortzusetzen.",
@@ -20760,6 +20802,20 @@ export const resources = {
         "waiting": "En attente",
         "working": "Au travail",
         "writing": "Rédaction"
+      },
+      "activityDock": {
+        "done_one": "{{count}} terminé",
+        "done_other": "{{count}} terminés",
+        "label": "Activité",
+        "rowDone": "Terminé",
+        "rowProcessing": "Traitement…",
+        "rowTyping": "Écrit…",
+        "showAll": "Tout afficher",
+        "showLess": "Réduire",
+        "typing_one": "{{count}} écrit",
+        "typing_other": "{{count}} écrivent",
+        "working_one": "{{count}} en cours",
+        "working_other": "{{count}} en cours"
       },
       "agentBusy": {
         "bodyGeneric": "Cet agent travaille sur une tâche. Votre message a été envoyé dans la salle de travail — ouvrez-la pour continuer le fil.",
@@ -26909,6 +26965,20 @@ export const resources = {
         "working": "Trabalhando",
         "writing": "Escrevendo"
       },
+      "activityDock": {
+        "done_one": "{{count}} concluído",
+        "done_other": "{{count}} concluídos",
+        "label": "Atividade",
+        "rowDone": "Concluído",
+        "rowProcessing": "Processando…",
+        "rowTyping": "Digitando…",
+        "showAll": "Mostrar tudo",
+        "showLess": "Mostrar menos",
+        "typing_one": "{{count}} digitando",
+        "typing_other": "{{count}} digitando",
+        "working_one": "{{count}} trabalhando",
+        "working_other": "{{count}} trabalhando"
+      },
       "agentBusy": {
         "bodyGeneric": "Está trabalhando em uma tarefa. Sua mensagem foi para a sala de trabalho — abra-a para continuar a conversa.",
         "bodyTask": "Está trabalhando em “{{task}}”. Sua mensagem foi para a sala de trabalho — abra-a para continuar a conversa.",
@@ -33056,6 +33126,20 @@ export const resources = {
         "waiting": "待機中",
         "working": "作業中",
         "writing": "作成中"
+      },
+      "activityDock": {
+        "done_one": "{{count}}人が完了",
+        "done_other": "{{count}}人が完了",
+        "label": "アクティビティ",
+        "rowDone": "完了",
+        "rowProcessing": "処理中…",
+        "rowTyping": "入力中…",
+        "showAll": "すべて表示",
+        "showLess": "折りたたむ",
+        "typing_one": "{{count}}人が入力中",
+        "typing_other": "{{count}}人が入力中",
+        "working_one": "{{count}}人が作業中",
+        "working_other": "{{count}}人が作業中"
       },
       "agentBusy": {
         "bodyGeneric": "現在タスクに取り組んでいます。あなたのメッセージは作業ルームに送信されました — 開いてスレッドを続けてください。",
@@ -39205,6 +39289,20 @@ export const resources = {
         "working": "工作中",
         "writing": "写入中"
       },
+      "activityDock": {
+        "done_one": "{{count}} 位已完成",
+        "done_other": "{{count}} 位已完成",
+        "label": "活动",
+        "rowDone": "已完成",
+        "rowProcessing": "正在处理…",
+        "rowTyping": "正在输入…",
+        "showAll": "显示全部",
+        "showLess": "收起",
+        "typing_one": "{{count}} 位正在输入",
+        "typing_other": "{{count}} 位正在输入",
+        "working_one": "{{count}} 位正在处理",
+        "working_other": "{{count}} 位正在处理"
+      },
       "agentBusy": {
         "bodyGeneric": "对方正在处理一项任务。你的消息已发送到工作室——打开它以继续对话。",
         "bodyTask": "对方正在处理「{{task}}」。你的消息已发送到工作室——打开它以继续对话。",
@@ -45352,6 +45450,20 @@ export const resources = {
         "waiting": "대기 중",
         "working": "작업 중",
         "writing": "작성 중"
+      },
+      "activityDock": {
+        "done_one": "{{count}}명 완료",
+        "done_other": "{{count}}명 완료",
+        "label": "활동",
+        "rowDone": "완료",
+        "rowProcessing": "처리 중…",
+        "rowTyping": "입력 중…",
+        "showAll": "모두 보기",
+        "showLess": "간략히 보기",
+        "typing_one": "{{count}}명 입력 중",
+        "typing_other": "{{count}}명 입력 중",
+        "working_one": "{{count}}명 작업 중",
+        "working_other": "{{count}}명 작업 중"
       },
       "agentBusy": {
         "bodyGeneric": "작업을 진행 중입니다. 메시지가 작업방으로 전달되었습니다 — 대화를 이어가려면 열어보세요.",
@@ -51501,6 +51613,20 @@ export const resources = {
         "working": "Al lavoro",
         "writing": "Sta scrivendo"
       },
+      "activityDock": {
+        "done_one": "{{count}} completato",
+        "done_other": "{{count}} completati",
+        "label": "Attività",
+        "rowDone": "Fatto",
+        "rowProcessing": "In elaborazione…",
+        "rowTyping": "Sta scrivendo…",
+        "showAll": "Mostra tutto",
+        "showLess": "Mostra meno",
+        "typing_one": "{{count}} sta scrivendo",
+        "typing_other": "{{count}} stanno scrivendo",
+        "working_one": "{{count}} al lavoro",
+        "working_other": "{{count}} al lavoro"
+      },
       "agentBusy": {
         "bodyGeneric": "Sta lavorando a un'attività. Il tuo messaggio è stato inviato alla stanza di lavoro — aprila per continuare la conversazione.",
         "bodyTask": "Sta lavorando a “{{task}}”. Il tuo messaggio è stato inviato alla stanza di lavoro — aprila per continuare la conversazione.",
@@ -57648,6 +57774,20 @@ export const resources = {
         "waiting": "प्रतीक्षारत",
         "working": "कार्यरत",
         "writing": "लिख रहा है"
+      },
+      "activityDock": {
+        "done_one": "{{count}} पूर्ण",
+        "done_other": "{{count}} पूर्ण",
+        "label": "गतिविधि",
+        "rowDone": "पूर्ण",
+        "rowProcessing": "प्रोसेस कर रहा है…",
+        "rowTyping": "टाइप कर रहा है…",
+        "showAll": "सभी दिखाएँ",
+        "showLess": "कम दिखाएँ",
+        "typing_one": "{{count}} टाइप कर रहा है",
+        "typing_other": "{{count}} टाइप कर रहे हैं",
+        "working_one": "{{count}} काम कर रहा है",
+        "working_other": "{{count}} काम कर रहे हैं"
       },
       "agentBusy": {
         "bodyGeneric": "वे एक कार्य पर काम कर रहे हैं। आपका संदेश वर्करूम में भेजा गया — बातचीत जारी रखने के लिए उसे खोलें।",

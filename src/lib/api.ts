@@ -3151,6 +3151,12 @@ export interface ActiveStream {
    * snapshot would contain every prior thought.
    */
   thoughtPrefix: string;
+  /** When this stream was first seen — drives the activity dock's stable
+   *  ordering (rows never reorder while active). */
+  startedAt: number;
+  /** Set when the backend sent `complete`; the row reads "Done" until the
+   *  real message lands or the linger elapses, whichever comes first. */
+  completedAt?: number;
   lastUpdateAt: number;
 }
 

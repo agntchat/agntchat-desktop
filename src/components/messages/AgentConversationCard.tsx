@@ -12,6 +12,7 @@ import { useAuthStore } from "../../stores/authStore";
 import { useChatStore } from "../../stores/chatStore";
 import { useNavStore } from "../../stores/navStore";
 import { useStreamingStore } from "../../stores/streamingStore";
+import { hasLiveStream } from "../../lib/conversation-activity";
 
 /**
  * Slim inline pill rendered in the parent conversation timeline beneath
@@ -35,8 +36,7 @@ export function AgentConversationCard({
     (s) => (s.messages[conversation.id] ?? []).length
   );
   const unread = useChatStore((s) => s.unreadCounts[conversation.id] ?? 0);
-  const stream = useStreamingStore((s) => s.streams[conversation.id]);
-  const isLive = Boolean(stream);
+  const isLive = useStreamingStore((s) => hasLiveStream(s.streams[conversation.id]));
   const resolved = isResolvedThread(conversation);
 
   const topic = threadTopic(conversation);

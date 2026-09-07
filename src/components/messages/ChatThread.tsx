@@ -1,11 +1,8 @@
 import { Fragment, useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState } from "react";
-import { PhaseOrb } from "../PhaseOrb";
 import { useTranslation } from "react-i18next";
 import { ArrowDown, ChevronDown, ChevronUp, Loader2 } from "lucide-react";
 import { useChatStore } from "../../stores/chatStore";
 import { useAuthStore } from "../../stores/authStore";
-import { usePresenceStore } from "../../stores/presenceStore";
-import { useStreamingStore } from "../../stores/streamingStore";
 import { useTaskStore } from "../../stores/taskStore";
 import { MessageBubble } from "./MessageBubble";
 import { LONG_MESSAGE_EXPAND_EVENT } from "./CollapsibleText";
@@ -13,11 +10,13 @@ import { isStatusUpdateMessage } from "./StatusUpdateMessage";
 import { isTaskMessage } from "./TaskMessages";
 import { MessageContextMenu } from "./MessageContextMenu";
 import { StreamingBubble } from "./StreamingBubble";
+import { ActivityDock } from "./ActivityDock";
 import { AgentConversationCard } from "./AgentConversationCard";
 import { ArtifactCard } from "./ArtifactCard";
 import { Marker, MarkerContent } from "@/components/ui/marker";
 import { cn, dayKey, formatDayLabel, formatExactDateTime } from "../../lib/utils";
-import { buildTypingText } from "../../lib/typing-indicator";
+import { useConversationActivity } from "../../hooks/useConversationActivity";
+import { countActivity, writingEntries } from "../../lib/conversation-activity";
 import { agentConversationSourceId } from "../../lib/thread-selectors";
 import type { Artifact, Conversation, Message } from "../../lib/api";
 import { useArtifactStore } from "../../stores/artifactStore";
@@ -522,10 +521,11 @@ export function ChatThread({ conversationId }: { conversationId: string }) {
       .catch(() => {});
   }, [conversationId]);
 
-  const typingIds = usePresenceStore((s) => s.typing[conversationId]);
-  const typingNames = usePresenceStore((s) => s.typingNames);
-  const typingTypes = usePresenceStore((s) => s.typingTypes);
-  const stream = useStreamingStore((s) => s.streams[conversationId]);
+  // Everyone streaming / working / typing here, one entry each. The dock
+  // below the thread lists them all; agents mid-`writing` also get a live
+  // bubble in the thread.
+  const activityEntries = useConversationActivity(conversationId, conversationMembers);
+  const writers = useMemo(() => writingEntries(activityEntries), [activityEntries]);
   const [stoppingAgents, setStoppingAgents] = useState(false);
 
   const handleStopAgents = useCallback(async () => {
@@ -791,7 +791,7 @@ export function ChatThread({ conversationId }: { conversationId: string }) {
       cancelAnimationFrame(r1);
       cancelAnimationFrame(r2);
     };
-  }, [conversationId, threadItems.length, stream, snapToBottom, isSelectingInThread]);
+  }, [conversationId, threadItems.length, writers.length, snapToBottom, isSelectingInThread]);
 
   // Keep the view pinned to the bottom while the message list's height
   // settles. Image attachments fetch their download URL async and render
@@ -980,22 +980,6 @@ export function ChatThread({ conversationId }: { conversationId: string }) {
   }, [threadItems.length]);
 
 
-  // Build typing entries (name + type), filtering out ourselves and any agent
-  // already streaming (the StreamingBubble replaces its indicator). Mirrors
-  // web/mobile exactly so the wording reads the same on every platform.
-  const typingEntries = useMemo(() => {
-    if (!typingIds || typingIds.size === 0) return [];
-    return Array.from(typingIds)
-      .filter((id) => id !== myId && (!stream || stream.senderId !== id))
-      .map((id) => ({
-        name: typingNames[id] || t("someone"),
-        type: typingTypes[id] || "human",
-      }));
-  }, [typingIds, typingNames, typingTypes, stream, myId, t]);
-
-  const typingHasAgent = typingEntries.some((e) => e.type === "agent");
-  const typingLabel = buildTypingText(typingEntries, t);
-
   // useCallback so the memoized MessageBubble rows don't all re-render on
   // every thread render just because the handler identity changed.
   const handleContextMenu = useCallback((message: Message, e: React.MouseEvent) => {
@@ -1069,7 +1053,7 @@ export function ChatThread({ conversationId }: { conversationId: string }) {
           <div className="flex items-center justify-center py-10">
             <Loader2 className="w-5 h-5 animate-spin text-muted-foreground" />
           </div>
-        ) : threadItems.length === 0 && !stream && !typingLabel ? (
+        ) : threadItems.length === 0 && activityEntries.length === 0 ? (
           <div className="flex items-center justify-center py-16 text-sm text-muted-foreground">
             {t("noMessages")}
           </div>
@@ -1182,14 +1166,13 @@ export function ChatThread({ conversationId }: { conversationId: string }) {
               );
             })}
             </div>
-            {stream && (
+            {writers.map((w) => (
               <StreamingBubble
-                stream={stream}
+                key={w.participantId}
+                stream={w.stream!}
                 members={conversationMembers}
-                onStop={handleStopAgents}
-                stopping={stoppingAgents}
               />
-            )}
+            ))}
 
             {/* Turn-positioning spacer — sized imperatively (turn_anchor
                 flag) so a just-sent message can sit at the top of the
@@ -1200,24 +1183,19 @@ export function ChatThread({ conversationId }: { conversationId: string }) {
       </div>
 
       {/* Screen-reader-only agent activity: announces phase TRANSITIONS
-          (thinking → writing …) without exposing the token stream. */}
-      {stream && (
-        <span role="status" className="sr-only">
-          {t(STREAM_PHASE_ANNOUNCEMENT_KEYS[stream.phase] ?? "streamAnnounce.responding")}
-        </span>
-      )}
+          (thinking → writing …) for a lone agent, or how many are working,
+          without exposing the token stream. */}
+      <ActivityAnnouncement entries={activityEntries} />
 
       {/* Pinned just below the scroll area — always visible regardless
-          of scroll position. Was inside the scrollable div, so typing
-          fired while the user was scrolled up was hidden below the fold. */}
-      {typingLabel && (
-        <div className="flex items-center gap-1.5 border-t border-border bg-card/80 px-4 py-1 text-xs text-muted-foreground backdrop-blur">
-          {typingHasAgent && (
-            <PhaseOrb state="composing" className="shrink-0" />
-          )}
-          {typingLabel}
-        </div>
-      )}
+          of scroll position — so a typist or a working agent is never
+          hidden below the fold while the user reads older messages. */}
+      <ActivityDock
+        entries={activityEntries}
+        members={conversationMembers}
+        onStop={handleStopAgents}
+        stopping={stoppingAgents}
+      />
 
       {!nearBottom && (
         <button
@@ -1329,5 +1307,20 @@ function isNear(a: Message | undefined, b: Message): boolean {
   return (
     new Date(b.insertedAt).getTime() - new Date(a.insertedAt).getTime() <
     SENDER_RUN_BREAK_MS
+  );
+}
+
+function ActivityAnnouncement({ entries }: { entries: ReturnType<typeof useConversationActivity> }) {
+  const { t } = useTranslation("chat");
+  const streaming = entries.filter((e) => e.kind === "stream" && !e.done);
+  if (streaming.length === 0) return null;
+  const text =
+    streaming.length === 1
+      ? t(STREAM_PHASE_ANNOUNCEMENT_KEYS[streaming[0].phase ?? ""] ?? "streamAnnounce.responding")
+      : t("activityDock.working", { count: countActivity(entries).working });
+  return (
+    <span role="status" className="sr-only">
+      {text}
+    </span>
   );
 }

@@ -26,6 +26,7 @@ import { GroupAvatar } from "./GroupAvatar";
 import { AgentActivityIndicator } from "../AgentActivityIndicator";
 import { PhaseOrb } from "../PhaseOrb";
 import { useStreamingStore } from "../../stores/streamingStore";
+import { primaryStreamPhase } from "../../lib/conversation-activity";
 import {
   PHASE_IS_ACTIVE,
   STREAM_PHASE_FALLBACK_LABEL_KEY,
@@ -121,7 +122,7 @@ export function ConversationList() {
             presence={presence}
             hasAgent={hasAgent}
             isTyping={(typing[conv.id]?.size ?? 0) > 0}
-            streamPhase={streams[conv.id]?.phase}
+            streamPhase={primaryStreamPhase(streams[conv.id])}
             activity={activity}
             currentUserId={currentUserId}
             onClick={() => setActive(conv.id)}

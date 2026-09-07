@@ -1,4 +1,4 @@
-import { Bot, Loader2, Square } from "lucide-react";
+import { Bot } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import type { ActiveStream, ConversationMember } from "../../lib/api";
 import {
@@ -7,7 +7,6 @@ import {
   STREAM_PHASE_LABEL_KEYS,
 } from "../../lib/status-contract.generated";
 import { PhaseOrb } from "../PhaseOrb";
-import { cn } from "../../lib/utils";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Bubble, BubbleContent } from "@/components/ui/bubble";
 import {
@@ -17,18 +16,15 @@ import {
   MessageHeader,
 } from "@/components/ui/message";
 
+// Live bubble for an agent in the `writing` phase — the text it is about
+// to post. Thinking / tool-use phases live in the ActivityDock instead, and
+// so does the stop-agents button.
 export function StreamingBubble({
   stream,
   members,
-  onStop,
-  stopping,
 }: {
   stream: ActiveStream;
   members?: ConversationMember[];
-  /** When set, renders a stop button beside the bubble. Stops ALL agents in
-   *  the conversation (server semantics of /stop-agents), not just this one. */
-  onStop?: () => void;
-  stopping?: boolean;
 }) {
   const { t } = useTranslation("chat");
   const label =
@@ -94,29 +90,6 @@ export function StreamingBubble({
           </BubbleContent>
         </Bubble>
       </MessageContent>
-
-      {onStop && (
-        <button
-          type="button"
-          onClick={stopping ? undefined : onStop}
-          disabled={stopping}
-          title={t("stopAgents")}
-          aria-label={t("stopAgents")}
-          className={cn(
-            "self-end mb-1 flex h-7 w-7 shrink-0 items-center justify-center rounded-full",
-            "border border-border bg-card text-muted-foreground shadow-sm transition-colors",
-            stopping
-              ? "cursor-not-allowed opacity-60"
-              : "hover:border-destructive/40 hover:bg-destructive/10 hover:text-destructive"
-          )}
-        >
-          {stopping ? (
-            <Loader2 className="h-3.5 w-3.5 animate-spin" />
-          ) : (
-            <Square className="h-3 w-3 fill-current" />
-          )}
-        </button>
-      )}
     </MessageRow>
   );
 }
