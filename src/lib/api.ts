@@ -366,6 +366,7 @@ export async function updateProfile(data: {
   description?: string;
   tagline?: string;
   avatarUrl?: string;
+  breakoutDefault?: boolean;
 }): Promise<Participant> {
   return request("/api/me", {
     method: "PATCH",
@@ -2775,6 +2776,10 @@ export interface Participant {
   analyticsOptIn?: boolean;
   acceptedPolicyVersion?: string | null;
   policyReacceptRequired?: boolean;
+  /** Per-user default for breakout rooms (self-view, humans only). A
+   *  conversation can override it; see `getConversationRules`. Only
+   *  meaningful when `features.breakout_rooms` is on. */
+  breakoutDefault?: boolean;
 }
 
 /** Start a Stripe subscription Checkout; returns a URL to open in a browser. */
@@ -3254,6 +3259,42 @@ export async function updateConversationTitleRest(
   return request(`/api/conversations/${conversationId}`, {
     method: "PATCH",
     body: JSON.stringify({ title }),
+  });
+}
+
+/** Resolved breakout-room state for one conversation, from
+ *  `GET /api/conversations/:id/rules`. `override` is the per-conversation
+ *  setting (null = inherit the user default); `effective` folds the
+ *  platform flag, the user default and the override together. */
+export interface BreakoutRules {
+  flag: boolean;
+  userDefault: boolean;
+  override: boolean | null;
+  effective: boolean;
+}
+
+export interface ConversationRulesResponse {
+  rules: Record<string, unknown>;
+  explicit: Record<string, unknown>;
+  breakout: BreakoutRules;
+}
+
+export async function getConversationRules(
+  conversationId: string
+): Promise<ConversationRulesResponse> {
+  return request(`/api/conversations/${conversationId}/rules`);
+}
+
+/** Set the per-conversation breakout override. `null` removes it (inherit
+ *  the user default). The endpoint merges, so only that key is sent.
+ *  Admin-only — non-admins get a 403. */
+export async function updateBreakoutOverride(
+  conversationId: string,
+  override: boolean | null
+): Promise<ConversationRulesResponse> {
+  return request(`/api/conversations/${conversationId}/rules`, {
+    method: "PATCH",
+    body: JSON.stringify({ rules: { auto_breakout_enabled: override } }),
   });
 }
 

@@ -8,6 +8,12 @@ import { useAgentStore } from "../../stores/agentStore";
 // useAgentStore is needed for the "add member" picker which lists this user's
 // own agents.
 import { useMemoryStore } from "../../stores/memoryStore";
+import { useAuthStore } from "../../stores/authStore";
+import {
+  getConversationRules,
+  updateBreakoutOverride,
+  type BreakoutRules,
+} from "../../lib/api";
 import { useNavStore } from "../../stores/navStore";
 import { useModelCatalog } from "../../stores/modelCatalogStore";
 import { ExternalAgentBadge, isExternalAgent } from "../ExternalAgentBadge";
@@ -158,6 +164,11 @@ export function ConversationDetailsPanel({
   );
 
   const isAdmin = conversation.createdBy === currentUserId;
+  // Breakout rooms override is flag-gated (`breakout_rooms`); the backend
+  // still enforces admin-only on PATCH …/rules.
+  const breakoutEnabled = useAuthStore(
+    (s) => s.participant?.features?.breakout_rooms === true
+  );
   const rawMembers = conversation.members ?? [];
 
   // Stable, predictable member order, matched across web/desktop/mobile:
@@ -464,6 +475,11 @@ export function ConversationDetailsPanel({
           entry={memoryEntry}
           loading={memoryLoading}
         />
+
+        {/* Breakout rooms — group-only, flag-gated, admin-only override. */}
+        {conversation.type === "group" && breakoutEnabled && isAdmin && (
+          <BreakoutSection conversationId={conversation.id} />
+        )}
 
         {/* Clear chat — local-only (server history stays) */}
         <div className="relative px-4 py-3 before:absolute before:top-0 before:left-4 before:right-4 before:h-px before:bg-border">
@@ -963,6 +979,112 @@ function AvatarBlock({
       )}
       {avatarError && (
         <p className="mt-2 text-[11px] text-destructive">{avatarError}</p>
+      )}
+    </div>
+  );
+}
+
+// ---------------------------------------------------------------------------
+// Breakout rooms — per-conversation override of the user's default.
+// Only rendered for group conversations when the `breakout_rooms` flag is
+// on and the viewer is the conversation admin (PATCH …/rules is admin-only).
+// Three states: inherit (null), on, off. The "use my default" label shows
+// the server-resolved user default so the choice is legible in place.
+// ---------------------------------------------------------------------------
+
+function BreakoutSection({ conversationId }: { conversationId: string }) {
+  const { t } = useTranslation("chat");
+  const [rules, setRules] = useState<BreakoutRules | null>(null);
+  const [loadFailed, setLoadFailed] = useState(false);
+  const [saving, setSaving] = useState(false);
+  const [saveFailed, setSaveFailed] = useState(false);
+
+  useEffect(() => {
+    let cancelled = false;
+    setRules(null);
+    setLoadFailed(false);
+    getConversationRules(conversationId)
+      .then((res) => {
+        if (!cancelled) setRules(res.breakout);
+      })
+      .catch(() => {
+        if (!cancelled) setLoadFailed(true);
+      });
+    return () => {
+      cancelled = true;
+    };
+  }, [conversationId]);
+
+  const select = useCallback(
+    async (override: boolean | null) => {
+      if (!rules || saving || rules.override === override) return;
+      setSaving(true);
+      setSaveFailed(false);
+      try {
+        const res = await updateBreakoutOverride(conversationId, override);
+        setRules(res.breakout);
+      } catch {
+        setSaveFailed(true);
+      } finally {
+        setSaving(false);
+      }
+    },
+    [conversationId, rules, saving]
+  );
+
+  const onOff = (v: boolean) => (v ? t("common:on") : t("common:off"));
+  const options: { value: boolean | null; label: string }[] = rules
+    ? [
+        { value: null, label: t("breakout.useDefault", { state: onOff(rules.userDefault) }) },
+        { value: true, label: t("common:on") },
+        { value: false, label: t("common:off") },
+      ]
+    : [];
+
+  return (
+    <div className="relative px-4 py-3 before:absolute before:top-0 before:left-4 before:right-4 before:h-px before:bg-border">
+      <h4 className="mb-1 text-xs font-medium text-muted-foreground uppercase tracking-wider">
+        {t("breakout.label")}
+      </h4>
+      <p className="mb-2 text-[11px] text-muted-foreground">{t("breakout.description")}</p>
+      {loadFailed ? (
+        <p className="text-xs text-destructive">{t("breakout.loadFailed")}</p>
+      ) : !rules ? (
+        <Loader2 className="h-4 w-4 animate-spin text-muted-foreground" />
+      ) : (
+        <>
+          <div className="flex flex-col gap-1" role="radiogroup" aria-label={t("breakout.label")}>
+            {options.map(({ value, label }) => {
+              const selected = rules.override === value;
+              return (
+                <button
+                  key={String(value)}
+                  role="radio"
+                  aria-checked={selected}
+                  disabled={saving}
+                  onClick={() => select(value)}
+                  className={cn(
+                    "flex w-full items-center rounded-md border px-2 py-1.5 text-left text-sm transition-colors",
+                    selected
+                      ? "border-primary bg-primary/10 text-foreground"
+                      : "border-border text-muted-foreground hover:bg-muted hover:text-foreground",
+                    saving && "opacity-60"
+                  )}
+                >
+                  {label}
+                </button>
+              );
+            })}
+          </div>
+          <p className="mt-2 text-[11px] text-muted-foreground">
+            {rules.effective ? t("breakout.currentlyOn") : t("breakout.currentlyOff")}
+          </p>
+          {saveFailed && (
+            <p className="mt-1 text-[11px] text-destructive" role="alert">
+              {t("breakout.updateFailed")}
+            </p>
+          )}
+        </>
       )}
     </div>
   );

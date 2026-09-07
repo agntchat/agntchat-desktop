@@ -82,6 +82,7 @@ import {
   Bot,
   Languages,
   HardDrive,
+  MessagesSquare,
 } from "lucide-react";
 import { deviceTimezone, filterTimezones, formatTimezoneLabel } from "../lib/timezones";
 import { getInitials } from "../lib/utils";
@@ -213,6 +214,27 @@ export function Profile({ onClose }: { onClose: () => void }) {
   const [profileSaved, setProfileSaved] = useState(false);
   const [uploadingAvatar, setUploadingAvatar] = useState(false);
   const [avatarError, setAvatarError] = useState<string | null>(null);
+
+  // Breakout rooms — per-user default, behind the `breakout_rooms` runtime
+  // flag. Per-conversation overrides live in the conversation details panel.
+  const breakoutEnabled = participant?.features?.breakout_rooms === true;
+  const breakoutDefault = participant?.breakoutDefault === true;
+  const [savingBreakout, setSavingBreakout] = useState(false);
+  const [breakoutError, setBreakoutError] = useState(false);
+
+  const handleToggleBreakout = async (value: boolean) => {
+    setSavingBreakout(true);
+    setBreakoutError(false);
+    try {
+      const updated = await api.updateProfile({ breakoutDefault: value });
+      persistParticipant(updated);
+    } catch {
+      // Switch keeps reflecting the server state; tell the user why.
+      setBreakoutError(true);
+    } finally {
+      setSavingBreakout(false);
+    }
+  };
 
   // ---- Integration state ----
   const [providers, setProviders] = useState<api.ProviderInfo[]>([]);
@@ -889,6 +911,32 @@ export function Profile({ onClose }: { onClose: () => void }) {
                 className="text-muted-foreground bg-muted/30"
               />
             </div>
+
+            {/* Breakout rooms — user default (flag-gated). */}
+            {breakoutEnabled && (
+              <div className="rounded-xl border border-border bg-card p-4 flex items-center justify-between gap-4">
+                <div className="flex min-w-0 items-start gap-3">
+                  <MessagesSquare className="mt-0.5 h-4 w-4 shrink-0 text-muted-foreground" />
+                  <div className="min-w-0">
+                    <p className="text-sm font-medium">{t("breakout.label")}</p>
+                    <p className="text-xs text-muted-foreground mt-0.5">
+                      {t("breakout.description")}
+                    </p>
+                    {breakoutError && (
+                      <p className="text-xs text-destructive mt-1 flex items-center gap-1.5">
+                        <AlertCircle className="w-3.5 h-3.5" />
+                        {t("profile.updateFailed")}
+                      </p>
+                    )}
+                  </div>
+                </div>
+                <Switch
+                  checked={breakoutDefault}
+                  disabled={savingBreakout}
+                  onCheckedChange={(v) => void handleToggleBreakout(v)}
+                />
+              </div>
+            )}
 
             {/* Sign out */}
             <Separator />
