@@ -4818,7 +4818,8 @@ export const resources = {
         "agentTag": "Agent",
         "groupName": "Mila, Priya +2",
         "nameA": "Mila",
-        "title": "#q3-report"
+        "title": "#q3-report",
+        "tripGroup": "Hotels in Amsterdam"
       },
       "download": {
         "appStore": "App Store",
@@ -5083,13 +5084,11 @@ export const resources = {
         "title": "One team. Some of it happens to be AI."
       },
       "home": {
+        "aboutHoursAgo": "about {{n}} hours ago",
+        "daysAgo": "{{n}} days ago",
         "demoHeading": "See it in motion",
         "everywhereEyebrow": "Everywhere you are",
-        "hoursAgo": "{{n}}h ago",
-        "justNow": "Just now",
-        "ledgerEyebrow": "How it works",
-        "minutesAgo": "{{n}} min ago",
-        "yesterday": "Yesterday"
+        "ledgerEyebrow": "How it works"
       },
       "howItWorks": {
         "categories": {
@@ -10980,7 +10979,8 @@ export const resources = {
         "agentTag": "Agente",
         "groupName": "Mila, Priya +2",
         "nameA": "Mila",
-        "title": "#q3-report"
+        "title": "#q3-report",
+        "tripGroup": "Hoteles en Ámsterdam"
       },
       "download": {
         "appStore": "App Store",
@@ -11245,13 +11245,11 @@ export const resources = {
         "title": "Un solo equipo. Parte de él resulta ser IA."
       },
       "home": {
+        "aboutHoursAgo": "hace unas {{n}} horas",
+        "daysAgo": "hace {{n}} días",
         "demoHeading": "Míralo en acción",
         "everywhereEyebrow": "Donde estés",
-        "hoursAgo": "hace {{n}} h",
-        "justNow": "Ahora mismo",
-        "ledgerEyebrow": "Cómo funciona",
-        "minutesAgo": "hace {{n}} min",
-        "yesterday": "Ayer"
+        "ledgerEyebrow": "Cómo funciona"
       },
       "howItWorks": {
         "categories": {
@@ -17142,7 +17140,8 @@ export const resources = {
         "agentTag": "Agent",
         "groupName": "Mila, Priya +2",
         "nameA": "Mila",
-        "title": "#q3-report"
+        "title": "#q3-report",
+        "tripGroup": "Hotels in Amsterdam"
       },
       "download": {
         "appStore": "App Store",
@@ -17407,13 +17406,11 @@ export const resources = {
         "title": "Ein Team. Ein Teil davon ist zufällig KI."
       },
       "home": {
+        "aboutHoursAgo": "vor etwa {{n}} Stunden",
+        "daysAgo": "vor {{n}} Tagen",
         "demoHeading": "In Bewegung sehen",
         "everywhereEyebrow": "Überall, wo du bist",
-        "hoursAgo": "vor {{n}} Std.",
-        "justNow": "Gerade eben",
-        "ledgerEyebrow": "So funktioniert es",
-        "minutesAgo": "vor {{n}} Min.",
-        "yesterday": "Gestern"
+        "ledgerEyebrow": "So funktioniert es"
       },
       "howItWorks": {
         "categories": {
@@ -23304,7 +23301,8 @@ export const resources = {
         "agentTag": "Agent",
         "groupName": "Mila, Priya +2",
         "nameA": "Mila",
-        "title": "#q3-report"
+        "title": "#q3-report",
+        "tripGroup": "Hôtels à Amsterdam"
       },
       "download": {
         "appStore": "App Store",
@@ -23569,13 +23567,11 @@ export const resources = {
         "title": "Une seule équipe. Une partie se trouve être des IA."
       },
       "home": {
+        "aboutHoursAgo": "il y a environ {{n}} heures",
+        "daysAgo": "il y a {{n}} jours",
         "demoHeading": "Voyez-le en action",
         "everywhereEyebrow": "Partout où vous êtes",
-        "hoursAgo": "il y a {{n}} h",
-        "justNow": "À l'instant",
-        "ledgerEyebrow": "Comment ça marche",
-        "minutesAgo": "il y a {{n}} min",
-        "yesterday": "Hier"
+        "ledgerEyebrow": "Comment ça marche"
       },
       "howItWorks": {
         "categories": {
@@ -29466,7 +29462,8 @@ export const resources = {
         "agentTag": "Agente",
         "groupName": "Mila, Priya +2",
         "nameA": "Mila",
-        "title": "#q3-report"
+        "title": "#q3-report",
+        "tripGroup": "Hotéis em Amsterdã"
       },
       "download": {
         "appStore": "App Store",
@@ -29731,13 +29728,11 @@ export const resources = {
         "title": "Um time só. Parte dele por acaso é IA."
       },
       "home": {
+        "aboutHoursAgo": "há cerca de {{n}} horas",
+        "daysAgo": "há {{n}} dias",
         "demoHeading": "Veja em ação",
         "everywhereEyebrow": "Onde você estiver",
-        "hoursAgo": "há {{n}} h",
-        "justNow": "Agora mesmo",
-        "ledgerEyebrow": "Como funciona",
-        "minutesAgo": "há {{n}} min",
-        "yesterday": "Ontem"
+        "ledgerEyebrow": "Como funciona"
       },
       "howItWorks": {
         "categories": {
@@ -35628,7 +35623,8 @@ export const resources = {
         "agentTag": "エージェント",
         "groupName": "Mila、Priya +2",
         "nameA": "Mila",
-        "title": "#q3-report"
+        "title": "#q3-report",
+        "tripGroup": "アムステルダムのホテル"
       },
       "download": {
         "appStore": "App Store",
@@ -35893,13 +35889,11 @@ export const resources = {
         "title": "ひとつのチーム。その一部が、たまたまAI。"
       },
       "home": {
+        "aboutHoursAgo": "約{{n}}時間前",
+        "daysAgo": "{{n}}日前",
         "demoHeading": "動いているところを見る",
         "everywhereEyebrow": "どこにいても",
-        "hoursAgo": "{{n}}時間前",
-        "justNow": "たった今",
-        "ledgerEyebrow": "仕組み",
-        "minutesAgo": "{{n}}分前",
-        "yesterday": "昨日"
+        "ledgerEyebrow": "仕組み"
       },
       "howItWorks": {
         "categories": {
@@ -41790,7 +41784,8 @@ export const resources = {
         "agentTag": "智能体",
         "groupName": "Mila、Priya +2",
         "nameA": "Mila",
-        "title": "#q3-report"
+        "title": "#q3-report",
+        "tripGroup": "阿姆斯特丹的酒店"
       },
       "download": {
         "appStore": "App Store",
@@ -42055,13 +42050,11 @@ export const resources = {
         "title": "一支团队。其中一部分恰好是 AI。"
       },
       "home": {
+        "aboutHoursAgo": "大约 {{n}} 小时前",
+        "daysAgo": "{{n}} 天前",
         "demoHeading": "看看它如何运转",
         "everywhereEyebrow": "无论你在哪里",
-        "hoursAgo": "{{n}} 小时前",
-        "justNow": "刚刚",
-        "ledgerEyebrow": "工作原理",
-        "minutesAgo": "{{n}} 分钟前",
-        "yesterday": "昨天"
+        "ledgerEyebrow": "工作原理"
       },
       "howItWorks": {
         "categories": {
@@ -47952,7 +47945,8 @@ export const resources = {
         "agentTag": "에이전트",
         "groupName": "Mila, Priya +2",
         "nameA": "Mila",
-        "title": "#q3-report"
+        "title": "#q3-report",
+        "tripGroup": "암스테르담 호텔"
       },
       "download": {
         "appStore": "App Store",
@@ -48217,13 +48211,11 @@ export const resources = {
         "title": "하나의 팀. 그중 일부가 마침 AI일 뿐."
       },
       "home": {
+        "aboutHoursAgo": "약 {{n}}시간 전",
+        "daysAgo": "{{n}}일 전",
         "demoHeading": "실제로 작동하는 모습 보기",
         "everywhereEyebrow": "어디에서나",
-        "hoursAgo": "{{n}}시간 전",
-        "justNow": "방금",
-        "ledgerEyebrow": "작동 방식",
-        "minutesAgo": "{{n}}분 전",
-        "yesterday": "어제"
+        "ledgerEyebrow": "작동 방식"
       },
       "howItWorks": {
         "categories": {
@@ -54114,7 +54106,8 @@ export const resources = {
         "agentTag": "Agente",
         "groupName": "Mila, Priya +2",
         "nameA": "Mila",
-        "title": "#q3-report"
+        "title": "#q3-report",
+        "tripGroup": "Hotel ad Amsterdam"
       },
       "download": {
         "appStore": "App Store",
@@ -54379,13 +54372,11 @@ export const resources = {
         "title": "Una sola squadra. Una parte, per caso, è IA."
       },
       "home": {
+        "aboutHoursAgo": "circa {{n}} ore fa",
+        "daysAgo": "{{n}} giorni fa",
         "demoHeading": "Guardalo in azione",
         "everywhereEyebrow": "Ovunque tu sia",
-        "hoursAgo": "{{n}} h fa",
-        "justNow": "Adesso",
-        "ledgerEyebrow": "Come funziona",
-        "minutesAgo": "{{n}} min fa",
-        "yesterday": "Ieri"
+        "ledgerEyebrow": "Come funziona"
       },
       "howItWorks": {
         "categories": {
@@ -60276,7 +60267,8 @@ export const resources = {
         "agentTag": "एजेंट",
         "groupName": "Mila, Priya +2",
         "nameA": "Mila",
-        "title": "#q3-report"
+        "title": "#q3-report",
+        "tripGroup": "एम्स्टर्डम में होटल"
       },
       "download": {
         "appStore": "App Store",
@@ -60541,13 +60533,11 @@ export const resources = {
         "title": "एक टीम। उसका एक हिस्सा संयोग से AI है।"
       },
       "home": {
+        "aboutHoursAgo": "लगभग {{n}} घंटे पहले",
+        "daysAgo": "{{n}} दिन पहले",
         "demoHeading": "इसे चलते हुए देखें",
         "everywhereEyebrow": "आप जहाँ भी हों",
-        "hoursAgo": "{{n}} घंटे पहले",
-        "justNow": "अभी-अभी",
-        "ledgerEyebrow": "यह कैसे काम करता है",
-        "minutesAgo": "{{n}} मिनट पहले",
-        "yesterday": "कल"
+        "ledgerEyebrow": "यह कैसे काम करता है"
       },
       "howItWorks": {
         "categories": {
