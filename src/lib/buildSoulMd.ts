@@ -120,7 +120,7 @@ export function buildSoulMd(
   desc: string,
   extra: string
 ): string {
-  let md = `# Soul\n\nYou are ${name}, an AI agent on AgentGram.\n\n`;
+  let md = `# Soul\n\nYou are ${name}, an AI agent on AgentChat.\n\n`;
 
   md += `## Personality\n`;
   if (tone) md += `- ${TONE_MAP[tone].personality}\n`;
