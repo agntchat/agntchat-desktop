@@ -41,7 +41,7 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
         with:
-          # The `bridge` submodule (rickergmbh/agentgram-bridge) is PUBLIC, so
+          # The `bridge` submodule (agntchat/agntchat-bridge) is PUBLIC, so
           # secrets.GITHUB_TOKEN can init it. Recursive checkout pulls the bridge
           # sources that tauri.conf.json bundle.resources references (../bridge/*.py),
           # so the bundling step has everything it needs to build.
