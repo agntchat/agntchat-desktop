@@ -2370,15 +2370,6 @@ export const resources = {
       "branchDuration": "Duration: {{duration}}",
       "branchLess": "Less",
       "branchResult": "Branch Result",
-      "breakout": {
-        "currentlyOff": "Currently off",
-        "currentlyOn": "Currently on",
-        "description": "Move long agent-to-agent exchanges in this group into a side room",
-        "label": "Breakout rooms",
-        "loadFailed": "Couldn't load breakout room settings",
-        "updateFailed": "Couldn't update breakout rooms",
-        "useDefault": "Use my default ({{state}})"
-      },
       "bringAgentOnline": "Bring this agent back online",
       "bringOnline": "Bring online",
       "cancelReply": "Cancel reply",
@@ -4196,10 +4187,6 @@ export const resources = {
         "startFreshDescription": "Wipe all agents, memories, routines & settings, and start over",
         "testReminder": "Test Reminder",
         "testReminderDescription": "Fire a sample reminder in ~5 seconds to check the toast + push"
-      },
-      "breakout": {
-        "description": "Move long agent-to-agent exchanges in group chats into a side room",
-        "label": "Breakout rooms"
       },
       "bugReport": {
         "detailsLabel": "Details",
@@ -7669,15 +7656,6 @@ export const resources = {
       "branchDuration": "Duración: {{duration}}",
       "branchLess": "Menos",
       "branchResult": "Resultado de la rama",
-      "breakout": {
-        "currentlyOff": "Actualmente desactivado",
-        "currentlyOn": "Actualmente activado",
-        "description": "Mueve los intercambios largos entre agentes de este grupo a una sala aparte",
-        "label": "Salas paralelas",
-        "loadFailed": "No se pudo cargar la configuración de salas paralelas",
-        "updateFailed": "No se pudieron actualizar las salas paralelas",
-        "useDefault": "Usar mi valor predeterminado ({{state}})"
-      },
       "bringAgentOnline": "Volver a poner este agente en línea",
       "bringOnline": "Poner en línea",
       "cancelReply": "Cancelar respuesta",
@@ -9495,10 +9473,6 @@ export const resources = {
         "startFreshDescription": "Borra todos los agentes, memorias, rutinas y ajustes para empezar de nuevo",
         "testReminder": "Probar recordatorio",
         "testReminderDescription": "Lanza un recordatorio de prueba en ~5 segundos para comprobar el aviso y la notificación push"
-      },
-      "breakout": {
-        "description": "Mueve los intercambios largos entre agentes en chats grupales a una sala aparte",
-        "label": "Salas paralelas"
       },
       "bugReport": {
         "detailsLabel": "Detalles",
@@ -12968,15 +12942,6 @@ export const resources = {
       "branchDuration": "Dauer: {{duration}}",
       "branchLess": "Weniger",
       "branchResult": "Branch-Ergebnis",
-      "breakout": {
-        "currentlyOff": "Derzeit aus",
-        "currentlyOn": "Derzeit ein",
-        "description": "Lange Gespräche zwischen Agenten in dieser Gruppe in einen Nebenraum verschieben",
-        "label": "Breakout-Räume",
-        "loadFailed": "Breakout-Raum-Einstellungen konnten nicht geladen werden",
-        "updateFailed": "Breakout-Räume konnten nicht aktualisiert werden",
-        "useDefault": "Meinen Standard verwenden ({{state}})"
-      },
       "bringAgentOnline": "Diesen Agenten wieder online bringen",
       "bringOnline": "Online bringen",
       "cancelReply": "Antwort abbrechen",
@@ -14794,10 +14759,6 @@ export const resources = {
         "startFreshDescription": "Löscht alle Agenten, Erinnerungen, Routinen und Einstellungen für einen Neuanfang",
         "testReminder": "Test-Erinnerung",
         "testReminderDescription": "Löst in ca. 5 Sekunden eine Beispiel-Erinnerung aus, um Toast und Push-Benachrichtigung zu testen"
-      },
-      "breakout": {
-        "description": "Lange Gespräche zwischen Agenten in Gruppenchats in einen Nebenraum verschieben",
-        "label": "Breakout-Räume"
       },
       "bugReport": {
         "detailsLabel": "Details",
@@ -18267,15 +18228,6 @@ export const resources = {
       "branchDuration": "Durée : {{duration}}",
       "branchLess": "Moins",
       "branchResult": "Résultat de la branche",
-      "breakout": {
-        "currentlyOff": "Actuellement désactivé",
-        "currentlyOn": "Actuellement activé",
-        "description": "Déplacer les longs échanges entre agents de ce groupe vers une salle annexe",
-        "label": "Salles parallèles",
-        "loadFailed": "Impossible de charger les réglages des salles parallèles",
-        "updateFailed": "Impossible de mettre à jour les salles parallèles",
-        "useDefault": "Utiliser mon réglage par défaut ({{state}})"
-      },
       "bringAgentOnline": "Remettre cet agent en ligne",
       "bringOnline": "Mettre en ligne",
       "cancelReply": "Annuler la réponse",
@@ -20093,10 +20045,6 @@ export const resources = {
         "startFreshDescription": "Effacer tous les agents, souvenirs, routines et paramètres pour repartir à zéro",
         "testReminder": "Tester un rappel",
         "testReminderDescription": "Déclenche un rappel d'exemple dans ~5 secondes pour vérifier la notification toast et push"
-      },
-      "breakout": {
-        "description": "Déplacer les longs échanges entre agents dans les discussions de groupe vers une salle annexe",
-        "label": "Salles parallèles"
       },
       "bugReport": {
         "detailsLabel": "Détails",
@@ -23566,15 +23514,6 @@ export const resources = {
       "branchDuration": "Duração: {{duration}}",
       "branchLess": "Menos",
       "branchResult": "Resultado do branch",
-      "breakout": {
-        "currentlyOff": "Atualmente desativado",
-        "currentlyOn": "Atualmente ativado",
-        "description": "Mova conversas longas entre agentes neste grupo para uma sala separada",
-        "label": "Salas paralelas",
-        "loadFailed": "Não foi possível carregar as configurações das salas paralelas",
-        "updateFailed": "Não foi possível atualizar as salas paralelas",
-        "useDefault": "Usar meu padrão ({{state}})"
-      },
       "bringAgentOnline": "Colocar este agente online novamente",
       "bringOnline": "Colocar online",
       "cancelReply": "Cancelar resposta",
@@ -25392,10 +25331,6 @@ export const resources = {
         "startFreshDescription": "Apaga todos os agentes, memórias, rotinas e configurações para recomeçar",
         "testReminder": "Testar lembrete",
         "testReminderDescription": "Dispara um lembrete de exemplo em ~5 segundos para verificar o toast + notificação push"
-      },
-      "breakout": {
-        "description": "Mova conversas longas entre agentes em chats de grupo para uma sala separada",
-        "label": "Salas paralelas"
       },
       "bugReport": {
         "detailsLabel": "Detalhes",
@@ -28865,15 +28800,6 @@ export const resources = {
       "branchDuration": "所要時間: {{duration}}",
       "branchLess": "折りたたむ",
       "branchResult": "ブランチ結果",
-      "breakout": {
-        "currentlyOff": "現在オフ",
-        "currentlyOn": "現在オン",
-        "description": "このグループでのエージェント同士の長いやり取りを別室に移動します",
-        "label": "ブレイクアウトルーム",
-        "loadFailed": "ブレイクアウトルームの設定を読み込めませんでした",
-        "updateFailed": "ブレイクアウトルームを更新できませんでした",
-        "useDefault": "自分のデフォルトを使用（{{state}}）"
-      },
       "bringAgentOnline": "このエージェントをオンラインに戻す",
       "bringOnline": "オンラインにする",
       "cancelReply": "返信をキャンセル",
@@ -30691,10 +30617,6 @@ export const resources = {
         "startFreshDescription": "すべてのエージェント、記憶、ルーティン、設定を削除してやり直します",
         "testReminder": "テストリマインダー",
         "testReminderDescription": "約5秒後にサンプルのリマインダーを送信し、トースト通知とプッシュ通知を確認します"
-      },
-      "breakout": {
-        "description": "グループチャットでのエージェント同士の長いやり取りを別室に移動します",
-        "label": "ブレイクアウトルーム"
       },
       "bugReport": {
         "detailsLabel": "詳細",
@@ -34164,15 +34086,6 @@ export const resources = {
       "branchDuration": "耗时：{{duration}}",
       "branchLess": "收起",
       "branchResult": "分支结果",
-      "breakout": {
-        "currentlyOff": "当前已关闭",
-        "currentlyOn": "当前已开启",
-        "description": "将此群组中智能体之间的长时间交流移至单独的房间",
-        "label": "分组讨论室",
-        "loadFailed": "无法加载分组讨论室设置",
-        "updateFailed": "无法更新分组讨论室",
-        "useDefault": "使用我的默认设置（{{state}}）"
-      },
       "bringAgentOnline": "让此智能体重新上线",
       "bringOnline": "上线",
       "cancelReply": "取消回复",
@@ -35990,10 +35903,6 @@ export const resources = {
         "startFreshDescription": "清除所有智能体、记忆、例行任务和设置，重新开始",
         "testReminder": "测试提醒",
         "testReminderDescription": "约 5 秒后触发一条示例提醒，用于检查提示消息和推送通知"
-      },
-      "breakout": {
-        "description": "将群聊中智能体之间的长时间交流移至单独的房间",
-        "label": "分组讨论室"
       },
       "bugReport": {
         "detailsLabel": "详细信息",
@@ -39463,15 +39372,6 @@ export const resources = {
       "branchDuration": "소요 시간: {{duration}}",
       "branchLess": "접기",
       "branchResult": "브랜치 결과",
-      "breakout": {
-        "currentlyOff": "현재 꺼짐",
-        "currentlyOn": "현재 켜짐",
-        "description": "이 그룹에서 에이전트 간의 긴 대화를 별도의 방으로 옮깁니다",
-        "label": "브레이크아웃 룸",
-        "loadFailed": "브레이크아웃 룸 설정을 불러오지 못했습니다",
-        "updateFailed": "브레이크아웃 룸을 업데이트하지 못했습니다",
-        "useDefault": "내 기본값 사용 ({{state}})"
-      },
       "bringAgentOnline": "이 에이전트를 다시 온라인으로 전환",
       "bringOnline": "온라인으로 전환",
       "cancelReply": "답장 취소",
@@ -41289,10 +41189,6 @@ export const resources = {
         "startFreshDescription": "모든 에이전트, 기억, 루틴 및 설정을 지우고 다시 시작합니다",
         "testReminder": "테스트 알림",
         "testReminderDescription": "약 5초 후 샘플 알림을 실행하여 토스트와 푸시 알림을 확인합니다"
-      },
-      "breakout": {
-        "description": "그룹 채팅에서 에이전트 간의 긴 대화를 별도의 방으로 옮깁니다",
-        "label": "브레이크아웃 룸"
       },
       "bugReport": {
         "detailsLabel": "세부 정보",
@@ -44762,15 +44658,6 @@ export const resources = {
       "branchDuration": "Durata: {{duration}}",
       "branchLess": "Meno",
       "branchResult": "Risultato del branch",
-      "breakout": {
-        "currentlyOff": "Attualmente disattivo",
-        "currentlyOn": "Attualmente attivo",
-        "description": "Sposta gli scambi lunghi tra agenti in questo gruppo in una stanza separata",
-        "label": "Stanze separate",
-        "loadFailed": "Impossibile caricare le impostazioni delle stanze separate",
-        "updateFailed": "Impossibile aggiornare le stanze separate",
-        "useDefault": "Usa la mia impostazione predefinita ({{state}})"
-      },
       "bringAgentOnline": "Riporta questo agente online",
       "bringOnline": "Porta online",
       "cancelReply": "Annulla risposta",
@@ -46588,10 +46475,6 @@ export const resources = {
         "startFreshDescription": "Cancella tutti gli agenti, le memorie, le routine e le impostazioni per ricominciare",
         "testReminder": "Test promemoria",
         "testReminderDescription": "Genera un promemoria di prova tra ~5 secondi per verificare il toast e la push"
-      },
-      "breakout": {
-        "description": "Sposta gli scambi lunghi tra agenti nelle chat di gruppo in una stanza separata",
-        "label": "Stanze separate"
       },
       "bugReport": {
         "detailsLabel": "Dettagli",
@@ -50061,15 +49944,6 @@ export const resources = {
       "branchDuration": "अवधि: {{duration}}",
       "branchLess": "कम",
       "branchResult": "ब्रांच परिणाम",
-      "breakout": {
-        "currentlyOff": "अभी बंद है",
-        "currentlyOn": "अभी चालू है",
-        "description": "इस समूह में एजेंटों के बीच लंबी बातचीत को एक अलग कमरे में ले जाएँ",
-        "label": "ब्रेकआउट रूम",
-        "loadFailed": "ब्रेकआउट रूम सेटिंग लोड नहीं हो सकीं",
-        "updateFailed": "ब्रेकआउट रूम अपडेट नहीं हो सके",
-        "useDefault": "मेरा डिफ़ॉल्ट उपयोग करें ({{state}})"
-      },
       "bringAgentOnline": "इस एजेंट को फिर से ऑनलाइन लाएँ",
       "bringOnline": "ऑनलाइन लाएँ",
       "cancelReply": "जवाब रद्द करें",
@@ -51887,10 +51761,6 @@ export const resources = {
         "startFreshDescription": "नई शुरुआत के लिए सभी एजेंट, यादें, रूटीन और सेटिंग्स मिटाएँ",
         "testReminder": "टेस्ट रिमाइंडर",
         "testReminderDescription": "टोस्ट + पुश जाँचने के लिए ~5 सेकंड में एक सैंपल रिमाइंडर भेजें"
-      },
-      "breakout": {
-        "description": "समूह चैट में एजेंटों के बीच लंबी बातचीत को एक अलग कमरे में ले जाएँ",
-        "label": "ब्रेकआउट रूम"
       },
       "bugReport": {
         "detailsLabel": "विवरण",
