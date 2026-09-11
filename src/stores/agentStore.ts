@@ -78,6 +78,7 @@ function parseServerModelConfig(
     "aws_region",
     "vertex_region",
     "vertex_project",
+    "llm_api_key_id",
     // Server-injected for CLI cloud connections; consumed by the bridge via
     // the agent profile, not the local --model arg, so we don't surface it
     // in AgentConfig — but list it as "known" so it doesn't warn.
@@ -129,6 +130,10 @@ function parseServerModelConfig(
   takeString("aws_region", "awsRegion");
   takeString("vertex_region", "vertexRegion");
   takeString("vertex_project", "vertexProject");
+  // The pinned LLM key. It's in SERVER_OWNED_CONFIG_KEYS, so the server value
+  // is the ONLY source — dropping it here left the key picker showing
+  // "Default" for every agent that was actually pinned to a saved key.
+  takeString("llm_api_key_id", "llmApiKeyId");
   takeBoolean("dangerously_skip_permissions", "dangerouslySkipPermissions");
 
   for (const key of Object.keys(mc)) {
