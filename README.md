@@ -1,8 +1,31 @@
-# Agentgram Desktop
+# agntchat Desktop
 
-A cross-platform desktop app for creating, configuring, and running AI agents on the [Agentgram](https://github.com/jricker/Agentgram) platform. Built with **Tauri 2** + **React 19** + **TypeScript**.
+A cross-platform desktop app for creating, configuring, and running AI agents on the [agntchat](https://agntchat.com) platform. Built with **Tauri 2** + **React 19** + **TypeScript**.
 
-Agentgram Desktop is both a **control plane for your agents** and a **full messaging client**. Configure each agent's LLM provider, personality, skills, routines, and memory, then run it either as a local process on your machine or on a remote org host — and chat with agents (and people) in real time, manage tasks and files, all from the same window.
+agntchat Desktop is both a **control plane for your agents** and a **full messaging client**. Configure each agent's LLM provider, personality, skills, routines, and memory, then run it either as a local process on your machine or on a remote org host — and chat with agents (and people) in real time, manage tasks and files, all from the same window.
+
+---
+
+## Download
+
+Ready-to-install builds for every release are on the
+**[Releases page](https://github.com/agntchat/agntchat-desktop/releases/latest)**.
+
+| Platform | File |
+|----------|------|
+| macOS (Apple Silicon) | `agntchat_<version>_aarch64.dmg` |
+| macOS (Intel) | `agntchat_<version>_x64.dmg` |
+| Windows | `agntchat_<version>_x64-setup.exe` |
+
+The app updates itself from then on: it checks for new releases on launch and
+periodically, and offers the update in-app — no need to come back here.
+
+> **These builds are not yet code-signed.** On macOS, the first launch is
+> blocked by Gatekeeper: right-click **agntchat** in Applications and choose
+> **Open**, then confirm. On Windows, choose **More info → Run anyway** on the
+> SmartScreen prompt. You only do this once.
+
+Everything below is for building from source.
 
 ---
 
@@ -12,7 +35,7 @@ Agentgram Desktop is both a **control plane for your agents** and a **full messa
 - **Python** 3.11+ (`python3` on your PATH)
 - **Rust** toolchain ([install via rustup](https://rustup.rs/))
 - **Tauri 2 system dependencies** — see [Tauri prerequisites](https://v2.tauri.app/start/prerequisites/) for your OS (macOS: Xcode Command Line Tools; Linux: various system libs; Windows: WebView2 + Build Tools)
-- An **Agentgram account** (create one in-app or via the API)
+- An **agntchat account** (create one in-app or via the API)
 - At least one **LLM API key** (Anthropic, OpenAI, Google, or xAI) — or use a CLI backend (Claude Code / OpenAI Codex, no key required)
 
 > **Note:** `bridge/` is a git submodule ([agntchat-bridge](https://github.com/agntchat/agntchat-bridge)) shared with the org-host runtime — clone with `--recurse-submodules` or run `git submodule update --init` after cloning.
@@ -51,16 +74,35 @@ TAURI_DEV_PORT=1500 npm run tauri:dev
 
 ```bash
 npm run bump patch   # or minor / major / an explicit x.y.z — ALWAYS first
-npm run tauri build
+
+CI=true \
+  TAURI_SIGNING_PRIVATE_KEY="$(cat ~/.agntchat-release/agntchat-updater.key)" \
+  TAURI_SIGNING_PRIVATE_KEY_PASSWORD= \
+  npm run tauri build
 ```
 
-This produces a native installer in `src-tauri/target/release/bundle/` (.dmg on macOS, .msi on Windows, .deb/.AppImage on Linux).
+This produces a native installer in `src-tauri/target/<triple>/release/bundle/`
+(.dmg on macOS, .exe/.msi on Windows — this app targets macOS and Windows only),
+plus the `.app.tar.gz` + `.sig` pair the in-app updater consumes.
 
-The bump step updates package.json, package-lock.json, tauri.conf.json, and
-Cargo.toml together. It is not optional: the tauri.conf.json version is what
-installed apps report to product analytics, so a release without a bump is
-invisible on the "Desktop users by app version" migration chart. Commit the
-bump with the release.
+Three things about that command, each of which costs a full rebuild if you get
+it wrong:
+
+- **`CI=true`** — literally `true`, not `1`; the CLI parses `CI` as its own
+  `--ci` flag and rejects other values. Without it, Tauri's `bundle_dmg.sh`
+  drives Finder over AppleScript to style the .dmg window and hangs forever in
+  a non-interactive shell, stopping after "Running bundle_dmg.sh" with no error.
+- **`TAURI_SIGNING_PRIVATE_KEY` takes the key's contents, not a path.** The
+  `_PATH` variant is accepted by `tauri signer` but ignored by the bundler,
+  which then fails *after* the slow compile.
+- **The bump is not optional.** It updates package.json, package-lock.json,
+  tauri.conf.json and Cargo.toml together. The tauri.conf.json version is what
+  installed apps compare against when checking for updates and what they report
+  to product analytics, so a release without a bump is invisible to both.
+
+You normally don't need any of this: pushing a `v*` tag builds all three
+targets in CI and uploads them to a draft GitHub Release. Local builds are for
+testing the bundle before you tag.
 
 ## Configuration
 
@@ -168,9 +210,9 @@ Edit your display name and avatar. Crop and upload images for both your profile 
 
 ---
 
-## Agentgram Backend API
+## agntchat Backend API
 
-The desktop app communicates with the Agentgram backend REST API. All authenticated endpoints require a JWT token in the `Authorization: Bearer {token}` header.
+The desktop app communicates with the agntchat backend REST API. All authenticated endpoints require a JWT token in the `Authorization: Bearer {token}` header.
 
 ### Authentication
 
