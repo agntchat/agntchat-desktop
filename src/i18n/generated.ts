@@ -139,8 +139,10 @@ export const resources = {
           "failed": "Safety feature install failed.",
           "installAction": "Install safety features",
           "installed": "Safety features installed (real perm probe, native Quartz drivers, terminal redaction).",
+          "installedShort": "Safety features installed",
           "installing": "Installing safety features (1–3 min, runs in background)…",
           "notInstalledExplain": "Optional safety features not installed — currently using fallbacks (8KB perm-probe heuristic, cliclick for scroll/right-click, screenshot refusal when terminal is visible). Installing adds the real Screen Recording perm check, native Quartz drivers, and terminal redaction.",
+          "notInstalledShort": "Optional safety features not installed",
           "retryInstall": "Retry install"
         },
         "crash": {
@@ -219,7 +221,8 @@ export const resources = {
             "liveHint": "Takes effect on the agent's next turn — no restart needed.",
             "macPermissions": "Needs Screen Recording & Accessibility permissions.",
             "windowsInput": "Uses native Windows input.",
-            "windowsSafetyBuiltIn": "Safety features built in on Windows (focused-app gate, terminal-window redaction, audit log) — nothing to install."
+            "windowsSafetyBuiltIn": "Safety features built in on Windows (focused-app gate, terminal-window redaction, audit log) — nothing to install.",
+            "windowsSafetyShort": "Safety features built in"
           },
           "startOnLaunch": "Start on app launch",
           "workingDirs": {
@@ -5526,8 +5529,10 @@ export const resources = {
           "failed": "Error al instalar las funciones de seguridad.",
           "installAction": "Instalar funciones de seguridad",
           "installed": "Funciones de seguridad instaladas (comprobación real de permisos, controladores nativos de Quartz, redacción de terminal).",
+          "installedShort": "Funciones de seguridad instaladas",
           "installing": "Instalando funciones de seguridad (1–3 min, se ejecuta en segundo plano)…",
           "notInstalledExplain": "Las funciones de seguridad opcionales no están instaladas — actualmente se usan alternativas (heurística de 8 KB para permisos, cliclick para desplazamiento/clic derecho, rechazo de capturas cuando la terminal es visible). Instalarlas añade la comprobación real de Grabación de pantalla, controladores nativos de Quartz y redacción de terminal.",
+          "notInstalledShort": "Funciones de seguridad opcionales no instaladas",
           "retryInstall": "Reintentar instalación"
         },
         "crash": {
@@ -5606,7 +5611,8 @@ export const resources = {
             "liveHint": "Se aplica en el próximo turno del agente, sin reiniciar.",
             "macPermissions": "Requiere permisos de Grabación de pantalla y Accesibilidad.",
             "windowsInput": "Usa la entrada nativa de Windows.",
-            "windowsSafetyBuiltIn": "Las funciones de seguridad ya están integradas en Windows (bloqueo por app enfocada, redacción de ventanas de terminal, registro de auditoría) — no hay nada que instalar."
+            "windowsSafetyBuiltIn": "Las funciones de seguridad ya están integradas en Windows (bloqueo por app enfocada, redacción de ventanas de terminal, registro de auditoría) — no hay nada que instalar.",
+            "windowsSafetyShort": "Funciones de seguridad integradas"
           },
           "startOnLaunch": "Iniciar al abrir la app",
           "workingDirs": {
@@ -10913,8 +10919,10 @@ export const resources = {
           "failed": "Installation der Sicherheitsfunktionen fehlgeschlagen.",
           "installAction": "Sicherheitsfunktionen installieren",
           "installed": "Sicherheitsfunktionen installiert (echte Berechtigungsprüfung, native Quartz-Treiber, Terminal-Schwärzung).",
+          "installedShort": "Sicherheitsfunktionen installiert",
           "installing": "Sicherheitsfunktionen werden installiert (1–3 Min., läuft im Hintergrund)…",
           "notInstalledExplain": "Optionale Sicherheitsfunktionen nicht installiert — es werden derzeit Fallbacks verwendet (8-KB-Berechtigungsheuristik, cliclick für Scrollen/Rechtsklick, Screenshot-Verweigerung bei sichtbarem Terminal). Die Installation fügt die echte Bildschirmaufnahme-Berechtigungsprüfung, native Quartz-Treiber und Terminal-Schwärzung hinzu.",
+          "notInstalledShort": "Optionale Sicherheitsfunktionen nicht installiert",
           "retryInstall": "Installation erneut versuchen"
         },
         "crash": {
@@ -10993,7 +11001,8 @@ export const resources = {
             "liveHint": "Wird ab dem nächsten Zug wirksam – kein Neustart nötig.",
             "macPermissions": "Erfordert Berechtigungen für Bildschirmaufnahme & Bedienungshilfen.",
             "windowsInput": "Verwendet native Windows-Eingabe.",
-            "windowsSafetyBuiltIn": "Sicherheitsfunktionen unter Windows integriert (Sperre für fokussierte App, Schwärzung von Terminalfenstern, Audit-Log) — nichts zu installieren."
+            "windowsSafetyBuiltIn": "Sicherheitsfunktionen unter Windows integriert (Sperre für fokussierte App, Schwärzung von Terminalfenstern, Audit-Log) — nichts zu installieren.",
+            "windowsSafetyShort": "Sicherheitsfunktionen integriert"
           },
           "startOnLaunch": "Beim App-Start starten",
           "workingDirs": {
@@ -16300,8 +16309,10 @@ export const resources = {
           "failed": "Échec de l'installation des fonctionnalités de sécurité.",
           "installAction": "Installer les fonctionnalités de sécurité",
           "installed": "Fonctionnalités de sécurité installées (véritable détection de permissions, pilotes Quartz natifs, masquage du terminal).",
+          "installedShort": "Fonctions de sécurité installées",
           "installing": "Installation des fonctionnalités de sécurité (1 à 3 min, s'exécute en arrière-plan)…",
           "notInstalledExplain": "Fonctionnalités de sécurité optionnelles non installées — utilise actuellement des solutions de repli (heuristique de détection de permissions 8 Ko, cliclick pour le défilement/clic droit, refus de capture d'écran lorsque le terminal est visible). L'installation ajoute la véritable vérification de permission d'enregistrement d'écran, les pilotes Quartz natifs et le masquage du terminal.",
+          "notInstalledShort": "Fonctions de sécurité optionnelles non installées",
           "retryInstall": "Réessayer l'installation"
         },
         "crash": {
@@ -16380,7 +16391,8 @@ export const resources = {
             "liveHint": "Prend effet au prochain tour de l'agent, sans redémarrage.",
             "macPermissions": "Nécessite les permissions d'enregistrement d'écran et d'accessibilité.",
             "windowsInput": "Utilise la saisie native de Windows.",
-            "windowsSafetyBuiltIn": "Fonctionnalités de sécurité intégrées sous Windows (verrou d'application au premier plan, masquage des fenêtres de terminal, journal d'audit) — rien à installer."
+            "windowsSafetyBuiltIn": "Fonctionnalités de sécurité intégrées sous Windows (verrou d'application au premier plan, masquage des fenêtres de terminal, journal d'audit) — rien à installer.",
+            "windowsSafetyShort": "Fonctions de sécurité intégrées"
           },
           "startOnLaunch": "Démarrer au lancement de l'application",
           "workingDirs": {
@@ -21687,8 +21699,10 @@ export const resources = {
           "failed": "Falha na instalação do recurso de segurança.",
           "installAction": "Instalar recursos de segurança",
           "installed": "Recursos de segurança instalados (verificação real de permissões, drivers nativos Quartz, redação no terminal).",
+          "installedShort": "Funcionalidades de segurança instaladas",
           "installing": "Instalando recursos de segurança (1–3 min, executa em segundo plano)…",
           "notInstalledExplain": "Recursos de segurança opcionais não instalados — usando alternativas no momento (heurística de verificação de permissão de 8 KB, cliclick para rolagem/clique direito, recusa de captura de tela quando o terminal está visível). Instalar adiciona a verificação real de permissão de Gravação de Tela, drivers nativos Quartz e redação no terminal.",
+          "notInstalledShort": "Funcionalidades de segurança opcionais não instaladas",
           "retryInstall": "Tentar instalar novamente"
         },
         "crash": {
@@ -21767,7 +21781,8 @@ export const resources = {
             "liveHint": "Aplica-se no próximo turno do agente, sem reiniciar.",
             "macPermissions": "Requer permissões de Gravação de Tela e Acessibilidade.",
             "windowsInput": "Usa entrada nativa do Windows.",
-            "windowsSafetyBuiltIn": "Recursos de segurança integrados no Windows (bloqueio por app em foco, redação de janela de terminal, log de auditoria) — nada para instalar."
+            "windowsSafetyBuiltIn": "Recursos de segurança integrados no Windows (bloqueio por app em foco, redação de janela de terminal, log de auditoria) — nada para instalar.",
+            "windowsSafetyShort": "Funcionalidades de segurança integradas"
           },
           "startOnLaunch": "Iniciar ao abrir o app",
           "workingDirs": {
@@ -27074,8 +27089,10 @@ export const resources = {
           "failed": "安全機能のインストールに失敗しました。",
           "installAction": "安全機能をインストール",
           "installed": "安全機能をインストールしました（実際の権限チェック、ネイティブQuartzドライバー、ターミナルの秘匿化）。",
+          "installedShort": "安全機能をインストール済み",
           "installing": "安全機能をインストールしています（1〜3分、バックグラウンドで実行）…",
           "notInstalledExplain": "任意の安全機能はインストールされていません — 現在はフォールバック（8KBの権限チェックのヒューリスティック、スクロール／右クリック用のcliclick、ターミナル表示時のスクリーンショット拒否）を使用しています。インストールすると、実際の画面収録権限チェック、ネイティブQuartzドライバー、ターミナルの秘匿化が追加されます。",
+          "notInstalledShort": "任意の安全機能は未インストール",
           "retryInstall": "インストールを再試行"
         },
         "crash": {
@@ -27154,7 +27171,8 @@ export const resources = {
             "liveHint": "エージェントの次のターンで有効になります。再起動は不要です。",
             "macPermissions": "画面収録とアクセシビリティの権限が必要です。",
             "windowsInput": "ネイティブのWindows入力を使用します。",
-            "windowsSafetyBuiltIn": "Windowsでは安全機能が組み込まれています（フォーカスアプリのゲート、ターミナルウィンドウの秘匿化、監査ログ） — インストール不要です。"
+            "windowsSafetyBuiltIn": "Windowsでは安全機能が組み込まれています（フォーカスアプリのゲート、ターミナルウィンドウの秘匿化、監査ログ） — インストール不要です。",
+            "windowsSafetyShort": "安全機能は内蔵"
           },
           "startOnLaunch": "アプリ起動時に開始",
           "workingDirs": {
@@ -32461,8 +32479,10 @@ export const resources = {
           "failed": "安全功能安装失败。",
           "installAction": "安装安全功能",
           "installed": "已安装安全功能（真实权限检测、原生 Quartz 驱动、终端信息脱敏）。",
+          "installedShort": "已安装安全功能",
           "installing": "正在安装安全功能（1–3 分钟，后台运行中）……",
           "notInstalledExplain": "尚未安装可选的安全功能 — 目前使用的是备用方案（8KB 权限检测启发式方法、使用 cliclick 处理滚动/右键点击、终端可见时拒绝截图）。安装后将新增真实的屏幕录制权限检查、原生 Quartz 驱动以及终端信息脱敏功能。",
+          "notInstalledShort": "可选安全功能未安装",
           "retryInstall": "重试安装"
         },
         "crash": {
@@ -32541,7 +32561,8 @@ export const resources = {
             "liveHint": "在智能体的下一轮生效，无需重启。",
             "macPermissions": "需要屏幕录制和辅助功能权限。",
             "windowsInput": "使用原生 Windows 输入。",
-            "windowsSafetyBuiltIn": "Windows 上已内置安全功能（焦点应用限制、终端窗口信息脱敏、审计日志）— 无需安装。"
+            "windowsSafetyBuiltIn": "Windows 上已内置安全功能（焦点应用限制、终端窗口信息脱敏、审计日志）— 无需安装。",
+            "windowsSafetyShort": "安全功能已内置"
           },
           "startOnLaunch": "应用启动时自动运行",
           "workingDirs": {
@@ -37848,8 +37869,10 @@ export const resources = {
           "failed": "안전 기능 설치에 실패했습니다.",
           "installAction": "안전 기능 설치",
           "installed": "안전 기능이 설치되었습니다(실제 권한 확인, 네이티브 Quartz 드라이버, 터미널 마스킹).",
+          "installedShort": "안전 기능 설치됨",
           "installing": "안전 기능 설치 중(1~3분, 백그라운드에서 실행)…",
           "notInstalledExplain": "선택적 안전 기능이 설치되지 않았습니다 — 현재 대체 수단(8KB 권한 확인 휴리스틱, 스크롤/우클릭용 cliclick, 터미널이 보일 때 스크린샷 거부)을 사용 중입니다. 설치하면 실제 화면 기록 권한 확인, 네이티브 Quartz 드라이버, 터미널 마스킹이 추가됩니다.",
+          "notInstalledShort": "선택적 안전 기능이 설치되지 않음",
           "retryInstall": "설치 재시도"
         },
         "crash": {
@@ -37928,7 +37951,8 @@ export const resources = {
             "liveHint": "다음 턴부터 적용됩니다. 재시작이 필요 없습니다.",
             "macPermissions": "화면 기록 및 손쉬운 사용 권한이 필요합니다.",
             "windowsInput": "네이티브 Windows 입력을 사용합니다.",
-            "windowsSafetyBuiltIn": "Windows에는 안전 기능이 내장되어 있습니다(포커스 앱 게이트, 터미널 창 마스킹, 감사 로그) — 설치할 필요가 없습니다."
+            "windowsSafetyBuiltIn": "Windows에는 안전 기능이 내장되어 있습니다(포커스 앱 게이트, 터미널 창 마스킹, 감사 로그) — 설치할 필요가 없습니다.",
+            "windowsSafetyShort": "안전 기능 내장"
           },
           "startOnLaunch": "앱 실행 시 시작",
           "workingDirs": {
@@ -43235,8 +43259,10 @@ export const resources = {
           "failed": "Installazione delle funzionalità di sicurezza non riuscita.",
           "installAction": "Installa funzionalità di sicurezza",
           "installed": "Funzionalità di sicurezza installate (verifica reale dei permessi, driver Quartz nativi, redazione del terminale).",
+          "installedShort": "Funzioni di sicurezza installate",
           "installing": "Installazione delle funzionalità di sicurezza in corso (1–3 min, esegue in background)…",
           "notInstalledExplain": "Funzionalità di sicurezza opzionali non installate — attualmente vengono usati i metodi di riserva (euristica di verifica permessi da 8KB, cliclick per scorrimento/clic destro, rifiuto screenshot quando il terminale è visibile). L'installazione aggiunge la verifica reale del permesso di Registrazione Schermo, driver Quartz nativi e redazione del terminale.",
+          "notInstalledShort": "Funzioni di sicurezza opzionali non installate",
           "retryInstall": "Riprova installazione"
         },
         "crash": {
@@ -43315,7 +43341,8 @@ export const resources = {
             "liveHint": "Ha effetto al prossimo turno dell'agente, senza riavvio.",
             "macPermissions": "Richiede i permessi di Registrazione Schermo e Accessibilità.",
             "windowsInput": "Usa l'input nativo di Windows.",
-            "windowsSafetyBuiltIn": "Funzionalità di sicurezza integrate su Windows (blocco app in primo piano, redazione finestra terminale, log di audit) — niente da installare."
+            "windowsSafetyBuiltIn": "Funzionalità di sicurezza integrate su Windows (blocco app in primo piano, redazione finestra terminale, log di audit) — niente da installare.",
+            "windowsSafetyShort": "Funzioni di sicurezza integrate"
           },
           "startOnLaunch": "Avvia all'apertura dell'app",
           "workingDirs": {
@@ -48622,8 +48649,10 @@ export const resources = {
           "failed": "सुरक्षा सुविधा इंस्टॉल करना विफल।",
           "installAction": "सुरक्षा सुविधाएँ इंस्टॉल करें",
           "installed": "सुरक्षा सुविधाएँ इंस्टॉल हो गईं (वास्तविक अनुमति जाँच, नेटिव Quartz ड्राइवर, टर्मिनल रिडैक्शन)।",
+          "installedShort": "सुरक्षा सुविधाएँ इंस्टॉल हैं",
           "installing": "सुरक्षा सुविधाएँ इंस्टॉल की जा रही हैं (1–3 मिनट, बैकग्राउंड में चलता है)…",
           "notInstalledExplain": "वैकल्पिक सुरक्षा सुविधाएँ इंस्टॉल नहीं हैं — वर्तमान में फ़ॉलबैक का उपयोग हो रहा है (8KB अनुमति-जाँच अनुमानी विधि, स्क्रॉल/राइट-क्लिक के लिए cliclick, टर्मिनल दिखाई देने पर स्क्रीनशॉट से इनकार)। इंस्टॉल करने से वास्तविक Screen Recording अनुमति जाँच, नेटिव Quartz ड्राइवर और टर्मिनल रिडैक्शन जुड़ जाते हैं।",
+          "notInstalledShort": "वैकल्पिक सुरक्षा सुविधाएँ इंस्टॉल नहीं हैं",
           "retryInstall": "इंस्टॉल फिर से आज़माएँ"
         },
         "crash": {
@@ -48702,7 +48731,8 @@ export const resources = {
             "liveHint": "एजेंट के अगले टर्न पर लागू होता है — पुनः आरंभ की ज़रूरत नहीं।",
             "macPermissions": "Screen Recording और Accessibility अनुमतियाँ आवश्यक हैं।",
             "windowsInput": "नेटिव Windows इनपुट का उपयोग करता है।",
-            "windowsSafetyBuiltIn": "Windows पर सुरक्षा सुविधाएँ पहले से मौजूद हैं (फ़ोकस्ड-ऐप गेट, टर्मिनल-विंडो रिडैक्शन, ऑडिट लॉग) — कुछ भी इंस्टॉल करने की आवश्यकता नहीं।"
+            "windowsSafetyBuiltIn": "Windows पर सुरक्षा सुविधाएँ पहले से मौजूद हैं (फ़ोकस्ड-ऐप गेट, टर्मिनल-विंडो रिडैक्शन, ऑडिट लॉग) — कुछ भी इंस्टॉल करने की आवश्यकता नहीं।",
+            "windowsSafetyShort": "सुरक्षा सुविधाएँ अंतर्निहित हैं"
           },
           "startOnLaunch": "ऐप लॉन्च होने पर शुरू करें",
           "workingDirs": {

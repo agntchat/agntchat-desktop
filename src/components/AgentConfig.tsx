@@ -1565,8 +1565,11 @@ export function AgentConfig({
                       <ComputerUseDepsRow />
                     ) : (
                       <p className="text-xs text-green-600 dark:text-green-500 flex items-center gap-1">
-                        <Check className="w-3 h-3" />
-                        {t("config.localRuntime.computerUse.windowsSafetyBuiltIn")}
+                        <Check className="w-3 h-3 shrink-0" />
+                        {t("config.localRuntime.computerUse.windowsSafetyShort")}
+                        <FieldHelp
+                          text={t("config.localRuntime.computerUse.windowsSafetyBuiltIn")}
+                        />
                       </p>
                     ))}
                 </SettingRow>
@@ -4513,11 +4516,17 @@ function ComputerUseDepsRow() {
     void refresh();
   }, [refresh]);
 
+  // Every state is one short line: the status, a ? holding the detail
+  // (which fallbacks are in play, what installing buys, the raw install
+  // error), and the action when there is one. The detail used to render
+  // inline, which put a two-sentence paragraph about perm-probe heuristics
+  // and Quartz drivers directly under a switch.
   if (status.state === "installed") {
     return (
-      <p className="text-xs text-green-600 dark:text-green-500 mt-2 flex items-center gap-1">
-        <Check className="w-3 h-3" />
-        {t("config.computerUseDeps.installed")}
+      <p className="text-xs text-green-600 dark:text-green-500 flex items-center gap-1">
+        <Check className="w-3 h-3 shrink-0" />
+        {t("config.computerUseDeps.installedShort")}
+        <FieldHelp text={t("config.computerUseDeps.installed")} />
       </p>
     );
   }
@@ -4525,11 +4534,11 @@ function ComputerUseDepsRow() {
   if (status.state === "installing") {
     const lastLine = status.logTail?.[status.logTail.length - 1];
     return (
-      <p className="text-xs text-muted-foreground mt-2 flex items-center gap-1">
-        <Loader2 className="w-3 h-3 animate-spin" />
-        {t("config.computerUseDeps.installing")}
+      <p className="text-xs text-muted-foreground flex items-center gap-1 min-w-0">
+        <Loader2 className="w-3 h-3 animate-spin shrink-0" />
+        <span className="shrink-0">{t("config.computerUseDeps.installing")}</span>
         {lastLine && (
-          <span className="ml-1 truncate font-mono opacity-70">{lastLine}</span>
+          <span className="truncate font-mono opacity-70">{lastLine}</span>
         )}
       </p>
     );
@@ -4537,18 +4546,16 @@ function ComputerUseDepsRow() {
 
   if (status.state === "failed") {
     return (
-      <div className="text-xs mt-2 space-y-1">
-        <p className="text-destructive flex items-center gap-1">
-          <AlertTriangle className="w-3 h-3" />
-          {t("config.computerUseDeps.failed")}
-        </p>
-        {status.error && (
-          <p className="text-muted-foreground font-mono break-all">{status.error}</p>
-        )}
+      <div className="flex items-center gap-2 text-xs">
+        <span className="text-destructive flex items-center gap-1 min-w-0">
+          <AlertTriangle className="w-3 h-3 shrink-0" />
+          <span className="truncate">{t("config.computerUseDeps.failed")}</span>
+          {status.error && <FieldHelp text={status.error} />}
+        </span>
         <Button
           variant="outline"
           size="sm"
-          className="h-6 text-xs"
+          className="h-6 text-xs shrink-0"
           onClick={() => void install()}
         >
           {t("config.computerUseDeps.retryInstall")}
@@ -4559,14 +4566,17 @@ function ComputerUseDepsRow() {
 
   // "not_installed" or "unknown"
   return (
-    <div className="text-xs mt-2 space-y-1">
-      <p className="text-muted-foreground">
-        {t("config.computerUseDeps.notInstalledExplain")}
-      </p>
+    <div className="flex items-center gap-2 text-xs">
+      <span className="text-muted-foreground flex items-center gap-1 min-w-0">
+        <span className="truncate">
+          {t("config.computerUseDeps.notInstalledShort")}
+        </span>
+        <FieldHelp text={t("config.computerUseDeps.notInstalledExplain")} />
+      </span>
       <Button
         variant="outline"
         size="sm"
-        className="h-6 text-xs"
+        className="h-6 text-xs shrink-0"
         onClick={() => void install()}
       >
         {t("config.computerUseDeps.installAction")}
