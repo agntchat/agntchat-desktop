@@ -804,8 +804,18 @@ pub fn start_agent(
     // Stop existing process if running. We do this *before* the
     // org_host short-circuit below so that switching an agent from
     // local → org_host cleanly tears down the local subprocess.
+    //
+    // The offline ping only goes out for a process that is STILL ALIVE —
+    // killing that one is a real online→offline edge. A stopped/crashed
+    // entry lingers in the map until the next start, and pinging shutdown
+    // for it broadcasts `agent_status_changed: offline` to every client
+    // moments before the new bridge registers: a phone that just tapped
+    // "tap to wake" flashed back to "sleeping" mid-wake, reading as if the
+    // tap had done nothing.
     if let Some(mut existing) = manager.agents.remove(&args.agent_id) {
-        mark_offline_sync(&existing.api_url, &existing.agent_id, &existing.api_key);
+        if matches!(existing.child.try_wait(), Ok(None)) {
+            mark_offline_sync(&existing.api_url, &existing.agent_id, &existing.api_key);
+        }
         graceful_kill(&mut existing.child);
     }
 
