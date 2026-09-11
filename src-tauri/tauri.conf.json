@@ -13,7 +13,7 @@
     "withGlobalTauri": false,
     "windows": [
       {
-        "title": "agntchat",
+        "title": "agntchat (Beta)",
         "width": 900,
         "height": 680,
         "minWidth": 700,

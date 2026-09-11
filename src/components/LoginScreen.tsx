@@ -8,6 +8,7 @@ import { Label } from "@/components/ui/label";
 import { Card } from "@/components/ui/card";
 import { open as tauriOpen } from "@tauri-apps/plugin-shell";
 import { LEGAL_URLS } from "../lib/legal";
+import { BetaBadge } from "./BetaBadge";
 
 /** Open a URL in the system browser — Tauri native with window.open fallback. */
 function openExternal(url: string) {
@@ -75,6 +76,7 @@ export function LoginScreen() {
             <Bot className="w-5 h-5 text-primary-foreground" />
           </div>
           <h1 className="text-xl font-semibold text-text">agntchat</h1>
+          <BetaBadge />
         </div>
         <p className="text-text-secondary text-sm mb-8">{t("tagline")}</p>
 

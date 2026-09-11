@@ -24,6 +24,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { getVersion } from "@tauri-apps/api/app";
 
 import { checkForUpdate, getUpdateState } from "../lib/updater";
+import { BetaBadge } from "./BetaBadge";
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
 import {
   Dialog,
@@ -3453,11 +3454,14 @@ function AppVersionSection() {
       <SectionHeader title={t("about.title")} />
       <div className="flex items-center justify-between gap-4">
         <div className="min-w-0">
-          <p className="text-sm">
-            {version
-              ? t("about.version", { version })
-              : t("about.versionUnknown")}
-          </p>
+          <div className="flex items-center gap-2">
+            <p className="text-sm">
+              {version
+                ? t("about.version", { version })
+                : t("about.versionUnknown")}
+            </p>
+            <BetaBadge />
+          </div>
           {upToDate ? (
             <p className="mt-0.5 text-xs text-muted-foreground">
               {t("about.upToDate")}
