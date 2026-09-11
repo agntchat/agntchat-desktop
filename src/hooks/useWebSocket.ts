@@ -62,6 +62,12 @@ export function useWebSocket() {
     //      store starts empty; refreshing first has nowhere to apply statuses.
     //   3. reconcileStaleExecutors — only now mark backend-online agents
     //      offline when no local bridge is running.
+    //   4. autoStartAgents (initial boot only) — spawn the local agents whose
+    //      "Start on app launch" toggle is on. It has to come last: the
+    //      candidate filter reads the merged config, the local process status,
+    //      and the post-reconciliation view of which executors are really
+    //      alive elsewhere. Not run on reconnect — an agent the user stopped
+    //      by hand must stay stopped.
     const syncAgents = async (reason: string) => {
       const agentStore = useAgentStore.getState();
       try {
@@ -77,6 +83,15 @@ export function useWebSocket() {
         await agentStore.fetchHealth();
       } catch (e) {
         console.warn(`[useWebSocket] agent sync failed (${reason})`, e);
+        // No agent roster (or a half-applied one) — auto-start would be
+        // filtering over state we don't trust. Skip it this launch.
+        return;
+      }
+      if (reason === "initial") {
+        // Fire-and-forget: the stagger between starts runs for as long as
+        // there are agents to start, and nothing else in the boot path
+        // waits on it.
+        void agentStore.autoStartAgents();
       }
     };
 

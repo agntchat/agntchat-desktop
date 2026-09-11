@@ -54,6 +54,19 @@ export interface AgentActivity {
   detail?: string;
 }
 
+/** Agents already auto-started in this app launch. Guards the (rare)
+ *  re-run of the bootstrap — a logout/login round-trip re-mounts
+ *  `useWebSocket` — from restarting an agent the user has since stopped by
+ *  hand. Deliberately per-agent rather than a single ran-once flag so signing
+ *  in as a different owner still auto-starts THAT owner's agents. */
+const autoStartedThisLaunch = new Set<string>();
+
+/** Gap between consecutive auto-starts. Matches the dashboard's "Start All"
+ *  stagger: each bridge registration triggers warmup + broadcast + backfill
+ *  on the backend, and firing a whole fleet at once on app launch is the
+ *  worst possible moment for a thundering herd. */
+const AUTO_START_STAGGER_MS = 3000;
+
 /**
  * Runtime validator for server-sent modelConfig. Backend sends a loose
  * Record<string, unknown>; validate field shapes before merging into local
@@ -283,6 +296,11 @@ interface AgentState {
   fetchActivities: () => Promise<void>;
   selectAgent: (id: string | null) => Promise<void>;
   startAgent: (id: string) => Promise<void>;
+  /** Start every local agent whose device-local "Start on app launch" toggle
+   *  is on. Called once per launch from the agents bootstrap in
+   *  `useWebSocket`, after the initial fetch + status refresh + stale-executor
+   *  reconciliation have settled. */
+  autoStartAgents: () => Promise<void>;
   stopAgent: (id: string) => Promise<void>;
   updateConfig: (id: string, config: Partial<AgentConfig>) => void;
   setApiKey: (id: string, key: string) => void;
@@ -966,6 +984,59 @@ export const useAgentStore = create<AgentState>((set, get) => ({
         set({ agents: { ...get().agents, [id]: { ...current, processStatus: "crashed", crashReason: msg, crashKind: null } } });
       }
       throw e;
+    }
+  },
+
+  autoStartAgents: async () => {
+    const myDevice = await getLocalDeviceName();
+    const candidates = Object.values(get().agents).filter((m) => {
+      if (!m.config.autoStart) return false;
+      if (autoStartedThisLaunch.has(m.agent.id)) return false;
+      // Hosted agents' bridges live on a remote Linux VM — there is no local
+      // subprocess for this desktop to launch (startAgent early-returns for
+      // them), and the host supervisor already owns their boot.
+      if (m.agent.runtime === "org_host") return false;
+      // Anything not "stopped" is already up (or coming up) on this machine.
+      // On a cold launch the Rust ProcessManager is empty, so every local
+      // agent reads "stopped" here.
+      if (m.processStatus !== "stopped") return false;
+      // Running on ANOTHER of the owner's machines: starting it here would
+      // take it over and kill it there — never do that unprompted at launch.
+      // Same REST snapshot reconcileStaleExecutors just used (live presence
+      // hasn't necessarily arrived this early in the boot); an executor with
+      // no device name, or this device's own, is the stale row it just
+      // cleared, so those are ours to start.
+      if (
+        m.agent.online === true &&
+        m.agent.deviceName &&
+        m.agent.deviceName !== myDevice
+      ) {
+        return false;
+      }
+      return true;
+    });
+    if (candidates.length === 0) return;
+
+    console.log(
+      `[agentStore] Auto-starting ${candidates.length} agent(s) on launch: ${candidates
+        .map((m) => m.agent.displayName)
+        .join(", ")}`
+    );
+
+    for (let i = 0; i < candidates.length; i++) {
+      const id = candidates[i].agent.id;
+      autoStartedThisLaunch.add(id);
+      try {
+        await get().startAgent(id);
+      } catch (e) {
+        // startAgent already parked the agent in an actionable crashed state
+        // (missing key, no LLM key) that the row renders. Keep going — one
+        // misconfigured agent must not block the rest of the fleet.
+        console.warn(`[agentStore] auto-start failed for ${id}`, e);
+      }
+      if (i < candidates.length - 1) {
+        await new Promise((r) => setTimeout(r, AUTO_START_STAGGER_MS));
+      }
     }
   },
 
