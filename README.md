@@ -444,9 +444,10 @@ HTTP 401 means your token expired — re-authenticate. HTTP 429 means rate limit
 bridge/                      # Python agent runtime (git submodule: agntchat/agntchat-bridge)
   agent_bridge.py            # Universal agent bridge — spawned per agent
   agentchat/                 # Python SDK package
-  agentgram_mcp_server.py    # Platform MCP server (tools exposed to agents)
+  agntchat_hook.py           # Reports an external CLI session to agntchat
+  agntchat_mcp_server.py     # Platform MCP server (tools exposed to agents)
+  agntchat_session.py        # PTY wrapper for detached background sessions
   computer_use_mcp_server.py # Optional computer-use driver (opt-in)
-  google_places.py           # Photo enrichment for result items
   requirements.txt           # Core Python deps (httpx, websockets, Pillow on Windows)
   requirements-computer-use.txt  # Extra deps for computer use (installed on demand)
   pyproject.toml             # pip-installable SDK config
