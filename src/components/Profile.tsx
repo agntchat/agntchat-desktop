@@ -22,6 +22,8 @@ import { Separator } from "@/components/ui/separator";
 import { Switch } from "@/components/ui/switch";
 import { Textarea } from "@/components/ui/textarea";
 import { getVersion } from "@tauri-apps/api/app";
+
+import { checkForUpdate, getUpdateState } from "../lib/updater";
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
 import {
   Dialog,
@@ -1125,6 +1127,8 @@ export function Profile({ onClose }: { onClose: () => void }) {
         {activeSection === "help" && (
           <div className="flex-1 overflow-y-auto p-5 space-y-6">
             <BugReportSection />
+            <Separator />
+            <AppVersionSection />
             <Separator />
             <button
               onClick={() => setProfileTourReplay((n) => n + 1)}
@@ -3419,6 +3423,58 @@ function PrivacyDataSection() {
 // ---------------------------------------------------------------------------
 
 type BugSeverity = "critical" | "high" | "medium" | "low" | "info";
+
+/** Which build am I on, and is there a newer one? The update toast finds
+ *  releases on its own schedule; this is the "check now" escape hatch and the
+ *  only place the version is actually visible to a user. */
+function AppVersionSection() {
+  const { t } = useTranslation("settings");
+  const [version, setVersion] = useState<string | null>(null);
+  const [checking, setChecking] = useState(false);
+  const [upToDate, setUpToDate] = useState(false);
+
+  useEffect(() => {
+    void getVersion()
+      .then(setVersion)
+      .catch(() => setVersion(null));
+  }, []);
+
+  const check = useCallback(async () => {
+    setChecking(true);
+    setUpToDate(false);
+    await checkForUpdate();
+    setChecking(false);
+    // An update found raises the toast; nothing found is only visible here.
+    setUpToDate(getUpdateState().phase === "idle");
+  }, []);
+
+  return (
+    <div className="space-y-3">
+      <SectionHeader title={t("about.title")} />
+      <div className="flex items-center justify-between gap-4">
+        <div className="min-w-0">
+          <p className="text-sm">
+            {version
+              ? t("about.version", { version })
+              : t("about.versionUnknown")}
+          </p>
+          {upToDate ? (
+            <p className="mt-0.5 text-xs text-muted-foreground">
+              {t("about.upToDate")}
+            </p>
+          ) : null}
+        </div>
+        <button
+          onClick={() => void check()}
+          disabled={checking}
+          className="shrink-0 rounded-md border border-border px-3 py-1.5 text-xs font-medium hover:bg-accent disabled:opacity-50"
+        >
+          {checking ? t("about.checking") : t("about.checkForUpdates")}
+        </button>
+      </div>
+    </div>
+  );
+}
 
 const BUG_SEVERITIES: { value: BugSeverity; labelKey: string }[] = [
   { value: "critical", labelKey: "bugReport.severityCritical" },

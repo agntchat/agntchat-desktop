@@ -46,6 +46,7 @@ import { MessageNotifier } from "./MessageNotifier";
 import { MemorySavedToast } from "./MemorySavedToast";
 import { OnboardingProgressToast } from "./OnboardingProgressToast";
 import { PermissionToast } from "./PermissionToast";
+import { UpdateToast } from "./UpdateToast";
 import { CredentialPrompt } from "./CredentialPrompt";
 import { RenameToGroupModal } from "./RenameToGroupModal";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
@@ -222,6 +223,7 @@ export function AppShell() {
       <MemorySavedToast />
       <OnboardingProgressToast />
       <PermissionToast />
+      <UpdateToast />
       <CredentialPrompt />
       <RenameToGroupModal />
     </div>

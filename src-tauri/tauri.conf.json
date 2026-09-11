@@ -1,7 +1,7 @@
 {
   "$schema": "https://raw.githubusercontent.com/nicegui-org/nicegui/main/tauri.conf.json",
-  "productName": "AgentChat",
-  "version": "0.1.2",
+  "productName": "agntchat",
+  "version": "0.2.0",
   "identifier": "dev.agentchat.desktop",
   "build": {
     "frontendDist": "../dist",
@@ -34,6 +34,15 @@
     }
   },
   "bundle": {
+    "active": true,
+    "targets": "all",
+    "icon": [
+      "icons/32x32.png",
+      "icons/128x128.png",
+      "icons/128x128@2x.png",
+      "icons/icon.icns",
+      "icons/icon.ico"
+    ],
     "resources": [
       "../bridge/agent_bridge.py",
       "../bridge/agentgram_mcp_server.py",
@@ -44,11 +53,21 @@
       "../bridge/agentchat/*.py",
       "../bridge/agentchat/backends/*.py",
       "../bridge/agentchat/tools/*.py"
-    ]
+    ],
+    "createUpdaterArtifacts": true
   },
   "plugins": {
     "shell": {
       "open": true
+    },
+    "updater": {
+      "endpoints": [
+        "https://github.com/agntchat/agntchat-desktop/releases/latest/download/latest.json"
+      ],
+      "pubkey": "dW50cnVzdGVkIGNvbW1lbnQ6IG1pbmlzaWduIHB1YmxpYyBrZXk6IEY4QTJDQTEzRjMzNTAzQkUKUldTK0F6WHpFOHFpK01KbVhIR2xZUHdjb3MrU1A0OXN0NVQ1VWV6UUFTSHBqeHh0UnJEdTVIdmMK",
+      "windows": {
+        "installMode": "passive"
+      }
     }
   }
 }

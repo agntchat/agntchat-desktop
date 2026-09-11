@@ -24,6 +24,7 @@ import { ActivityDock } from "../messages/ActivityDock";
 import type { ActivityEntry } from "../../lib/conversation-activity";
 import { AgentBusyToastCard } from "../AgentBusyToast";
 import { ReminderToastCard } from "../ReminderToast";
+import { UpdateToastCard } from "../UpdateToast";
 import { MemorySavedToastCard } from "../MemorySavedToast";
 import { OnboardingProgressToastCard } from "../OnboardingProgressToast";
 import { PermissionToastCard } from "../PermissionToast";
@@ -1507,6 +1508,69 @@ export function buildPreviewCategories(
                 title="Reminder"
                 summary="Renew the domain before it expires on Friday."
                 onSnooze={noop}
+                onDismiss={noop}
+              />
+            </ToastFrame>
+          ),
+        },
+        {
+          label: "App update — available",
+          interactive: true,
+          node: (
+            <ToastFrame>
+              <UpdateToastCard
+                state={{
+                  phase: "available",
+                  version: "0.11.0",
+                  notes: "Agent routines can now run on a schedule.\nFixed the chat list shake on long messages.",
+                }}
+                onInstall={noop}
+                onRestart={noop}
+                onDismiss={noop}
+              />
+            </ToastFrame>
+          ),
+        },
+        {
+          label: "App update — downloading",
+          node: (
+            <ToastFrame>
+              <UpdateToastCard
+                state={{ phase: "downloading", version: "0.11.0", percent: 42 }}
+                onInstall={noop}
+                onRestart={noop}
+                onDismiss={noop}
+              />
+            </ToastFrame>
+          ),
+        },
+        {
+          label: "App update — ready to restart",
+          interactive: true,
+          node: (
+            <ToastFrame>
+              <UpdateToastCard
+                state={{ phase: "ready", version: "0.11.0" }}
+                onInstall={noop}
+                onRestart={noop}
+                onDismiss={noop}
+              />
+            </ToastFrame>
+          ),
+        },
+        {
+          label: "App update — failed",
+          interactive: true,
+          node: (
+            <ToastFrame>
+              <UpdateToastCard
+                state={{
+                  phase: "failed",
+                  version: "0.11.0",
+                  message: "Could not reach the update server.",
+                }}
+                onInstall={noop}
+                onRestart={noop}
                 onDismiss={noop}
               />
             </ToastFrame>

@@ -4,9 +4,23 @@ name: Release
 # Windows on every version tag (v*) and uploads them to a DRAFT GitHub Release
 # for James to review before publishing.
 #
-# Starts UNSIGNED to prove the pipeline end-to-end. Apple code-signing +
-# notarization env vars are stubbed below — uncomment and add the secrets to
-# enable signed/notarized macOS builds later.
+# Builds are UNSIGNED for now (no Developer ID / Windows cert yet), so macOS
+# users right-click → Open on first launch and Windows users click through
+# SmartScreen. Apple code-signing + notarization env vars are stubbed below —
+# uncomment and add the secrets to enable signed/notarized macOS builds later.
+#
+# Separately from OS code-signing, every build IS signed with the Tauri updater
+# keypair (TAURI_SIGNING_PRIVATE_KEY). That signature is what the installed app
+# verifies against `plugins.updater.pubkey` in tauri.conf.json before it will
+# install an update — so it is required, not optional, and the two kinds of
+# signing are unrelated.
+#
+# Release flow:
+#   npm run bump minor && git commit && git tag v0.11.0 && git push --tags
+#   → this workflow builds all three targets into ONE draft release
+#   → review the draft, then Publish
+#   → publishing is what makes `/releases/latest/download/latest.json` resolve,
+#     which is the moment installed apps start offering the update.
 
 on:
   push:
@@ -23,6 +37,12 @@ jobs:
     strategy:
       # Don't cancel the other OS builds if one leg fails.
       fail-fast: false
+      # One at a time, deliberately. All three legs read-modify-write the SAME
+      # latest.json on the release to merge in their platform entry; run them
+      # concurrently and the last writer can drop another platform's entry.
+      # The failure is invisible — that platform's users simply never see an
+      # update — so trade ~20 minutes of wall clock for a correct manifest.
+      max-parallel: 1
       matrix:
         include:
           - platform: macos-latest
@@ -70,6 +90,12 @@ jobs:
         uses: tauri-apps/tauri-action@v0
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          # --- Updater signing (REQUIRED — see the header note) ---
+          # Generated with `npx tauri signer generate`. The matching public key
+          # is committed in src-tauri/tauri.conf.json. Lose this key and no
+          # installed app will ever accept another update.
+          TAURI_SIGNING_PRIVATE_KEY: ${{ secrets.TAURI_SIGNING_PRIVATE_KEY }}
+          TAURI_SIGNING_PRIVATE_KEY_PASSWORD: ${{ secrets.TAURI_SIGNING_PRIVATE_KEY_PASSWORD }}
           # --- Apple code-signing + notarization (STUBBED — enable later) ---
           # Add these as repo secrets, then uncomment to produce signed,
           # notarized macOS builds instead of the current unsigned ones.
@@ -82,8 +108,26 @@ jobs:
         with:
           tagName: ${{ github.ref_name }}
           releaseName: "agntchat ${{ github.ref_name }}"
-          releaseBody: "See the assets below to download and install agntchat."
-          # Draft so James reviews before publishing to users.
+          releaseBody: |
+            Download the installer for your platform below.
+
+            - **macOS (Apple Silicon)** — `_aarch64.dmg`
+            - **macOS (Intel)** — `_x64.dmg`
+            - **Windows** — `_x64-setup.exe`
+
+            These builds are not yet code-signed. On macOS, right-click the app
+            in Applications and choose **Open** the first time. On Windows,
+            choose **More info → Run anyway** on the SmartScreen prompt.
+
+            Already running agntchat? You don't need this page — the app offers
+            the update itself once this release is published.
+          # Draft so James reviews before publishing to users. Publishing is
+          # also what arms the in-app updater (see the header note).
           releaseDraft: true
           prerelease: false
+          # Emit and upload `latest.json` — the manifest tauri-plugin-updater
+          # polls. tauri-action merges each matrix leg's platform entry into the
+          # single file on the release, so all three targets end up in one
+          # manifest.
+          includeUpdaterJson: true
           args: ${{ matrix.args }}

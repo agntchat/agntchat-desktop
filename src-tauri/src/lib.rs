@@ -9,6 +9,11 @@ pub fn run() {
         .plugin(tauri_plugin_shell::init())
         .plugin(tauri_plugin_dialog::init())
         .plugin(tauri_plugin_notification::init())
+        // Self-update: the frontend drives the check/download/install so the
+        // user sees a toast rather than a blocking dialog (src/lib/updater.ts).
+        // `process` is what lets it relaunch into the new build after install.
+        .plugin(tauri_plugin_updater::Builder::new().build())
+        .plugin(tauri_plugin_process::init())
         .setup(|app| {
             let manager = ProcessManager::new();
             app.manage(Mutex::new(manager));

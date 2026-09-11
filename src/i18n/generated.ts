@@ -3057,6 +3057,18 @@ export const resources = {
       "agent": "Agent",
       "aiInitials": "AI",
       "apiKey": "API key",
+      "appUpdate": {
+        "availableBody": "A new version of agntchat is ready to install.",
+        "availableTitle": "Version {{version}} is available",
+        "downloading": "Downloading…",
+        "downloadingPercent": "Downloading… {{percent}}%",
+        "failedTitle": "Update failed",
+        "install": "Install",
+        "readyBody": "Restart agntchat to finish updating.",
+        "readyTitle": "Version {{version}} installed",
+        "restartLater": "Not now",
+        "restartNow": "Restart now"
+      },
       "apply": "Apply",
       "back": "Back",
       "cancel": "Cancel",
@@ -4276,6 +4288,14 @@ export const resources = {
       "title": "Component Previews"
     },
     "settings": {
+      "about": {
+        "checkForUpdates": "Check for updates",
+        "checking": "Checking…",
+        "title": "About",
+        "upToDate": "You’re on the latest version.",
+        "version": "agntchat {{version}}",
+        "versionUnknown": "Version unavailable"
+      },
       "advanced": {
         "flowDebug": "Flow Control Debug",
         "flowDebugDescription": "Show real-time flow control events (backoff, suppression) in chat",
@@ -8448,6 +8468,18 @@ export const resources = {
       "agent": "Agente",
       "aiInitials": "IA",
       "apiKey": "Clave de API",
+      "appUpdate": {
+        "availableBody": "Una nueva versión de agntchat está lista para instalarse.",
+        "availableTitle": "La versión {{version}} está disponible",
+        "downloading": "Descargando…",
+        "downloadingPercent": "Descargando… {{percent}}%",
+        "failedTitle": "Error al actualizar",
+        "install": "Instalar",
+        "readyBody": "Reinicia agntchat para terminar la actualización.",
+        "readyTitle": "Versión {{version}} instalada",
+        "restartLater": "Ahora no",
+        "restartNow": "Reiniciar ahora"
+      },
       "apply": "Aplicar",
       "back": "Atrás",
       "cancel": "Cancelar",
@@ -9667,6 +9699,14 @@ export const resources = {
       "title": "Vistas previas de componentes"
     },
     "settings": {
+      "about": {
+        "checkForUpdates": "Buscar actualizaciones",
+        "checking": "Comprobando…",
+        "title": "Acerca de",
+        "upToDate": "Tienes la última versión.",
+        "version": "agntchat {{version}}",
+        "versionUnknown": "Versión no disponible"
+      },
       "advanced": {
         "flowDebug": "Depuración de control de flujo",
         "flowDebugDescription": "Muestra eventos de control de flujo en tiempo real (espera, supresión) en el chat",
@@ -13839,6 +13879,18 @@ export const resources = {
       "agent": "Agent",
       "aiInitials": "KI",
       "apiKey": "API-Schlüssel",
+      "appUpdate": {
+        "availableBody": "Eine neue Version von agntchat kann installiert werden.",
+        "availableTitle": "Version {{version}} ist verfügbar",
+        "downloading": "Wird heruntergeladen…",
+        "downloadingPercent": "Wird heruntergeladen… {{percent}}%",
+        "failedTitle": "Update fehlgeschlagen",
+        "install": "Installieren",
+        "readyBody": "Starte agntchat neu, um das Update abzuschließen.",
+        "readyTitle": "Version {{version}} installiert",
+        "restartLater": "Später",
+        "restartNow": "Jetzt neu starten"
+      },
       "apply": "Anwenden",
       "back": "Zurück",
       "cancel": "Abbrechen",
@@ -15058,6 +15110,14 @@ export const resources = {
       "title": "Komponentenvorschau"
     },
     "settings": {
+      "about": {
+        "checkForUpdates": "Nach Updates suchen",
+        "checking": "Wird geprüft…",
+        "title": "Über",
+        "upToDate": "Du nutzt die neueste Version.",
+        "version": "agntchat {{version}}",
+        "versionUnknown": "Version nicht verfügbar"
+      },
       "advanced": {
         "flowDebug": "Flusskontrolle-Debug",
         "flowDebugDescription": "Zeigt Flusskontroll-Ereignisse in Echtzeit (Backoff, Unterdrückung) im Chat an",
@@ -19230,6 +19290,18 @@ export const resources = {
       "agent": "Agent",
       "aiInitials": "IA",
       "apiKey": "Clé API",
+      "appUpdate": {
+        "availableBody": "Une nouvelle version d’agntchat est prête à être installée.",
+        "availableTitle": "La version {{version}} est disponible",
+        "downloading": "Téléchargement…",
+        "downloadingPercent": "Téléchargement… {{percent}} %",
+        "failedTitle": "Échec de la mise à jour",
+        "install": "Installer",
+        "readyBody": "Redémarrez agntchat pour terminer la mise à jour.",
+        "readyTitle": "Version {{version}} installée",
+        "restartLater": "Plus tard",
+        "restartNow": "Redémarrer"
+      },
       "apply": "Appliquer",
       "back": "Retour",
       "cancel": "Annuler",
@@ -20449,6 +20521,14 @@ export const resources = {
       "title": "Aperçu des composants"
     },
     "settings": {
+      "about": {
+        "checkForUpdates": "Rechercher des mises à jour",
+        "checking": "Vérification…",
+        "title": "À propos",
+        "upToDate": "Vous utilisez la dernière version.",
+        "version": "agntchat {{version}}",
+        "versionUnknown": "Version indisponible"
+      },
       "advanced": {
         "flowDebug": "Débogage du contrôle de flux",
         "flowDebugDescription": "Afficher les événements de contrôle de flux en temps réel (recul, suppression) dans le chat",
@@ -24621,6 +24701,18 @@ export const resources = {
       "agent": "Agente",
       "aiInitials": "IA",
       "apiKey": "Chave de API",
+      "appUpdate": {
+        "availableBody": "Uma nova versão do agntchat está pronta para instalar.",
+        "availableTitle": "A versão {{version}} está disponível",
+        "downloading": "A transferir…",
+        "downloadingPercent": "A transferir… {{percent}}%",
+        "failedTitle": "Falha na atualização",
+        "install": "Instalar",
+        "readyBody": "Reinicie o agntchat para concluir a atualização.",
+        "readyTitle": "Versão {{version}} instalada",
+        "restartLater": "Agora não",
+        "restartNow": "Reiniciar agora"
+      },
       "apply": "Aplicar",
       "back": "Voltar",
       "cancel": "Cancelar",
@@ -25840,6 +25932,14 @@ export const resources = {
       "title": "Prévias de componentes"
     },
     "settings": {
+      "about": {
+        "checkForUpdates": "Procurar atualizações",
+        "checking": "A verificar…",
+        "title": "Sobre",
+        "upToDate": "Está a usar a versão mais recente.",
+        "version": "agntchat {{version}}",
+        "versionUnknown": "Versão indisponível"
+      },
       "advanced": {
         "flowDebug": "Depuração de Controle de Fluxo",
         "flowDebugDescription": "Mostra eventos de controle de fluxo em tempo real (backoff, supressão) no chat",
@@ -30012,6 +30112,18 @@ export const resources = {
       "agent": "エージェント",
       "aiInitials": "AI",
       "apiKey": "APIキー",
+      "appUpdate": {
+        "availableBody": "agntchat の新しいバージョンをインストールできます。",
+        "availableTitle": "バージョン {{version}} が利用できます",
+        "downloading": "ダウンロード中…",
+        "downloadingPercent": "ダウンロード中… {{percent}}%",
+        "failedTitle": "更新に失敗しました",
+        "install": "インストール",
+        "readyBody": "agntchat を再起動すると更新が完了します。",
+        "readyTitle": "バージョン {{version}} をインストールしました",
+        "restartLater": "あとで",
+        "restartNow": "今すぐ再起動"
+      },
       "apply": "適用",
       "back": "戻る",
       "cancel": "キャンセル",
@@ -31231,6 +31343,14 @@ export const resources = {
       "title": "コンポーネントプレビュー"
     },
     "settings": {
+      "about": {
+        "checkForUpdates": "更新を確認",
+        "checking": "確認中…",
+        "title": "アプリについて",
+        "upToDate": "最新バージョンをご利用中です。",
+        "version": "agntchat {{version}}",
+        "versionUnknown": "バージョンを取得できません"
+      },
       "advanced": {
         "flowDebug": "フローコントロールデバッグ",
         "flowDebugDescription": "チャット内にフロー制御イベント（バックオフ、抑制）をリアルタイムで表示します",
@@ -35403,6 +35523,18 @@ export const resources = {
       "agent": "代理",
       "aiInitials": "AI",
       "apiKey": "API 密钥",
+      "appUpdate": {
+        "availableBody": "agntchat 的新版本已可安装。",
+        "availableTitle": "版本 {{version}} 已发布",
+        "downloading": "下载中…",
+        "downloadingPercent": "下载中… {{percent}}%",
+        "failedTitle": "更新失败",
+        "install": "安装",
+        "readyBody": "重启 agntchat 以完成更新。",
+        "readyTitle": "版本 {{version}} 已安装",
+        "restartLater": "稍后",
+        "restartNow": "立即重启"
+      },
       "apply": "应用",
       "back": "返回",
       "cancel": "取消",
@@ -36622,6 +36754,14 @@ export const resources = {
       "title": "组件预览"
     },
     "settings": {
+      "about": {
+        "checkForUpdates": "检查更新",
+        "checking": "检查中…",
+        "title": "关于",
+        "upToDate": "您已使用最新版本。",
+        "version": "agntchat {{version}}",
+        "versionUnknown": "无法获取版本"
+      },
       "advanced": {
         "flowDebug": "流量控制调试",
         "flowDebugDescription": "在聊天中显示实时流量控制事件（退避、抑制）",
@@ -40794,6 +40934,18 @@ export const resources = {
       "agent": "에이전트",
       "aiInitials": "AI",
       "apiKey": "API 키",
+      "appUpdate": {
+        "availableBody": "agntchat의 새 버전을 설치할 수 있습니다.",
+        "availableTitle": "버전 {{version}}을(를) 사용할 수 있습니다",
+        "downloading": "다운로드 중…",
+        "downloadingPercent": "다운로드 중… {{percent}}%",
+        "failedTitle": "업데이트 실패",
+        "install": "설치",
+        "readyBody": "agntchat을 다시 시작하면 업데이트가 완료됩니다.",
+        "readyTitle": "버전 {{version}} 설치 완료",
+        "restartLater": "나중에",
+        "restartNow": "지금 다시 시작"
+      },
       "apply": "적용",
       "back": "뒤로",
       "cancel": "취소",
@@ -42013,6 +42165,14 @@ export const resources = {
       "title": "컴포넌트 미리보기"
     },
     "settings": {
+      "about": {
+        "checkForUpdates": "업데이트 확인",
+        "checking": "확인 중…",
+        "title": "정보",
+        "upToDate": "최신 버전을 사용 중입니다.",
+        "version": "agntchat {{version}}",
+        "versionUnknown": "버전을 확인할 수 없음"
+      },
       "advanced": {
         "flowDebug": "흐름 제어 디버그",
         "flowDebugDescription": "채팅에 실시간 흐름 제어 이벤트(백오프, 억제)를 표시합니다",
@@ -46185,6 +46345,18 @@ export const resources = {
       "agent": "Agente",
       "aiInitials": "IA",
       "apiKey": "Chiave API",
+      "appUpdate": {
+        "availableBody": "Una nuova versione di agntchat è pronta per l’installazione.",
+        "availableTitle": "La versione {{version}} è disponibile",
+        "downloading": "Download in corso…",
+        "downloadingPercent": "Download in corso… {{percent}}%",
+        "failedTitle": "Aggiornamento non riuscito",
+        "install": "Installa",
+        "readyBody": "Riavvia agntchat per completare l’aggiornamento.",
+        "readyTitle": "Versione {{version}} installata",
+        "restartLater": "Non ora",
+        "restartNow": "Riavvia ora"
+      },
       "apply": "Applica",
       "back": "Indietro",
       "cancel": "Annulla",
@@ -47404,6 +47576,14 @@ export const resources = {
       "title": "Anteprima dei componenti"
     },
     "settings": {
+      "about": {
+        "checkForUpdates": "Cerca aggiornamenti",
+        "checking": "Controllo in corso…",
+        "title": "Informazioni",
+        "upToDate": "Stai usando l’ultima versione.",
+        "version": "agntchat {{version}}",
+        "versionUnknown": "Versione non disponibile"
+      },
       "advanced": {
         "flowDebug": "Debug controllo di flusso",
         "flowDebugDescription": "Mostra eventi di controllo di flusso in tempo reale (backoff, soppressione) in chat",
@@ -51576,6 +51756,18 @@ export const resources = {
       "agent": "एजेंट",
       "aiInitials": "AI",
       "apiKey": "API कुंजी",
+      "appUpdate": {
+        "availableBody": "agntchat का नया संस्करण इंस्टॉल करने के लिए तैयार है।",
+        "availableTitle": "संस्करण {{version}} उपलब्ध है",
+        "downloading": "डाउनलोड हो रहा है…",
+        "downloadingPercent": "डाउनलोड हो रहा है… {{percent}}%",
+        "failedTitle": "अपडेट विफल",
+        "install": "इंस्टॉल करें",
+        "readyBody": "अपडेट पूरा करने के लिए agntchat को पुनः प्रारंभ करें।",
+        "readyTitle": "संस्करण {{version}} इंस्टॉल हो गया",
+        "restartLater": "अभी नहीं",
+        "restartNow": "अभी पुनः प्रारंभ करें"
+      },
       "apply": "लागू करें",
       "back": "वापस",
       "cancel": "रद्द करें",
@@ -52795,6 +52987,14 @@ export const resources = {
       "title": "कंपोनेंट पूर्वावलोकन"
     },
     "settings": {
+      "about": {
+        "checkForUpdates": "अपडेट खोजें",
+        "checking": "जाँच रहा है…",
+        "title": "परिचय",
+        "upToDate": "आप नवीनतम संस्करण पर हैं।",
+        "version": "agntchat {{version}}",
+        "versionUnknown": "संस्करण उपलब्ध नहीं"
+      },
       "advanced": {
         "flowDebug": "फ़्लो कंट्रोल डीबग",
         "flowDebugDescription": "चैट में रीयल-टाइम फ़्लो कंट्रोल इवेंट (बैकऑफ़, सप्रेशन) दिखाएँ",
