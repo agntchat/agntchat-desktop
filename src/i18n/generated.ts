@@ -3311,7 +3311,8 @@ export const resources = {
         "openFailedTitle": "Couldn't open file",
         "tooLarge": "File too large (max {{max}})",
         "uploadFailed": "Upload failed",
-        "uploadFailedTitle": "Upload Failed"
+        "uploadFailedTitle": "Upload Failed",
+        "uploadRejected": "Upload failed ({{status}}). Please try again."
       },
       "file": "File",
       "fileDeleted": "File deleted.",
@@ -8690,7 +8691,8 @@ export const resources = {
         "openFailedTitle": "No se pudo abrir el archivo",
         "tooLarge": "Archivo demasiado grande (máx. {{max}})",
         "uploadFailed": "Error al subir el archivo",
-        "uploadFailedTitle": "Error al subir"
+        "uploadFailedTitle": "Error al subir",
+        "uploadRejected": "Error al subir el archivo ({{status}}). Inténtalo de nuevo."
       },
       "file": "Archivo",
       "fileDeleted": "Archivo eliminado.",
@@ -14069,7 +14071,8 @@ export const resources = {
         "openFailedTitle": "Datei konnte nicht geöffnet werden",
         "tooLarge": "Datei zu groß (max. {{max}})",
         "uploadFailed": "Hochladen fehlgeschlagen",
-        "uploadFailedTitle": "Hochladen fehlgeschlagen"
+        "uploadFailedTitle": "Hochladen fehlgeschlagen",
+        "uploadRejected": "Hochladen fehlgeschlagen ({{status}}). Bitte erneut versuchen."
       },
       "file": "Datei",
       "fileDeleted": "Datei gelöscht.",
@@ -19448,7 +19451,8 @@ export const resources = {
         "openFailedTitle": "Impossible d'ouvrir le fichier",
         "tooLarge": "Fichier trop volumineux (max {{max}})",
         "uploadFailed": "Échec du téléversement",
-        "uploadFailedTitle": "Échec du téléversement"
+        "uploadFailedTitle": "Échec du téléversement",
+        "uploadRejected": "Échec du téléversement ({{status}}). Veuillez réessayer."
       },
       "file": "Fichier",
       "fileDeleted": "Fichier supprimé.",
@@ -24827,7 +24831,8 @@ export const resources = {
         "openFailedTitle": "Não foi possível abrir o arquivo",
         "tooLarge": "Arquivo muito grande (máx. {{max}})",
         "uploadFailed": "Falha no envio",
-        "uploadFailedTitle": "Falha no envio"
+        "uploadFailedTitle": "Falha no envio",
+        "uploadRejected": "Falha no envio ({{status}}). Tente novamente."
       },
       "file": "Arquivo",
       "fileDeleted": "Arquivo excluído.",
@@ -30206,7 +30211,8 @@ export const resources = {
         "openFailedTitle": "ファイルを開けませんでした",
         "tooLarge": "ファイルが大きすぎます (最大{{max}})",
         "uploadFailed": "アップロードに失敗しました",
-        "uploadFailedTitle": "アップロード失敗"
+        "uploadFailedTitle": "アップロード失敗",
+        "uploadRejected": "アップロードに失敗しました ({{status}})。もう一度お試しください。"
       },
       "file": "ファイル",
       "fileDeleted": "ファイルを削除しました。",
@@ -35585,7 +35591,8 @@ export const resources = {
         "openFailedTitle": "无法打开文件",
         "tooLarge": "文件过大（最大 {{max}}）",
         "uploadFailed": "上传失败",
-        "uploadFailedTitle": "上传失败"
+        "uploadFailedTitle": "上传失败",
+        "uploadRejected": "上传失败（{{status}}）。请重试。"
       },
       "file": "文件",
       "fileDeleted": "文件已删除。",
@@ -40964,7 +40971,8 @@ export const resources = {
         "openFailedTitle": "파일을 열 수 없음",
         "tooLarge": "파일이 너무 큽니다(최대 {{max}})",
         "uploadFailed": "업로드 실패",
-        "uploadFailedTitle": "업로드 실패"
+        "uploadFailedTitle": "업로드 실패",
+        "uploadRejected": "업로드 실패 ({{status}}). 다시 시도해 주세요."
       },
       "file": "파일",
       "fileDeleted": "파일이 삭제되었습니다.",
@@ -46343,7 +46351,8 @@ export const resources = {
         "openFailedTitle": "Impossibile aprire il file",
         "tooLarge": "File troppo grande (max {{max}})",
         "uploadFailed": "Caricamento non riuscito",
-        "uploadFailedTitle": "Caricamento non riuscito"
+        "uploadFailedTitle": "Caricamento non riuscito",
+        "uploadRejected": "Caricamento non riuscito ({{status}}). Riprova."
       },
       "file": "File",
       "fileDeleted": "File eliminato.",
@@ -51722,7 +51731,8 @@ export const resources = {
         "openFailedTitle": "फ़ाइल नहीं खोल सके",
         "tooLarge": "फ़ाइल बहुत बड़ी है (अधिकतम {{max}})",
         "uploadFailed": "अपलोड विफल",
-        "uploadFailedTitle": "अपलोड विफल"
+        "uploadFailedTitle": "अपलोड विफल",
+        "uploadRejected": "अपलोड विफल ({{status}})। कृपया पुनः प्रयास करें।"
       },
       "file": "फ़ाइल",
       "fileDeleted": "फ़ाइल हटाई गई।",
