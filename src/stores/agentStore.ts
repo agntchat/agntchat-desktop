@@ -309,6 +309,10 @@ interface AgentState {
      *  default host auto-placement (without this, every new agent lands on
      *  the owner's org host when one exists). Omit for the hosted default. */
     runtime?: "local" | "org_host";
+    /** Which wizard path produced this agent (analytics only): "quick" =
+     *  LLM-drafted from a brief, "preset" = template chip, "advanced" =
+     *  the step-by-step walk. */
+    creationPath?: "quick" | "preset" | "advanced";
   }) => Promise<string>;
   regenerateKey: (id: string) => Promise<string>;
   /** Remember a key the app already holds (the session picker created or
@@ -1057,6 +1061,7 @@ export const useAgentStore = create<AgentState>((set, get) => ({
       effort: selectedEffort,
       dangerouslySkipPermissions: skipPerms,
       llmApiKeyId: selectedKeyId,
+      creationPath,
       ...apiData
     } = data;
     // `metadata` and `organizationIds` (if present in apiData) flow
@@ -1067,6 +1072,7 @@ export const useAgentStore = create<AgentState>((set, get) => ({
     track(ANALYTICS_EVENTS.AGENT_CREATED, {
       agent_type: result.agent.agentType,
       runtime: result.agent.runtime,
+      ...(creationPath ? { path: creationPath } : {}),
     });
     const config = {
       ...DEFAULT_CONFIG,

@@ -22,6 +22,7 @@ import {
   Check,
   ChevronDown,
   ChevronRight,
+  Wand2,
 } from "lucide-react";
 import { useAgentStore } from "../stores/agentStore";
 import { useAuthStore } from "../stores/authStore";
@@ -32,6 +33,8 @@ import {
   getProviderStatus,
   listToolCatalog,
   assignToolToAgent,
+  draftAgent,
+  type AgentDraft,
   type PlatformToolSummary,
 } from "../lib/api";
 import { openExternal } from "../lib/openExternal";
@@ -92,8 +95,11 @@ const TYPE_ICONS: Record<string, typeof Bot> = {
   observer: Eye,
 };
 
+// Step 0 is the fork: a free-text brief the server drafts a whole agent from
+// (quick path), preset chips (template path), or "build it step by step"
+// (the advanced walk through every step below).
 const STEPS = [
-  "preset",
+  "brief",
   "name",
   "photo",
   "role",
@@ -105,6 +111,14 @@ const STEPS = [
   "review",
 ] as const;
 type WizardStep = (typeof STEPS)[number];
+
+// Steps the review screen offers "jump to" edit chips for — everything
+// between the fork and the review itself.
+const EDITABLE_STEPS = STEPS.filter(
+  (s): s is Exclude<WizardStep, "brief" | "review"> => s !== "brief" && s !== "review"
+);
+
+type CreationPath = "quick" | "preset" | "advanced";
 
 // Display names for credentialed providers on the tools step's Connect
 // buttons (provider ids are lowercase machine keys).
@@ -124,7 +138,7 @@ const PRESET_ICONS: Record<AgentPreset["id"], typeof Bot> = {
 // Step subtitles (agents namespace) — resolved with t() at render so
 // language switches take effect live.
 const STEP_SUBTITLE_KEYS: Record<WizardStep, string> = {
-  preset: "create.presetHint",
+  brief: "create.brief.hint",
   name: "create.nameHint",
   photo: "create.photoHint",
   role: "create.roleHint",
@@ -164,6 +178,20 @@ export function CreateAgentModal({ onClose }: { onClose: () => void }) {
   // preset — a chosen starting point pre-seeds role/tone/specialties/
   // description/instructions; everything stays editable in later steps.
   const [preset, setPreset] = useState<AgentPreset | null>(null);
+  // brief — the quick path's free-text prompt. Sent to POST /api/agents/draft;
+  // the proposal seeds every later step and lands on review. Also stored on
+  // the agent (metadata.creation_brief) so its first greeting can play the
+  // brief back and invite corrections.
+  const [brief, setBrief] = useState("");
+  const [drafting, setDrafting] = useState(false);
+  const [draftError, setDraftError] = useState<string | null>(null);
+  // Which fork the user took — analytics + whether review shows the
+  // "here's the draft" subtitle. null until they choose.
+  const [creationPath, setCreationPath] = useState<CreationPath | null>(null);
+  // Set when review sent the user into a single step to adjust it (or the
+  // preset chip sent them to name): Next/Back return straight to review
+  // instead of walking the remaining steps.
+  const [editingFromReview, setEditingFromReview] = useState(false);
   // Owner's Google connection, prefetched when a Google-backed preset is
   // picked so the create path doesn't await it. null = unknown.
   const googleConnectedRef = useRef<boolean | null>(null);
@@ -407,16 +435,79 @@ export function CreateAgentModal({ onClose }: { onClose: () => void }) {
     return t(`create.descPlaceholders.${agentRole}.${suffix}`);
   }, [agentRole, specialties, t, i18n]);
 
+  // Split a mixed specialty list into the role's catalog options and the
+  // custom remainder — the two are separate state so the specialties step
+  // renders them differently.
+  const seedSpecialties = (role: AgentType, list: string[]) => {
+    const options = SPECIALTIES_BY_ROLE[role].options;
+    setSpecialties(list.filter((s) => options.includes(s)));
+    setCustomSpecialties(list.filter((s) => !options.includes(s)));
+  };
+
+  // Quick path: seed every step from the server's proposal and land on
+  // review. The name comes from the draft (the brief step has no name
+  // field); the user edits it there if they want.
+  const applyDraft = (d: AgentDraft) => {
+    setPreset(null);
+    setCreationPath("quick");
+    setDisplayName(d.displayName);
+    const role = (agentTypes.some((x) => x.id === d.agentType)
+      ? d.agentType
+      : "worker") as AgentType;
+    setAgentRole(role);
+    seedSpecialties(role, d.specialties);
+    const toneKey = TONES.find((tn) => tn.key === d.tone)?.key ?? null;
+    setTone(toneKey);
+    setCustomTone(toneKey ? null : d.customTone);
+    setDescription(d.description);
+    setCustomInstructions(d.instructions);
+    setSelectedTools(d.tools);
+    setRequiresLocation(d.requiresLocation);
+    if (d.requiresGoogle && googleConnectedRef.current === null) {
+      void getProviderStatus("google")
+        .then((s) => {
+          googleConnectedRef.current = s.connected;
+        })
+        .catch(() => {
+          // stays null — re-checked at create time
+        });
+    }
+    setEditingFromReview(false);
+    setStepIndex(STEPS.indexOf("review"));
+  };
+
+  const handleDraft = async () => {
+    const text = brief.trim();
+    if (!text || drafting) return;
+    setDrafting(true);
+    setDraftError(null);
+    try {
+      applyDraft(await draftAgent(text));
+    } catch (e) {
+      const status = (e as { status?: number } | null)?.status;
+      setDraftError(
+        status === 503 ? t("create.brief.unavailable") : t("create.brief.failed")
+      );
+    } finally {
+      setDrafting(false);
+    }
+  };
+
   // Apply a starting point (or "scratch" = null). Sets role FIRST and then
   // specialties in the same handler — the role step's own click handler
   // resets specialties on change, but this path bypasses it deliberately.
+  //
+  // A preset needs exactly one thing from the user — a name — so it goes to
+  // the name step with Next wired straight to review. Scratch walks every
+  // step, carrying anything typed in the brief box into the description so
+  // nothing is lost.
   const applyPreset = (p: AgentPreset | null) => {
     setPreset(p);
+    setDraftError(null);
     if (p) {
-      const options = SPECIALTIES_BY_ROLE[p.role].options;
+      setCreationPath("preset");
       setAgentRole(p.role);
-      setSpecialties(p.specialties.filter((s) => options.includes(s)));
-      setCustomSpecialties(p.specialties.filter((s) => !options.includes(s)));
+      seedSpecialties(p.role, p.specialties);
       setTone(p.tone);
       setCustomTone(null);
       // Prefill in the user's language — the server preset carries English
@@ -441,35 +532,50 @@ export function CreateAgentModal({ onClose }: { onClose: () => void }) {
             // stays null — re-checked at create time
           });
       }
+      setEditingFromReview(true);
     } else {
       // Scratch: return the seeded fields to pristine so switching from a
       // preset back to scratch doesn't silently keep its seed.
+      setCreationPath("advanced");
       setAgentRole("worker");
       setSpecialties([]);
       setCustomSpecialties([]);
       setTone(null);
       setCustomTone(null);
-      setDescription("");
+      setDescription(brief.trim());
       setCustomInstructions("");
       setSelectedTools([]);
+      setRequiresLocation(false);
       if (backend === "claude_cli") setModel(defaultModelFor(backend));
+      setEditingFromReview(false);
     }
     setStepIndex(STEPS.indexOf("name"));
   };
 
+  // Review → a single step to adjust it; Next/Back come straight back.
+  const editStep = (s: WizardStep) => {
+    setEditingFromReview(true);
+    setStepIndex(STEPS.indexOf(s));
+  };
+
   const canNext = useMemo(() => {
-    // Preset step advances by picking a card, not the Next button.
-    if (step === "preset") return false;
+    // The brief step advances by drafting or picking a chip, not Next.
+    if (step === "brief") return false;
     if (step === "name") return displayName.trim().length > 0;
     return true;
   }, [step, displayName]);
 
   const isLast = step === "review";
-  const isFirst = step === "preset";
+  const isFirst = step === "brief";
 
   const handleBack = () => {
     if (isFirst) {
       onClose();
+      return;
+    }
+    if (editingFromReview) {
+      setEditingFromReview(false);
+      setStepIndex(STEPS.indexOf("review"));
       return;
     }
     setStepIndex((i) => Math.max(0, i - 1));
@@ -479,6 +585,11 @@ export function CreateAgentModal({ onClose }: { onClose: () => void }) {
     if (!canNext) return;
     if (isLast) {
       void handleCreate();
+      return;
+    }
+    if (editingFromReview) {
+      setEditingFromReview(false);
+      setStepIndex(STEPS.indexOf("review"));
       return;
     }
     setStepIndex((i) => Math.min(STEPS.length - 1, i + 1));
@@ -564,7 +675,8 @@ export function CreateAgentModal({ onClose }: { onClose: () => void }) {
   const handleCreate = useCallback(async () => {
     if (!displayName.trim()) {
       setError(t("create.errors.nameRequired"));
-      setStepIndex(0);
+      setEditingFromReview(true);
+      setStepIndex(STEPS.indexOf("name"));
       return;
     }
     // Hosted agents use the host's shared brain — no API key to enter.
@@ -638,9 +750,21 @@ export function CreateAgentModal({ onClose }: { onClose: () => void }) {
         customInstructions
       );
 
+      // Cross-device fields live in agent.metadata (snake_case, backend-
+      // merged). computer_use_enabled follows the agent across desktops; the
+      // creation brief lets the first-run greeting play the owner's own
+      // words back (FirstAgentGreetingWorker).
+      const metadata: Record<string, unknown> = {
+        ...(!hosted && computerUseEnabled ? { computer_use_enabled: true } : {}),
+        ...(creationPath === "quick" && brief.trim()
+          ? { creation_brief: brief.trim() }
+          : {}),
+      };
+
       const newId = await createAgent({
         displayName: displayName.trim(),
         agentType: agentRole,
+        ...(creationPath ? { creationPath } : {}),
         // Local choice must be explicit — without it the backend auto-places
         // every new agent on the owner's org host when one exists.
         ...(!hosted ? { runtime: "local" as const } : {}),
@@ -655,12 +779,7 @@ export function CreateAgentModal({ onClose }: { onClose: () => void }) {
         // Local-only brain knobs — hosted agents use the host's shared seat.
         ...(!hosted && effort ? { effort } : {}),
         ...(!hosted && skipPermissions ? { dangerouslySkipPermissions: true } : {}),
-        // computer-use lives in agent.metadata (snake_case, backend-merged)
-        // so it follows the agent across desktops. Allow-list is left
-        // empty at create time — user can fill it in AgentConfig after.
-        ...(!hosted && computerUseEnabled
-          ? { metadata: { computer_use_enabled: true } }
-          : {}),
+        ...(Object.keys(metadata).length > 0 ? { metadata } : {}),
         ...(llmApiKeyIdPin ? { llmApiKeyId: llmApiKeyIdPin } : {}),
         // Visibility: omit organizationIds (= all-workspaces default)
         // unless the user picked a pin set on the review step — any
@@ -774,6 +893,8 @@ export function CreateAgentModal({ onClose }: { onClose: () => void }) {
     catalog,
     activeWorkspace,
     visibilityOrgIds,
+    creationPath,
+    brief,
     t,
   ]);
 
@@ -793,8 +914,8 @@ export function CreateAgentModal({ onClose }: { onClose: () => void }) {
   const stepTitle = (s: WizardStep): string => {
     const name = displayName.trim();
     switch (s) {
-      case "preset":
-        return t("create.presetTitle");
+      case "brief":
+        return t("create.brief.title");
       case "name":
         return t("create.nameTitle");
       case "photo":
@@ -934,7 +1055,9 @@ export function CreateAgentModal({ onClose }: { onClose: () => void }) {
                 />
               </DialogTitle>
               <p className="text-sm text-text-muted min-h-[2.5em]">
-                {t(STEP_SUBTITLE_KEYS[step])}
+                {step === "review" && creationPath === "quick"
+                  ? t("create.brief.draftedHint")
+                  : t(STEP_SUBTITLE_KEYS[step])}
               </p>
             </div>
 
@@ -966,55 +1089,93 @@ export function CreateAgentModal({ onClose }: { onClose: () => void }) {
               }}
               className="space-y-4 pt-2 animate-in fade-in-0 slide-in-from-bottom-1 duration-300"
             >
-              {step === "preset" && (
-                <div className="space-y-2">
-                  <div className="grid grid-cols-2 gap-2">
-                    {agentPresets.map((p) => {
-                      const Icon = PRESET_ICONS[p.id];
-                      const selected = preset?.id === p.id;
-                      return (
-                        <button
-                          key={p.id}
-                          type="button"
-                          onClick={() => applyPreset(p)}
-                          className={cn(
-                            "relative flex flex-col items-center gap-1.5 rounded-lg border p-3 text-center transition-colors",
-                            selected
-                              ? "border-primary bg-primary/5"
-                              : "border-border hover:bg-accent"
-                          )}
-                        >
-                          <Icon
-                            className={cn(
-                              "h-5 w-5",
-                              selected ? "text-primary" : "text-text-muted"
-                            )}
-                          />
-                          <span className="text-xs font-medium">
-                            {t(p.labelKey)}
-                          </span>
-                          <span className="text-[10px] leading-tight text-text-muted">
-                            {t(p.taglineKey)}
-                          </span>
-                          {p.requiresGoogle && (
-                            <span className="mt-0.5 rounded-full bg-muted px-1.5 py-px text-[9px] uppercase tracking-wide text-muted-foreground">
-                              {t("create.presets.googleBadge")}
-                            </span>
-                          )}
-                        </button>
-                      );
-                    })}
+              {step === "brief" && (
+                <div className="space-y-3">
+                  <div className="space-y-1.5">
+                    <div className="flex items-baseline justify-end">
+                      <span className="text-xs text-text-muted tabular-nums">
+                        {brief.length}/{limits.agent.creationBrief}
+                      </span>
+                    </div>
+                    <Textarea
+                      id="agent-brief"
+                      aria-label={t("create.brief.title")}
+                      value={brief}
+                      onChange={(e) => setBrief(e.target.value)}
+                      placeholder={t("create.brief.placeholder")}
+                      rows={4}
+                      maxLength={limits.agent.creationBrief}
+                      disabled={drafting}
+                      autoFocus
+                      onKeyDown={(e) => {
+                        if (e.key === "Enter" && (e.metaKey || e.ctrlKey)) {
+                          e.preventDefault();
+                          void handleDraft();
+                        }
+                      }}
+                    />
                   </div>
+                  {draftError && (
+                    <p className="text-xs text-destructive" role="alert">
+                      {draftError}
+                    </p>
+                  )}
+                  <Button
+                    type="button"
+                    className="w-full"
+                    onClick={() => void handleDraft()}
+                    disabled={drafting || brief.trim().length === 0}
+                  >
+                    {drafting ? (
+                      <>
+                        <Loader2 className="mr-1.5 h-3.5 w-3.5 animate-spin" />
+                        {t("create.brief.drafting")}
+                      </>
+                    ) : (
+                      <>
+                        <Wand2 className="mr-1.5 h-3.5 w-3.5" />
+                        {t("create.brief.draftButton")}
+                      </>
+                    )}
+                  </Button>
+                  {agentPresets.length > 0 && (
+                    <div className="space-y-1.5">
+                      <p className="text-[11px] text-text-muted">
+                        {t("create.brief.orPreset")}
+                      </p>
+                      <div className="flex flex-wrap gap-1.5">
+                        {agentPresets.map((p) => {
+                          const Icon = PRESET_ICONS[p.id];
+                          return (
+                            <button
+                              key={p.id}
+                              type="button"
+                              onClick={() => applyPreset(p)}
+                              disabled={drafting}
+                              title={t(p.taglineKey)}
+                              className="inline-flex items-center gap-1.5 rounded-full border border-border px-2.5 py-1 text-xs transition-colors hover:bg-accent disabled:opacity-50"
+                            >
+                              <Icon className="h-3.5 w-3.5 text-text-muted" />
+                              {t(p.labelKey)}
+                              {p.requiresGoogle && (
+                                <span className="rounded-full bg-muted px-1.5 py-px text-[9px] uppercase tracking-wide text-muted-foreground">
+                                  {t("create.presets.googleBadge")}
+                                </span>
+                              )}
+                            </button>
+                          );
+                        })}
+                      </div>
+                    </div>
+                  )}
                   <button
                     type="button"
                     onClick={() => applyPreset(null)}
-                    className="flex w-full items-center justify-center gap-2 rounded-lg border border-dashed border-border p-2.5 text-xs text-text-muted transition-colors hover:bg-accent hover:text-foreground"
+                    disabled={drafting}
+                    className="flex w-full items-center justify-center gap-1.5 py-1 text-xs text-text-muted transition-colors hover:text-foreground disabled:opacity-50"
                   >
                     <PenLine className="h-3.5 w-3.5" />
-                    <span className="font-medium">
-                      {t("create.presets.scratchLabel")}
-                    </span>
-                    <span>· {t("create.presets.scratchTagline")}</span>
+                    {t("create.brief.stepByStep")}
                   </button>
                 </div>
               )}
@@ -1920,6 +2081,27 @@ export function CreateAgentModal({ onClose }: { onClose: () => void }) {
                       onChange={setVisibilityOrgIds}
                     />
                   )}
+
+                  {/* Jump-to-step chips: the quick path never visited these
+                      steps, so this is how a drafted agent gets adjusted. */}
+                  <div className="space-y-1.5">
+                    <p className="text-[11px] text-text-muted">
+                      {t("create.review.editHint")}
+                    </p>
+                    <div className="flex flex-wrap gap-1.5">
+                      {EDITABLE_STEPS.map((s) => (
+                        <button
+                          key={s}
+                          type="button"
+                          onClick={() => editStep(s)}
+                          disabled={creating}
+                          className="rounded-full border border-border px-2.5 py-1 text-xs transition-colors hover:bg-accent disabled:opacity-50"
+                        >
+                          {t(`create.stepLabels.${s}`)}
+                        </button>
+                      ))}
+                    </div>
+                  </div>
                 </div>
               )}
 
@@ -1954,8 +2136,8 @@ export function CreateAgentModal({ onClose }: { onClose: () => void }) {
               </Button>
             )}
 
-            {/* The preset step advances by picking a card, so no Next. */}
-            {step !== "preset" && (
+            {/* The brief step advances by drafting or picking a chip, so no Next. */}
+            {step !== "brief" && (
               <Button
                 type="button"
                 onClick={handleNext}
@@ -1966,7 +2148,9 @@ export function CreateAgentModal({ onClose }: { onClose: () => void }) {
                   ? creating
                     ? t("create.creatingLabel")
                     : t("create.createAgent")
-                  : t("common:next")}
+                  : editingFromReview
+                    ? t("create.review.backToReview")
+                    : t("common:next")}
                 {!isLast && !creating && <ArrowRight className="ml-1 h-3 w-3" />}
               </Button>
             )}

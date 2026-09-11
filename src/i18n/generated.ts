@@ -449,6 +449,18 @@ export const resources = {
         "advancedSettings": "Advanced Settings",
         "brainHint": "Which AI model powers them.",
         "brainTitle": "Pick a brain",
+        "brief": {
+          "draftButton": "Draft it",
+          "draftedHint": "Here's the draft. Adjust any part below, then create.",
+          "drafting": "Drafting…",
+          "failed": "Couldn't draft the agent. Try again, or build it step by step.",
+          "hint": "Say who they are and what they do. We'll fill in the rest.",
+          "orPreset": "Or start from a template",
+          "placeholder": "You are a travel planner. You find flights and build itineraries for my family…",
+          "stepByStep": "Build it step by step instead",
+          "title": "Describe your agent",
+          "unavailable": "Drafting isn't available right now. Build it step by step instead."
+        },
         "bringOnline": "Bring Online",
         "bringingOnline": "Bringing online…",
         "broughtOnlineToast": "{{name}} is coming online — open on your desktop",
@@ -587,8 +599,6 @@ export const resources = {
         "photoHint": "A photo makes your agent easy to recognize at a glance.",
         "photoTitle": "Give your agent a face",
         "photoTitleNamed": "Give {{name}} a face",
-        "presetHint": "Choose a ready-made agent, or build your own from scratch.",
-        "presetTitle": "What kind of agent do you want?",
         "presets": {
           "assistant": {
             "description": "Personal assistant that keeps the day on track",
@@ -618,9 +628,7 @@ export const resources = {
             "label": "Research Agent",
             "namePlaceholder": "e.g. Sage, Quill, Darwin…",
             "tagline": "Turns questions into cited, decision-ready briefs"
-          },
-          "scratchLabel": "Start from scratch",
-          "scratchTagline": "a blank agent, fully your design"
+          }
         },
         "provider": "Provider",
         "providerApiKey": "{{provider}} API Key",
@@ -629,10 +637,13 @@ export const resources = {
         "removeSpecialty": "Remove {{name}}",
         "responseTemplates": "Response Cards",
         "review": {
+          "backToReview": "Back to review",
           "brain": "Brain",
           "computerUse": "Computer use",
           "computerUseAllowed": "Allowed (configure allowed-app list after creation)",
           "customKeyThisAgent": "Custom (this agent)",
+          "edit": "Edit",
+          "editHint": "Jump to a step to change it",
           "key": "Key",
           "mode": "Mode",
           "pinnedKey": "Pinned key",
@@ -709,6 +720,16 @@ export const resources = {
           "connecting": "Connecting to system...",
           "creating": "Creating agent...",
           "personality": "Crafting personality..."
+        },
+        "stepLabels": {
+          "brain": "Brain",
+          "details": "Details",
+          "name": "Name",
+          "photo": "Photo",
+          "role": "Role",
+          "specialties": "Specialties",
+          "tone": "Tone",
+          "tools": "Tools"
         },
         "swipeToExplore": "Swipe to explore",
         "taskTimeout": "Task Timeout (seconds)",
@@ -1876,7 +1897,6 @@ export const resources = {
           "details": "Any extra guidance?",
           "name": "What's their name?",
           "photo": "Give them a face",
-          "preset": "What kind of agent?",
           "review": "Ready to meet them?",
           "role": "What do they do?",
           "specialties": "What are they good at?",
@@ -5735,6 +5755,18 @@ export const resources = {
         "advancedSettings": "Ajustes avanzados",
         "brainHint": "Qué modelo de IA lo impulsa.",
         "brainTitle": "Elige un cerebro",
+        "brief": {
+          "draftButton": "Crear borrador",
+          "draftedHint": "Aquí está el borrador. Ajusta lo que quieras abajo y luego créalo.",
+          "drafting": "Creando borrador…",
+          "failed": "No se pudo crear el borrador. Inténtalo de nuevo o créalo paso a paso.",
+          "hint": "Di quién es y qué hace. Nosotros completamos el resto.",
+          "orPreset": "O empieza desde una plantilla",
+          "placeholder": "Eres un planificador de viajes. Buscas vuelos y armas itinerarios para mi familia…",
+          "stepByStep": "Prefiero crearlo paso a paso",
+          "title": "Describe tu agente",
+          "unavailable": "El borrador automático no está disponible ahora. Créalo paso a paso."
+        },
         "bringOnline": "Poner en línea",
         "bringingOnline": "Poniendo en línea…",
         "broughtOnlineToast": "{{name}} se está conectando — ábrelo en tu escritorio",
@@ -5873,8 +5905,6 @@ export const resources = {
         "photoHint": "Una foto hace que tu agente sea fácil de reconocer de un vistazo.",
         "photoTitle": "Dale una cara a tu agente",
         "photoTitleNamed": "Dale una cara a {{name}}",
-        "presetHint": "Elige un agente listo para usar o crea el tuyo desde cero.",
-        "presetTitle": "¿Qué tipo de agente quieres?",
         "presets": {
           "assistant": {
             "description": "Asistente personal que mantiene el día en orden",
@@ -5904,9 +5934,7 @@ export const resources = {
             "label": "Agente de investigación",
             "namePlaceholder": "p. ej., Sage, Quill, Darwin…",
             "tagline": "Convierte preguntas en informes citados y listos para decidir"
-          },
-          "scratchLabel": "Empezar desde cero",
-          "scratchTagline": "un agente en blanco, totalmente a tu diseño"
+          }
         },
         "provider": "Proveedor",
         "providerApiKey": "Clave API de {{provider}}",
@@ -5915,10 +5943,13 @@ export const resources = {
         "removeSpecialty": "Quitar {{name}}",
         "responseTemplates": "Tarjetas de respuesta",
         "review": {
+          "backToReview": "Volver al resumen",
           "brain": "Cerebro",
           "computerUse": "Uso del ordenador",
           "computerUseAllowed": "Permitido (configura la lista de aplicaciones permitidas después de crearlo)",
           "customKeyThisAgent": "Personalizada (este agente)",
+          "edit": "Editar",
+          "editHint": "Ve a un paso para cambiarlo",
           "key": "Clave",
           "mode": "Modo",
           "pinnedKey": "Clave fijada",
@@ -5995,6 +6026,16 @@ export const resources = {
           "connecting": "Conectando al sistema...",
           "creating": "Creando agente...",
           "personality": "Perfilando la personalidad..."
+        },
+        "stepLabels": {
+          "brain": "Cerebro",
+          "details": "Detalles",
+          "name": "Nombre",
+          "photo": "Foto",
+          "role": "Rol",
+          "specialties": "Especialidades",
+          "tone": "Tono",
+          "tools": "Herramientas"
         },
         "swipeToExplore": "Desliza para explorar",
         "taskTimeout": "Tiempo de espera de tarea (segundos)",
@@ -7162,7 +7203,6 @@ export const resources = {
           "details": "¿Alguna indicación adicional?",
           "name": "¿Cómo se llama?",
           "photo": "Dale una cara",
-          "preset": "¿Qué tipo de agente?",
           "review": "¿Listo para conocerlo?",
           "role": "¿Qué hace?",
           "specialties": "¿En qué se destaca?",
@@ -11021,6 +11061,18 @@ export const resources = {
         "advancedSettings": "Erweiterte Einstellungen",
         "brainHint": "Welches KI-Modell sie antreibt.",
         "brainTitle": "Ein Gehirn wählen",
+        "brief": {
+          "draftButton": "Entwurf erstellen",
+          "draftedHint": "Hier ist der Entwurf. Passe unten alles an, was du willst, und erstelle dann.",
+          "drafting": "Entwurf wird erstellt …",
+          "failed": "Der Entwurf konnte nicht erstellt werden. Versuche es erneut oder baue ihn Schritt für Schritt auf.",
+          "hint": "Sag, wer sie sind und was sie tun. Den Rest füllen wir aus.",
+          "orPreset": "Oder mit einer Vorlage starten",
+          "placeholder": "Du bist ein Reiseplaner. Du findest Flüge und erstellst Reisepläne für meine Familie …",
+          "stepByStep": "Lieber Schritt für Schritt aufbauen",
+          "title": "Beschreibe deinen Agenten",
+          "unavailable": "Entwürfe sind gerade nicht verfügbar. Baue ihn stattdessen Schritt für Schritt auf."
+        },
         "bringOnline": "Online schalten",
         "bringingOnline": "Wird online geschaltet…",
         "broughtOnlineToast": "{{name}} kommt online — auf dem Desktop öffnen",
@@ -11159,8 +11211,6 @@ export const resources = {
         "photoHint": "Ein Foto macht Ihren Agenten auf einen Blick leicht erkennbar.",
         "photoTitle": "Geben Sie Ihrem Agenten ein Gesicht",
         "photoTitleNamed": "Geben Sie {{name}} ein Gesicht",
-        "presetHint": "Wählen Sie einen vorgefertigten Agenten oder bauen Sie einen eigenen von Grund auf.",
-        "presetTitle": "Welche Art von Agent möchten Sie?",
         "presets": {
           "assistant": {
             "description": "Persönlicher Assistent, der den Tag auf Kurs hält",
@@ -11190,9 +11240,7 @@ export const resources = {
             "label": "Recherche-Agent",
             "namePlaceholder": "z. B. Sage, Quill, Darwin…",
             "tagline": "Verwandelt Fragen in belegte, entscheidungsreife Briefings"
-          },
-          "scratchLabel": "Von Grund auf beginnen",
-          "scratchTagline": "ein leerer Agent, ganz nach Ihrem Entwurf"
+          }
         },
         "provider": "Anbieter",
         "providerApiKey": "{{provider}}-API-Schlüssel",
@@ -11201,10 +11249,13 @@ export const resources = {
         "removeSpecialty": "{{name}} entfernen",
         "responseTemplates": "Antwortkarten",
         "review": {
+          "backToReview": "Zurück zur Übersicht",
           "brain": "Gehirn",
           "computerUse": "Computernutzung",
           "computerUseAllowed": "Erlaubt (Liste erlaubter Apps nach der Erstellung konfigurieren)",
           "customKeyThisAgent": "Benutzerdefiniert (dieser Agent)",
+          "edit": "Bearbeiten",
+          "editHint": "Springe zu einem Schritt, um ihn zu ändern",
           "key": "Schlüssel",
           "mode": "Modus",
           "pinnedKey": "Angepinnter Schlüssel",
@@ -11281,6 +11332,16 @@ export const resources = {
           "connecting": "Verbindung zum System wird hergestellt...",
           "creating": "Agent wird erstellt...",
           "personality": "Persönlichkeit wird erschaffen..."
+        },
+        "stepLabels": {
+          "brain": "Gehirn",
+          "details": "Details",
+          "name": "Name",
+          "photo": "Foto",
+          "role": "Rolle",
+          "specialties": "Schwerpunkte",
+          "tone": "Ton",
+          "tools": "Tools"
         },
         "swipeToExplore": "Zum Erkunden wischen",
         "taskTimeout": "Aufgaben-Timeout (Sekunden)",
@@ -12448,7 +12509,6 @@ export const resources = {
           "details": "Weitere Hinweise?",
           "name": "Wie heißt er?",
           "photo": "Gib ihm ein Gesicht",
-          "preset": "Welche Art von Agent?",
           "review": "Bereit, ihn kennenzulernen?",
           "role": "Was macht er?",
           "specialties": "Worin ist er gut?",
@@ -16307,6 +16367,18 @@ export const resources = {
         "advancedSettings": "Paramètres avancés",
         "brainHint": "Quel modèle d'IA les propulse.",
         "brainTitle": "Choisissez un cerveau",
+        "brief": {
+          "draftButton": "Rédiger le brouillon",
+          "draftedHint": "Voici le brouillon. Ajustez ce que vous voulez ci-dessous, puis créez.",
+          "drafting": "Rédaction en cours…",
+          "failed": "Impossible de rédiger le brouillon. Réessayez ou construisez-le étape par étape.",
+          "hint": "Dites qui il est et ce qu'il fait. Nous complétons le reste.",
+          "orPreset": "Ou partez d'un modèle",
+          "placeholder": "Tu es un planificateur de voyages. Tu trouves des vols et prépares des itinéraires pour ma famille…",
+          "stepByStep": "Le construire étape par étape",
+          "title": "Décrivez votre agent",
+          "unavailable": "La rédaction automatique est indisponible pour le moment. Construisez-le étape par étape."
+        },
         "bringOnline": "Mettre en ligne",
         "bringingOnline": "Mise en ligne…",
         "broughtOnlineToast": "{{name}} se connecte — ouvrez-le sur votre bureau",
@@ -16445,8 +16517,6 @@ export const resources = {
         "photoHint": "Une photo permet de reconnaître votre agent facilement en un coup d'œil.",
         "photoTitle": "Donnez un visage à votre agent",
         "photoTitleNamed": "Donnez un visage à {{name}}",
-        "presetHint": "Choisissez un agent prêt à l'emploi, ou créez le vôtre de zéro.",
-        "presetTitle": "Quel type d'agent voulez-vous ?",
         "presets": {
           "assistant": {
             "description": "Assistant personnel qui garde la journée sur les rails",
@@ -16476,9 +16546,7 @@ export const resources = {
             "label": "Agent de recherche",
             "namePlaceholder": "p. ex. Sage, Quill, Darwin…",
             "tagline": "Transforme vos questions en synthèses sourcées, prêtes à la décision"
-          },
-          "scratchLabel": "Partir de zéro",
-          "scratchTagline": "un agent vierge, entièrement à votre goût"
+          }
         },
         "provider": "Fournisseur",
         "providerApiKey": "Clé API {{provider}}",
@@ -16487,10 +16555,13 @@ export const resources = {
         "removeSpecialty": "Retirer {{name}}",
         "responseTemplates": "Cartes de réponse",
         "review": {
+          "backToReview": "Retour au récapitulatif",
           "brain": "Cerveau",
           "computerUse": "Utilisation de l'ordinateur",
           "computerUseAllowed": "Autorisée (configurez la liste des applications autorisées après la création)",
           "customKeyThisAgent": "Personnalisée (cet agent)",
+          "edit": "Modifier",
+          "editHint": "Accédez à une étape pour la modifier",
           "key": "Clé",
           "mode": "Mode",
           "pinnedKey": "Clé épinglée",
@@ -16567,6 +16638,16 @@ export const resources = {
           "connecting": "Connexion au système...",
           "creating": "Création de l'agent...",
           "personality": "Création de la personnalité..."
+        },
+        "stepLabels": {
+          "brain": "Cerveau",
+          "details": "Détails",
+          "name": "Nom",
+          "photo": "Photo",
+          "role": "Rôle",
+          "specialties": "Spécialités",
+          "tone": "Ton",
+          "tools": "Outils"
         },
         "swipeToExplore": "Balayez pour explorer",
         "taskTimeout": "Délai d'expiration des tâches (secondes)",
@@ -17734,7 +17815,6 @@ export const resources = {
           "details": "Des consignes supplémentaires ?",
           "name": "Quel est son nom ?",
           "photo": "Donnez-lui un visage",
-          "preset": "Quel type d'agent ?",
           "review": "Prêt à le rencontrer ?",
           "role": "Que fait-il ?",
           "specialties": "Dans quoi excelle-t-il ?",
@@ -21593,6 +21673,18 @@ export const resources = {
         "advancedSettings": "Configurações Avançadas",
         "brainHint": "Qual modelo de IA os move.",
         "brainTitle": "Escolha um cérebro",
+        "brief": {
+          "draftButton": "Criar rascunho",
+          "draftedHint": "Aqui está o rascunho. Ajuste o que quiser abaixo e depois crie.",
+          "drafting": "Criando rascunho…",
+          "failed": "Não foi possível criar o rascunho. Tente de novo ou monte passo a passo.",
+          "hint": "Diga quem ele é e o que faz. Nós preenchemos o resto.",
+          "orPreset": "Ou comece a partir de um modelo",
+          "placeholder": "Você é um planejador de viagens. Você encontra voos e monta roteiros para minha família…",
+          "stepByStep": "Prefiro montar passo a passo",
+          "title": "Descreva seu agente",
+          "unavailable": "O rascunho automático não está disponível agora. Monte passo a passo."
+        },
         "bringOnline": "Colocar on-line",
         "bringingOnline": "Colocando on-line…",
         "broughtOnlineToast": "{{name}} está ficando on-line — abra no seu computador",
@@ -21731,8 +21823,6 @@ export const resources = {
         "photoHint": "Uma foto torna seu agente fácil de reconhecer rapidamente.",
         "photoTitle": "Dê um rosto ao seu agente",
         "photoTitleNamed": "Dê um rosto a {{name}}",
-        "presetHint": "Escolha um agente pronto ou crie o seu do zero.",
-        "presetTitle": "Que tipo de agente você quer?",
         "presets": {
           "assistant": {
             "description": "Assistente pessoal que mantém o dia nos trilhos",
@@ -21762,9 +21852,7 @@ export const resources = {
             "label": "Agente de pesquisa",
             "namePlaceholder": "ex.: Sage, Quill, Darwin…",
             "tagline": "Transforma perguntas em resumos citados e prontos para decisão"
-          },
-          "scratchLabel": "Começar do zero",
-          "scratchTagline": "um agente em branco, totalmente do seu jeito"
+          }
         },
         "provider": "Provedor",
         "providerApiKey": "Chave de API da {{provider}}",
@@ -21773,10 +21861,13 @@ export const resources = {
         "removeSpecialty": "Remover {{name}}",
         "responseTemplates": "Cartões de Resposta",
         "review": {
+          "backToReview": "Voltar à revisão",
           "brain": "Cérebro",
           "computerUse": "Uso do computador",
           "computerUseAllowed": "Permitido (configure a lista de apps permitidos após a criação)",
           "customKeyThisAgent": "Personalizada (este agente)",
+          "edit": "Editar",
+          "editHint": "Vá a uma etapa para alterá-la",
           "key": "Chave",
           "mode": "Modo",
           "pinnedKey": "Chave fixada",
@@ -21853,6 +21944,16 @@ export const resources = {
           "connecting": "Conectando ao sistema...",
           "creating": "Criando agente...",
           "personality": "Criando personalidade..."
+        },
+        "stepLabels": {
+          "brain": "Cérebro",
+          "details": "Detalhes",
+          "name": "Nome",
+          "photo": "Foto",
+          "role": "Função",
+          "specialties": "Especialidades",
+          "tone": "Tom",
+          "tools": "Ferramentas"
         },
         "swipeToExplore": "Deslize para explorar",
         "taskTimeout": "Tempo Limite de Tarefa (segundos)",
@@ -23020,7 +23121,6 @@ export const resources = {
           "details": "Alguma orientação adicional?",
           "name": "Qual é o nome dele?",
           "photo": "Dê um rosto a ele",
-          "preset": "Que tipo de agente?",
           "review": "Pronto para conhecê-lo?",
           "role": "O que ele faz?",
           "specialties": "No que ele é bom?",
@@ -26879,6 +26979,18 @@ export const resources = {
         "advancedSettings": "詳細設定",
         "brainHint": "どのAIモデルが動かすか。",
         "brainTitle": "頭脳を選ぶ",
+        "brief": {
+          "draftButton": "下書きを作成",
+          "draftedHint": "下書きができました。必要な箇所を調整してから作成してください。",
+          "drafting": "下書きを作成中…",
+          "failed": "下書きを作成できませんでした。もう一度試すか、ステップごとに作成してください。",
+          "hint": "誰で、何をするのかを書いてください。残りはこちらで補います。",
+          "orPreset": "またはテンプレートから始める",
+          "placeholder": "あなたは旅行プランナーです。家族のためにフライトを探し、旅程を組みます…",
+          "stepByStep": "代わりにステップごとに作成する",
+          "title": "エージェントを説明してください",
+          "unavailable": "現在、下書き作成は利用できません。ステップごとに作成してください。"
+        },
         "bringOnline": "オンラインにする",
         "bringingOnline": "オンラインにしています…",
         "broughtOnlineToast": "{{name}} をオンラインにしています — デスクトップで開いてください",
@@ -27017,8 +27129,6 @@ export const resources = {
         "photoHint": "写真があると、エージェントを一目で識別しやすくなります。",
         "photoTitle": "エージェントに顔を与える",
         "photoTitleNamed": "{{name}}に顔を与える",
-        "presetHint": "既成のエージェントを選ぶか、ゼロから自分で作りましょう。",
-        "presetTitle": "どんなエージェントにしますか？",
         "presets": {
           "assistant": {
             "description": "一日を順調に保つパーソナルアシスタント",
@@ -27048,9 +27158,7 @@ export const resources = {
             "label": "リサーチエージェント",
             "namePlaceholder": "例：セージ、クィル、ダーウィン…",
             "tagline": "質問を出典付きの意思決定用ブリーフに"
-          },
-          "scratchLabel": "ゼロから作る",
-          "scratchTagline": "まっさらなエージェントを自由に設計"
+          }
         },
         "provider": "プロバイダー",
         "providerApiKey": "{{provider}} APIキー",
@@ -27059,10 +27167,13 @@ export const resources = {
         "removeSpecialty": "{{name}}を削除",
         "responseTemplates": "レスポンスカード",
         "review": {
+          "backToReview": "確認画面に戻る",
           "brain": "頭脳",
           "computerUse": "コンピュータ操作",
           "computerUseAllowed": "許可（作成後に許可アプリのリストを設定）",
           "customKeyThisAgent": "カスタム（このエージェント）",
+          "edit": "編集",
+          "editHint": "変更するステップに移動",
           "key": "キー",
           "mode": "モード",
           "pinnedKey": "固定キー",
@@ -27139,6 +27250,16 @@ export const resources = {
           "connecting": "システムに接続しています…",
           "creating": "エージェントを作成しています…",
           "personality": "性格を作り込んでいます…"
+        },
+        "stepLabels": {
+          "brain": "ブレイン",
+          "details": "詳細",
+          "name": "名前",
+          "photo": "写真",
+          "role": "役割",
+          "specialties": "得意分野",
+          "tone": "口調",
+          "tools": "ツール"
         },
         "swipeToExplore": "スワイプして見る",
         "taskTimeout": "タスクタイムアウト（秒）",
@@ -28306,7 +28427,6 @@ export const resources = {
           "details": "追加の指示はありますか？",
           "name": "名前は？",
           "photo": "顔を与えましょう",
-          "preset": "どんなエージェント？",
           "review": "会う準備はできましたか？",
           "role": "何をしますか？",
           "specialties": "何が得意ですか？",
@@ -32165,6 +32285,18 @@ export const resources = {
         "advancedSettings": "高级设置",
         "brainHint": "为其提供支持的 AI 模型。",
         "brainTitle": "选择大脑",
+        "brief": {
+          "draftButton": "生成草稿",
+          "draftedHint": "草稿已生成。可在下方调整任意部分，然后创建。",
+          "drafting": "正在生成草稿……",
+          "failed": "无法生成草稿。请重试，或改为逐步创建。",
+          "hint": "说说它是谁、做什么，其余的我们来补全。",
+          "orPreset": "或从模板开始",
+          "placeholder": "你是一位旅行规划师。你为我的家人查找航班并制定行程……",
+          "stepByStep": "改为逐步创建",
+          "title": "描述你的智能体",
+          "unavailable": "当前无法生成草稿，请改为逐步创建。"
+        },
         "bringOnline": "上线",
         "bringingOnline": "正在上线…",
         "broughtOnlineToast": "{{name}} 正在上线 — 请在桌面端打开",
@@ -32303,8 +32435,6 @@ export const resources = {
         "photoHint": "照片能让您的智能体一眼就能被认出。",
         "photoTitle": "为您的智能体添加头像",
         "photoTitleNamed": "为 {{name}} 添加头像",
-        "presetHint": "选择一个现成的智能体，或从零开始自己打造。",
-        "presetTitle": "您想要什么类型的智能体？",
         "presets": {
           "assistant": {
             "description": "让一天井井有条的私人助理",
@@ -32334,9 +32464,7 @@ export const resources = {
             "label": "调研智能体",
             "namePlaceholder": "例如：赛奇、奎尔、达尔文…",
             "tagline": "把问题变成有引用、可决策的简报"
-          },
-          "scratchLabel": "从零开始",
-          "scratchTagline": "一个空白智能体，完全由你设计"
+          }
         },
         "provider": "提供商",
         "providerApiKey": "{{provider}} API 密钥",
@@ -32345,10 +32473,13 @@ export const resources = {
         "removeSpecialty": "移除 {{name}}",
         "responseTemplates": "响应卡片",
         "review": {
+          "backToReview": "返回预览",
           "brain": "大脑",
           "computerUse": "计算机使用",
           "computerUseAllowed": "已允许（创建后可配置允许的应用列表）",
           "customKeyThisAgent": "自定义（此智能体）",
+          "edit": "编辑",
+          "editHint": "跳转到某一步进行修改",
           "key": "密钥",
           "mode": "模式",
           "pinnedKey": "已固定密钥",
@@ -32425,6 +32556,16 @@ export const resources = {
           "connecting": "正在连接系统……",
           "creating": "正在创建智能体……",
           "personality": "正在塑造个性……"
+        },
+        "stepLabels": {
+          "brain": "大脑",
+          "details": "详情",
+          "name": "名称",
+          "photo": "头像",
+          "role": "角色",
+          "specialties": "专长",
+          "tone": "语气",
+          "tools": "工具"
         },
         "swipeToExplore": "滑动以探索",
         "taskTimeout": "任务超时时间（秒）",
@@ -33592,7 +33733,6 @@ export const resources = {
           "details": "还有额外的指导吗？",
           "name": "给它起个名字？",
           "photo": "给它一张脸",
-          "preset": "什么类型的智能体？",
           "review": "准备好见它了吗？",
           "role": "它做什么？",
           "specialties": "它擅长什么？",
@@ -37451,6 +37591,18 @@ export const resources = {
         "advancedSettings": "고급 설정",
         "brainHint": "어떤 AI 모델이 구동하는지.",
         "brainTitle": "브레인 선택",
+        "brief": {
+          "draftButton": "초안 만들기",
+          "draftedHint": "초안입니다. 아래에서 원하는 부분을 조정한 뒤 만드세요.",
+          "drafting": "초안 작성 중…",
+          "failed": "초안을 만들지 못했습니다. 다시 시도하거나 단계별로 만들어 주세요.",
+          "hint": "누구이고 무엇을 하는지 적어 주세요. 나머지는 저희가 채웁니다.",
+          "orPreset": "또는 템플릿에서 시작",
+          "placeholder": "당신은 여행 플래너입니다. 우리 가족을 위해 항공편을 찾고 일정을 짭니다…",
+          "stepByStep": "대신 단계별로 만들기",
+          "title": "에이전트를 설명해 주세요",
+          "unavailable": "지금은 초안 작성을 사용할 수 없습니다. 단계별로 만들어 주세요."
+        },
         "bringOnline": "온라인으로 전환",
         "bringingOnline": "온라인으로 전환 중…",
         "broughtOnlineToast": "{{name}}을(를) 온라인으로 전환 중 — 데스크톱에서 여세요",
@@ -37589,8 +37741,6 @@ export const resources = {
         "photoHint": "사진이 있으면 에이전트를 한눈에 알아보기 쉽습니다.",
         "photoTitle": "에이전트에게 얼굴을 부여하세요",
         "photoTitleNamed": "{{name}}에게 얼굴을 부여하세요",
-        "presetHint": "미리 만들어진 에이전트를 선택하거나 처음부터 직접 만들어 보세요.",
-        "presetTitle": "어떤 에이전트를 원하시나요?",
         "presets": {
           "assistant": {
             "description": "하루를 순조롭게 관리해 주는 개인 비서",
@@ -37620,9 +37770,7 @@ export const resources = {
             "label": "리서치 에이전트",
             "namePlaceholder": "예: 세이지, 퀼, 다윈…",
             "tagline": "질문을 출처가 있는 의사결정용 브리핑으로"
-          },
-          "scratchLabel": "처음부터 만들기",
-          "scratchTagline": "빈 에이전트를 원하는 대로 설계"
+          }
         },
         "provider": "제공업체",
         "providerApiKey": "{{provider}} API 키",
@@ -37631,10 +37779,13 @@ export const resources = {
         "removeSpecialty": "{{name}} 제거",
         "responseTemplates": "응답 카드",
         "review": {
+          "backToReview": "검토로 돌아가기",
           "brain": "브레인",
           "computerUse": "컴퓨터 사용",
           "computerUseAllowed": "허용됨(생성 후 허용 앱 목록 구성)",
           "customKeyThisAgent": "사용자 지정(이 에이전트)",
+          "edit": "편집",
+          "editHint": "변경할 단계로 이동",
           "key": "키",
           "mode": "모드",
           "pinnedKey": "고정된 키",
@@ -37711,6 +37862,16 @@ export const resources = {
           "connecting": "시스템에 연결하는 중...",
           "creating": "에이전트 생성 중...",
           "personality": "성격 구성 중..."
+        },
+        "stepLabels": {
+          "brain": "브레인",
+          "details": "세부 정보",
+          "name": "이름",
+          "photo": "사진",
+          "role": "역할",
+          "specialties": "전문 분야",
+          "tone": "말투",
+          "tools": "도구"
         },
         "swipeToExplore": "스와이프하여 둘러보기",
         "taskTimeout": "작업 타임아웃(초)",
@@ -38878,7 +39039,6 @@ export const resources = {
           "details": "추가 지침이 있나요?",
           "name": "이름은 무엇인가요?",
           "photo": "얼굴을 만들어 주세요",
-          "preset": "어떤 에이전트?",
           "review": "만날 준비가 되셨나요?",
           "role": "무슨 일을 하나요?",
           "specialties": "무엇을 잘하나요?",
@@ -42737,6 +42897,18 @@ export const resources = {
         "advancedSettings": "Impostazioni avanzate",
         "brainHint": "Quale modello IA li alimenta.",
         "brainTitle": "Scegli un cervello",
+        "brief": {
+          "draftButton": "Crea bozza",
+          "draftedHint": "Ecco la bozza. Modifica quello che vuoi qui sotto, poi crea.",
+          "drafting": "Creazione bozza…",
+          "failed": "Impossibile creare la bozza. Riprova o crealo passo dopo passo.",
+          "hint": "Di' chi è e cosa fa. Al resto pensiamo noi.",
+          "orPreset": "Oppure parti da un modello",
+          "placeholder": "Sei un travel planner. Trovi voli e prepari itinerari per la mia famiglia…",
+          "stepByStep": "Preferisco crearlo passo dopo passo",
+          "title": "Descrivi il tuo agente",
+          "unavailable": "La bozza automatica non è disponibile al momento. Crealo passo dopo passo."
+        },
         "bringOnline": "Porta online",
         "bringingOnline": "Messa online…",
         "broughtOnlineToast": "{{name}} sta andando online — aprilo sul desktop",
@@ -42875,8 +43047,6 @@ export const resources = {
         "photoHint": "Una foto rende il tuo agente facilmente riconoscibile a colpo d'occhio.",
         "photoTitle": "Dai un volto al tuo agente",
         "photoTitleNamed": "Dai un volto a {{name}}",
-        "presetHint": "Scegli un agente pronto all'uso o creane uno da zero.",
-        "presetTitle": "Che tipo di agente vuoi?",
         "presets": {
           "assistant": {
             "description": "Assistente personale che tiene la giornata in carreggiata",
@@ -42906,9 +43076,7 @@ export const resources = {
             "label": "Agente di ricerca",
             "namePlaceholder": "es. Sage, Quill, Darwin…",
             "tagline": "Trasforma le domande in brief citati e pronti per decidere"
-          },
-          "scratchLabel": "Parti da zero",
-          "scratchTagline": "un agente vuoto, interamente a modo tuo"
+          }
         },
         "provider": "Provider",
         "providerApiKey": "Chiave API {{provider}}",
@@ -42917,10 +43085,13 @@ export const resources = {
         "removeSpecialty": "Rimuovi {{name}}",
         "responseTemplates": "Schede di risposta",
         "review": {
+          "backToReview": "Torna al riepilogo",
           "brain": "Cervello",
           "computerUse": "Uso del computer",
           "computerUseAllowed": "Consentito (configura l'elenco delle app consentite dopo la creazione)",
           "customKeyThisAgent": "Personalizzata (questo agente)",
+          "edit": "Modifica",
+          "editHint": "Vai a un passaggio per modificarlo",
           "key": "Chiave",
           "mode": "Modalità",
           "pinnedKey": "Chiave fissata",
@@ -42997,6 +43168,16 @@ export const resources = {
           "connecting": "Connessione al sistema...",
           "creating": "Creazione agente...",
           "personality": "Elaborazione della personalità..."
+        },
+        "stepLabels": {
+          "brain": "Cervello",
+          "details": "Dettagli",
+          "name": "Nome",
+          "photo": "Foto",
+          "role": "Ruolo",
+          "specialties": "Specialità",
+          "tone": "Tono",
+          "tools": "Strumenti"
         },
         "swipeToExplore": "Scorri per esplorare",
         "taskTimeout": "Timeout attività (secondi)",
@@ -44164,7 +44345,6 @@ export const resources = {
           "details": "Altre indicazioni?",
           "name": "Come si chiama?",
           "photo": "Dagli un volto",
-          "preset": "Che tipo di agente?",
           "review": "Pronto a conoscerlo?",
           "role": "Cosa fa?",
           "specialties": "In cosa è bravo?",
@@ -48023,6 +48203,18 @@ export const resources = {
         "advancedSettings": "उन्नत सेटिंग्स",
         "brainHint": "कौन सा AI मॉडल इन्हें संचालित करता है।",
         "brainTitle": "एक ब्रेन चुनें",
+        "brief": {
+          "draftButton": "ड्राफ्ट बनाएँ",
+          "draftedHint": "यह रहा ड्राफ्ट। नीचे कोई भी भाग बदलें, फिर बनाएँ।",
+          "drafting": "ड्राफ्ट बन रहा है…",
+          "failed": "एजेंट का ड्राफ्ट नहीं बन सका। फिर से प्रयास करें, या चरण-दर-चरण बनाएँ।",
+          "hint": "बताएँ कि वे कौन हैं और क्या करते हैं। बाकी हम भर देंगे।",
+          "orPreset": "या किसी टेम्पलेट से शुरू करें",
+          "placeholder": "आप एक यात्रा योजनाकार हैं। आप मेरे परिवार के लिए उड़ानें खोजते हैं और यात्रा कार्यक्रम बनाते हैं…",
+          "stepByStep": "इसके बजाय चरण-दर-चरण बनाएँ",
+          "title": "अपने एजेंट का वर्णन करें",
+          "unavailable": "ड्राफ्टिंग अभी उपलब्ध नहीं है। इसके बजाय चरण-दर-चरण बनाएँ।"
+        },
         "bringOnline": "ऑनलाइन लाएं",
         "bringingOnline": "ऑनलाइन किया जा रहा है…",
         "broughtOnlineToast": "{{name}} ऑनलाइन हो रहा है — इसे अपने डेस्कटॉप पर खोलें",
@@ -48161,8 +48353,6 @@ export const resources = {
         "photoHint": "एक फ़ोटो आपके एजेंट को एक नज़र में पहचानना आसान बनाता है।",
         "photoTitle": "अपने एजेंट को एक चेहरा दें",
         "photoTitleNamed": "{{name}} को एक चेहरा दें",
-        "presetHint": "तैयार एजेंट चुनें, या शून्य से अपना खुद का बनाएँ।",
-        "presetTitle": "आप किस तरह का एजेंट चाहते हैं?",
         "presets": {
           "assistant": {
             "description": "निजी सहायक जो दिन को व्यवस्थित रखता है",
@@ -48192,9 +48382,7 @@ export const resources = {
             "label": "शोध एजेंट",
             "namePlaceholder": "जैसे सेज, क्विल, डार्विन…",
             "tagline": "प्रश्नों को उद्धृत, निर्णय-योग्य ब्रीफ़ में बदलता है"
-          },
-          "scratchLabel": "शून्य से शुरू करें",
-          "scratchTagline": "एक खाली एजेंट, पूरी तरह आपके डिज़ाइन का"
+          }
         },
         "provider": "प्रोवाइडर",
         "providerApiKey": "{{provider}} API कुंजी",
@@ -48203,10 +48391,13 @@ export const resources = {
         "removeSpecialty": "{{name}} हटाएँ",
         "responseTemplates": "रिस्पॉन्स कार्ड",
         "review": {
+          "backToReview": "समीक्षा पर वापस जाएँ",
           "brain": "ब्रेन",
           "computerUse": "कंप्यूटर उपयोग",
           "computerUseAllowed": "अनुमत (बनाने के बाद अनुमत-ऐप सूची कॉन्फ़िगर करें)",
           "customKeyThisAgent": "कस्टम (यह एजेंट)",
+          "edit": "संपादित करें",
+          "editHint": "बदलने के लिए किसी चरण पर जाएँ",
           "key": "कुंजी",
           "mode": "मोड",
           "pinnedKey": "पिन की गई कुंजी",
@@ -48283,6 +48474,16 @@ export const resources = {
           "connecting": "सिस्टम से कनेक्ट हो रहा है...",
           "creating": "एजेंट बनाया जा रहा है...",
           "personality": "व्यक्तित्व तैयार किया जा रहा है..."
+        },
+        "stepLabels": {
+          "brain": "ब्रेन",
+          "details": "विवरण",
+          "name": "नाम",
+          "photo": "फ़ोटो",
+          "role": "भूमिका",
+          "specialties": "विशेषज्ञताएँ",
+          "tone": "लहजा",
+          "tools": "टूल"
         },
         "swipeToExplore": "एक्सप्लोर करने के लिए स्वाइप करें",
         "taskTimeout": "कार्य टाइमआउट (सेकंड)",
@@ -49450,7 +49651,6 @@ export const resources = {
           "details": "कोई अतिरिक्त मार्गदर्शन?",
           "name": "इसका नाम क्या है?",
           "photo": "इसे एक चेहरा दें",
-          "preset": "किस तरह का एजेंट?",
           "review": "इससे मिलने के लिए तैयार हैं?",
           "role": "यह क्या करता है?",
           "specialties": "यह किसमें अच्छा है?",

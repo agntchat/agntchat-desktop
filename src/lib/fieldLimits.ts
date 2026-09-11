@@ -2,12 +2,12 @@ import { useEffect, useState } from "react";
 import { request } from "./api";
 
 export interface FieldLimits {
-  agent: { displayName: number; description: number };
+  agent: { displayName: number; description: number; creationBrief: number };
   profile: { displayName: number; description: number };
 }
 
 const FALLBACK: FieldLimits = {
-  agent: { displayName: 100, description: 1000 },
+  agent: { displayName: 100, description: 1000, creationBrief: 1000 },
   profile: { displayName: 100, description: 500 },
 };
 

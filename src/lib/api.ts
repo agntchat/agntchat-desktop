@@ -725,6 +725,40 @@ export async function reviseSoulMd(
   });
 }
 
+/** Wizard proposal from `POST /api/agents/draft` — shaped as the Create
+ *  Agent wizard's own state so the client can seed the review step from it
+ *  verbatim. Nothing is created server-side. */
+export interface AgentDraft {
+  displayName: string;
+  agentType: string;
+  tone: string | null;
+  customTone: string | null;
+  specialties: string[];
+  description: string;
+  instructions: string;
+  /** Integration tool names (agent_tools rows) the drafter picked —
+   *  already validated against the catalog server-side. */
+  tools: string[];
+  requiresGoogle: boolean;
+  requiresLocation: boolean;
+  soulMd: string;
+}
+
+/**
+ * Quick-create: turn a one-or-two-sentence brief into a full wizard
+ * proposal. Throws with `status` 503 when AI drafting is unavailable
+ * (no key / circuit open) — callers fall back to the step-by-step path.
+ */
+export async function draftAgent(
+  brief: string,
+  displayName?: string
+): Promise<AgentDraft> {
+  return request("/api/agents/draft", {
+    method: "POST",
+    body: JSON.stringify({ brief, ...(displayName ? { displayName } : {}) }),
+  });
+}
+
 export interface AgentRuntimeUpdate {
   runtime: "local" | "org_host";
   presenceMode?: "always_on" | "wake_on_demand" | "manual";
