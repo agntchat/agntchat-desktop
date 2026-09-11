@@ -1,18 +1,20 @@
 import { useEffect, useState } from "react";
 import { request } from "./api";
-import type { AgentType, ToneKey } from "./buildSoulMd";
+import { EMPTY_VOCAB, type AgentType, type PersonaVocab } from "./agentVocab";
 
 /**
  * Preset starting points for the Create Agent wizard. A preset is nothing
  * more than a named bundle of the wizard's existing state fields — picking
  * one pre-seeds role/tone/specialties/description/instructions, and every
  * later step stays fully editable. `instructions` flows into the soul via
- * buildSoulMd's "Additional Instructions" block.
+ * the server builder's "Additional Instructions" block.
  *
  * The catalog is served by the backend (`GET /api/agents/presets`,
  * `Agentchat.AgentPresets`) — the single source of truth shared by web,
  * desktop, and mobile. Nothing here is hardcoded; we only fetch, cache, and
- * derive the i18n key names from each preset's `id`.
+ * derive the i18n key names from each preset's `id`. The same response
+ * carries the persona vocabulary (`tones`, `specialtiesByRole`) the tone and
+ * specialty steps render — see `usePersonaVocab`.
  *
  * UI copy (label/tagline/name placeholder) lives in the `agents` i18n
  * namespace under `create.presets.<id>.*`, as do localized
@@ -31,12 +33,13 @@ export interface AgentPreset {
   taglineKey: string;
   namePlaceholderKey: string;
   role: AgentType;
-  tone: ToneKey;
+  /** One of the server's tone keys (`PersonaVocab.tones`). */
+  tone: string;
   /** Default model (claude_cli catalog id) — applied on preset pick, still
    *  changeable on the brain step. Absent → the wizard's scratch default. */
   model?: string;
-  /** Mixed list — entries found in SPECIALTIES_BY_ROLE[role].options land in
-   *  `specialties`, the rest in `customSpecialties`. */
+  /** Mixed list — entries found in the role's `specialtiesByRole` options
+   *  land in `specialties`, the rest in `customSpecialties`. */
   specialties: string[];
   description: string;
   instructions: string;
@@ -54,7 +57,7 @@ export interface AgentPreset {
 interface PresetWire {
   id: AgentPreset["id"];
   role: AgentType;
-  tone: ToneKey;
+  tone: string;
   model?: string | null;
   specialties: string[];
   description: string;
@@ -80,23 +83,36 @@ function fromWire(p: PresetWire): AgentPreset {
   };
 }
 
-let cache: AgentPreset[] | null = null;
-let pending: Promise<AgentPreset[]> | null = null;
+interface Catalog {
+  presets: AgentPreset[];
+  vocab: PersonaVocab;
+}
 
-export async function getAgentPresets(): Promise<AgentPreset[]> {
-  if (cache) return cache;
+let cache: Catalog | null = null;
+let pending: Promise<Catalog> | null = null;
+
+function getCatalog(): Promise<Catalog> {
+  if (cache) return Promise.resolve(cache);
   if (pending) return pending;
 
-  pending = request<{ presets: PresetWire[] }>("/api/agents/presets")
+  pending = request<{
+    presets: PresetWire[];
+    tones: string[];
+    specialtiesByRole: PersonaVocab["specialtiesByRole"];
+  }>("/api/agents/presets")
     .then((res) => {
-      cache = res.presets.map(fromWire);
+      cache = {
+        presets: res.presets.map(fromWire),
+        vocab: { tones: res.tones, specialtiesByRole: res.specialtiesByRole },
+      };
       return cache;
     })
     .catch(() => {
       // No offline fallback: the presets are optional scaffolding for the
       // wizard, and the "Start from scratch" path always works. An empty
-      // catalog simply hides the preset cards.
-      cache = [];
+      // catalog simply hides the preset cards; an empty vocabulary leaves
+      // only the custom tone/specialty inputs.
+      cache = { presets: [], vocab: EMPTY_VOCAB };
       return cache;
     })
     .finally(() => {
@@ -106,22 +122,37 @@ export async function getAgentPresets(): Promise<AgentPreset[]> {
   return pending;
 }
 
+export async function getAgentPresets(): Promise<AgentPreset[]> {
+  return (await getCatalog()).presets;
+}
+
 export function resetAgentPresetsCache(): void {
   cache = null;
   pending = null;
 }
 
-export function useAgentPresets(): AgentPreset[] {
-  const [presets, setPresets] = useState<AgentPreset[]>(cache ?? []);
+function useCatalog(): Catalog | null {
+  const [catalog, setCatalog] = useState<Catalog | null>(cache);
 
   useEffect(() => {
     if (cache) {
-      if (cache !== presets) setPresets(cache);
+      if (cache !== catalog) setCatalog(cache);
       return;
     }
-    getAgentPresets().then(setPresets);
+    getCatalog().then(setCatalog);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  return presets;
+  return catalog;
+}
+
+const NO_PRESETS: AgentPreset[] = [];
+
+export function useAgentPresets(): AgentPreset[] {
+  return useCatalog()?.presets ?? NO_PRESETS;
+}
+
+/** Tone keys + per-role specialty options from the server's soul builder. */
+export function usePersonaVocab(): PersonaVocab {
+  return useCatalog()?.vocab ?? EMPTY_VOCAB;
 }

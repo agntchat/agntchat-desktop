@@ -1,4 +1,5 @@
 import { create } from "zustand";
+import type { AgentPersona } from "../lib/agentVocab";
 import { invoke } from "@tauri-apps/api/core";
 import * as api from "../lib/api";
 import { isFresh } from "../lib/cache";
@@ -287,7 +288,9 @@ interface AgentState {
     capabilities?: string[];
     avatarUrl?: string;
     requiresLocation?: boolean;
-    soulMd?: string;
+    /** Wizard choices; the backend composes soul.md and derives
+     *  capabilities from them (`Agentchat.Accounts.SoulBuilder`). */
+    persona?: AgentPersona;
     backend?: string;
     model?: string;
     executionMode?: string;

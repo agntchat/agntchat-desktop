@@ -1,3 +1,4 @@
+import type { AgentPersona } from "./agentVocab";
 import type {
   AgentPresence,
   AgentRuntime,
@@ -636,7 +637,9 @@ export async function createAgent(data: {
   capabilities?: string[];
   avatarUrl?: string;
   requiresLocation?: boolean;
-  soulMd?: string;
+  /** Wizard choices — the backend composes soul.md and derives
+   *  capabilities from them. */
+  persona?: AgentPersona;
   modelConfig?: Record<string, unknown>;
   metadata?: Record<string, unknown>;
   /** Workspace visibility pin set. Omit for all workspaces (the

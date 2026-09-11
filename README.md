@@ -419,7 +419,7 @@ src/
   lib/
     api.ts                   # Backend REST API client
     models.ts                # LLM provider & model definitions (source of truth)
-    ...                      # avatarUrl, buildSoulMd, linkify, timezones, etc.
+    ...                      # avatarUrl, agentVocab, linkify, timezones, etc.
   stores/                    # Zustand stores (one per domain)
     agentStore / authStore / chatStore / taskStore / templateStore
     canvasStore / friendStore / workspaceStore / presenceStore

@@ -38,7 +38,7 @@ import {
   type PlatformToolSummary,
 } from "../lib/api";
 import { openExternal } from "../lib/openExternal";
-import { useAgentPresets, type AgentPreset } from "../lib/agentPresets";
+import { useAgentPresets, usePersonaVocab, type AgentPreset } from "../lib/agentPresets";
 import { groupIntegrationTools, anyGoogleTool } from "../lib/toolGroups";
 import { useLlmKeyStore } from "../stores/llmKeyStore";
 import { useModelCatalog } from "../stores/modelCatalogStore";
@@ -46,15 +46,7 @@ import { useAgentTypes } from "../lib/agentTypes";
 import { useFieldLimits } from "../lib/fieldLimits";
 import { uploadProcessedBlob } from "../lib/imageProcessor";
 import { EXECUTION_MODES, EFFORT_LEVELS } from "../lib/models";
-import {
-  TONES,
-  SPECIALTIES_BY_ROLE,
-  buildSoulMd,
-  specialtySlug,
-  specialtyToCapability,
-  type AgentType,
-  type ToneKey,
-} from "../lib/buildSoulMd";
+import { specialtySlug, type AgentType } from "../lib/agentVocab";
 import { cn } from "../lib/utils";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -170,6 +162,7 @@ export function CreateAgentModal({ onClose }: { onClose: () => void }) {
 
   const agentTypes = useAgentTypes();
   const agentPresets = useAgentPresets();
+  const { tones, specialtiesByRole } = usePersonaVocab();
 
   // ---- Step state ----
   const [stepIndex, setStepIndex] = useState(0);
@@ -219,7 +212,7 @@ export function CreateAgentModal({ onClose }: { onClose: () => void }) {
   // role
   const [agentRole, setAgentRole] = useState<AgentType>("worker");
   // tone + description
-  const [tone, setTone] = useState<ToneKey | null>(null);
+  const [tone, setTone] = useState<string | null>(null);
   const [customTone, setCustomTone] = useState<string | null>(null);
   const [customToneInput, setCustomToneInput] = useState("");
   const [toneAddOpen, setToneAddOpen] = useState(false);
@@ -417,7 +410,7 @@ export function CreateAgentModal({ onClose }: { onClose: () => void }) {
     setKeySelection("__default__");
   };
 
-  const specialtyCatalog = SPECIALTIES_BY_ROLE[agentRole];
+  const specialtyOptions = specialtiesByRole[agentRole] ?? [];
   const allSpecialties = useMemo(
     () => [...specialties, ...customSpecialties],
     [specialties, customSpecialties]
@@ -439,7 +432,7 @@ export function CreateAgentModal({ onClose }: { onClose: () => void }) {
   // custom remainder — the two are separate state so the specialties step
   // renders them differently.
   const seedSpecialties = (role: AgentType, list: string[]) => {
-    const options = SPECIALTIES_BY_ROLE[role].options;
+    const options = specialtiesByRole[role] ?? [];
     setSpecialties(list.filter((s) => options.includes(s)));
     setCustomSpecialties(list.filter((s) => !options.includes(s)));
   };
@@ -456,7 +449,7 @@ export function CreateAgentModal({ onClose }: { onClose: () => void }) {
       : "worker") as AgentType;
     setAgentRole(role);
     seedSpecialties(role, d.specialties);
-    const toneKey = TONES.find((tn) => tn.key === d.tone)?.key ?? null;
+    const toneKey = d.tone && tones.includes(d.tone) ? d.tone : null;
     setTone(toneKey);
     setCustomTone(toneKey ? null : d.customTone);
     setDescription(d.description);
@@ -736,19 +729,15 @@ export function CreateAgentModal({ onClose }: { onClose: () => void }) {
         }
       }
 
-      const allSpecialtiesList = [...specialties, ...customSpecialties];
-      const capabilities = allSpecialtiesList
-        .map(specialtyToCapability)
-        .filter(Boolean);
-
-      const soulMd = buildSoulMd(
-        displayName.trim(),
+      // The server composes soul.md from these and derives `capabilities`
+      // from the specialties (Agentchat.Accounts.SoulBuilder).
+      const persona = {
         tone,
         customTone,
-        allSpecialtiesList,
+        specialties: [...specialties, ...customSpecialties],
         description,
-        customInstructions
-      );
+        instructions: customInstructions,
+      };
 
       // Cross-device fields live in agent.metadata (snake_case, backend-
       // merged). computer_use_enabled follows the agent across desktops; the
@@ -769,10 +758,9 @@ export function CreateAgentModal({ onClose }: { onClose: () => void }) {
         // every new agent on the owner's org host when one exists.
         ...(!hosted ? { runtime: "local" as const } : {}),
         ...(description.trim() ? { description: description.trim() } : {}),
-        ...(capabilities.length > 0 ? { capabilities } : {}),
         ...(avatarUrl ? { avatarUrl } : {}),
         ...(requiresLocation ? { requiresLocation: true } : {}),
-        ...(soulMd ? { soulMd } : {}),
+        persona,
         ...(effBackend ? { backend: effBackend } : {}),
         ...(effModel ? { model: effModel } : {}),
         ...(effExecutionMode ? { executionMode: effExecutionMode } : {}),
@@ -1290,14 +1278,14 @@ export function CreateAgentModal({ onClose }: { onClose: () => void }) {
                 <div className="space-y-4">
                   <div className="space-y-2">
                     <div className="flex flex-wrap gap-1.5">
-                      {TONES.map((tn) => {
-                        const selected = tone === tn.key;
+                      {tones.map((toneKey) => {
+                        const selected = tone === toneKey;
                         return (
                           <button
-                            key={tn.key}
+                            key={toneKey}
                             type="button"
                             onClick={() => {
-                              setTone(tn.key);
+                              setTone(toneKey);
                               setCustomTone(null);
                             }}
                             className={cn(
@@ -1307,7 +1295,7 @@ export function CreateAgentModal({ onClose }: { onClose: () => void }) {
                                 : "border-border hover:bg-accent"
                             )}
                           >
-                            {t(`tones.${tn.key}`, { defaultValue: tn.label })}
+                            {t(`tones.${toneKey}`)}
                           </button>
                         );
                       })}
@@ -1381,7 +1369,7 @@ export function CreateAgentModal({ onClose }: { onClose: () => void }) {
                     {t(`create.specialtiesTitleByRole.${agentRole}`)}
                   </p>
                   <div className="flex flex-wrap gap-1.5">
-                    {specialtyCatalog.options.map((s) => {
+                    {specialtyOptions.map((s) => {
                       const isOn = specialties.includes(s);
                       return (
                         <button
@@ -1988,11 +1976,7 @@ export function CreateAgentModal({ onClose }: { onClose: () => void }) {
                         <div className="mt-2 flex flex-wrap gap-1">
                           {(tone || customTone) && (
                             <span className="rounded-full bg-accent px-2 py-0.5 text-[10px] text-accent-foreground">
-                              {tone
-                                ? t(`tones.${tone}`, {
-                                    defaultValue: TONES.find((tn) => tn.key === tone)?.label,
-                                  })
-                                : customTone}
+                              {tone ? t(`tones.${tone}`) : customTone}
                             </span>
                           )}
                           {allSpecialties.slice(0, 4).map((s) => (
