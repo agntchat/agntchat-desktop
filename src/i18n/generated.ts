@@ -222,14 +222,20 @@ export const resources = {
             "windowsSafetyBuiltIn": "Safety features built in on Windows (focused-app gate, terminal-window redaction, audit log) — nothing to install."
           },
           "startOnLaunch": "Start on app launch",
-          "subtitle": "These apply only while this agent runs on your machine (Local runtime).",
-          "title": "Local runtime settings",
           "workingDirs": {
             "addButton": "Add Directory",
             "description": "Directories this agent can access. Adding directories also enables CLI tools (Bash, Read, Edit, Web) alongside agntchat tools.",
             "label": "Working directories",
             "promptMessage": "Enter directory path:"
           }
+        },
+        "machine": {
+          "accessTitle": "Access",
+          "apiKeyHelp": "How this agent signs in to agntchat from this computer. Keys never leave the machine they were created on, so each computer the agent runs from needs its own.",
+          "appliesToAll": "All agents here",
+          "appliesToAllHelp": "The nickname belongs to this computer, not to one agent — renaming it changes what every agent running here shows as its location.",
+          "deviceTitle": "Machine name",
+          "subtitle": "What this agent may do on the computer it runs on. These settings stay on this machine — they don't follow the agent elsewhere."
         },
         "mode": {
           "label": "Mode",
@@ -1572,6 +1578,7 @@ export const resources = {
         "locationAccess": "Location Access",
         "locations": "Locations",
         "loops": "Loops",
+        "machine": "This Computer",
         "model": "Model",
         "publish": "Publish",
         "pulse": "Pulse",
@@ -5602,14 +5609,20 @@ export const resources = {
             "windowsSafetyBuiltIn": "Las funciones de seguridad ya están integradas en Windows (bloqueo por app enfocada, redacción de ventanas de terminal, registro de auditoría) — no hay nada que instalar."
           },
           "startOnLaunch": "Iniciar al abrir la app",
-          "subtitle": "Esto se aplica solo mientras este agente se ejecuta en tu equipo (ejecución local).",
-          "title": "Configuración de ejecución local",
           "workingDirs": {
             "addButton": "Añadir directorio",
             "description": "Directorios a los que este agente puede acceder. Añadir directorios también habilita las herramientas de CLI (Bash, Read, Edit, Web) junto con las herramientas de agntchat.",
             "label": "Directorios de trabajo",
             "promptMessage": "Introduce la ruta del directorio:"
           }
+        },
+        "machine": {
+          "accessTitle": "Acceso",
+          "apiKeyHelp": "Cómo inicia sesión este agente en agntchat desde este equipo. Las claves nunca salen del equipo donde se crearon, así que cada equipo desde el que se ejecute el agente necesita la suya.",
+          "appliesToAll": "Todos los agentes de aquí",
+          "appliesToAllHelp": "El apodo pertenece a este equipo, no a un agente: cambiarlo modifica la ubicación que muestran todos los agentes que se ejecutan aquí.",
+          "deviceTitle": "Nombre del equipo",
+          "subtitle": "Lo que este agente puede hacer en el equipo donde se ejecuta. Estos ajustes se quedan en este equipo: no acompañan al agente a otro sitio."
         },
         "mode": {
           "label": "Modo",
@@ -6952,6 +6965,7 @@ export const resources = {
         "locationAccess": "Acceso a la ubicación",
         "locations": "Ubicaciones",
         "loops": "Bucles",
+        "machine": "Este equipo",
         "model": "Modelo",
         "publish": "Publicar",
         "pulse": "Pulso",
@@ -10982,14 +10996,20 @@ export const resources = {
             "windowsSafetyBuiltIn": "Sicherheitsfunktionen unter Windows integriert (Sperre für fokussierte App, Schwärzung von Terminalfenstern, Audit-Log) — nichts zu installieren."
           },
           "startOnLaunch": "Beim App-Start starten",
-          "subtitle": "Diese gelten nur, solange dieser Agent auf Ihrem Rechner läuft (lokale Laufzeit).",
-          "title": "Lokale Laufzeiteinstellungen",
           "workingDirs": {
             "addButton": "Verzeichnis hinzufügen",
             "description": "Verzeichnisse, auf die dieser Agent zugreifen kann. Das Hinzufügen von Verzeichnissen aktiviert zudem CLI-Tools (Bash, Read, Edit, Web) neben den agntchat-Tools.",
             "label": "Arbeitsverzeichnisse",
             "promptMessage": "Verzeichnispfad eingeben:"
           }
+        },
+        "machine": {
+          "accessTitle": "Zugriff",
+          "apiKeyHelp": "Wie sich dieser Agent von diesem Computer aus bei agntchat anmeldet. Schlüssel verlassen nie den Rechner, auf dem sie erstellt wurden – jeder Computer, auf dem der Agent läuft, braucht einen eigenen.",
+          "appliesToAll": "Alle Agenten hier",
+          "appliesToAllHelp": "Der Spitzname gehört zu diesem Computer, nicht zu einem Agenten – ihn zu ändern ändert den Standort, den alle hier laufenden Agenten anzeigen.",
+          "deviceTitle": "Computername",
+          "subtitle": "Was dieser Agent auf dem Computer tun darf, auf dem er läuft. Diese Einstellungen bleiben auf diesem Rechner – sie folgen dem Agenten nicht woandershin."
         },
         "mode": {
           "label": "Modus",
@@ -12332,6 +12352,7 @@ export const resources = {
         "locationAccess": "Standortzugriff",
         "locations": "Standorte",
         "loops": "Loops",
+        "machine": "Dieser Computer",
         "model": "Modell",
         "publish": "Veröffentlichen",
         "pulse": "Puls",
@@ -16362,14 +16383,20 @@ export const resources = {
             "windowsSafetyBuiltIn": "Fonctionnalités de sécurité intégrées sous Windows (verrou d'application au premier plan, masquage des fenêtres de terminal, journal d'audit) — rien à installer."
           },
           "startOnLaunch": "Démarrer au lancement de l'application",
-          "subtitle": "Ces paramètres s'appliquent uniquement pendant que cet agent s'exécute sur votre machine (exécution locale).",
-          "title": "Paramètres d'exécution locale",
           "workingDirs": {
             "addButton": "Ajouter un répertoire",
             "description": "Répertoires auxquels cet agent peut accéder. L'ajout de répertoires active aussi les outils CLI (Bash, Read, Edit, Web) en plus des outils agntchat.",
             "label": "Répertoires de travail",
             "promptMessage": "Entrez le chemin du répertoire :"
           }
+        },
+        "machine": {
+          "accessTitle": "Accès",
+          "apiKeyHelp": "Comment cet agent se connecte à agntchat depuis cet ordinateur. Les clés ne quittent jamais la machine où elles ont été créées : chaque ordinateur qui exécute l'agent a besoin de la sienne.",
+          "appliesToAll": "Tous les agents ici",
+          "appliesToAllHelp": "Le surnom appartient à cet ordinateur, pas à un agent : le modifier change l'emplacement affiché par tous les agents qui s'exécutent ici.",
+          "deviceTitle": "Nom de la machine",
+          "subtitle": "Ce que cet agent peut faire sur l'ordinateur où il s'exécute. Ces réglages restent sur cette machine : ils ne suivent pas l'agent ailleurs."
         },
         "mode": {
           "label": "Mode",
@@ -17712,6 +17739,7 @@ export const resources = {
         "locationAccess": "Accès à la localisation",
         "locations": "Localisations",
         "loops": "Boucles",
+        "machine": "Cet ordinateur",
         "model": "Modèle",
         "publish": "Publier",
         "pulse": "Pulsation",
@@ -21742,14 +21770,20 @@ export const resources = {
             "windowsSafetyBuiltIn": "Recursos de segurança integrados no Windows (bloqueio por app em foco, redação de janela de terminal, log de auditoria) — nada para instalar."
           },
           "startOnLaunch": "Iniciar ao abrir o app",
-          "subtitle": "Isso se aplica apenas enquanto este agente executa na sua máquina (execução local).",
-          "title": "Configurações de execução local",
           "workingDirs": {
             "addButton": "Adicionar Diretório",
             "description": "Diretórios que este agente pode acessar. Adicionar diretórios também ativa ferramentas de CLI (Bash, Read, Edit, Web) junto com as ferramentas do agntchat.",
             "label": "Diretórios de trabalho",
             "promptMessage": "Digite o caminho do diretório:"
           }
+        },
+        "machine": {
+          "accessTitle": "Acesso",
+          "apiKeyHelp": "Como este agente inicia sessão no agntchat a partir deste computador. As chaves nunca saem da máquina onde foram criadas, por isso cada computador que executa o agente precisa da sua.",
+          "appliesToAll": "Todos os agentes aqui",
+          "appliesToAllHelp": "A alcunha pertence a este computador, não a um agente — alterá-la muda a localização que todos os agentes executados aqui mostram.",
+          "deviceTitle": "Nome da máquina",
+          "subtitle": "O que este agente pode fazer no computador onde é executado. Estas definições ficam nesta máquina — não acompanham o agente para outro lugar."
         },
         "mode": {
           "label": "Modo",
@@ -23092,6 +23126,7 @@ export const resources = {
         "locationAccess": "Acesso à Localização",
         "locations": "Localizações",
         "loops": "Loops",
+        "machine": "Este computador",
         "model": "Modelo",
         "publish": "Publicar",
         "pulse": "Pulso",
@@ -27122,14 +27157,20 @@ export const resources = {
             "windowsSafetyBuiltIn": "Windowsでは安全機能が組み込まれています（フォーカスアプリのゲート、ターミナルウィンドウの秘匿化、監査ログ） — インストール不要です。"
           },
           "startOnLaunch": "アプリ起動時に開始",
-          "subtitle": "これらは、このエージェントがあなたのマシン（ローカルランタイム）上で実行されている間のみ適用されます。",
-          "title": "ローカルランタイム設定",
           "workingDirs": {
             "addButton": "ディレクトリを追加",
             "description": "このエージェントがアクセスできるディレクトリ。ディレクトリを追加すると、agntchatツールに加えてCLIツール（Bash、Read、Edit、Web）も有効になります。",
             "label": "作業ディレクトリ",
             "promptMessage": "ディレクトリパスを入力してください："
           }
+        },
+        "machine": {
+          "accessTitle": "アクセス",
+          "apiKeyHelp": "このエージェントがこのコンピュータから agntchat にサインインする方法です。キーは作成されたマシンから出ないため、エージェントを動かすコンピュータごとに個別のキーが必要です。",
+          "appliesToAll": "ここの全エージェント",
+          "appliesToAllHelp": "ニックネームは個々のエージェントではなくこのコンピュータのものです。変更すると、ここで動作するすべてのエージェントの表示場所が変わります。",
+          "deviceTitle": "マシン名",
+          "subtitle": "このエージェントが実行中のコンピュータ上で行えることです。これらの設定はこのマシンに残り、エージェントが他所へ移っても引き継がれません。"
         },
         "mode": {
           "label": "モード",
@@ -28472,6 +28513,7 @@ export const resources = {
         "locationAccess": "位置情報アクセス",
         "locations": "場所",
         "loops": "ループ",
+        "machine": "このコンピュータ",
         "model": "モデル",
         "publish": "公開",
         "pulse": "パルス",
@@ -32502,14 +32544,20 @@ export const resources = {
             "windowsSafetyBuiltIn": "Windows 上已内置安全功能（焦点应用限制、终端窗口信息脱敏、审计日志）— 无需安装。"
           },
           "startOnLaunch": "应用启动时自动运行",
-          "subtitle": "这些设置仅在此智能体在您的计算机上运行时生效（本地运行时）。",
-          "title": "本地运行时设置",
           "workingDirs": {
             "addButton": "添加目录",
             "description": "此智能体可以访问的目录。添加目录还会在 agntchat 工具之外启用命令行工具（Bash、Read、Edit、Web）。",
             "label": "工作目录",
             "promptMessage": "请输入目录路径："
           }
+        },
+        "machine": {
+          "accessTitle": "访问权限",
+          "apiKeyHelp": "此智能体从这台电脑登录 agntchat 的方式。密钥永远不会离开创建它的机器，因此运行该智能体的每台电脑都需要各自的密钥。",
+          "appliesToAll": "本机所有智能体",
+          "appliesToAllHelp": "昵称属于这台电脑而非某个智能体——修改后，在本机运行的所有智能体显示的位置都会随之改变。",
+          "deviceTitle": "本机名称",
+          "subtitle": "此智能体在其运行的电脑上可以做什么。这些设置仅保留在本机，不会随智能体转移到别处。"
         },
         "mode": {
           "label": "模式",
@@ -33852,6 +33900,7 @@ export const resources = {
         "locationAccess": "位置访问权限",
         "locations": "位置",
         "loops": "循环",
+        "machine": "本机",
         "model": "模型",
         "publish": "发布",
         "pulse": "脉搏",
@@ -37882,14 +37931,20 @@ export const resources = {
             "windowsSafetyBuiltIn": "Windows에는 안전 기능이 내장되어 있습니다(포커스 앱 게이트, 터미널 창 마스킹, 감사 로그) — 설치할 필요가 없습니다."
           },
           "startOnLaunch": "앱 실행 시 시작",
-          "subtitle": "이 에이전트가 사용자의 기기(로컬 런타임)에서 실행되는 동안에만 적용됩니다.",
-          "title": "로컬 런타임 설정",
           "workingDirs": {
             "addButton": "디렉터리 추가",
             "description": "이 에이전트가 액세스할 수 있는 디렉터리입니다. 디렉터리를 추가하면 agntchat 도구와 함께 CLI 도구(Bash, Read, Edit, Web)도 사용할 수 있습니다.",
             "label": "작업 디렉터리",
             "promptMessage": "디렉터리 경로를 입력하세요:"
           }
+        },
+        "machine": {
+          "accessTitle": "접근 권한",
+          "apiKeyHelp": "이 에이전트가 이 컴퓨터에서 agntchat에 로그인하는 방식입니다. 키는 생성된 컴퓨터를 벗어나지 않으므로 에이전트를 실행하는 컴퓨터마다 각자의 키가 필요합니다.",
+          "appliesToAll": "여기의 모든 에이전트",
+          "appliesToAllHelp": "별명은 개별 에이전트가 아니라 이 컴퓨터의 것입니다. 변경하면 여기서 실행되는 모든 에이전트의 표시 위치가 바뀝니다.",
+          "deviceTitle": "컴퓨터 이름",
+          "subtitle": "이 에이전트가 실행 중인 컴퓨터에서 할 수 있는 일입니다. 이 설정은 이 컴퓨터에만 남으며 에이전트를 따라 다른 곳으로 옮겨지지 않습니다."
         },
         "mode": {
           "label": "모드",
@@ -39232,6 +39287,7 @@ export const resources = {
         "locationAccess": "위치 접근",
         "locations": "위치",
         "loops": "루프",
+        "machine": "이 컴퓨터",
         "model": "모델",
         "publish": "게시",
         "pulse": "펄스",
@@ -43262,14 +43318,20 @@ export const resources = {
             "windowsSafetyBuiltIn": "Funzionalità di sicurezza integrate su Windows (blocco app in primo piano, redazione finestra terminale, log di audit) — niente da installare."
           },
           "startOnLaunch": "Avvia all'apertura dell'app",
-          "subtitle": "Questi si applicano solo mentre questo agente è in esecuzione sulla tua macchina (Runtime locale).",
-          "title": "Impostazioni runtime locale",
           "workingDirs": {
             "addButton": "Aggiungi directory",
             "description": "Directory a cui questo agente può accedere. Aggiungere directory abilita anche gli strumenti CLI (Bash, Read, Edit, Web) insieme agli strumenti agntchat.",
             "label": "Directory di lavoro",
             "promptMessage": "Inserisci il percorso della directory:"
           }
+        },
+        "machine": {
+          "accessTitle": "Accesso",
+          "apiKeyHelp": "Come questo agente accede ad agntchat da questo computer. Le chiavi non lasciano mai la macchina su cui sono state create, quindi ogni computer da cui l'agente viene eseguito ne richiede una propria.",
+          "appliesToAll": "Tutti gli agenti qui",
+          "appliesToAllHelp": "Il soprannome appartiene a questo computer, non a un singolo agente: cambiarlo modifica la posizione mostrata da tutti gli agenti in esecuzione qui.",
+          "deviceTitle": "Nome della macchina",
+          "subtitle": "Cosa può fare questo agente sul computer su cui viene eseguito. Queste impostazioni restano su questa macchina: non seguono l'agente altrove."
         },
         "mode": {
           "label": "Modalità",
@@ -44612,6 +44674,7 @@ export const resources = {
         "locationAccess": "Accesso alla Posizione",
         "locations": "Posizioni",
         "loops": "Loop",
+        "machine": "Questo computer",
         "model": "Modello",
         "publish": "Pubblica",
         "pulse": "Pulse",
@@ -48642,14 +48705,20 @@ export const resources = {
             "windowsSafetyBuiltIn": "Windows पर सुरक्षा सुविधाएँ पहले से मौजूद हैं (फ़ोकस्ड-ऐप गेट, टर्मिनल-विंडो रिडैक्शन, ऑडिट लॉग) — कुछ भी इंस्टॉल करने की आवश्यकता नहीं।"
           },
           "startOnLaunch": "ऐप लॉन्च होने पर शुरू करें",
-          "subtitle": "ये तभी लागू होते हैं जब यह एजेंट आपकी मशीन पर चल रहा हो (लोकल रनटाइम)।",
-          "title": "लोकल रनटाइम सेटिंग्स",
           "workingDirs": {
             "addButton": "डायरेक्टरी जोड़ें",
             "description": "वे डायरेक्टरी जिन्हें यह एजेंट एक्सेस कर सकता है। डायरेक्टरी जोड़ने से agntchat टूल के साथ-साथ CLI टूल (Bash, Read, Edit, Web) भी सक्षम हो जाते हैं।",
             "label": "कार्यशील डायरेक्टरी",
             "promptMessage": "डायरेक्टरी पथ दर्ज करें:"
           }
+        },
+        "machine": {
+          "accessTitle": "पहुँच",
+          "apiKeyHelp": "यह एजेंट इस कंप्यूटर से agntchat में कैसे साइन इन करता है। कुंजियाँ कभी उस मशीन से बाहर नहीं जातीं जहाँ बनाई गई थीं, इसलिए एजेंट जिस भी कंप्यूटर पर चले उसे अपनी कुंजी चाहिए।",
+          "appliesToAll": "यहाँ के सभी एजेंट",
+          "appliesToAllHelp": "उपनाम इस कंप्यूटर का है, किसी एक एजेंट का नहीं — इसे बदलने पर यहाँ चल रहे हर एजेंट का दिखाया जाने वाला स्थान बदल जाता है।",
+          "deviceTitle": "मशीन का नाम",
+          "subtitle": "यह एजेंट जिस कंप्यूटर पर चल रहा है, उस पर क्या कर सकता है। ये सेटिंग्स इसी मशीन पर रहती हैं — एजेंट के साथ कहीं और नहीं जातीं।"
         },
         "mode": {
           "label": "मोड",
@@ -49992,6 +50061,7 @@ export const resources = {
         "locationAccess": "लोकेशन एक्सेस",
         "locations": "लोकेशन",
         "loops": "लूप",
+        "machine": "यह कंप्यूटर",
         "model": "मॉडल",
         "publish": "पब्लिश",
         "pulse": "पल्स",

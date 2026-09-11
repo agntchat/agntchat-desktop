@@ -35,6 +35,8 @@ import {
   deleteDirectoryListing,
   getAgentSkills,
   getAgentTools,
+  listDeviceNicknames,
+  setDeviceNickname,
   getAgentMemories,
   listRoutines,
   listLoops,
@@ -124,6 +126,7 @@ import {
   ListChecks,
   Bell,
   Sprout,
+  Monitor,
 } from "lucide-react";
 import {
   Dialog,
@@ -145,6 +148,8 @@ import { AvatarCropDialog } from "./AvatarCropDialog";
 import { AgentConfigTour, type TourRect } from "./AgentConfigTour";
 import { WorkspaceAvatar } from "./WorkspaceSwitcher";
 import { FTUE_KEYS, hasSeenTour, markTourSeen } from "../lib/ftue";
+import { useLocalDeviceName } from "../hooks/useRunningElsewhere";
+import { useDeviceNicknameStore } from "../stores/deviceNicknameStore";
 
 // First-run orientation for the details pane. Each step spotlights one
 // sidebar group (`groupKey`, matched to the `key` on `sectionGroups`) and
@@ -664,6 +669,12 @@ export function AgentConfig({
     if (onboardingDeepLink) setActiveSection("onboarding");
   }, [onboardingDeepLink]);
 
+  // The machine group only exists for local agents. Flipping the runtime to
+  // hosted while standing on it would leave an empty pane, so land on Model.
+  useEffect(() => {
+    if (isHosted && activeSection === "machine") setActiveSection("config");
+  }, [isHosted, activeSection]);
+
   // Tell the shell which section is on screen so the onboarding island can
   // stay quiet when the user is already looking at that agent's timeline.
   const setAgentConfigSection = useNavStore((s) => s.setAgentConfigSection);
@@ -806,18 +817,35 @@ export function AgentConfig({
       key: "model",
       name: t("common:model"),
       sections: [
-        {
-          value: "config",
-          label: t("common:model"),
-          icon: Settings2,
-          // The banner above says *what* is wrong on every section; this dot
-          // says *where to go* — the agent's API key is a Model-section field.
-          badge: keyProblem
-            ? { dot: "warning" as const, label: t("config.crash.apiKeyProblem") }
-            : undefined,
-        },
+        { value: "config", label: t("common:model"), icon: Settings2 },
       ],
     },
+    // Everything that is true of the computer rather than of the agent:
+    // what it may touch here, whether it starts with the app, and the key
+    // that lets it sign in from this machine. Hosted agents run on the org
+    // host — no local computer to drive, no local launch lifecycle — so the
+    // group doesn't exist for them (the panel bounces to Model below).
+    ...(isHosted
+      ? []
+      : [
+          {
+            key: "machine",
+            name: t("sections.machine"),
+            sections: [
+              {
+                value: "machine",
+                label: t("sections.machine"),
+                icon: Monitor,
+                // The banner above says *what* is wrong on every section;
+                // this dot says *where to go* — the agent's API key is a
+                // field in this group.
+                badge: keyProblem
+                  ? { dot: "warning" as const, label: t("config.crash.apiKeyProblem") }
+                  : undefined,
+              },
+            ],
+          },
+        ]),
     {
       key: "capabilities",
       name: t("sections.capabilities"),
@@ -1465,240 +1493,131 @@ export function AgentConfig({
             )}
             </div>
 
-            {/* Behavior — both controls are local-only. Skip permissions is
-                forced on for hosted agents (the org-host always passes
-                --dangerously-skip-permissions; see host/supervisor.py) and
-                auto-restart is managed by the host supervisor, so the whole
-                section is hidden when the agent runs hosted. */}
-            {!isHosted && (
-            <Section title={t("config.behavior.title")}>
-              <div className="space-y-3">
-                <div className="flex items-start justify-between gap-3">
-                  <div className="flex-1">
-                    <Label className="text-sm">{t("config.behavior.skipPermissions.label")}</Label>
-                    <p className="text-xs text-muted-foreground">
-                      {t("config.behavior.skipPermissions.description")}
-                    </p>
-                  </div>
-                  <Switch
-                    checked={config.dangerouslySkipPermissions}
-                    onCheckedChange={(v) =>
-                      updateConfig(agent.id, {
-                        dangerouslySkipPermissions: v,
-                      })
-                    }
-                  />
-                </div>
-
-                <div className="flex items-center justify-between">
-                  <Label className="text-sm">{t("config.behavior.autoRestart")}</Label>
-                  <Switch
-                    checked={config.autoRestart}
-                    onCheckedChange={(v) =>
-                      updateConfig(agent.id, { autoRestart: v })
-                    }
-                  />
-                </div>
-              </div>
-            </Section>
-            )}
-
             {/* Sub-agents — whether & where this agent may spawn ephemeral
                 helpers. Backend-owned policy, so it shows for local AND
                 hosted agents. Hidden for clones and for spawned sub-agents
                 themselves (gated inside the component). */}
             <SubAgentsSection agent={agent} />
+          </div>
+        )}
 
+        {/* This Computer — everything that belongs to the machine rather than
+            to the agent: what it may touch here, how it starts, and the key
+            it signs in with from this desktop. These used to sit at the
+            bottom of Model, where they buried the "how does it think?"
+            controls under a wall of local-runtime prose. The prose now lives
+            behind the ? tooltips, so the panel reads as a list of switches.
+            Local-runtime only — the rail omits the group for hosted agents,
+            which run on the org host with no local computer to drive. */}
+        {activeSection === "machine" && !isHosted && (
+          <div className="flex-1 overflow-y-auto p-5 space-y-6">
+            <p className="text-xs text-muted-foreground">
+              {t("config.machine.subtitle")}
+            </p>
 
+            {/* Machine name — a property of the computer, shared by every
+                agent that runs here. Same field as Profile → This computer;
+                surfaced again because this is where people look for it. */}
+            <Section title={t("config.machine.deviceTitle")}>
+              <MachineNameRow />
+            </Section>
 
-            {/* Local runtime settings — only meaningful when the agent runs on
-                this machine. Hosted agents run on the org host, which has no
-                desktop launch lifecycle, no local computer to drive, and no
-                access to this machine's folders, so the whole group is hidden
-                and reappears together when you switch the runtime to Local. */}
-            {!isHosted && (
-              <Section title={t("config.localRuntime.title")}>
-                <div className="space-y-4">
-                  <p className="text-xs text-muted-foreground">
-                    {t("config.localRuntime.subtitle")}
-                  </p>
-
-                  {/* Allow computer use */}
-                  <div className="flex items-start justify-between gap-3">
-                    <div className="flex-1">
-                      <Label className="text-sm">{t("config.localRuntime.computerUse.label")}</Label>
-                      <p className="text-xs text-muted-foreground">
-                        {t("config.localRuntime.computerUse.description")}
-                        {IS_MACOS
-                          ? ` ${t("config.localRuntime.computerUse.macPermissions")}`
-                          : ` ${t("config.localRuntime.computerUse.windowsInput")}`}{" "}
-                        {t("config.localRuntime.computerUse.liveHint")}
-                      </p>
-                      {agent.metadata?.computer_use_enabled === true &&
-                        (IS_MACOS ? (
-                          <ComputerUseDepsRow />
-                        ) : (
-                          <p className="text-xs text-green-600 dark:text-green-500 mt-2 flex items-center gap-1">
-                            <Check className="w-3 h-3" />
-                            {t("config.localRuntime.computerUse.windowsSafetyBuiltIn")}
-                          </p>
-                        ))}
-                    </div>
-                    <Switch
-                      checked={agent.metadata?.computer_use_enabled === true}
-                      onCheckedChange={async (v) => {
-                        // Backend `Agentchat.Accounts.merge_metadata_patch`
-                        // shallow-merges this patch with the existing
-                        // metadata, so we send ONLY the keys we're changing.
-                        // Spreading `agent.metadata` here would clobber any
-                        // concurrent writes from another tab.
-                        // When turning OFF, also clear the allow-list so the
-                        // UI doesn't quietly retain a stale policy that
-                        // re-applies when the toggle is flipped back on.
-                        const patch: Record<string, unknown> = {
-                          computer_use_enabled: v,
-                        };
-                        if (!v) patch.computer_use_allowed_apps = [];
-                        await updateAgent(agent.id, { metadata: patch });
-                        await fetchAgents();
-                        // When turning ON, recheck deps so the inline status
-                        // row reflects reality, and offer the install if
-                        // they're missing. Background install — never blocks
-                        // the toggle.
-                        if (v && IS_MACOS) {
-                          await refreshComputerUseDepsStatus();
-                          const s = useAgentStore.getState().computerUseDeps;
-                          if (s.state === "not_installed") {
-                            void installComputerUseDeps();
-                          }
-                        }
-                      }}
-                    />
-                  </div>
-
-                  {/* Computer-use allowed apps (only when computer use is on) */}
-                  {config.backend === "claude_cli" &&
-                    agent.metadata?.computer_use_enabled === true && (
-                      <div className="space-y-1.5 rounded-lg border border-border p-3">
-                        <Label className="text-xs">{t("config.localRuntime.allowedApps.label")}</Label>
-                        <p className="text-xs text-muted-foreground">
-                          {t("config.localRuntime.allowedApps.description")}
-                        </p>
-                        {((agent.metadata?.computer_use_allowed_apps as string[] | undefined) || []).map(
-                          (app, i) => (
-                            <div key={i} className="flex items-center gap-2">
-                              <ShieldOff className="w-3.5 h-3.5 text-muted-foreground flex-shrink-0" />
-                              <span className="text-xs font-mono truncate flex-1">{app}</span>
-                              <Button
-                                variant="ghost"
-                                size="icon"
-                                className="h-6 w-6 flex-shrink-0 text-muted-foreground hover:text-destructive/90"
-                                onClick={async () => {
-                                  const current = (agent.metadata?.computer_use_allowed_apps as string[] | undefined) || [];
-                                  const updated = current.filter((_, j) => j !== i);
-                                  // Backend merges shallow — send only the key
-                                  // we're changing.
-                                  await updateAgent(agent.id, {
-                                    metadata: { computer_use_allowed_apps: updated },
-                                  });
-                                  await fetchAgents();
-                                }}
-                              >
-                                <X className="w-3 h-3" />
-                              </Button>
-                            </div>
-                          ),
-                        )}
-                        <Button
-                          variant="outline"
-                          size="sm"
-                          className="w-full"
-                          onClick={async () => {
-                            const name = window.prompt(
-                              t("config.localRuntime.allowedApps.promptMessage"),
-                            );
-                            if (!name?.trim()) return;
-                            const current = (agent.metadata?.computer_use_allowed_apps as string[] | undefined) || [];
-                            await updateAgent(agent.id, {
-                              metadata: { computer_use_allowed_apps: [...current, name.trim()] },
-                            });
-                            await fetchAgents();
-                          }}
-                        >
-                          <ShieldOff className="w-3.5 h-3.5 mr-1.5" />
-                          {t("config.localRuntime.allowedApps.addButton")}
-                        </Button>
-                      </div>
-                    )}
-
-                  {/* Start on app launch */}
-                  <div className="flex items-center justify-between">
-                    <Label className="text-sm">{t("config.localRuntime.startOnLaunch")}</Label>
-                    <Switch
-                      checked={config.autoStart}
-                      onCheckedChange={(v) =>
-                        updateConfig(agent.id, { autoStart: v })
+            {/* Access — what this agent may reach on this machine. */}
+            <Section title={t("config.machine.accessTitle")}>
+              <div className="space-y-4">
+                <SettingRow
+                  label={t("config.localRuntime.computerUse.label")}
+                  help={`${t("config.localRuntime.computerUse.description")} ${
+                    IS_MACOS
+                      ? t("config.localRuntime.computerUse.macPermissions")
+                      : t("config.localRuntime.computerUse.windowsInput")
+                  } ${t("config.localRuntime.computerUse.liveHint")}`}
+                  checked={agent.metadata?.computer_use_enabled === true}
+                  onCheckedChange={async (v) => {
+                    // Backend `Agentchat.Accounts.merge_metadata_patch`
+                    // shallow-merges this patch with the existing metadata,
+                    // so we send ONLY the keys we're changing. Spreading
+                    // `agent.metadata` here would clobber any concurrent
+                    // writes from another tab. When turning OFF, also clear
+                    // the allow-list so the UI doesn't quietly retain a stale
+                    // policy that re-applies when the toggle is flipped back
+                    // on.
+                    const patch: Record<string, unknown> = {
+                      computer_use_enabled: v,
+                    };
+                    if (!v) patch.computer_use_allowed_apps = [];
+                    await updateAgent(agent.id, { metadata: patch });
+                    await fetchAgents();
+                    // When turning ON, recheck deps so the inline status row
+                    // reflects reality, and offer the install if they're
+                    // missing. Background install — never blocks the toggle.
+                    if (v && IS_MACOS) {
+                      await refreshComputerUseDepsStatus();
+                      const st = useAgentStore.getState().computerUseDeps;
+                      if (st.state === "not_installed") {
+                        void installComputerUseDeps();
                       }
-                    />
-                  </div>
-
-                  {/* Working Directories (Claude CLI only) */}
-                  {config.backend === "claude_cli" && (
-                    <div className="space-y-1.5">
-                      <Label className="text-xs">{t("config.localRuntime.workingDirs.label")}</Label>
-                      <p className="text-xs text-muted-foreground">
-                        {t("config.localRuntime.workingDirs.description")}
+                    }
+                  }}
+                >
+                  {agent.metadata?.computer_use_enabled === true &&
+                    (IS_MACOS ? (
+                      <ComputerUseDepsRow />
+                    ) : (
+                      <p className="text-xs text-green-600 dark:text-green-500 flex items-center gap-1">
+                        <Check className="w-3 h-3" />
+                        {t("config.localRuntime.computerUse.windowsSafetyBuiltIn")}
                       </p>
-                      {config.addDirs.map((dir, i) => (
-                        <div key={i} className="flex items-center gap-2">
-                          <FolderOpen className="w-3.5 h-3.5 text-muted-foreground flex-shrink-0" />
-                          <span className="text-xs font-mono truncate flex-1">{dir}</span>
-                          <Button
-                            variant="ghost"
-                            size="icon"
-                            className="h-6 w-6 flex-shrink-0 text-muted-foreground hover:text-destructive/90"
-                            onClick={() => {
-                              const updated = config.addDirs.filter((_, j) => j !== i);
-                              updateConfig(agent.id, { addDirs: updated });
-                            }}
-                          >
-                            <X className="w-3 h-3" />
-                          </Button>
-                        </div>
-                      ))}
-                      <Button
-                        variant="outline"
-                        size="sm"
-                        className="w-full"
-                        onClick={async () => {
-                          try {
-                            const { open } = await import("@tauri-apps/plugin-dialog");
-                            const selected = await open({ directory: true, multiple: false });
-                            if (selected && typeof selected === "string") {
-                              updateConfig(agent.id, { addDirs: [...config.addDirs, selected] });
-                            }
-                          } catch {
-                            const path = window.prompt(t("config.localRuntime.workingDirs.promptMessage"));
-                            if (path?.trim()) {
-                              updateConfig(agent.id, { addDirs: [...config.addDirs, path.trim()] });
-                            }
-                          }
-                        }}
-                      >
-                        <FolderOpen className="w-3.5 h-3.5 mr-1.5" />
-                        {t("config.localRuntime.workingDirs.addButton")}
-                      </Button>
-                    </div>
-                  )}
-                </div>
-              </Section>
-            )}
+                    ))}
+                </SettingRow>
 
-            {/* Agent API Key — only needed to run the agent from this machine
-                (local runtime). Hosted agents authenticate to the backend via
-                a host-minted delegation token, so the key is irrelevant. */}
-            {!isHosted && (
-            <Section title={t("config.agentApiKey.title")}>
+                {/* Allowed apps only mean anything once computer use is on. */}
+                {config.backend === "claude_cli" &&
+                  agent.metadata?.computer_use_enabled === true && (
+                    <AllowedAppsList agent={agent} />
+                  )}
+
+                {config.backend === "claude_cli" && (
+                  <WorkingDirsList agentId={agent.id} dirs={config.addDirs} />
+                )}
+              </div>
+            </Section>
+
+            {/* Behavior — how the agent starts here and how freely it acts.
+                Skip permissions is forced on for hosted agents (the org-host
+                always passes --dangerously-skip-permissions; see
+                host/supervisor.py) and auto-restart is the host supervisor's
+                job there, which is the other reason this panel is local-only. */}
+            <Section title={t("config.behavior.title")}>
+              <div className="space-y-4">
+                <SettingRow
+                  label={t("config.localRuntime.startOnLaunch")}
+                  checked={config.autoStart}
+                  onCheckedChange={(v) => updateConfig(agent.id, { autoStart: v })}
+                />
+                <SettingRow
+                  label={t("config.behavior.autoRestart")}
+                  checked={config.autoRestart}
+                  onCheckedChange={(v) => updateConfig(agent.id, { autoRestart: v })}
+                />
+                <SettingRow
+                  label={t("config.behavior.skipPermissions.label")}
+                  help={t("config.behavior.skipPermissions.description")}
+                  checked={config.dangerouslySkipPermissions}
+                  onCheckedChange={(v) =>
+                    updateConfig(agent.id, { dangerouslySkipPermissions: v })
+                  }
+                />
+              </div>
+            </Section>
+
+            {/* Agent API Key — how the agent authenticates to the backend
+                from THIS computer. Hosted agents use a host-minted delegation
+                token instead, so the key is meaningless for them. */}
+            <Section
+              title={t("config.agentApiKey.title")}
+              help={t("config.machine.apiKeyHelp")}
+            >
               {apiKey ? (
                 <>
                   <div className="flex gap-2">
@@ -1791,7 +1710,6 @@ export function AgentConfig({
                 </div>
               )}
             </Section>
-            )}
           </div>
         )}
 
@@ -3374,17 +3292,285 @@ function formatDuration(seconds: number): string {
 
 function Section({
   title,
+  help,
   children,
 }: {
   title: string;
+  /** Optional explainer for the whole group, parked in a ? tooltip so the
+   *  panel stays a list of controls rather than a wall of prose. */
+  help?: string;
   children: React.ReactNode;
 }) {
   return (
     <div>
-      <h3 className="text-[11px] font-semibold text-muted-foreground uppercase tracking-wider mb-3">
+      <h3 className="text-[11px] font-semibold text-muted-foreground uppercase tracking-wider mb-3 flex items-center gap-1.5">
         {title}
+        {help && <FieldHelp text={help} />}
       </h3>
       <div className="space-y-2">{children}</div>
+    </div>
+  );
+}
+
+/**
+ * The "?" next to a label. Everything a setting needs saying beyond its own
+ * name goes in here — the machine panel used to carry three sentences of
+ * prose under every switch, which made a short list of toggles read as a
+ * document nobody finished.
+ */
+function FieldHelp({ text }: { text: string }) {
+  return (
+    <Tooltip>
+      <TooltipTrigger className="cursor-help shrink-0">
+        <HelpCircle className="w-3.5 h-3.5 text-muted-foreground" />
+      </TooltipTrigger>
+      <TooltipContent side="right" className="max-w-[280px]">
+        <p className="text-xs text-muted-foreground">{text}</p>
+      </TooltipContent>
+    </Tooltip>
+  );
+}
+
+/** Label (+ optional ?) on the left, switch on the right, anything the
+ *  setting needs to show once it's on underneath. */
+function SettingRow({
+  label,
+  help,
+  checked,
+  onCheckedChange,
+  children,
+}: {
+  label: string;
+  help?: string;
+  checked: boolean;
+  onCheckedChange: (v: boolean) => void | Promise<void>;
+  children?: React.ReactNode;
+}) {
+  return (
+    <div className="space-y-1.5">
+      <div className="flex items-center justify-between gap-3">
+        <div className="flex items-center gap-1.5 min-w-0">
+          <Label className="text-sm truncate">{label}</Label>
+          {help && <FieldHelp text={help} />}
+        </div>
+        <Switch
+          checked={checked}
+          onCheckedChange={(v) => void onCheckedChange(v)}
+        />
+      </div>
+      {children}
+    </div>
+  );
+}
+
+/**
+ * Machine name — the nickname for THIS computer, not for one agent. Same
+ * field as Profile → This computer (and the same write path, so a rename
+ * here shows up in every presence line at once); it's repeated in the
+ * machine panel because that's where people look for it. The badge says
+ * out loud that the value is shared.
+ */
+function MachineNameRow() {
+  const { t } = useTranslation("agents");
+  const { t: tSettings } = useTranslation("settings");
+  const myDevice = useLocalDeviceName();
+  const [nickname, setNickname] = useState("");
+  const [savedNickname, setSavedNickname] = useState("");
+  const [loaded, setLoaded] = useState(false);
+  const [saving, setSaving] = useState(false);
+  const [justSaved, setJustSaved] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+
+  useEffect(() => {
+    if (!myDevice) return;
+    let mounted = true;
+    listDeviceNicknames()
+      .then((devices) => {
+        if (!mounted) return;
+        const mine = devices.find((d) => d.deviceName === myDevice);
+        setNickname(mine?.nickname ?? "");
+        setSavedNickname(mine?.nickname ?? "");
+        setLoaded(true);
+      })
+      .catch(() => {
+        // Best effort — the raw machine name is still shown above.
+        if (mounted) setLoaded(true);
+      });
+    return () => {
+      mounted = false;
+    };
+  }, [myDevice]);
+
+  // Tauri can't report a device name in a plain browser (dev) — nothing to name.
+  if (!myDevice) return null;
+
+  const dirty = nickname.trim() !== savedNickname;
+
+  const save = async () => {
+    setSaving(true);
+    setError(null);
+    try {
+      const res = await setDeviceNickname(myDevice, nickname.trim() || null);
+      setSavedNickname(res.nickname ?? "");
+      setNickname(res.nickname ?? "");
+      // Session lines and other nickname readers pick the rename up at once.
+      useDeviceNicknameStore.getState().setNickname(myDevice, res.nickname ?? null);
+      setJustSaved(true);
+      setTimeout(() => setJustSaved(false), 2000);
+    } catch (err) {
+      setError(err instanceof Error ? err.message : tSettings("device.saveFailed"));
+    } finally {
+      setSaving(false);
+    }
+  };
+
+  return (
+    <div className="space-y-2">
+      <div className="flex items-center gap-1.5">
+        <Monitor className="w-4 h-4 text-muted-foreground shrink-0" />
+        <span className="text-sm font-medium truncate">
+          {savedNickname || myDevice}
+        </span>
+        <Badge variant="secondary" className="text-[10px] font-normal shrink-0">
+          {t("config.machine.appliesToAll")}
+        </Badge>
+        <FieldHelp text={t("config.machine.appliesToAllHelp")} />
+      </div>
+      {savedNickname && (
+        <p className="text-[11px] text-muted-foreground font-mono">{myDevice}</p>
+      )}
+      <div className="flex items-center gap-2">
+        <Input
+          value={nickname}
+          disabled={!loaded || saving}
+          maxLength={100}
+          placeholder={tSettings("device.nicknamePlaceholder")}
+          onChange={(e) => setNickname(e.target.value)}
+          onKeyDown={(e) => {
+            if (e.key === "Enter" && dirty && !saving) void save();
+          }}
+          className="max-w-xs text-xs"
+        />
+        <Button
+          size="sm"
+          onClick={() => void save()}
+          disabled={!loaded || saving || !dirty}
+        >
+          {saving ? (
+            <Loader2 className="h-3.5 w-3.5 animate-spin" />
+          ) : justSaved ? (
+            <Check className="h-3.5 w-3.5" />
+          ) : (
+            tSettings("device.save")
+          )}
+        </Button>
+      </div>
+      {error && <p className="text-[11px] text-destructive">{error}</p>}
+    </div>
+  );
+}
+
+/** Computer-use allow-list. Empty = every app except the hardcoded deny
+ *  list; non-empty = only these. Lives on agent metadata, so it follows the
+ *  agent to another desktop. */
+function AllowedAppsList({ agent }: { agent: Agent }) {
+  const { t } = useTranslation("agents");
+  const fetchAgents = useAgentStore((s) => s.fetchAgents);
+  const apps = (agent.metadata?.computer_use_allowed_apps as string[] | undefined) || [];
+
+  // Backend merges metadata shallow — send only the key we're changing.
+  const write = async (next: string[]) => {
+    await updateAgent(agent.id, { metadata: { computer_use_allowed_apps: next } });
+    await fetchAgents();
+  };
+
+  return (
+    <div className="space-y-1.5 rounded-lg border border-border p-3">
+      <div className="flex items-center gap-1.5">
+        <Label className="text-xs">{t("config.localRuntime.allowedApps.label")}</Label>
+        <FieldHelp text={t("config.localRuntime.allowedApps.description")} />
+      </div>
+      {apps.map((app, i) => (
+        <div key={i} className="flex items-center gap-2">
+          <ShieldOff className="w-3.5 h-3.5 text-muted-foreground flex-shrink-0" />
+          <span className="text-xs font-mono truncate flex-1">{app}</span>
+          <Button
+            variant="ghost"
+            size="icon"
+            className="h-6 w-6 flex-shrink-0 text-muted-foreground hover:text-destructive/90"
+            onClick={() => void write(apps.filter((_, j) => j !== i))}
+          >
+            <X className="w-3 h-3" />
+          </Button>
+        </div>
+      ))}
+      <Button
+        variant="outline"
+        size="sm"
+        className="w-full"
+        onClick={() => {
+          const name = window.prompt(t("config.localRuntime.allowedApps.promptMessage"));
+          if (!name?.trim()) return;
+          void write([...apps, name.trim()]);
+        }}
+      >
+        <ShieldOff className="w-3.5 h-3.5 mr-1.5" />
+        {t("config.localRuntime.allowedApps.addButton")}
+      </Button>
+    </div>
+  );
+}
+
+/** Folders the agent can read and write on this machine. Local config, not
+ *  agent metadata — paths are meaningless on another computer. */
+function WorkingDirsList({ agentId, dirs }: { agentId: string; dirs: string[] }) {
+  const { t } = useTranslation("agents");
+  const updateConfig = useAgentStore((s) => s.updateConfig);
+
+  return (
+    <div className="space-y-1.5">
+      <div className="flex items-center gap-1.5">
+        <Label className="text-xs">{t("config.localRuntime.workingDirs.label")}</Label>
+        <FieldHelp text={t("config.localRuntime.workingDirs.description")} />
+      </div>
+      {dirs.map((dir, i) => (
+        <div key={i} className="flex items-center gap-2">
+          <FolderOpen className="w-3.5 h-3.5 text-muted-foreground flex-shrink-0" />
+          <span className="text-xs font-mono truncate flex-1">{dir}</span>
+          <Button
+            variant="ghost"
+            size="icon"
+            className="h-6 w-6 flex-shrink-0 text-muted-foreground hover:text-destructive/90"
+            onClick={() =>
+              updateConfig(agentId, { addDirs: dirs.filter((_, j) => j !== i) })
+            }
+          >
+            <X className="w-3 h-3" />
+          </Button>
+        </div>
+      ))}
+      <Button
+        variant="outline"
+        size="sm"
+        className="w-full"
+        onClick={async () => {
+          try {
+            const { open } = await import("@tauri-apps/plugin-dialog");
+            const selected = await open({ directory: true, multiple: false });
+            if (selected && typeof selected === "string") {
+              updateConfig(agentId, { addDirs: [...dirs, selected] });
+            }
+          } catch {
+            const path = window.prompt(t("config.localRuntime.workingDirs.promptMessage"));
+            if (path?.trim()) {
+              updateConfig(agentId, { addDirs: [...dirs, path.trim()] });
+            }
+          }
+        }}
+      >
+        <FolderOpen className="w-3.5 h-3.5 mr-1.5" />
+        {t("config.localRuntime.workingDirs.addButton")}
+      </Button>
     </div>
   );
 }
