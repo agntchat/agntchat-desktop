@@ -1,6 +1,6 @@
 name: Release
 
-# Builds AgentChat desktop installers for macOS (Apple Silicon + Intel) and
+# Builds agntchat desktop installers for macOS (Apple Silicon + Intel) and
 # Windows on every version tag (v*) and uploads them to a DRAFT GitHub Release
 # for James to review before publishing.
 #
@@ -81,8 +81,8 @@ jobs:
           # APPLE_TEAM_ID: ${{ secrets.APPLE_TEAM_ID }}
         with:
           tagName: ${{ github.ref_name }}
-          releaseName: "AgentChat ${{ github.ref_name }}"
-          releaseBody: "See the assets below to download and install AgentChat."
+          releaseName: "agntchat ${{ github.ref_name }}"
+          releaseBody: "See the assets below to download and install agntchat."
           # Draft so James reviews before publishing to users.
           releaseDraft: true
           prerelease: false
