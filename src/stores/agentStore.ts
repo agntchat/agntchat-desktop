@@ -85,7 +85,6 @@ function parseServerModelConfig(
     "model",
     "max_tokens",
     "execution_mode",
-    "history_limit",
     "effort",
     "cli_connection",
     "aws_region",
@@ -137,7 +136,11 @@ function parseServerModelConfig(
   takeString("model", "model");
   takeNumber("max_tokens", "maxTokens");
   takeString("execution_mode", "executionMode");
-  takeNumber("history_limit", "historyLimit");
+  // No history_limit read: it is NOT a model_config key (the backend rejects
+  // unknown ones — see Accounts.ModelConfig.@known_keys). The server-side
+  // knob lives in `agent.settings["history_limit"]`
+  // (Agents.RuntimeSettings.history_limit/1); AgentConfig.historyLimit is
+  // only the local spawn arg.
   takeString("effort", "effort");
   takeString("cli_connection", "cliConnection");
   takeString("aws_region", "awsRegion");
@@ -386,7 +389,7 @@ const ORPHAN_LOCAL_CONFIG_KEYS = ["computerUseEnabled"] as const;
 // showed the real one). They're stripped from the local override at load
 // time; the merge then always takes the server's value. Genuinely
 // device-local fields (raw llmApiKey, autoRestart, autoStart, addDirs,
-// maxTokens, historyLimit) are left untouched.
+// historyLimit) are left untouched.
 //
 // dangerouslySkipPermissions moved here (issue #68): it used to be
 // device-local and baked into the spawn CLI flag at boot, so toggling it never
@@ -396,6 +399,12 @@ const ORPHAN_LOCAL_CONFIG_KEYS = ["computerUseEnabled"] as const;
 const SERVER_OWNED_CONFIG_KEYS: readonly (keyof AgentConfig)[] = [
   "backend",
   "model",
+  // maxTokens has no desktop control, but mobile writes model_config.max_tokens
+  // from its agent-detail Model section. Left device-local, the blob's default
+  // (DEFAULT_CONFIG.maxTokens) shadowed that value forever — and since Tauri
+  // always passes --max-tokens, the bridge's own model_config fallback never
+  // got a chance either, so the setting was inert for every local agent.
+  "maxTokens",
   "executionMode",
   "effort",
   "llmApiKeyId",
