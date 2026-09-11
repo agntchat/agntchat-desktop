@@ -86,6 +86,13 @@ jobs:
       - name: Install frontend dependencies
         run: npm ci
 
+      # bundle.resources lists bridge files by name and by non-recursive glob,
+      # and an unlisted file is silently absent from the built app — the first
+      # symptom is a runtime failure in a shipped build. Cheap to check here,
+      # expensive to find later.
+      - name: Check bundle resources cover the bridge
+        run: node scripts/check-bundle-resources.mjs
+
       - name: Build and release (tauri-action)
         uses: tauri-apps/tauri-action@v0
         env:
