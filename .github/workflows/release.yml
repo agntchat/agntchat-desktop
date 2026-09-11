@@ -109,6 +109,9 @@ jobs:
           tagName: ${{ github.ref_name }}
           releaseName: "agntchat ${{ github.ref_name }}"
           releaseBody: |
+            **agntchat is in beta.** Expect rough edges, and please report
+            anything broken from Profile → Help in the app.
+
             Download the installer for your platform below.
 
             - **macOS (Apple Silicon)** — `_aarch64.dmg`
