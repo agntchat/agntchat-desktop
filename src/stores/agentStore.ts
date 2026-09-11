@@ -1087,7 +1087,12 @@ export const useAgentStore = create<AgentState>((set, get) => ({
       if (partial.backend) mcPatch.backend = partial.backend;
       if (partial.model) mcPatch.model = partial.model;
       if (partial.executionMode) mcPatch.execution_mode = partial.executionMode;
-      if (partial.effort) mcPatch.effort = partial.effort;
+      // `"in" partial` semantics, not truthiness: the Effort picker's
+      // "Default" option writes null to clear the override, and a truthy
+      // guard silently dropped it — the local config said Default, the
+      // server kept the old level, and the next load (effort is
+      // server-owned) snapped the dropdown back.
+      if ("effort" in partial) mcPatch.effort = partial.effort;
       if ("llmApiKeyId" in partial) mcPatch.llm_api_key_id = partial.llmApiKeyId;
       // CLI connection (auth/runtime) + its cloud region/project. Must persist
       // server-side so the serializer can resolve runtime_api_id for the

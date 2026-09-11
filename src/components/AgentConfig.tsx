@@ -1789,7 +1789,7 @@ export function AgentConfig({
                 className="w-full py-3 rounded-lg bg-primary/10 text-sm font-semibold text-primary hover:bg-primary/20 transition-colors flex items-center justify-center gap-2"
               >
                 <LayoutTemplate className="w-4 h-4" />
-                Preview All Templates
+                {t("templates:previewAll")}
               </button>
             </div>
           </div>
