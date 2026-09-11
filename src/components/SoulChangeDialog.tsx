@@ -38,11 +38,17 @@ export function SoulChangeDialog({
   const { t } = useTranslation("agents");
   const before = improvement?.changeData?.before ?? "";
   const after = improvement?.changeData?.after ?? "";
-  const { removed, added } = useMemo(() => lineChanges(before, after), [before, after]);
+  const { removed, added } = useMemo(
+    () => lineChanges(before, after),
+    [before, after],
+  );
   const reverted = improvement?.status === "reverted";
 
   return (
-    <Dialog open={loading || improvement !== null} onOpenChange={(o) => !o && onClose()}>
+    <Dialog
+      open={loading || improvement !== null}
+      onOpenChange={(o) => !o && onClose()}
+    >
       <DialogContent className="max-w-4xl">
         <DialogHeader>
           <DialogTitle className="flex items-center gap-2">
@@ -64,8 +70,18 @@ export function SoulChangeDialog({
           </div>
         ) : (
           <div className="grid grid-cols-2 gap-3 max-h-[60vh] min-h-0">
-            <SoulPane text={before} tint={removed} tone="removed" />
-            <SoulPane text={after} tint={added} tone="added" />
+            <SoulPane
+              label={t("onboarding.before")}
+              text={before}
+              tint={removed}
+              tone="removed"
+            />
+            <SoulPane
+              label={t("onboarding.after")}
+              text={after}
+              tint={added}
+              tone="added"
+            />
           </div>
         )}
 
@@ -95,28 +111,36 @@ export function SoulChangeDialog({
 }
 
 function SoulPane({
+  label,
   text,
   tint,
   tone,
 }: {
+  label: string;
   text: string;
   tint: Set<number>;
   tone: "removed" | "added";
 }) {
   const lines = text.split("\n");
   return (
-    <div className="min-w-0 overflow-auto rounded-lg border border-border bg-muted/30 p-3 font-mono text-[11px] leading-relaxed">
-      {lines.map((line, i) => (
-        <div
-          key={i}
-          className={cn(
-            "whitespace-pre-wrap break-words -mx-1 px-1 rounded-sm",
-            tint.has(i) && (tone === "removed" ? "bg-destructive/15" : "bg-success/15")
-          )}
-        >
-          {line || " "}
-        </div>
-      ))}
+    <div className="flex min-h-0 min-w-0 flex-col">
+      <p className="mb-1 text-[10px] font-semibold uppercase tracking-wider text-muted-foreground">
+        {label}
+      </p>
+      <div className="min-h-0 min-w-0 overflow-auto rounded-lg border border-border bg-muted/30 p-3 font-mono text-[11px] leading-relaxed">
+        {lines.map((line, i) => (
+          <div
+            key={i}
+            className={cn(
+              "whitespace-pre-wrap break-words -mx-1 px-1 rounded-sm",
+              tint.has(i) &&
+                (tone === "removed" ? "bg-destructive/15" : "bg-success/15"),
+            )}
+          >
+            {line || " "}
+          </div>
+        ))}
+      </div>
     </div>
   );
 }

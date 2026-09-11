@@ -1133,8 +1133,12 @@ export const resources = {
       "noSearchMatches": "No agents match your search.",
       "notFound": "Agent not found",
       "onboarding": {
+        "after": "After",
         "badge": "Onboarding",
         "badgeWithPct": "Onboarding · {{pct}}%",
+        "before": "Before",
+        "changedLines_one": "{{count}} line changed",
+        "changedLines_other": "{{count}} lines changed",
         "clearedAt": "Cleared {{date}}",
         "clearedBy": {
           "auto": "Cleared automatically",
@@ -6504,8 +6508,12 @@ export const resources = {
       "noSearchMatches": "Ningún agente coincide con tu búsqueda.",
       "notFound": "Agente no encontrado",
       "onboarding": {
+        "after": "Después",
         "badge": "Incorporación",
         "badgeWithPct": "Incorporación · {{pct}}%",
+        "before": "Antes",
+        "changedLines_one": "{{count}} línea cambiada",
+        "changedLines_other": "{{count}} líneas cambiadas",
         "clearedAt": "Completada: {{date}}",
         "clearedBy": {
           "auto": "Completada automáticamente",
@@ -11875,8 +11883,12 @@ export const resources = {
       "noSearchMatches": "Keine Agenten entsprechen Ihrer Suche.",
       "notFound": "Agent nicht gefunden",
       "onboarding": {
+        "after": "Nachher",
         "badge": "Einarbeitung",
         "badgeWithPct": "Einarbeitung · {{pct}}%",
+        "before": "Vorher",
+        "changedLines_one": "{{count}} Zeile geändert",
+        "changedLines_other": "{{count}} Zeilen geändert",
         "clearedAt": "Abgeschlossen am {{date}}",
         "clearedBy": {
           "auto": "Automatisch abgeschlossen",
@@ -17246,8 +17258,12 @@ export const resources = {
       "noSearchMatches": "Aucun agent ne correspond à votre recherche.",
       "notFound": "Agent introuvable",
       "onboarding": {
+        "after": "Après",
         "badge": "Intégration",
         "badgeWithPct": "Intégration · {{pct}}%",
+        "before": "Avant",
+        "changedLines_one": "{{count}} ligne modifiée",
+        "changedLines_other": "{{count}} lignes modifiées",
         "clearedAt": "Terminée le {{date}}",
         "clearedBy": {
           "auto": "Terminée automatiquement",
@@ -22617,8 +22633,12 @@ export const resources = {
       "noSearchMatches": "Nenhum agente corresponde à sua busca.",
       "notFound": "Agente não encontrado",
       "onboarding": {
+        "after": "Depois",
         "badge": "Integração",
         "badgeWithPct": "Integração · {{pct}}%",
+        "before": "Antes",
+        "changedLines_one": "{{count}} linha alterada",
+        "changedLines_other": "{{count}} linhas alteradas",
         "clearedAt": "Concluída em {{date}}",
         "clearedBy": {
           "auto": "Concluída automaticamente",
@@ -27988,8 +28008,12 @@ export const resources = {
       "noSearchMatches": "検索条件に一致するエージェントはありません。",
       "notFound": "エージェントが見つかりません",
       "onboarding": {
+        "after": "変更後",
         "badge": "オンボーディング",
         "badgeWithPct": "オンボーディング · {{pct}}%",
+        "before": "変更前",
+        "changedLines_one": "{{count}} 行を変更",
+        "changedLines_other": "{{count}} 行を変更",
         "clearedAt": "{{date}} 完了",
         "clearedBy": {
           "auto": "自動で完了",
@@ -33359,8 +33383,12 @@ export const resources = {
       "noSearchMatches": "没有符合搜索条件的智能体。",
       "notFound": "未找到智能体",
       "onboarding": {
+        "after": "更改后",
         "badge": "入职中",
         "badgeWithPct": "入职中 · {{pct}}%",
+        "before": "更改前",
+        "changedLines_one": "更改了 {{count}} 行",
+        "changedLines_other": "更改了 {{count}} 行",
         "clearedAt": "完成于 {{date}}",
         "clearedBy": {
           "auto": "自动完成",
@@ -38730,8 +38758,12 @@ export const resources = {
       "noSearchMatches": "검색과 일치하는 에이전트가 없습니다.",
       "notFound": "에이전트를 찾을 수 없습니다",
       "onboarding": {
+        "after": "변경 후",
         "badge": "온보딩",
         "badgeWithPct": "온보딩 · {{pct}}%",
+        "before": "변경 전",
+        "changedLines_one": "{{count}}줄 변경됨",
+        "changedLines_other": "{{count}}줄 변경됨",
         "clearedAt": "{{date}} 완료",
         "clearedBy": {
           "auto": "자동으로 완료됨",
@@ -44101,8 +44133,12 @@ export const resources = {
       "noSearchMatches": "Nessun agente corrisponde alla tua ricerca.",
       "notFound": "Agente non trovato",
       "onboarding": {
+        "after": "Dopo",
         "badge": "Inserimento",
         "badgeWithPct": "Inserimento · {{pct}}%",
+        "before": "Prima",
+        "changedLines_one": "{{count}} riga modificata",
+        "changedLines_other": "{{count}} righe modificate",
         "clearedAt": "Completato il {{date}}",
         "clearedBy": {
           "auto": "Completato automaticamente",
@@ -49472,8 +49508,12 @@ export const resources = {
       "noSearchMatches": "आपकी खोज से कोई एजेंट मेल नहीं खाता।",
       "notFound": "एजेंट नहीं मिला",
       "onboarding": {
+        "after": "बाद में",
         "badge": "ऑनबोर्डिंग",
         "badgeWithPct": "ऑनबोर्डिंग · {{pct}}%",
+        "before": "पहले",
+        "changedLines_one": "{{count}} पंक्ति बदली",
+        "changedLines_other": "{{count}} पंक्तियाँ बदलीं",
         "clearedAt": "{{date}} को पूरी",
         "clearedBy": {
           "auto": "स्वतः पूरी हुई",
