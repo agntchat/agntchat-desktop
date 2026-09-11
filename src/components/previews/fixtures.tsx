@@ -25,6 +25,7 @@ import type { ActivityEntry } from "../../lib/conversation-activity";
 import { AgentBusyToastCard } from "../AgentBusyToast";
 import { ReminderToastCard } from "../ReminderToast";
 import { MemorySavedToastCard } from "../MemorySavedToast";
+import { OnboardingProgressToastCard } from "../OnboardingProgressToast";
 import { PermissionToastCard } from "../PermissionToast";
 import { cn } from "../../lib/utils";
 import type {
@@ -1518,6 +1519,18 @@ export function buildPreviewCategories(
               <MemorySavedToastCard
                 title="Atlas saved a memory"
                 content="You prefer window seats on long flights."
+              />
+            </ToastFrame>
+          ),
+        },
+        {
+          label: "Progress island — onboarding review",
+          node: (
+            <ToastFrame>
+              <OnboardingProgressToastCard
+                name="Atlas"
+                title="Atlas is finding their footing · 51% settled"
+                content="I now ask before rescheduling anything on your calendar."
               />
             </ToastFrame>
           ),

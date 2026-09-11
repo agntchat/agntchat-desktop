@@ -123,6 +123,7 @@ import {
   MessageCircle,
   ListChecks,
   Bell,
+  Sprout,
 } from "lucide-react";
 import {
   Dialog,
@@ -133,6 +134,8 @@ import {
 import { AgentSkills } from "./AgentSkills";
 import { AgentTools } from "./AgentTools";
 import { AgentMemory } from "./AgentMemory";
+import { AgentOnboarding } from "./AgentOnboarding";
+import { OnboardingChip, isOnboarding, onboardingPct } from "./OnboardingChip";
 import { AgentTemplates } from "./AgentTemplates";
 import { AgentRoutines } from "./AgentRoutines";
 import { AgentReminders } from "./AgentReminders";
@@ -175,6 +178,7 @@ const TOUR_SEEN_KEY = FTUE_KEYS.agentConfigTour;
 type SectionBadge =
   | number
   | { dot: "success" | "warning" | "destructive"; label?: string }
+  | { text: string; label?: string }
   | null;
 
 // Rail badges, keyed by section value. Each entry owns the notion of "badge"
@@ -221,8 +225,20 @@ const sameBadge = (a: SectionBadge | undefined, b: SectionBadge) =>
     a !== null &&
     typeof b === "object" &&
     b !== null &&
-    a.dot === b.dot &&
+    ("dot" in a ? a.dot : undefined) === ("dot" in b ? b.dot : undefined) &&
+    ("text" in a ? a.text : undefined) === ("text" in b ? b.text : undefined) &&
     a.label === b.label);
+
+/**
+ * Onboarding rail badge: the percent settled while the agent is a new hire,
+ * nothing once established. Read straight off the agent record (which
+ * `agent_updated` keeps live on every review) rather than fetched — same
+ * reason Templates isn't in SECTION_BADGES.
+ */
+function onboardingBadge(agent: Pick<Agent, "lifecycleStage" | "onboarding">): SectionBadge {
+  if (!isOnboarding(agent)) return null;
+  return { text: `${onboardingPct(agent)}%` };
+}
 
 /**
  * Right edge of a rail row: a count pill, or a status dot for sections whose
@@ -247,6 +263,21 @@ function RailBadge({ badge, active }: { badge?: SectionBadge; active: boolean })
   }
 
   if (!badge) return null;
+
+  // A short text pill (the onboarding percentage) — same chrome as a count.
+  if ("text" in badge) {
+    return (
+      <span
+        title={badge.label}
+        className={cn(
+          "ml-auto flex-shrink-0 rounded px-1.5 py-0.5 text-[10px] font-semibold tabular-nums",
+          active ? "bg-primary/20 text-primary" : "bg-muted-foreground/15 text-muted-foreground"
+        )}
+      >
+        {badge.text}
+      </span>
+    );
+  }
 
   // The dot carries meaning by color alone, so it also carries a label for
   // screen readers and on hover.
@@ -382,6 +413,8 @@ export function AgentConfig({
   initialSection,
   initialMemoryTab,
   onMemoryDeepLinkConsumed,
+  onboardingDeepLink,
+  onOnboardingDeepLinkConsumed,
 }: {
   managed: ManagedAgent;
   /** Deep-link (currently the memory island's Review): land directly on
@@ -394,6 +427,11 @@ export function AgentConfig({
   /** Called once initialMemoryTab is consumed, so the caller can clear
    *  the pending deep-link. */
   onMemoryDeepLinkConsumed?: () => void;
+  /** True while the onboarding island's Review deep-link targets this
+   *  agent — jumps the pane to the Onboarding section. */
+  onboardingDeepLink?: boolean;
+  /** Called once the Onboarding section has consumed that deep-link. */
+  onOnboardingDeepLinkConsumed?: () => void;
 }) {
   const { t } = useTranslation("agents");
   const {
@@ -622,6 +660,17 @@ export function AgentConfig({
     if (initialMemoryTab) setActiveSection("memory");
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [initialMemoryTab]);
+  useEffect(() => {
+    if (onboardingDeepLink) setActiveSection("onboarding");
+  }, [onboardingDeepLink]);
+
+  // Tell the shell which section is on screen so the onboarding island can
+  // stay quiet when the user is already looking at that agent's timeline.
+  const setAgentConfigSection = useNavStore((s) => s.setAgentConfigSection);
+  useEffect(() => {
+    setAgentConfigSection(activeSection);
+    return () => setAgentConfigSection(null);
+  }, [activeSection, setAgentConfigSection]);
 
   // Rail badges. Templates isn't fetched — the assigned set is already
   // on the agent record, so it stays live for free.
@@ -737,6 +786,14 @@ export function AgentConfig({
       sections: [
         { value: "profile", label: t("nav:profile"), icon: User },
         { value: "soul", label: t("soul.title"), icon: FileText },
+        // New-hire state: the percent settled rides on the agent record, so
+        // the badge is live without a fetch and disappears once established.
+        {
+          value: "onboarding",
+          label: t("onboarding.sectionTitle"),
+          icon: Sprout,
+          badge: onboardingBadge(agent),
+        },
         // Workspace visibility stands on its own rather than sitting at the
         // bottom of the profile form — it's a tenancy decision, not an
         // identity field. Hidden entirely when workspaces are off.
@@ -1759,6 +1816,16 @@ export function AgentConfig({
         {activeSection === "soul" && (
           <div className="flex-1 overflow-hidden">
             <SoulEditor agentId={agent.id} />
+          </div>
+        )}
+
+        {activeSection === "onboarding" && (
+          <div className="flex-1 overflow-y-auto">
+            <AgentOnboarding
+              agentId={agent.id}
+              agentName={agent.displayName}
+              onDeepLinkConsumed={onboardingDeepLink ? onOnboardingDeepLinkConsumed : undefined}
+            />
           </div>
         )}
 
@@ -3916,7 +3983,10 @@ function ProfileSection({
 function AgentHeader({
   agent,
 }: {
-  agent: { id: string; displayName: string; avatarUrl?: string; description?: string; agentType?: string };
+  agent: Pick<
+    Agent,
+    "id" | "displayName" | "avatarUrl" | "description" | "agentType" | "lifecycleStage" | "onboarding"
+  >;
 }) {
   const { t } = useTranslation("agents");
   const conversations = useChatStore((s) => s.conversations);
@@ -3975,7 +4045,10 @@ function AgentHeader({
         </AvatarFallback>
       </Avatar>
       <div className="flex-1 min-w-0">
-        <p className="text-sm font-semibold truncate">{agent.displayName}</p>
+        <div className="flex items-center gap-2 min-w-0">
+          <p className="text-sm font-semibold truncate">{agent.displayName}</p>
+          <OnboardingChip agent={agent} />
+        </div>
         {agent.description && (
           <p className="text-[11px] text-muted-foreground truncate mt-0.5">
             {agent.description}

@@ -493,6 +493,49 @@ export async function getAgent(id: string): Promise<Agent> {
   return request(`/api/agents/${id}`);
 }
 
+// Agent onboarding — rollup + review timeline, and the owner's overrides.
+export async function getAgentOnboarding(
+  agentId: string,
+  opts: { limit?: number } = {}
+): Promise<OnboardingSummary> {
+  const qs = opts.limit ? `?limit=${opts.limit}` : "";
+  return request(`/api/agents/${agentId}/onboarding${qs}`);
+}
+
+/** Enqueue a manual review — 202; it runs once there is new work to reflect on. */
+export async function requestOnboardingReview(agentId: string): Promise<{ status: string }> {
+  return request(`/api/agents/${agentId}/onboarding/review`, { method: "POST" });
+}
+
+export async function clearOnboarding(agentId: string): Promise<{ agent: Agent }> {
+  return request(`/api/agents/${agentId}/onboarding/clear`, { method: "POST" });
+}
+
+export async function reopenOnboarding(agentId: string): Promise<{ agent: Agent }> {
+  return request(`/api/agents/${agentId}/onboarding/reopen`, { method: "POST" });
+}
+
+// Soul revisions (meta-loop + onboarding reviews) with before/after and revert.
+export async function listImprovements(
+  agentId: string,
+  opts: { status?: string; limit?: number } = {}
+): Promise<{ improvements: AgentImprovement[] }> {
+  const params = new URLSearchParams();
+  if (opts.status) params.set("status", opts.status);
+  if (opts.limit) params.set("limit", String(opts.limit));
+  const qs = params.toString();
+  return request(`/api/agents/${agentId}/improvements${qs ? `?${qs}` : ""}`);
+}
+
+export async function revertImprovement(
+  agentId: string,
+  improvementId: string
+): Promise<{ status: string; improvement: AgentImprovement }> {
+  return request(`/api/agents/${agentId}/improvements/${improvementId}/revert`, {
+    method: "POST",
+  });
+}
+
 /** Agent invite: a one-shot code another process claims to become an
  *  agent owned by the caller (`POST /api/invites`). Used by the "Connect
  *  CLI session" dialog (#148) — the claimer is `python -m agentchat connect`. */
@@ -3661,7 +3704,97 @@ export interface ExternalSession {
   dmConversationId?: string;
 }
 
+/** Onboarding lifecycle (docs/reference/agent-onboarding.md). A new agent
+ *  is a new hire: reviews revise its soul after real work and build a
+ *  measured confidence until the server graduates it to "established". */
+export type LifecycleStage = "onboarding" | "established";
+
+export type OnboardingDimension =
+  | "role_clarity"
+  | "owner_fit"
+  | "craft"
+  | "judgment"
+  | "voice";
+
+export type OnboardingClearedBy = "auto" | "owner" | "backfill" | "birth";
+
+/** The cold rollup carried on every agent payload (`Serializer.onboarding_rollup`). */
+export interface OnboardingRollup {
+  confidence: number;
+  dimensions: Partial<Record<OnboardingDimension, number>>;
+  dimensionEvidence?: Partial<Record<OnboardingDimension, string>>;
+  /** The agent's own opinion — logged, never the verdict. */
+  ready?: boolean;
+  reviewCount: number;
+  stableReviews: number;
+  lastNote?: string;
+  startedAt?: string;
+  lastReviewAt?: string;
+  nextReviewAt?: string;
+  clearedAt?: string;
+  clearedBy?: OnboardingClearedBy;
+  reopenedAt?: string;
+}
+
+export type OnboardingTrigger =
+  | "turn_checkpoint"
+  | "task_outcome"
+  | "owner_signal"
+  | "self_edit"
+  | "owner_edit"
+  | "meta_loop"
+  | "backstop"
+  | "manual";
+
+/** One row of the append-only review log (`Serializer.onboarding_review`). */
+export interface OnboardingReview {
+  id: string;
+  agentId: string;
+  trigger: OnboardingTrigger;
+  evidence?: Record<string, unknown>;
+  /** Null for soul-change bookkeeping rows and unparseable verdicts. */
+  assessment?: {
+    dimensions?: Partial<Record<OnboardingDimension, { score?: number; evidence?: string }>>;
+    ready?: boolean;
+    soul_revision?: string | null;
+  } | null;
+  confidenceBefore: number;
+  confidenceAfter: number;
+  soulChanged: boolean;
+  improvementId?: string;
+  note?: string;
+  model?: string;
+  graduated: boolean;
+  insertedAt: string;
+}
+
+export interface OnboardingSummary {
+  agentId: string;
+  lifecycleStage: LifecycleStage;
+  onboarding: OnboardingRollup;
+  reviews: OnboardingReview[];
+}
+
+/** A soul revision (meta-loop or onboarding review) with its full
+ *  before/after — `ImprovementController.serialize_improvement`. */
+export interface AgentImprovement {
+  id: string;
+  agentId: string;
+  improvementType: string;
+  polarity: "corrective" | "reinforcing";
+  trigger?: string;
+  source: "meta_loop" | "onboarding";
+  description?: string;
+  changeData?: { before?: string; after?: string; [key: string]: unknown } | null;
+  status: string;
+  appliedAt?: string | null;
+  revertedAt?: string | null;
+  insertedAt: string;
+  updatedAt?: string;
+}
+
 export interface Agent {
+
   id: string;
   displayName: string;
   description?: string;
@@ -3670,6 +3803,10 @@ export interface Agent {
   avatarUrl?: string;
   ownerId?: string;
   insertedAt?: string;
+  /** New-hire state — "onboarding" until the server (or the owner) clears
+   *  it. Drives the rail badge, the list chip, and the Onboarding section. */
+  lifecycleStage?: LifecycleStage;
+  onboarding?: OnboardingRollup;
   capabilities?: string[];
   structuredCapabilities?: {
     detail_templates?: Record<string, DetailField[]>;

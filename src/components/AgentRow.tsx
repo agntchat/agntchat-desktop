@@ -4,6 +4,7 @@ import { useAgentStore, type ManagedAgent, type ActivityType } from "../stores/a
 import { usePresenceStore } from "../stores/presenceStore";
 import { AgentActivityIndicator } from "./AgentActivityIndicator";
 import { PhaseOrb } from "./PhaseOrb";
+import { OnboardingChip } from "./OnboardingChip";
 import {
   STREAM_PHASE_LABEL_KEYS,
   type StreamPhase,
@@ -463,6 +464,8 @@ export function AgentRow({
             {managed.agent.agentType === "orchestrator" && (
               <Crown className="h-3 w-3 text-primary flex-shrink-0" />
             )}
+            {/* New hire: "Onboarding · 51%" until the server clears it. */}
+            <OnboardingChip agent={managed.agent} />
             {managed.agent.agentType && !["worker", "orchestrator"].includes(managed.agent.agentType) && (
               <Badge
                 variant="secondary"

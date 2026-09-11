@@ -150,6 +150,10 @@ class WebSocketService {
       // An agent saved a persistent memory (agent- or family-scoped).
       // MemorySavedToast surfaces it as the transient memory island.
       "memory_saved",
+      // An onboarding review landed for one of the owner's agents (rollup
+      // moved, soul revised, or the stage flipped). OnboardingProgressToast
+      // surfaces it as the progress island; onboardingFeedStore keeps it.
+      "onboarding_progress",
       // Permission prompts (#67) — a gated agent action awaits the owner's
       // approve/deny. PermissionToast renders the prompt; permission_resolved
       // dismisses it across devices (also fires on expiry).

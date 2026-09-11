@@ -415,6 +415,8 @@ export function Dashboard() {
   const setView = useNavStore((s) => s.setView);
   const memoryDeepLink = useNavStore((s) => s.memoryDeepLink);
   const clearMemoryDeepLink = useNavStore((s) => s.clearMemoryDeepLink);
+  const onboardingDeepLink = useNavStore((s) => s.onboardingDeepLink);
+  const clearOnboardingDeepLink = useNavStore((s) => s.clearOnboardingDeepLink);
   // Which agents have their sub-agent subtree expanded. Empty = all
   // collapsed, so sub-agents are hidden until a parent is opened.
   const [expandedIds, setExpandedIds] = useState<Set<string>>(new Set());
@@ -727,6 +729,16 @@ export function Dashboard() {
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [memoryDeepLink]);
+
+  // Same for the onboarding island's Review click: select the agent and
+  // jump to its Onboarding section.
+  useEffect(() => {
+    if (!onboardingDeepLink) return;
+    if (selectedAgentId !== onboardingDeepLink.agentId) {
+      void selectAgent(onboardingDeepLink.agentId);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [onboardingDeepLink]);
 
   // The agent detail pane is always open in the two-pane layout, so Escape
   // only backs out of a directory-listing selection (returning that pane to
@@ -1066,7 +1078,11 @@ export function Dashboard() {
             <AgentConfig
               managed={selectedAgent}
               initialSection={
-                memoryDeepLink?.agentId === selectedAgent.agent.id ? "memory" : undefined
+                memoryDeepLink?.agentId === selectedAgent.agent.id
+                  ? "memory"
+                  : onboardingDeepLink?.agentId === selectedAgent.agent.id
+                    ? "onboarding"
+                    : undefined
               }
               initialMemoryTab={
                 memoryDeepLink?.agentId === selectedAgent.agent.id
@@ -1074,6 +1090,8 @@ export function Dashboard() {
                   : undefined
               }
               onMemoryDeepLinkConsumed={clearMemoryDeepLink}
+              onboardingDeepLink={onboardingDeepLink?.agentId === selectedAgent.agent.id}
+              onOnboardingDeepLinkConsumed={clearOnboardingDeepLink}
             />
           ) : onboarding.visible ? (
             <OnboardingCards
