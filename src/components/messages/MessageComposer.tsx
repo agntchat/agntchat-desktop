@@ -4,6 +4,7 @@ import { useTranslation } from "react-i18next";
 import { useChatStore } from "../../stores/chatStore";
 import { useAgentStore } from "../../stores/agentStore";
 import { useAuthStore } from "../../stores/authStore";
+import { useWorkspaceStore, useActiveWorkspace } from "../../stores/workspaceStore";
 import { ws } from "../../services/websocket";
 import { Button } from "@/components/ui/button";
 import {
@@ -88,6 +89,21 @@ export const MessageComposer = forwardRef<
     [agentsMap]
   );
   const currentUserId = useAuthStore((s) => s.participant?.id);
+  // Workspace roster, for @mentioning a co-member into this conversation.
+  // Only conversation admins may add members — the server enforces the same
+  // rule (Authorization.can_manage_members?), so offering the roster to
+  // anyone else would resolve a name that then silently fails to join.
+  const activeWorkspace = useActiveWorkspace();
+  const workspaceRoster = useWorkspaceStore((s) =>
+    activeWorkspace?.id ? s.membersByOrg[activeWorkspace.id] : undefined
+  );
+  const workspaceMembers = useMemo(
+    () =>
+      members.some((m) => m.participantId === currentUserId && m.role === "admin")
+        ? workspaceRoster
+        : undefined,
+    [members, currentUserId, workspaceRoster]
+  );
 
   const [sending, setSending] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -191,8 +207,8 @@ export const MessageComposer = forwardRef<
     () =>
       mentionQuery == null
         ? []
-        : getMentionItems(mentionQuery, members, agents, currentUserId),
-    [mentionQuery, members, agents, currentUserId]
+        : getMentionItems(mentionQuery, members, agents, currentUserId, workspaceMembers),
+    [mentionQuery, members, agents, currentUserId, workspaceMembers]
   );
 
   // Auto-resize textarea to fit content, capped at MAX_HEIGHT.
@@ -458,6 +474,7 @@ export const MessageComposer = forwardRef<
               query={mentionQuery}
               members={members}
               allAgents={agents}
+              workspaceMembers={workspaceMembers}
               currentUserId={currentUserId}
               selectedIndex={mentionIndex}
               onSelect={commitMention}

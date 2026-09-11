@@ -1,8 +1,9 @@
 import { useEffect, useMemo, useRef } from "react";
+import { useTranslation } from "react-i18next";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Bot, Plus } from "lucide-react";
 import { cn, getInitials } from "../../lib/utils";
-import type { Agent, ConversationMember } from "../../lib/api";
+import type { Agent, ConversationMember, OrganizationMembership } from "../../lib/api";
 
 export interface MentionItem {
   participantId: string;
@@ -10,14 +11,23 @@ export interface MentionItem {
   avatarUrl?: string;
   type: "human" | "agent";
   /** True if already a conversation member — false if pulled from the agent
-   *  directory (the `Add` badge hints the user will add the agent on send). */
+   *  directory or the workspace roster (the `Add` badge hints the user will
+   *  add them on send). */
   isMember: boolean;
+  /** Workspace role, on non-member humans only — the disambiguator when two
+   *  people in a workspace share a display name. */
+  workspaceRole?: string;
 }
 
 interface Props {
   query: string;
   members: ConversationMember[];
   allAgents?: Agent[];
+  /** Workspace roster, for @mentioning a co-member who isn't in this
+   *  conversation yet. Pass it only when the viewer can actually add people
+   *  (conversation admins): the server applies the same gate, so offering a
+   *  name we can't act on would just fail silently. */
+  workspaceMembers?: OrganizationMembership[];
   currentUserId?: string;
   selectedIndex: number;
   onSelect: (item: MentionItem) => void;
@@ -58,7 +68,8 @@ export function getMentionItems(
   query: string,
   members: ConversationMember[],
   allAgents: Agent[] | undefined,
-  currentUserId: string | undefined
+  currentUserId: string | undefined,
+  workspaceMembers?: OrganizationMembership[]
 ): MentionItem[] {
   const q = query.toLowerCase();
   const results: MentionItem[] = [];
@@ -95,6 +106,28 @@ export function getMentionItems(
     }
   }
 
+  // Workspace co-members who aren't in this conversation yet. Mentioning one
+  // adds them (server-side, Mentions.auto_add_mentioned_participants), which
+  // is the only way to get a person into a channel from the composer.
+  if (workspaceMembers) {
+    for (const m of workspaceMembers) {
+      if (seen.has(m.participantId)) continue;
+      if (m.participantId === currentUserId) continue;
+      if (m.participant?.type !== "human") continue;
+      const name = m.participant?.displayName ?? "";
+      if (!name.toLowerCase().includes(q)) continue;
+      seen.add(m.participantId);
+      results.push({
+        participantId: m.participantId,
+        displayName: name,
+        avatarUrl: m.participant?.avatarUrl,
+        type: "human",
+        isMember: false,
+        workspaceRole: m.role,
+      });
+    }
+  }
+
   return results.slice(0, 6);
 }
 
@@ -102,13 +135,15 @@ export function MentionPicker({
   query,
   members,
   allAgents,
+  workspaceMembers,
   currentUserId,
   selectedIndex,
   onSelect,
 }: Props) {
+  const { t } = useTranslation("common");
   const items = useMemo(
-    () => getMentionItems(query, members, allAgents, currentUserId),
-    [query, members, allAgents, currentUserId]
+    () => getMentionItems(query, members, allAgents, currentUserId, workspaceMembers),
+    [query, members, allAgents, currentUserId, workspaceMembers]
   );
   const listRef = useRef<HTMLDivElement>(null);
 
@@ -152,15 +187,22 @@ export function MentionPicker({
             </AvatarFallback>
           </Avatar>
           <span className="text-sm">{item.displayName}</span>
+          {/* Two people in a workspace can share a display name (and do), so
+              a non-member human carries their role to tell them apart. */}
+          {item.workspaceRole && (
+            <span className="text-[11px] text-muted-foreground">
+              {t(`friends:role.${item.workspaceRole}`, { defaultValue: item.workspaceRole })}
+            </span>
+          )}
           {item.type === "agent" && (
             <span className="rounded bg-primary/10 px-1.5 py-0.5 text-[10px] text-primary">
-              Agent
+              {t("agent")}
             </span>
           )}
           {!item.isMember && (
             <span className="ml-auto flex items-center gap-0.5 rounded border border-border px-1.5 py-0 text-[10px] text-muted-foreground">
               <Plus className="h-2.5 w-2.5" />
-              Add
+              {t("add")}
             </span>
           )}
         </button>

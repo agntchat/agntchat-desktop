@@ -5,6 +5,7 @@ import { ResizeHandle } from "../ResizeHandle";
 import { useChatStore } from "../../stores/chatStore";
 import { usePresenceStore } from "../../stores/presenceStore";
 import { useAgentStore } from "../../stores/agentStore";
+import { useWorkspaceStore, useActiveWorkspace } from "../../stores/workspaceStore";
 // useAgentStore is needed for the "add member" picker which lists this user's
 // own agents.
 import { useMemoryStore } from "../../stores/memoryStore";
@@ -136,6 +137,12 @@ export function ConversationDetailsPanel({
   // flattened list so the selector returns a stable reference until the
   // record itself changes — avoids the Zustand `?? []` re-render trap.
   // Used by the "add member" picker below.
+  // Workspace roster — the source for adding a PERSON (rather than an agent)
+  // to this conversation. Kept fetched for the active workspace by the rail.
+  const activeWorkspace = useActiveWorkspace();
+  const workspaceRoster = useWorkspaceStore((s) =>
+    activeWorkspace?.id ? s.membersByOrg[activeWorkspace.id] : undefined
+  );
   const agentsMap = useAgentStore((s) => s.agents);
   const agents = useMemo(
     () => Object.values(agentsMap).map((m) => m.agent),
@@ -261,10 +268,41 @@ export function ConversationDetailsPanel({
     t,
   ]);
 
+  // Everyone the admin can add: their own agents, plus the workspace's other
+  // people. Humans carry their workspace role so two co-members with the same
+  // display name are still tellable apart.
   const memberIds = new Set(members.map((m) => m.participantId));
-  const availableAgents = agents.filter(
-    (a) => a.status === "active" && !memberIds.has(a.id)
-  );
+  const availableToAdd = useMemo(() => {
+    const rows: {
+      id: string;
+      displayName: string;
+      avatarUrl?: string;
+      type: "human" | "agent";
+      role?: string;
+    }[] = agents
+      .filter((a) => a.status === "active" && !memberIds.has(a.id))
+      .map((a) => ({
+        id: a.id,
+        displayName: a.displayName,
+        avatarUrl: a.avatarUrl,
+        type: "agent" as const,
+      }));
+
+    for (const m of workspaceRoster ?? []) {
+      if (memberIds.has(m.participantId)) continue;
+      if (m.participantId === currentUserId) continue;
+      if (m.participant?.type !== "human") continue;
+      rows.push({
+        id: m.participantId,
+        displayName: m.participant?.displayName ?? "",
+        avatarUrl: m.participant?.avatarUrl,
+        type: "human",
+        role: m.role,
+      });
+    }
+
+    return rows;
+  }, [agents, workspaceRoster, memberIds, currentUserId]);
 
   return (
     <>
@@ -407,29 +445,38 @@ export function ConversationDetailsPanel({
               ) : (
                 <div className="rounded-lg border border-border p-2">
                   <p className="mb-2 text-[11px] font-medium text-muted-foreground">
-                    {t("details.selectAgentsToAdd")}
+                    {t("details.selectWhoToAdd")}
                   </p>
-                  {availableAgents.length === 0 ? (
+                  {availableToAdd.length === 0 ? (
                     <p className="text-xs text-muted-foreground px-1 py-0.5">
-                      {t("noAgentsAvailable")}
+                      {t("noneAvailableToAdd")}
                     </p>
                   ) : (
                     <ul className="max-h-48 space-y-0.5 overflow-y-auto">
-                      {availableAgents.map((agent) => (
-                        <li key={agent.id}>
+                      {availableToAdd.map((row) => (
+                        <li key={row.id}>
                           <label className="flex cursor-pointer items-center gap-2 rounded-md px-2 py-1.5 hover:bg-muted">
                             <input
                               type="checkbox"
-                              checked={addingIds.has(agent.id)}
-                              onChange={() => toggleAddId(agent.id)}
+                              checked={addingIds.has(row.id)}
+                              onChange={() => toggleAddId(row.id)}
                             />
                             <Avatar className="h-6 w-6">
-                              {agent.avatarUrl && <AvatarImage src={agent.avatarUrl} />}
+                              {row.avatarUrl && <AvatarImage src={row.avatarUrl} />}
                               <AvatarFallback className="bg-primary/10 text-primary">
-                                <Bot className="h-3 w-3" />
+                                {row.type === "agent" ? (
+                                  <Bot className="h-3 w-3" />
+                                ) : (
+                                  getInitials(row.displayName)
+                                )}
                               </AvatarFallback>
                             </Avatar>
-                            <span className="truncate text-sm">{agent.displayName}</span>
+                            <span className="truncate text-sm">{row.displayName}</span>
+                            {row.role && (
+                              <span className="ml-auto shrink-0 text-[11px] text-muted-foreground">
+                                {t(`friends:role.${row.role}`, { defaultValue: row.role })}
+                              </span>
+                            )}
                           </label>
                         </li>
                       ))}
