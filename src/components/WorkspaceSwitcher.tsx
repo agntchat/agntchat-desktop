@@ -6,6 +6,7 @@ import {
   ChevronsUpDown,
   ListChecks,
   Loader2,
+  Mail,
   User,
   Settings,
   Plus,
@@ -47,11 +48,14 @@ export function WorkspaceSwitcher({ expanded = false }: { expanded?: boolean }) 
   const pendingId = useWorkspaceStore((s) => s.pendingId);
   const attentionByOrg = useWorkspaceStore((s) => s.attentionByOrg);
   const tasksByOrg = useWorkspaceStore((s) => s.tasksByOrg);
+  const pendingInvites = useWorkspaceStore((s) => s.pendingInvites);
 
-  // Seed the cross-workspace attention counts; WS events keep them
-  // fresh from here (see workspaceStore.initWsListeners).
+  // Seed the cross-workspace attention counts and any workspace
+  // invitations waiting on this account; WS events keep both fresh from
+  // here (see workspaceStore.initWsListeners).
   useEffect(() => {
     void useWorkspaceStore.getState().fetchWorkspaceAttention();
+    void useWorkspaceStore.getState().fetchPendingInvites();
   }, []);
 
   const [open, setOpen] = useState(false);
@@ -165,6 +169,23 @@ export function WorkspaceSwitcher({ expanded = false }: { expanded?: boolean }) 
           })}
         >
           {otherWorkspaceAttention > 99 ? "99+" : otherWorkspaceAttention}
+        </span>
+      )}
+      {/* Invitations are not attention *in* a workspace — the user isn't a
+          member yet — so they get their own marker rather than being summed
+          into the count above. Opposite corner: both can be live at once. */}
+      {pendingInvites.length > 0 && (
+        <span
+          className="pointer-events-none absolute -bottom-1 -right-1 z-10 flex h-4 w-4 items-center justify-center rounded-full bg-primary text-primary-foreground ring-2 ring-rail"
+          role="status"
+          aria-label={t("workspace.pendingInvitesBadge", {
+            count: pendingInvites.length,
+          })}
+          title={t("workspace.pendingInvitesBadge", {
+            count: pendingInvites.length,
+          })}
+        >
+          <Mail className="h-2.5 w-2.5" />
         </span>
       )}
 

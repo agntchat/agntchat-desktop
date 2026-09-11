@@ -39,6 +39,20 @@ interface WorkspaceState {
   tasksByOrg: Record<string, number>;
   fetchWorkspaceAttention: () => Promise<void>;
 
+  /** Workspace invitations addressed to this account's email, from
+   *  GET /api/me/pending-invites. Held in the store rather than in the
+   *  banner so the switcher TILE can badge them — an invite the user
+   *  only discovers by opening the dropdown is an invite they never see.
+   *  Kept live by the `pending_invite_received` user-channel event. */
+  pendingInvites: api.PendingWorkspaceInvite[];
+  fetchPendingInvites: () => Promise<void>;
+  /** Accept/decline by invite id, authenticated by the caller's email
+   *  matching the invite's. Accepting joins the workspace (the backend
+   *  switches the active one and broadcasts it); both drop the row so
+   *  the badge clears without a refetch. */
+  acceptInvite: (inviteId: string) => Promise<void>;
+  declineInvite: (inviteId: string) => Promise<void>;
+
   /** Roster of a workspace, keyed by org id. Shared by the Members
    *  view and by the rail chip that counts it, so the count and the
    *  list it describes can never drift — the chip needs the roster on
@@ -72,6 +86,7 @@ export const useWorkspaceStore = create<WorkspaceState>((set, get) => ({
   switching: false,
   pendingId: null,
   attentionByOrg: {},
+  pendingInvites: [],
   tasksByOrg: {},
   membersByOrg: {},
   lastError: null,
@@ -145,6 +160,12 @@ export const useWorkspaceStore = create<WorkspaceState>((set, get) => ({
       ws.on("workspaces_updated", () => {
         void get().refresh();
       }),
+      // An admin just invited this account's email somewhere. Refetch so
+      // the tile badges it while the app is open, instead of the invite
+      // sitting unseen until the next reload.
+      ws.on("pending_invite_received", () => {
+        void get().fetchPendingInvites();
+      }),
       // Anything that can change another workspace's attention count —
       // a message landing, a read on another device, a permission
       // request appearing or being resolved — schedules one debounced
@@ -178,6 +199,32 @@ export const useWorkspaceStore = create<WorkspaceState>((set, get) => ({
     } catch {
       // Transient — the badge just stays stale until the next trigger.
     }
+  },
+
+  fetchPendingInvites: async () => {
+    try {
+      set({ pendingInvites: await api.listPendingWorkspaceInvites() });
+    } catch {
+      // Transient — keep whatever we last knew.
+    }
+  },
+
+  acceptInvite: async (inviteId) => {
+    await api.acceptPendingWorkspaceInvite(inviteId);
+    set((s) => ({
+      pendingInvites: s.pendingInvites.filter((i) => i.id !== inviteId),
+    }));
+    // Surfaces the newly-joined workspace in the switcher. The backend
+    // has already switched the active workspace and broadcast
+    // active_organization_changed; this just catches the list up.
+    await get().refresh();
+  },
+
+  declineInvite: async (inviteId) => {
+    await api.declinePendingWorkspaceInvite(inviteId);
+    set((s) => ({
+      pendingInvites: s.pendingInvites.filter((i) => i.id !== inviteId),
+    }));
   },
 
   // --- Workspace management ----------------------------------------

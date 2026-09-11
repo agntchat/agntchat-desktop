@@ -161,6 +161,12 @@ class WebSocketService {
       "permission_resolved",
       // Slack-style multi-workspace cross-device sync. workspaceStore listens.
       "active_organization_changed",
+      // The user's workspace LIST changed without their active workspace
+      // moving (added to / removed from another workspace, role change),
+      // and invitations addressed to their email. workspaceStore refetches;
+      // the second one badges the switcher tile.
+      "workspaces_updated",
+      "pending_invite_received",
       // Cross-device read sync: another of the user's devices marked a
       // conversation read. chatStore zeroes the local unread badge.
       "conversation_read",

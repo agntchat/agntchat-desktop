@@ -1,7 +1,6 @@
-import { useEffect, useState, useCallback } from "react";
+import { useState } from "react";
 import { Mail, Loader2, X } from "lucide-react";
 import { useTranslation } from "react-i18next";
-import * as api from "../lib/api";
 import { useWorkspaceStore } from "../stores/workspaceStore";
 
 interface Props {
@@ -11,47 +10,34 @@ interface Props {
 /**
  * Renders inside the desktop workspace switcher dropdown when the
  * user has un-redeemed workspace invites whose email matches their
- * account. One-click accept calls
- * `POST /api/me/pending-invites/:id/accept`; on success the backend
- * has switched active workspace and broadcast
- * `active_organization_changed` (workspaceStore handles the cascade).
+ * account. One-click accept joins the workspace; the backend switches
+ * the active workspace and broadcasts `active_organization_changed`
+ * (workspaceStore handles the cascade).
+ *
+ * The invite list lives in workspaceStore, not here — the switcher
+ * TILE badges the same list, so a banner-local fetch would leave the
+ * badge and the banner able to disagree. Dismiss (X) hides the banner
+ * for this dropdown session only: the invite is still pending, so the
+ * badge deliberately survives it.
  */
 export function PendingInvitesBanner({ onAllResolved }: Props) {
   const { t } = useTranslation("settings");
-  const refresh = useWorkspaceStore((s) => s.refresh);
-  const [invites, setInvites] = useState<api.PendingWorkspaceInvite[] | null>(null);
-  const [loading, setLoading] = useState(true);
+  const invites = useWorkspaceStore((s) => s.pendingInvites);
+  const acceptInvite = useWorkspaceStore((s) => s.acceptInvite);
+  const declineInvite = useWorkspaceStore((s) => s.declineInvite);
+  const [dismissed, setDismissed] = useState(false);
   const [acceptingId, setAcceptingId] = useState<string | null>(null);
   const [decliningId, setDecliningId] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
 
-  const load = useCallback(async () => {
-    setLoading(true);
-    try {
-      const list = await api.listPendingWorkspaceInvites();
-      setInvites(list);
-    } catch {
-      setInvites([]);
-    } finally {
-      setLoading(false);
-    }
-  }, []);
+  if (dismissed || invites.length === 0) return null;
 
-  useEffect(() => {
-    load();
-  }, [load]);
-
-  if (loading) return null;
-  if (!invites || invites.length === 0) return null;
-
-  async function handleAccept(invite: api.PendingWorkspaceInvite) {
-    setAcceptingId(invite.id);
+  async function handleAccept(inviteId: string) {
+    setAcceptingId(inviteId);
     setError(null);
     try {
-      await api.acceptPendingWorkspaceInvite(invite.id);
-      await refresh();
-      setInvites((prev) => (prev ?? []).filter((i) => i.id !== invite.id));
-      if ((invites ?? []).length <= 1) onAllResolved?.();
+      await acceptInvite(inviteId);
+      if (invites.length <= 1) onAllResolved?.();
     } catch (e) {
       setError(e instanceof Error ? e.message : t("workspace.acceptFailed"));
     } finally {
@@ -59,23 +45,17 @@ export function PendingInvitesBanner({ onAllResolved }: Props) {
     }
   }
 
-  async function handleDecline(invite: api.PendingWorkspaceInvite) {
-    setDecliningId(invite.id);
+  async function handleDecline(inviteId: string) {
+    setDecliningId(inviteId);
     setError(null);
     try {
-      await api.declinePendingWorkspaceInvite(invite.id);
-      setInvites((prev) => (prev ?? []).filter((i) => i.id !== invite.id));
-      if ((invites ?? []).length <= 1) onAllResolved?.();
+      await declineInvite(inviteId);
+      if (invites.length <= 1) onAllResolved?.();
     } catch (e) {
       setError(e instanceof Error ? e.message : t("workspace.declineFailed"));
     } finally {
       setDecliningId(null);
     }
-  }
-
-  function handleDismiss() {
-    setInvites([]);
-    onAllResolved?.();
   }
 
   return (
@@ -87,7 +67,10 @@ export function PendingInvitesBanner({ onAllResolved }: Props) {
         </div>
         <button
           type="button"
-          onClick={handleDismiss}
+          onClick={() => {
+            setDismissed(true);
+            onAllResolved?.();
+          }}
           aria-label={t("common:dismiss")}
           className="text-muted-foreground hover:text-foreground"
         >
@@ -111,7 +94,7 @@ export function PendingInvitesBanner({ onAllResolved }: Props) {
             </div>
             <button
               type="button"
-              onClick={() => handleDecline(invite)}
+              onClick={() => handleDecline(invite.id)}
               disabled={decliningId === invite.id || acceptingId === invite.id}
               className="rounded-md px-2 py-0.5 text-xs text-muted-foreground hover:bg-accent hover:text-foreground disabled:opacity-50"
             >
@@ -123,7 +106,7 @@ export function PendingInvitesBanner({ onAllResolved }: Props) {
             </button>
             <button
               type="button"
-              onClick={() => handleAccept(invite)}
+              onClick={() => handleAccept(invite.id)}
               disabled={acceptingId === invite.id || decliningId === invite.id}
               className="rounded-md px-2 py-0.5 text-xs hover:bg-accent disabled:opacity-50"
             >
