@@ -4,10 +4,14 @@ name: Release
 # Windows on every version tag (v*) and uploads them to a DRAFT GitHub Release
 # for James to review before publishing.
 #
-# Builds are UNSIGNED for now (no Developer ID / Windows cert yet), so macOS
-# users right-click → Open on first launch and Windows users click through
-# SmartScreen. Apple code-signing + notarization env vars are stubbed below —
-# uncomment and add the secrets to enable signed/notarized macOS builds later.
+# macOS builds are signed with a Developer ID certificate AND notarized by
+# Apple, so they open with a normal double-click. Windows is still unsigned —
+# users click through SmartScreen — pending a Windows code-signing certificate.
+#
+# Notarization is not optional decoration: a signed-but-unnotarized app is
+# still blocked by Gatekeeper on any Mac that downloaded it. Both halves have
+# to work, which is why the build takes longer than it used to (Apple's
+# notary service round-trip).
 #
 # Separately from OS code-signing, every build IS signed with the Tauri updater
 # keypair (TAURI_SIGNING_PRIVATE_KEY). That signature is what the installed app
@@ -93,6 +97,18 @@ jobs:
       - name: Check bundle resources cover the bridge
         run: node scripts/check-bundle-resources.mjs
 
+      # Tauri notarizes via APPLE_API_KEY_PATH, which wants a file on disk, but a
+      # secret is a string. Write it out on the macOS legs only; RUNNER_TEMP is
+      # wiped with the runner, so the key never outlives the job.
+      - name: Stage the App Store Connect key for notarization
+        if: matrix.platform == 'macos-latest'
+        run: |
+          mkdir -p "$RUNNER_TEMP/asc"
+          printf '%s' "$APPLE_API_KEY_CONTENT" > "$RUNNER_TEMP/asc/AuthKey_${APPLE_API_KEY}.p8"
+        env:
+          APPLE_API_KEY_CONTENT: ${{ secrets.APPLE_API_KEY_CONTENT }}
+          APPLE_API_KEY: ${{ secrets.APPLE_API_KEY }}
+
       - name: Build and release (tauri-action)
         uses: tauri-apps/tauri-action@v0
         env:
@@ -103,15 +119,20 @@ jobs:
           # installed app will ever accept another update.
           TAURI_SIGNING_PRIVATE_KEY: ${{ secrets.TAURI_SIGNING_PRIVATE_KEY }}
           TAURI_SIGNING_PRIVATE_KEY_PASSWORD: ${{ secrets.TAURI_SIGNING_PRIVATE_KEY_PASSWORD }}
-          # --- Apple code-signing + notarization (STUBBED — enable later) ---
-          # Add these as repo secrets, then uncomment to produce signed,
-          # notarized macOS builds instead of the current unsigned ones.
-          # APPLE_CERTIFICATE: ${{ secrets.APPLE_CERTIFICATE }}
-          # APPLE_CERTIFICATE_PASSWORD: ${{ secrets.APPLE_CERTIFICATE_PASSWORD }}
-          # APPLE_SIGNING_IDENTITY: ${{ secrets.APPLE_SIGNING_IDENTITY }}
-          # APPLE_ID: ${{ secrets.APPLE_ID }}
-          # APPLE_PASSWORD: ${{ secrets.APPLE_PASSWORD }}
-          # APPLE_TEAM_ID: ${{ secrets.APPLE_TEAM_ID }}
+          # --- macOS code-signing (Developer ID) ---
+          # Empty on the Windows leg, which is exactly how Tauri decides to skip
+          # signing — so these can stay unconditional.
+          APPLE_CERTIFICATE: ${{ secrets.APPLE_CERTIFICATE }}
+          APPLE_CERTIFICATE_PASSWORD: ${{ secrets.APPLE_CERTIFICATE_PASSWORD }}
+          APPLE_SIGNING_IDENTITY: ${{ secrets.APPLE_SIGNING_IDENTITY }}
+          # --- Notarization, via the App Store Connect API key ---
+          # The API-key route rather than APPLE_ID + app-specific password: no
+          # 2FA, nothing tied to one person's Apple ID, same key that submits
+          # the mobile app. Without notarization a signed build STILL trips
+          # Gatekeeper — signing alone is not enough for a download.
+          APPLE_API_ISSUER: ${{ secrets.APPLE_API_ISSUER }}
+          APPLE_API_KEY: ${{ secrets.APPLE_API_KEY }}
+          APPLE_API_KEY_PATH: ${{ runner.temp }}/asc/AuthKey_${{ secrets.APPLE_API_KEY }}.p8
         with:
           tagName: ${{ github.ref_name }}
           releaseName: "agntchat ${{ github.ref_name }}"
@@ -125,9 +146,9 @@ jobs:
             - **macOS (Intel)** — `_x64.dmg`
             - **Windows** — `_x64-setup.exe`
 
-            These builds are not yet code-signed. On macOS, right-click the app
-            in Applications and choose **Open** the first time. On Windows,
-            choose **More info → Run anyway** on the SmartScreen prompt.
+            macOS builds are signed and notarized by Apple — they open
+            normally. Windows is not yet signed, so choose
+            **More info → Run anyway** on the SmartScreen prompt.
 
             Already running agntchat? You don't need this page — the app offers
             the update itself once this release is published.
