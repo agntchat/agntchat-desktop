@@ -25,6 +25,122 @@ fn hidden_command<S: AsRef<std::ffi::OsStr>>(program: S) -> Command {
     cmd
 }
 
+/// The PATH a spawned bridge should see.
+///
+/// macOS hands a Finder/Dock-launched app the bare launchd PATH
+/// (`/usr/bin:/bin:/usr/sbin:/sbin` — `launchctl getenv PATH` is empty on a
+/// stock machine), so none of the directories CLIs actually install into are
+/// on it. The bridge resolves `claude` / `codex` with `shutil.which`, which
+/// reads exactly this PATH: a `claude_cli` agent started from the Dock
+/// failed preflight with `missing_cli` and registered as unable to answer,
+/// while the identical build started from a terminal worked because it
+/// inherited the shell's PATH.
+///
+/// Rebuild the user's real PATH: ask their login shell first — the only way
+/// to see nvm/fnm/volta's versioned node bins, where an npm-installed
+/// `claude` lives — then union in the well-known static install dirs, then
+/// whatever we inherited. Computed once per app run; a login shell sources
+/// the user's whole profile and costs ~100ms.
+fn user_path() -> &'static str {
+    static PATH: OnceLock<String> = OnceLock::new();
+    PATH.get_or_init(build_user_path)
+}
+
+/// Windows GUI processes inherit the full user+system PATH from the
+/// registry, npm's global bin included. Nothing to reconstruct.
+#[cfg(target_os = "windows")]
+fn build_user_path() -> String {
+    std::env::var("PATH").unwrap_or_default()
+}
+
+#[cfg(not(target_os = "windows"))]
+fn build_user_path() -> String {
+    assemble_path(
+        login_shell_path(),
+        &std::env::var("PATH").unwrap_or_default(),
+        &std::env::var("HOME").unwrap_or_default(),
+    )
+}
+
+/// Union the shell's PATH, the well-known static install dirs, and what we
+/// inherited — in that order of preference — keeping only directories that
+/// exist and dropping duplicates.
+///
+/// The static list is not redundant with the shell: a user whose PATH edits
+/// live somewhere we don't source still gets the common locations, and the
+/// shell is what covers the ones we can't enumerate (nvm/fnm's versioned
+/// node bins).
+#[cfg(not(target_os = "windows"))]
+fn assemble_path(from_shell: Option<String>, inherited: &str, home: &str) -> String {
+    let mut candidates: Vec<String> = Vec::new();
+
+    if let Some(shell_path) = from_shell {
+        candidates.extend(shell_path.split(':').map(str::to_string));
+    }
+    for dir in ["/opt/homebrew/bin", "/opt/homebrew/sbin", "/usr/local/bin", "/usr/local/sbin"] {
+        candidates.push(dir.to_string());
+    }
+    if !home.is_empty() {
+        for rel in [".local/bin", ".bun/bin", ".volta/bin", ".npm-global/bin", ".cargo/bin"] {
+            candidates.push(format!("{home}/{rel}"));
+        }
+    }
+    candidates.extend(inherited.split(':').map(str::to_string));
+
+    let mut seen = std::collections::HashSet::new();
+    let resolved = candidates
+        .into_iter()
+        .filter(|dir| !dir.is_empty() && seen.insert(dir.clone()))
+        .filter(|dir| std::path::Path::new(dir).is_dir())
+        .collect::<Vec<_>>()
+        .join(":");
+
+    // Never hand a child an empty PATH — that is strictly worse than the
+    // bare one we were given.
+    if resolved.is_empty() {
+        inherited.to_string()
+    } else {
+        resolved
+    }
+}
+
+/// `$PATH` as the user's own shell sees it, or `None` if we can't get it.
+///
+/// `-i` as well as `-l` is load-bearing: zsh sources `.zshrc` only for
+/// *interactive* shells, and `.zshrc` is where PATH edits overwhelmingly
+/// land — the `claude` installer's `export PATH="$HOME/.local/bin:$PATH"`
+/// included. A plain `-lc` sees `.zprofile` alone and misses it.
+///
+/// Fenced with markers because an interactive shell sources the whole
+/// profile and may print prompts or banners; stdin is /dev/null so it can
+/// never block reading a tty; and it runs on a thread with a timeout
+/// because a profile may hang — a slow shell must degrade to the static
+/// dirs, not wedge agent startup.
+#[cfg(not(target_os = "windows"))]
+fn login_shell_path() -> Option<String> {
+    const BEGIN: &str = "<<agnt-path>>";
+    const END: &str = "<</agnt-path>>";
+
+    let shell = std::env::var("SHELL").unwrap_or_else(|_| "/bin/zsh".to_string());
+    let script = format!(r#"printf '{BEGIN}%s{END}' "$PATH""#);
+
+    let (tx, rx) = std::sync::mpsc::channel();
+    std::thread::spawn(move || {
+        let output = hidden_command(&shell)
+            .args(["-ilc", &script])
+            .stdin(Stdio::null())
+            .stderr(Stdio::null())
+            .output();
+        let _ = tx.send(output);
+    });
+
+    let output = rx.recv_timeout(std::time::Duration::from_secs(5)).ok()?.ok()?;
+    let stdout = String::from_utf8_lossy(&output.stdout);
+    let start = stdout.find(BEGIN)? + BEGIN.len();
+    let end = start + stdout[start..].find(END)?;
+    Some(stdout[start..end].to_string())
+}
+
 #[derive(Debug, Clone, Serialize, Deserialize)]
 #[serde(rename_all = "camelCase")]
 pub struct AgentProcess {
@@ -858,6 +974,11 @@ pub fn start_agent(
         cmd.env("PYTHONPATH", pythonpath);
     }
 
+    // The bridge shells out to the `claude` / `codex` CLIs and resolves them
+    // off this PATH. Launched from the Dock we inherit launchd's bare one,
+    // which has none of the places those install to — see `user_path`.
+    cmd.env("PATH", user_path());
+
     cmd.env("AGENT_ID", &args.agent_id);
     cmd.env("AGENT_API_KEY", &args.api_key);
 
@@ -1619,4 +1740,52 @@ fn find_bridge_script(app: &tauri::AppHandle) -> Result<String, String> {
     }
 
     Err("Bridge script not found. Ensure desktop/bridge/agent_bridge.py exists.".to_string())
+}
+
+#[cfg(all(test, not(target_os = "windows")))]
+mod tests {
+    use super::assemble_path;
+
+    #[test]
+    fn keeps_inherited_dirs_when_the_shell_tells_us_nothing() {
+        let path = assemble_path(None, "/usr/bin:/bin", "");
+        assert!(path.split(':').any(|d| d == "/usr/bin"));
+        assert!(path.split(':').any(|d| d == "/bin"));
+    }
+
+    #[test]
+    fn shell_dirs_come_before_inherited_ones() {
+        let path = assemble_path(Some("/tmp".to_string()), "/usr/bin", "");
+        assert_eq!(path.split(':').next(), Some("/tmp"));
+    }
+
+    #[test]
+    fn drops_duplicates_and_directories_that_do_not_exist() {
+        let path = assemble_path(
+            Some("/usr/bin:/definitely/not/here".to_string()),
+            "/usr/bin:/bin",
+            "",
+        );
+        assert_eq!(path.matches("/usr/bin").count(), 1);
+        assert!(!path.contains("/definitely/not/here"));
+    }
+
+    #[test]
+    fn adds_the_well_known_install_dirs_the_bare_launchd_path_lacks() {
+        // ~/.local/bin is where the `claude` installer puts its binary; a
+        // Dock-launched app never inherits it. Use /tmp as a stand-in HOME
+        // so the assertion holds on any machine.
+        std::fs::create_dir_all("/tmp/agnt-path-test/.local/bin").unwrap();
+        let path = assemble_path(None, "/usr/bin", "/tmp/agnt-path-test");
+        assert!(path.split(':').any(|d| d == "/tmp/agnt-path-test/.local/bin"));
+    }
+
+    #[test]
+    fn never_returns_an_empty_path() {
+        // Handing a child an empty PATH is strictly worse than the bare one
+        // we were given, however little of the candidate list survives the
+        // exists-on-disk filter.
+        assert!(!assemble_path(None, "/definitely/not/here", "").is_empty());
+        assert!(!assemble_path(None, "", "").is_empty());
+    }
 }
