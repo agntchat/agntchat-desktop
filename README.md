@@ -20,10 +20,11 @@ Ready-to-install builds for every release are on the
 The app updates itself from then on: it checks for new releases on launch and
 periodically, and offers the update in-app — no need to come back here.
 
-> **These builds are not yet code-signed.** On macOS, the first launch is
-> blocked by Gatekeeper: right-click **agntchat** in Applications and choose
-> **Open**, then confirm. On Windows, choose **More info → Run anyway** on the
-> SmartScreen prompt. You only do this once.
+> **macOS builds are signed and notarized by Apple** — download, drag to
+> Applications, open. No Gatekeeper warning, no right-click dance.
+>
+> **Windows is not signed yet**, so SmartScreen will warn on first run: choose
+> **More info → Run anyway**. You only do this once.
 
 Everything below is for building from source.
 
