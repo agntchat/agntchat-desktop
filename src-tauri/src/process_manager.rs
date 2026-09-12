@@ -118,11 +118,96 @@ fn assemble_path(from_shell: Option<String>, inherited: &str, home: &str) -> Str
 /// dirs, not wedge agent startup.
 #[cfg(not(target_os = "windows"))]
 fn login_shell_path() -> Option<String> {
-    const BEGIN: &str = "<<agnt-path>>";
-    const END: &str = "<</agnt-path>>";
+    login_shell_env().get("PATH").cloned()
+}
 
+/// Environment the bridge should inherit from the user's shell, beyond PATH.
+///
+/// PATH was the visible half of a bigger gap: a Dock-launched app inherits
+/// *none* of the user's shell environment, so every one of these reaches a
+/// dev build (started from a terminal) and nothing in release. The comment
+/// on `apply_cli_connection_env` says AWS credentials come from "the
+/// machine's default chain (~/.aws, SSO, env)" — the `env` leg of that chain
+/// simply does not exist for an installed app, which is why only the file
+/// leg ever appeared to work.
+///
+/// Deliberately NOT here: `CLAUDE_CODE_USE_BEDROCK` / `CLAUDE_CODE_USE_VERTEX`
+/// (an ambient value hijacking the agent's configured connection is the exact
+/// bug `apply_cli_connection_env` clears them for), the region/project vars
+/// that same function sets from the agent's own config, and anything that
+/// steers the loader or the interpreter (`PYTHON*`, `DYLD_*`, `LD_*`).
+const INHERITED_ENV_KEYS: &[&str] = &[
+    // Anthropic + Claude CLI
+    "ANTHROPIC_API_KEY",
+    "ANTHROPIC_AUTH_TOKEN",
+    "ANTHROPIC_BASE_URL",
+    "CLAUDE_CODE_OAUTH_TOKEN",
+    "CLAUDE_CONFIG_DIR",
+    "CLAUDE_CLI_PATH",
+    // Codex CLI
+    "CODEX_CLI_PATH",
+    "CODEX_HOME",
+    // OpenAI / OpenClaw
+    "OPENAI_API_KEY",
+    "OPENAI_BASE_URL",
+    "OPENCLAW_API_KEY",
+    "OPENCLAW_BASE_URL",
+    // AWS (Bedrock) — the env leg of the default credential chain
+    "AWS_ACCESS_KEY_ID",
+    "AWS_SECRET_ACCESS_KEY",
+    "AWS_SESSION_TOKEN",
+    "AWS_PROFILE",
+    "AWS_CONFIG_FILE",
+    "AWS_SHARED_CREDENTIALS_FILE",
+    // GCP (Vertex) — application default credentials
+    "GOOGLE_APPLICATION_CREDENTIALS",
+    "CLOUDSDK_CONFIG",
+];
+
+/// PATH plus `INHERITED_ENV_KEYS`, as the user's own shell sees them.
+/// Captured once per app run in a single shell invocation.
+fn login_shell_env() -> &'static HashMap<String, String> {
+    static ENV: OnceLock<HashMap<String, String>> = OnceLock::new();
+    ENV.get_or_init(capture_login_shell_env)
+}
+
+/// Windows GUI processes inherit the full user environment from the
+/// registry. Nothing to recover.
+#[cfg(target_os = "windows")]
+fn capture_login_shell_env() -> HashMap<String, String> {
+    HashMap::new()
+}
+
+/// Ask the user's shell for the values we care about.
+///
+/// `-i` as well as `-l` is load-bearing: zsh sources `.zshrc` only for
+/// *interactive* shells, and `.zshrc` is where PATH and credential exports
+/// overwhelmingly land — the `claude` installer's
+/// `export PATH="$HOME/.local/bin:$PATH"` included. A plain `-lc` sees
+/// `.zprofile` alone and misses them.
+///
+/// Values are NUL-separated (so one containing a newline can't corrupt the
+/// parse) and fenced with markers (an interactive shell sources the whole
+/// profile and may print prompts or banners). stdin is /dev/null so it can
+/// never block reading a tty, and it runs on a thread with a timeout because
+/// a profile may hang — a slow shell must degrade to an empty result, not
+/// wedge agent startup.
+#[cfg(not(target_os = "windows"))]
+fn capture_login_shell_env() -> HashMap<String, String> {
+    const BEGIN: &str = "<<agnt-env>>";
+    const END: &str = "<</agnt-env>>";
+
+    let keys: Vec<&str> = std::iter::once("PATH")
+        .chain(INHERITED_ENV_KEYS.iter().copied())
+        .collect();
+
+    let refs = keys
+        .iter()
+        .map(|k| format!("\"${k}\""))
+        .collect::<Vec<_>>()
+        .join(" ");
+    let script = format!(r#"printf '{BEGIN}'; printf '%s\0' {refs}; printf '{END}'"#);
     let shell = std::env::var("SHELL").unwrap_or_else(|_| "/bin/zsh".to_string());
-    let script = format!(r#"printf '{BEGIN}%s{END}' "$PATH""#);
 
     let (tx, rx) = std::sync::mpsc::channel();
     std::thread::spawn(move || {
@@ -134,11 +219,22 @@ fn login_shell_path() -> Option<String> {
         let _ = tx.send(output);
     });
 
-    let output = rx.recv_timeout(std::time::Duration::from_secs(5)).ok()?.ok()?;
+    let Ok(Ok(output)) = rx.recv_timeout(std::time::Duration::from_secs(5)) else {
+        return HashMap::new();
+    };
     let stdout = String::from_utf8_lossy(&output.stdout);
-    let start = stdout.find(BEGIN)? + BEGIN.len();
-    let end = start + stdout[start..].find(END)?;
-    Some(stdout[start..end].to_string())
+    let Some(start) = stdout.find(BEGIN).map(|i| i + BEGIN.len()) else {
+        return HashMap::new();
+    };
+    let Some(end) = stdout[start..].find(END).map(|i| i + start) else {
+        return HashMap::new();
+    };
+
+    keys.iter()
+        .zip(stdout[start..end].split('\0'))
+        .filter(|(_, value)| !value.is_empty())
+        .map(|(key, value)| (key.to_string(), value.to_string()))
+        .collect()
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
@@ -957,7 +1053,7 @@ pub fn start_agent(
     let bridge_dir = std::path::Path::new(&bridge_path)
         .parent()
         .ok_or("Cannot determine bridge directory")?;
-    let python = ensure_venv(bridge_dir)?;
+    let python = ensure_venv(&app, bridge_dir)?;
     let mut cmd = hidden_command(&python);
     cmd.arg(&bridge_path);
 
@@ -972,6 +1068,14 @@ pub fn start_agent(
             Err(_) => bridge_dir_str,
         };
         cmd.env("PYTHONPATH", pythonpath);
+    }
+
+    // A Dock-launched app inherits none of the user's shell environment, so
+    // the credentials and CLI-config vars the bridge reads reach a dev build
+    // and nothing in release. Applied BEFORE the explicit envs below so that
+    // anything derived from the agent's own config still wins.
+    for (key, value) in login_shell_env() {
+        cmd.env(key, value);
     }
 
     // The bridge shells out to the `claude` / `codex` CLIs and resolves them
@@ -1352,24 +1456,141 @@ fn apply_cli_connection_env(cmd: &mut Command, args: &StartAgentArgs) {
     }
 }
 
+/// Minimum Python the bridge supports (`bridge/pyproject.toml` says >=3.9).
+const MIN_PYTHON: (u32, u32) = (3, 9);
+
+/// Find a Python that can actually build the venv, or explain what to install.
+///
+/// We used to spawn a bare `python3` and assume it worked, because it always
+/// does on a developer's machine. On macOS `/usr/bin/python3` is a Command
+/// Line Tools *shim*: with Xcode or the CLT installed it runs the real
+/// interpreter, and without them it pops the "install command line developer
+/// tools" dialog and fails. Every dev machine has them; an ordinary user's
+/// does not — so the release app could not create its venv, and no agent
+/// could start.
+///
+/// Candidates are tried from the most specific to the least, and each is
+/// *run* rather than merely stat'd, since the shim exists on disk either
+/// way. `/usr/bin/python3` is deliberately probed last and only when the
+/// tools it shims are installed, so probing can never be what triggers that
+/// dialog.
+fn find_system_python() -> Result<String, String> {
+    let mut candidates: Vec<String> = Vec::new();
+
+    if cfg!(target_os = "windows") {
+        candidates.push("python".to_string());
+        candidates.push("py".to_string());
+    } else {
+        // Newest first: a machine with several installs should build the
+        // venv from the most current one the bridge supports.
+        for minor in (MIN_PYTHON.1..=14).rev() {
+            candidates.push(format!("python3.{minor}"));
+        }
+        candidates.push("python3".to_string());
+    }
+
+    let mut seen = std::collections::HashSet::new();
+    for candidate in candidates {
+        let Some(resolved) = which_on_user_path(&candidate) else {
+            continue;
+        };
+        if !seen.insert(resolved.clone()) {
+            continue;
+        }
+        if is_developer_tools_shim(&resolved) && !developer_tools_installed() {
+            // Running this is what shows the CLT installer dialog.
+            continue;
+        }
+        if python_version_at_least(&resolved, MIN_PYTHON) {
+            return Ok(resolved);
+        }
+    }
+
+    Err(format!(
+        "No usable Python {}.{}+ found. Install Python from https://www.python.org/downloads/ \
+         (or `brew install python3`) and restart agntchat.",
+        MIN_PYTHON.0, MIN_PYTHON.1
+    ))
+}
+
+/// Resolve a program name against the PATH we hand our children — not the
+/// bare one a Dock-launched app inherits. Returns an absolute path, so the
+/// caller never depends on how the OS resolves a bare program name.
+fn which_on_user_path(program: &str) -> Option<String> {
+    if program.contains(std::path::MAIN_SEPARATOR) {
+        let path = std::path::Path::new(program);
+        return path.is_file().then(|| program.to_string());
+    }
+    let exts: &[&str] = if cfg!(target_os = "windows") {
+        &[".exe", ".cmd", ".bat", ""]
+    } else {
+        &[""]
+    };
+    let sep = if cfg!(target_os = "windows") { ';' } else { ':' };
+    for dir in user_path().split(sep) {
+        for ext in exts {
+            let candidate = std::path::Path::new(dir).join(format!("{program}{ext}"));
+            if candidate.is_file() {
+                return Some(candidate.to_string_lossy().to_string());
+            }
+        }
+    }
+    None
+}
+
+/// macOS ships these as stubs that install the developer tools on first run.
+fn is_developer_tools_shim(path: &str) -> bool {
+    cfg!(target_os = "macos") && path.starts_with("/usr/bin/")
+}
+
+fn developer_tools_installed() -> bool {
+    hidden_command("/usr/bin/xcode-select")
+        .arg("-p")
+        .stdin(Stdio::null())
+        .output()
+        .map(|o| o.status.success())
+        .unwrap_or(false)
+}
+
+fn python_version_at_least(python: &str, min: (u32, u32)) -> bool {
+    let Ok(output) = hidden_command(python)
+        .args(["-c", "import sys; print('%d.%d' % sys.version_info[:2])"])
+        .stdin(Stdio::null())
+        .output()
+    else {
+        return false;
+    };
+    if !output.status.success() {
+        return false;
+    }
+    let text = String::from_utf8_lossy(&output.stdout);
+    let mut parts = text.trim().split('.');
+    let (Some(Ok(major)), Some(Ok(minor))) = (
+        parts.next().map(str::parse::<u32>),
+        parts.next().map(str::parse::<u32>),
+    ) else {
+        return false;
+    };
+    (major, minor) >= min
+}
+
 /// Ensure a Python virtual environment exists with required packages installed.
 /// Creates the venv and runs `pip install -r requirements.txt` on first launch,
 /// and re-installs when requirements.txt changes.
 /// Returns the path to the venv's python executable.
-fn ensure_venv(bridge_dir: &std::path::Path) -> Result<String, String> {
-    let venv_dir = bridge_dir.join("venv");
+fn ensure_venv(app: &tauri::AppHandle, bridge_dir: &std::path::Path) -> Result<String, String> {
+    let venv_dir = venv_dir_for(app)?;
+    remove_legacy_bundled_venv(bridge_dir);
 
-    let (venv_python, venv_pip, system_python) = if cfg!(target_os = "windows") {
+    let (venv_python, venv_pip) = if cfg!(target_os = "windows") {
         (
             venv_dir.join("Scripts").join("python.exe"),
             venv_dir.join("Scripts").join("pip.exe"),
-            "python",
         )
     } else {
         (
             venv_dir.join("bin").join("python3"),
             venv_dir.join("bin").join("pip3"),
-            "python3",
         )
     };
 
@@ -1383,20 +1604,17 @@ fn ensure_venv(bridge_dir: &std::path::Path) -> Result<String, String> {
 
     // Create venv if it doesn't exist
     if !venv_python.exists() {
-        eprintln!("[ProcessManager] Creating Python venv at {:?}", venv_dir);
-        let output = hidden_command(system_python)
+        if let Some(parent) = venv_dir.parent() {
+            std::fs::create_dir_all(parent)
+                .map_err(|e| format!("Failed to create app data directory {parent:?}: {e}"))?;
+        }
+
+        let system_python = find_system_python()?;
+        eprintln!("[ProcessManager] Creating Python venv at {venv_dir:?} using {system_python}");
+        let output = hidden_command(&system_python)
             .args(["-m", "venv", &venv_dir.to_string_lossy()])
             .output()
-            .map_err(|e| {
-                if e.kind() == std::io::ErrorKind::NotFound {
-                    format!(
-                        "Python not found. Install Python 3.9+ from https://python.org and ensure '{}' is on your PATH.",
-                        system_python
-                    )
-                } else {
-                    format!("Failed to create Python venv: {}", e)
-                }
-            })?;
+            .map_err(|e| format!("Failed to create Python venv with {system_python}: {e}"))?;
 
         if !output.status.success() {
             let stderr = String::from_utf8_lossy(&output.stderr);
@@ -1478,18 +1696,59 @@ fn deps_status() -> &'static Mutex<DepsStatus> {
     })
 }
 
+/// Where the bridge's Python venv lives: the app's data dir, NOT beside the
+/// bridge script.
+///
+/// It used to sit in the bridge dir, which in a release build is inside the
+/// signed app bundle (`…app/Contents/Resources/_up_/bridge/venv`). Creating
+/// it there breaks the bundle's code seal on first launch — `spctl -a` then
+/// reports "a sealed resource is missing or invalid" on an app that is
+/// otherwise correctly signed, hardened and notarized. It also meant the
+/// venv was destroyed by every auto-update (re-downloading the ~50-80MB
+/// computer-use wheels each time), was unwritable for a second user account
+/// on the machine, and failed outright under App Translocation — the
+/// read-only randomized path macOS uses for a quarantined app launched from
+/// a DMG or Downloads, which is how a first-time user opens it.
+///
+/// Dev never saw any of this: there the bridge dir is an ordinary writable
+/// directory under `target/`.
+fn venv_dir_for(app: &tauri::AppHandle) -> Result<std::path::PathBuf, String> {
+    use tauri::Manager;
+    let data_dir = app
+        .path()
+        .app_data_dir()
+        .map_err(|e| format!("Cannot determine app data directory: {e}"))?;
+    Ok(data_dir.join("bridge-venv"))
+}
+
 fn bridge_venv_python(app: &tauri::AppHandle) -> Result<std::path::PathBuf, String> {
-    let bridge_path = find_bridge_script(app)?;
-    let bridge_dir = std::path::Path::new(&bridge_path)
-        .parent()
-        .ok_or_else(|| "Cannot determine bridge directory".to_string())?
-        .to_path_buf();
-    let python = if cfg!(target_os = "windows") {
-        bridge_dir.join("venv").join("Scripts").join("python.exe")
+    let venv_dir = venv_dir_for(app)?;
+    Ok(venv_python_path(&venv_dir))
+}
+
+fn venv_python_path(venv_dir: &std::path::Path) -> std::path::PathBuf {
+    if cfg!(target_os = "windows") {
+        venv_dir.join("Scripts").join("python.exe")
     } else {
-        bridge_dir.join("venv").join("bin").join("python3")
-    };
-    Ok(python)
+        venv_dir.join("bin").join("python3")
+    }
+}
+
+/// Delete a venv left inside the app bundle by an older build.
+///
+/// Removing it restores the bundle to exactly what was signed, so an install
+/// that currently fails `spctl` assessment passes again. Best-effort and
+/// silent: a bundle we can't write to is the case where the venv could never
+/// have been created there anyway.
+fn remove_legacy_bundled_venv(bridge_dir: &std::path::Path) {
+    let legacy = bridge_dir.join("venv");
+    if !legacy.is_dir() {
+        return;
+    }
+    match std::fs::remove_dir_all(&legacy) {
+        Ok(()) => eprintln!("[ProcessManager] Removed legacy in-bundle venv at {legacy:?}"),
+        Err(e) => eprintln!("[ProcessManager] Could not remove legacy venv at {legacy:?}: {e}"),
+    }
 }
 
 fn bridge_dir_for(app: &tauri::AppHandle) -> Result<std::path::PathBuf, String> {
@@ -1623,7 +1882,7 @@ pub fn install_computer_use_deps(app: tauri::AppHandle) -> Result<(), String> {
         // a half-built one (python.exe present, pip missing — the ensurepip
         // failure mode). Running `python -m pip` against such a venv is what
         // used to surface as "No module named pip" in the UI.
-        let python = match ensure_venv(&bridge_dir) {
+        let python = match ensure_venv(&app, &bridge_dir) {
             Ok(p) => p,
             Err(e) => {
                 if let Ok(mut s) = deps_status().lock() {
@@ -1795,6 +2054,69 @@ mod tests {
             .split(':')
             .any(|dir| std::path::Path::new(dir).join("claude").exists());
         assert!(found, "no `claude` on the reconstructed PATH: {path}");
+    }
+
+    /// Same bare-launchd setup: the release app must still find a Python it
+    /// can build the venv from, without the `/usr/bin/python3` shim being
+    /// what answers.
+    #[test]
+    #[ignore]
+    fn finds_a_usable_python_from_a_bare_launchd_path() {
+        let python = super::find_system_python().expect("no usable python3 found");
+        assert!(super::python_version_at_least(&python, super::MIN_PYTHON));
+        eprintln!("resolved python: {python}");
+    }
+
+    #[test]
+    fn resolves_a_program_to_an_absolute_path() {
+        let found = super::which_on_user_path("sh").expect("sh is on every unix PATH");
+        assert!(found.starts_with('/'), "expected an absolute path, got {found}");
+        assert!(found.ends_with("/sh"));
+        assert!(super::which_on_user_path("definitely-not-a-real-binary-xyz").is_none());
+    }
+
+    #[test]
+    fn an_absolute_candidate_is_used_as_given() {
+        assert_eq!(super::which_on_user_path("/bin/sh").as_deref(), Some("/bin/sh"));
+        assert!(super::which_on_user_path("/bin/not-a-real-binary-xyz").is_none());
+    }
+
+    #[test]
+    fn only_usr_bin_counts_as_a_developer_tools_shim() {
+        // /usr/bin/python3 is the stub that pops the CLT installer; a real
+        // interpreter anywhere else must never be skipped for that reason.
+        assert_eq!(
+            super::is_developer_tools_shim("/usr/bin/python3"),
+            cfg!(target_os = "macos")
+        );
+        assert!(!super::is_developer_tools_shim("/opt/homebrew/bin/python3"));
+        assert!(!super::is_developer_tools_shim("/usr/local/bin/python3"));
+    }
+
+    #[test]
+    fn python_version_gate_accepts_a_real_interpreter_and_rejects_junk() {
+        let python = super::which_on_user_path("python3");
+        if let Some(python) = python {
+            // Whatever this machine has must clear the bridge's own floor.
+            assert!(super::python_version_at_least(&python, (3, 0)));
+            // Nothing shipping today is 9.x — the comparison must not just
+            // return true for everything.
+            assert!(!super::python_version_at_least(&python, (9, 0)));
+        }
+        assert!(!super::python_version_at_least("/bin/sh", super::MIN_PYTHON));
+    }
+
+    #[test]
+    fn inherited_env_never_carries_the_provider_switches() {
+        // apply_cli_connection_env clears these precisely so an ambient value
+        // cannot hijack the agent's configured connection; importing them
+        // from the user's shell would put that bug straight back.
+        for key in ["CLAUDE_CODE_USE_BEDROCK", "CLAUDE_CODE_USE_VERTEX", "PATH"] {
+            assert!(
+                !super::INHERITED_ENV_KEYS.contains(&key),
+                "{key} must not be in the inherited-env allowlist"
+            );
+        }
     }
 
     #[test]

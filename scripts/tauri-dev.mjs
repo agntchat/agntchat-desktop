@@ -19,6 +19,9 @@
 // this is the supported way to sidestep it without editing tracked files.
 
 import { spawn } from "node:child_process";
+import { rmSync } from "node:fs";
+import { dirname, join } from "node:path";
+import { fileURLToPath } from "node:url";
 
 const raw = process.env.TAURI_DEV_PORT;
 const port = raw ? Number(raw) : 1420;
@@ -35,6 +38,23 @@ if (process.env.TAURI_DEV_DRY_RUN) {
   console.log(`TAURI_DEV_PORT=${port} npx ${args.map((a) => JSON.stringify(a)).join(" ")}`);
   process.exit(0);
 }
+
+// Tauri copies `bundle.resources` into target/debug/_up_/ and never prunes
+// it, so a file deleted or renamed in bridge/ lingers there and dev keeps
+// importing it long after the source is gone. That is how a rename can pass
+// every local run and hard-fail in a freshly built release bundle (the 2.9.7
+// agentgram_mcp_server.py rename left exactly this behind). Wipe the copy as
+// dev starts; Tauri re-creates it from the manifest, so what dev runs is what
+// a release would ship.
+//
+// Strictly AFTER the dry run exits: this deletes the directory a running dev
+// app spawns its bridges from, so it must never fire for a command that is
+// only being printed.
+const desktopDir = join(dirname(fileURLToPath(import.meta.url)), "..");
+rmSync(join(desktopDir, "src-tauri", "target", "debug", "_up_"), {
+  recursive: true,
+  force: true,
+});
 
 console.log(`tauri-dev: Vite + Tauri on http://localhost:${port}`);
 
