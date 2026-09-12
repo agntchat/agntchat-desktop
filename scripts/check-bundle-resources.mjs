@@ -19,7 +19,7 @@
 // Runs in CI before the release build (.github/workflows/release.yml).
 
 import { readFileSync, readdirSync, statSync } from "node:fs";
-import { dirname, join, relative } from "node:path";
+import { dirname, join, relative, sep } from "node:path";
 import { fileURLToPath } from "node:url";
 
 const root = join(dirname(fileURLToPath(import.meta.url)), "..");
@@ -30,14 +30,19 @@ const confPath = join(root, "src-tauri", "tauri.conf.json");
 // the SDK's own test suite.
 const SKIP_DIRS = new Set(["venv", "__pycache__", ".git", "tests", ".pytest_cache", "dist", "build"]);
 
-/** Every .py under bridge/, as paths relative to bridge/. */
+/** Every .py under bridge/, as paths relative to bridge/.
+ *
+ *  Separators are forced to "/" because `relative()` yields backslashes on
+ *  Windows, while the patterns in tauri.conf.json are always forward-slash.
+ *  Without this the check passes on macOS and reports every single file as
+ *  missing on the Windows runner — which is exactly what it did. */
 function collect(dir, out = []) {
   for (const entry of readdirSync(dir)) {
     const full = join(dir, entry);
     if (statSync(full).isDirectory()) {
       if (!SKIP_DIRS.has(entry)) collect(full, out);
     } else if (entry.endsWith(".py")) {
-      out.push(relative(bridgeDir, full));
+      out.push(relative(bridgeDir, full).split(sep).join("/"));
     }
   }
   return out;
