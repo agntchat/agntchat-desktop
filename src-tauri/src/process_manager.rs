@@ -1780,6 +1780,23 @@ mod tests {
         assert!(path.split(':').any(|d| d == "/tmp/agnt-path-test/.local/bin"));
     }
 
+    /// The actual regression, reproduced end to end: run this test binary
+    /// with the PATH a Dock-launched app gets and check that we can still
+    /// find the CLI. Ignored by default because it needs `claude` installed.
+    ///
+    ///   cargo test --lib --no-run
+    ///   env -i HOME="$HOME" SHELL="$SHELL" PATH=/usr/bin:/bin:/usr/sbin:/sbin \
+    ///     <test-binary> --ignored finds_the_claude_cli
+    #[test]
+    #[ignore]
+    fn finds_the_claude_cli_from_a_bare_launchd_path() {
+        let path = super::build_user_path();
+        let found = path
+            .split(':')
+            .any(|dir| std::path::Path::new(dir).join("claude").exists());
+        assert!(found, "no `claude` on the reconstructed PATH: {path}");
+    }
+
     #[test]
     fn never_returns_an_empty_path() {
         // Handing a child an empty PATH is strictly worse than the bare one
