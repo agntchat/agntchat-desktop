@@ -162,3 +162,34 @@ jobs:
           # manifest.
           includeUpdaterJson: true
           args: ${{ matrix.args }}
+
+      # Tauri notarizes and staples the .app, then wraps it in a .dmg that it
+      # never notarizes. That gap is invisible until someone downloads it: the
+      # DMG is what carries the quarantine flag, so macOS assesses the DMG on
+      # open and refuses an unnotarized one — "Apple cannot check it for
+      # malicious software" — even though the app inside is perfectly fine.
+      #
+      # The .app.tar.gz the updater consumes is already correct (stapled .app),
+      # so this only matters for the fresh-install path. Verify with:
+      #   spctl -a -t open --context context:primary-signature <file>.dmg
+      - name: Notarize and staple the DMG
+        if: matrix.platform == 'macos-latest'
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          ASC_KEY_PATH: ${{ runner.temp }}/asc/AuthKey_${{ secrets.APPLE_API_KEY }}.p8
+          ASC_KEY_ID: ${{ secrets.APPLE_API_KEY }}
+          ASC_ISSUER: ${{ secrets.APPLE_API_ISSUER }}
+        run: |
+          set -euo pipefail
+          DMG=$(find src-tauri/target -name '*.dmg' -not -name 'rw.*' | head -1)
+          if [ -z "$DMG" ]; then echo "no .dmg found"; exit 1; fi
+          echo "Notarizing $DMG"
+          xcrun notarytool submit "$DMG" \
+            --key "$ASC_KEY_PATH" --key-id "$ASC_KEY_ID" --issuer "$ASC_ISSUER" \
+            --wait --timeout 30m
+          xcrun stapler staple "$DMG"
+          # Prove it before replacing the uploaded copy — a staple that silently
+          # did nothing would otherwise ship looking fine.
+          spctl -a -vvv -t open --context context:primary-signature "$DMG"
+          gh release upload "${{ github.ref_name }}" "$DMG" --clobber \
+            --repo "${{ github.repository }}"
