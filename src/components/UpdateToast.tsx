@@ -11,6 +11,7 @@ import {
   subscribeToUpdates,
   type UpdateState,
 } from "../lib/updater";
+import { MarkdownContent } from "./messages/MarkdownContent";
 
 /**
  * Offers the new desktop build when one is published. Mounted once in AppShell.
