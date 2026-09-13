@@ -17,6 +17,19 @@ pub fn run() {
         .setup(|app| {
             let manager = ProcessManager::new();
             app.manage(Mutex::new(manager));
+
+            // The title bar carries the running version, so "which build are
+            // you on?" is answerable without a trip into Profile > About.
+            // Appended at runtime from the bundle version rather than baked
+            // into tauri.conf.json's static `title`, so `npm run bump` stays
+            // the only place a version number is ever edited.
+            if let Some(window) = app.get_webview_window("main") {
+                let _ = window.set_title(&format!(
+                    "agntchat (Beta) - {}",
+                    app.package_info().version
+                ));
+            }
+
             Ok(())
         })
         .invoke_handler(tauri::generate_handler![
