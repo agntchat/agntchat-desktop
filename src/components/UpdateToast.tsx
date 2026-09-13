@@ -85,12 +85,16 @@ export function UpdateToastCard({
           </p>
 
           {state.phase === "available" && state.notes ? (
-            // Release notes are authored by us in the GitHub Release body, but
-            // render as plain text anyway — this is untrusted-shaped content
-            // arriving over the network.
-            <p className="mt-1 max-h-24 overflow-y-auto whitespace-pre-line text-xs text-muted-foreground">
-              {state.notes}
-            </p>
+            // Release notes are authored by us in the GitHub Release body
+            // and are markdown — react-markdown doesn't render raw HTML by
+            // default, so this stays safe even if a release body were ever
+            // malformed.
+            <div className="mt-1 max-h-24 overflow-y-auto text-xs text-muted-foreground">
+              <MarkdownContent
+                content={state.notes}
+                className="text-xs leading-snug [&>*:first-child]:mt-0 [&>*:last-child]:mb-0"
+              />
+            </div>
           ) : null}
 
           {state.phase === "available" && !state.notes ? (
