@@ -56,7 +56,10 @@
       "../bridge/agentchat/context/*.py",
       "../bridge/agentchat/tools/*.py"
     ],
-    "createUpdaterArtifacts": true
+    "createUpdaterArtifacts": true,
+    "macOS": {
+      "entitlements": "Entitlements.plist"
+    }
   },
   "plugins": {
     "shell": {

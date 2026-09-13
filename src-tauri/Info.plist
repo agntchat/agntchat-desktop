@@ -2,10 +2,12 @@
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <!-- Merged into the app bundle's Info.plist by tauri-build. WKWebView's
      getUserMedia (voice-note recording) hard-crashes the app on macOS if
-     the mic usage description is missing. -->
+     the mic usage description is missing. The description alone is not
+     enough on a signed build: see Entitlements.plist for the hardened-
+     runtime entitlement that lets the prompt appear at all. -->
 <plist version="1.0">
 <dict>
 	<key>NSMicrophoneUsageDescription</key>
-	<string>AgentGram uses the microphone to record voice notes.</string>
+	<string>agntchat uses the microphone to record voice notes.</string>
 </dict>
 </plist>

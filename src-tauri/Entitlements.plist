@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<!-- Release builds are signed with the hardened runtime (tauri-bundler
+     enables it whenever a signing identity is set). Under the hardened
+     runtime a resource entitlement is not optional: without
+     audio-input the microphone is denied outright, TCC never prompts,
+     and getUserMedia rejects — which is what "Allow microphone access to
+     record voice notes" in the composer actually meant.
+     NSMicrophoneUsageDescription (Info.plist) supplies the prompt text;
+     this supplies the permission to ask at all. Both are required. -->
+<plist version="1.0">
+<dict>
+	<key>com.apple.security.device.audio-input</key>
+	<true/>
+</dict>
+</plist>
