@@ -12,7 +12,6 @@ import {
   Users,
   Sun,
   Moon,
-  Monitor,
   PanelLeftClose,
   PanelLeftOpen,
   AlertTriangle,
@@ -335,18 +334,12 @@ function LeftRail({
     };
   }, [workspaceMembers, presenceOnline]);
 
-  // Theme quick-toggle. Cycles system → light → dark → system so the
-  // rail matches web's three-state ThemeToggle.
-  const themePreference = useThemeStore((s) => s.preference);
-  const resolvedTheme = useThemeStore((s) => s.resolved);
-  const setPreference = useThemeStore((s) => s.setPreference);
-  const ThemeIcon =
-    themePreference === "system" ? Monitor : themePreference === "dark" ? Moon : Sun;
-  const cycleTheme = () => {
-    if (themePreference === "system") setPreference("light");
-    else if (themePreference === "light") setPreference("dark");
-    else setPreference("system");
-  };
+  // Theme quick-toggle — light ⇄ dark, matching web's ThemeToggle. The icon
+  // shows the theme you'd switch TO, which is what the tooltip names.
+  const theme = useThemeStore((s) => s.theme);
+  const toggleTheme = useThemeStore((s) => s.toggleTheme);
+  const nextTheme = theme === "dark" ? "light" : "dark";
+  const ThemeIcon = nextTheme === "dark" ? Moon : Sun;
 
   const connectionLabel = connected ? t("common:connected") : t("common:disconnected");
 
@@ -546,12 +539,11 @@ function LeftRail({
         <RailButton
           icon={ThemeIcon}
           label={t("settings:theme.label")}
-          tooltip={t("settings:theme.railTooltip", {
-            preference: t(`settings:theme.${themePreference}`),
-            resolved: t(`settings:theme.${resolvedTheme}`),
+          tooltip={t("settings:theme.toggleTooltip", {
+            theme: t(`settings:theme.${nextTheme}`),
           })}
           active={false}
-          onClick={cycleTheme}
+          onClick={toggleTheme}
         />
 
         {/* Profile avatar */}

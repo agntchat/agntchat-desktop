@@ -4719,16 +4719,11 @@ export const resources = {
       "theme": {
         "alwaysDark": "Always dark",
         "alwaysLight": "Always light",
-        "currentlyShowing": "Currently showing {{theme}}",
         "dark": "Dark",
         "description": "Choose how the app looks",
-        "fromSystem": "(from system)",
         "label": "Theme",
         "light": "Light",
-        "matchSystem": "Match OS setting",
-        "railTooltip": "Theme: {{preference}} (now {{resolved}})",
-        "system": "System",
-        "toggleTooltip": "Theme: {{preference}}"
+        "toggleTooltip": "Switch to {{theme}}"
       },
       "timezone": {
         "current": "Current timezone",
@@ -10130,16 +10125,11 @@ export const resources = {
       "theme": {
         "alwaysDark": "Siempre oscuro",
         "alwaysLight": "Siempre claro",
-        "currentlyShowing": "Mostrando {{theme}}",
         "dark": "Oscuro",
         "description": "Elige el aspecto de la aplicación",
-        "fromSystem": "(del sistema)",
         "label": "Tema",
         "light": "Claro",
-        "matchSystem": "Según el sistema",
-        "railTooltip": "Tema: {{preference}} (ahora {{resolved}})",
-        "system": "Sistema",
-        "toggleTooltip": "Tema: {{preference}}"
+        "toggleTooltip": "Cambiar a {{theme}}"
       },
       "timezone": {
         "current": "Zona horaria actual",
@@ -15541,16 +15531,11 @@ export const resources = {
       "theme": {
         "alwaysDark": "Immer dunkel",
         "alwaysLight": "Immer hell",
-        "currentlyShowing": "Zeigt aktuell {{theme}}",
         "dark": "Dunkel",
         "description": "Wählen Sie, wie die App aussieht",
-        "fromSystem": "(vom System)",
         "label": "Design",
         "light": "Hell",
-        "matchSystem": "An Betriebssystem anpassen",
-        "railTooltip": "Design: {{preference}} (aktuell {{resolved}})",
-        "system": "System",
-        "toggleTooltip": "Design: {{preference}}"
+        "toggleTooltip": "Zu {{theme}} wechseln"
       },
       "timezone": {
         "current": "Aktuelle Zeitzone",
@@ -20952,16 +20937,11 @@ export const resources = {
       "theme": {
         "alwaysDark": "Toujours sombre",
         "alwaysLight": "Toujours clair",
-        "currentlyShowing": "Affichage actuel : {{theme}}",
         "dark": "Sombre",
         "description": "Choisissez l'apparence de l'application",
-        "fromSystem": "(depuis le système)",
         "label": "Thème",
         "light": "Clair",
-        "matchSystem": "Suivre le paramètre du système",
-        "railTooltip": "Thème : {{preference}} (actuellement {{resolved}})",
-        "system": "Système",
-        "toggleTooltip": "Thème : {{preference}}"
+        "toggleTooltip": "Passer en {{theme}}"
       },
       "timezone": {
         "current": "Fuseau horaire actuel",
@@ -26363,16 +26343,11 @@ export const resources = {
       "theme": {
         "alwaysDark": "Sempre escuro",
         "alwaysLight": "Sempre claro",
-        "currentlyShowing": "Exibindo atualmente {{theme}}",
         "dark": "Escuro",
         "description": "Escolha a aparência do app",
-        "fromSystem": "(do sistema)",
         "label": "Tema",
         "light": "Claro",
-        "matchSystem": "Seguir a configuração do sistema",
-        "railTooltip": "Tema: {{preference}} (agora {{resolved}})",
-        "system": "Sistema",
-        "toggleTooltip": "Tema: {{preference}}"
+        "toggleTooltip": "Mudar para {{theme}}"
       },
       "timezone": {
         "current": "Fuso horário atual",
@@ -31774,16 +31749,11 @@ export const resources = {
       "theme": {
         "alwaysDark": "常にダーク",
         "alwaysLight": "常にライト",
-        "currentlyShowing": "現在の表示: {{theme}}",
         "dark": "ダーク",
         "description": "アプリの見た目を選択してください",
-        "fromSystem": "（システムから）",
         "label": "テーマ",
         "light": "ライト",
-        "matchSystem": "OSの設定に合わせる",
-        "railTooltip": "テーマ: {{preference}}（現在: {{resolved}}）",
-        "system": "システム",
-        "toggleTooltip": "テーマ: {{preference}}"
+        "toggleTooltip": "{{theme}}に切り替え"
       },
       "timezone": {
         "current": "現在のタイムゾーン",
@@ -37185,16 +37155,11 @@ export const resources = {
       "theme": {
         "alwaysDark": "始终深色",
         "alwaysLight": "始终浅色",
-        "currentlyShowing": "当前显示为 {{theme}}",
         "dark": "深色",
         "description": "选择应用的外观样式",
-        "fromSystem": "（来自系统）",
         "label": "主题",
         "light": "浅色",
-        "matchSystem": "跟随系统设置",
-        "railTooltip": "主题：{{preference}}（当前为 {{resolved}}）",
-        "system": "系统",
-        "toggleTooltip": "主题：{{preference}}"
+        "toggleTooltip": "切换为{{theme}}"
       },
       "timezone": {
         "current": "当前时区",
@@ -42596,16 +42561,11 @@ export const resources = {
       "theme": {
         "alwaysDark": "항상 다크",
         "alwaysLight": "항상 라이트",
-        "currentlyShowing": "현재 {{theme}} 표시 중",
         "dark": "다크",
         "description": "앱 모양을 선택하세요",
-        "fromSystem": "(시스템에서)",
         "label": "테마",
         "light": "라이트",
-        "matchSystem": "OS 설정에 맞춤",
-        "railTooltip": "테마: {{preference}} (현재 {{resolved}})",
-        "system": "시스템",
-        "toggleTooltip": "테마: {{preference}}"
+        "toggleTooltip": "{{theme}}(으)로 전환"
       },
       "timezone": {
         "current": "현재 시간대",
@@ -48007,16 +47967,11 @@ export const resources = {
       "theme": {
         "alwaysDark": "Sempre scuro",
         "alwaysLight": "Sempre chiaro",
-        "currentlyShowing": "Attualmente mostrato: {{theme}}",
         "dark": "Scuro",
         "description": "Scegli l'aspetto dell'app",
-        "fromSystem": "(dal sistema)",
         "label": "Tema",
         "light": "Chiaro",
-        "matchSystem": "Segui impostazione del sistema operativo",
-        "railTooltip": "Tema: {{preference}} (ora {{resolved}})",
-        "system": "Sistema",
-        "toggleTooltip": "Tema: {{preference}}"
+        "toggleTooltip": "Passa a {{theme}}"
       },
       "timezone": {
         "current": "Fuso orario attuale",
@@ -53418,16 +53373,11 @@ export const resources = {
       "theme": {
         "alwaysDark": "हमेशा डार्क",
         "alwaysLight": "हमेशा लाइट",
-        "currentlyShowing": "वर्तमान में {{theme}} दिखाया जा रहा है",
         "dark": "डार्क",
         "description": "चुनें कि ऐप कैसा दिखे",
-        "fromSystem": "(सिस्टम से)",
         "label": "थीम",
         "light": "लाइट",
-        "matchSystem": "OS सेटिंग से मिलाएँ",
-        "railTooltip": "थीम: {{preference}} (अभी {{resolved}})",
-        "system": "सिस्टम",
-        "toggleTooltip": "थीम: {{preference}}"
+        "toggleTooltip": "{{theme}} पर स्विच करें"
       },
       "timezone": {
         "current": "वर्तमान समय क्षेत्र",

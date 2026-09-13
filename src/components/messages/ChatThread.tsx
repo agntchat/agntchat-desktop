@@ -473,6 +473,7 @@ export function ChatThread({ conversationId }: { conversationId: string }) {
   // The initial history load has settled (REST returned, or WS
   // `recent_messages` landed). Gates `threadItems` — see below.
   const historyLoaded = useChatStore((s) => s.historyLoaded[conversationId] ?? false);
+  const historyError = useChatStore((s) => s.historyError[conversationId] ?? false);
   const hasMore = useChatStore((s) => s.hasMore[conversationId] ?? false);
   const fetchMessages = useChatStore((s) => s.fetchMessages);
   const fetchAgentConversations = useChatStore((s) => s.fetchAgentConversations);
@@ -1049,7 +1050,18 @@ export function ChatThread({ conversationId }: { conversationId: string }) {
         {/* Spin from the first frame, not from when `messagesLoading` flips —
             it's false in the gap before the mount effect kicks the fetch off,
             which is exactly the gap the stale cards used to fill. */}
-        {!historyLoaded && messages.length === 0 ? (
+        {historyError && messages.length === 0 ? (
+          <div className="flex flex-col items-center justify-center gap-2 py-16 text-sm text-muted-foreground">
+            <span>{t("historyLoadFailed")}</span>
+            <button
+              type="button"
+              className="rounded-md border border-border px-3 py-1 text-xs font-medium text-foreground hover:bg-accent"
+              onClick={() => fetchMessages(conversationId)}
+            >
+              {t("common:retry")}
+            </button>
+          </div>
+        ) : !historyLoaded && messages.length === 0 ? (
           <div className="flex items-center justify-center py-10">
             <Loader2 className="w-5 h-5 animate-spin text-muted-foreground" />
           </div>

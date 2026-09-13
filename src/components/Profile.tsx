@@ -1,7 +1,7 @@
 import { useState, useEffect, useRef, useCallback } from "react";
 import { Trans, useTranslation } from "react-i18next";
 import { useAuthStore } from "../stores/authStore";
-import { useThemeStore, type ThemePreference } from "../stores/themeStore";
+import { useThemeStore, type Theme } from "../stores/themeStore";
 import { useLocaleStore } from "../stores/localeStore";
 import { useIntegrationStore } from "../stores/integrationStore";
 import { useDeviceNicknameStore } from "../stores/deviceNicknameStore";
@@ -1659,18 +1659,17 @@ export function Profile({ onClose }: { onClose: () => void }) {
 }
 
 // ---------------------------------------------------------------------------
-// Appearance — light / dark / system theme preference
+// Appearance — light / dark theme preference
 // ---------------------------------------------------------------------------
 
 const THEME_OPTIONS: {
-  value: ThemePreference;
+  value: Theme;
   labelKey: string;
   descriptionKey: string;
   icon: React.ElementType;
 }[] = [
   { value: "light", labelKey: "theme.light", descriptionKey: "theme.alwaysLight", icon: Sun },
   { value: "dark", labelKey: "theme.dark", descriptionKey: "theme.alwaysDark", icon: Moon },
-  { value: "system", labelKey: "theme.system", descriptionKey: "theme.matchSystem", icon: Monitor },
 ];
 
 function TimezoneSection() {
@@ -1966,9 +1965,8 @@ function LanguageSection() {
 
 function AppearanceSection() {
   const { t } = useTranslation("settings");
-  const preference = useThemeStore((s) => s.preference);
-  const resolved = useThemeStore((s) => s.resolved);
-  const setPreference = useThemeStore((s) => s.setPreference);
+  const theme = useThemeStore((s) => s.theme);
+  const setTheme = useThemeStore((s) => s.setTheme);
   const [dsDebug, setDsDebug] = useState(() => isDesignSystemDebugOn());
 
   const toggleDsDebug = () => {
@@ -1981,21 +1979,18 @@ function AppearanceSection() {
     <div className="space-y-4">
       <div className="space-y-1">
         <Label className="text-xs">{t("theme.label")}</Label>
-        <p className="text-[11px] text-muted-foreground">
-          {t("theme.currentlyShowing", { theme: t(`theme.${resolved}`) })}
-          {preference === "system" && ` ${t("theme.fromSystem")}`}
-        </p>
+        <p className="text-[11px] text-muted-foreground">{t("theme.description")}</p>
       </div>
 
-      <div className="grid grid-cols-3 gap-2">
+      <div className="grid grid-cols-2 gap-2">
         {THEME_OPTIONS.map((opt) => {
           const Icon = opt.icon;
-          const selected = preference === opt.value;
+          const selected = theme === opt.value;
           return (
             <button
               key={opt.value}
               type="button"
-              onClick={() => setPreference(opt.value)}
+              onClick={() => setTheme(opt.value)}
               className={cn(
                 "flex flex-col items-center gap-1.5 rounded-lg border px-3 py-3 text-xs transition-colors",
                 "hover:bg-muted/50",

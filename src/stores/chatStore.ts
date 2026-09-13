@@ -196,8 +196,12 @@ interface ChatState {
    *  timeline on this: inline thread cards and artifacts come from stores
    *  that are already warm, so building the thread against an empty message
    *  array renders them alone, unanchored, as if they were the conversation.
-   *  Set on failure too — the flag means "settled", not "succeeded". */
+   *  A FAILED load does not set it — see `historyError`. */
   historyLoaded: Record<string, boolean>;
+  /** Per-conversation: the initial history load failed. Kept separate from
+   *  `historyLoaded` so a failure neither spins forever nor lets the inline
+   *  cards render as the whole conversation — the pane offers a retry. */
+  historyError: Record<string, boolean>;
   hasMore: Record<string, boolean>;
   drafts: Record<string, string>;
 
@@ -334,6 +338,7 @@ export const useChatStore = create<ChatState>((set, get) => ({
   messages: {},
   messagesLoading: {},
   historyLoaded: {},
+  historyError: {},
   hasMore: {},
   drafts: {},
   replyingTo: {},
@@ -624,10 +629,12 @@ export const useChatStore = create<ChatState>((set, get) => ({
       set((s) => {
         const existing = s.messages[conversationId] ?? [];
         const merged = dedup([...data.messages, ...existing]);
+        const { [conversationId]: _cleared, ...historyError } = s.historyError;
         return {
           messages: { ...s.messages, [conversationId]: sortMessages(merged) },
           hasMore: { ...s.hasMore, [conversationId]: data.messages.length >= 30 },
           messagesLoading: { ...s.messagesLoading, [conversationId]: false },
+          historyError,
           // Scroll-back pages say nothing about whether the initial load landed.
           ...(before
             ? {}
@@ -638,10 +645,13 @@ export const useChatStore = create<ChatState>((set, get) => ({
       console.warn(`[chat] fetchMessages(${conversationId}) failed`, e);
       set((s) => ({
         messagesLoading: { ...s.messagesLoading, [conversationId]: false },
-        // Settled, not succeeded — otherwise a failed load spins forever.
+        // Failure is NOT "loaded": flipping historyLoaded here let the inline
+        // thread/artifact cards render alone, as the whole conversation, until
+        // the WS push landed. The pane reads historyError and offers a retry,
+        // which is also what keeps it from spinning forever.
         ...(before
           ? {}
-          : { historyLoaded: { ...s.historyLoaded, [conversationId]: true } }),
+          : { historyError: { ...s.historyError, [conversationId]: true } }),
       }));
     }
   },
@@ -897,9 +907,11 @@ export const useChatStore = create<ChatState>((set, get) => ({
         );
         sorted = sortMessages(dedup([...messages, ...extras]));
       }
+      const { [conversationId]: _cleared, ...historyError } = s.historyError;
       return {
         messages: { ...s.messages, [conversationId]: sorted },
         historyLoaded: { ...s.historyLoaded, [conversationId]: true },
+        historyError,
       };
     });
   },
