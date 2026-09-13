@@ -76,13 +76,25 @@ const components: Components = {
   ),
 };
 
-export function MarkdownContent({ content }: { content: string }) {
+export function MarkdownContent({
+  content,
+  className,
+}: {
+  content: string;
+  /** Overrides the default text-sm sizing — e.g. a compact toast wants text-xs. */
+  className?: string;
+}) {
   // `remark-breaks` converts every single `\n` into a <br>, matching
   // Slack/Discord-style chat behaviour and mobile's raw-text rendering.
   // Plain CommonMark/GFM collapses single newlines to a space inside a
   // paragraph, which made shift+enter line breaks vanish here.
   return (
-    <div className="text-sm leading-relaxed [&>*:first-child]:mt-0 [&>*:last-child]:mb-0">
+    <div
+      className={cn(
+        "text-sm leading-relaxed [&>*:first-child]:mt-0 [&>*:last-child]:mb-0",
+        className
+      )}
+    >
       <ReactMarkdown remarkPlugins={[remarkGfm, remarkBreaks]} components={components}>
         {linkifyMarkdown(content)}
       </ReactMarkdown>
