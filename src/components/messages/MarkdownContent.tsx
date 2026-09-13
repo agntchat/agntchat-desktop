@@ -4,6 +4,7 @@ import remarkBreaks from "remark-breaks";
 import type { Components } from "react-markdown";
 
 import { linkifyMarkdown } from "../../lib/linkify";
+import { cn } from "../../lib/utils";
 
 const components: Components = {
   a: ({ href, children }) => (
