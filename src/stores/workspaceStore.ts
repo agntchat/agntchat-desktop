@@ -439,6 +439,30 @@ export function useWorkspaceMembers(
   return useWorkspaceStore((s) => (orgId ? s.membersByOrg[orgId] : undefined));
 }
 
+/**
+ * Whether the active shared workspace has at least one other human on its
+ * roster — someone to message even with zero agents. Reads the cached
+ * roster (the shell fetches it in workspace mode), so false until loaded
+ * and always false in Personal. Gates the compose affordance alongside
+ * "has an agent".
+ */
+export function useHasWorkspaceCoMembers(): boolean {
+  const enabled = useWorkspacesEnabled();
+  const active = useActiveWorkspace();
+  const selfId = useAuthStore((s) => s.participant?.id);
+  const orgId = enabled && active && !active.isPersonal ? active.id : null;
+  return useWorkspaceStore((s) =>
+    orgId
+      ? (s.membersByOrg[orgId] ?? []).some(
+          (m) =>
+            m.participantId !== selfId &&
+            m.participant?.type === "human" &&
+            m.participant.status !== "deactivated"
+        )
+      : false
+  );
+}
+
 export function useActiveWorkspace(): WorkspaceMembership | null {
   const orgs = useWorkspaces();
   const activeId = useAuthStore((s) => s.participant?.activeOrganizationId);

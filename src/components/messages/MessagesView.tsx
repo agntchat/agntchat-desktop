@@ -6,6 +6,7 @@ import { useResizableWidth, useRightPaneWidth } from "../../hooks/useResizableWi
 import { ResizeHandle } from "../ResizeHandle";
 import { useChatStore } from "../../stores/chatStore";
 import { useAgentStore } from "../../stores/agentStore";
+import { useHasWorkspaceCoMembers } from "../../stores/workspaceStore";
 import { useAuthStore } from "../../stores/authStore";
 import { usePresenceStore } from "../../stores/presenceStore";
 import { useStreamingStore } from "../../stores/streamingStore";
@@ -61,12 +62,14 @@ export function MessagesView() {
   const fetchConversations = useChatStore((s) => s.fetchConversations);
   const fetchAgentConversations = useChatStore((s) => s.fetchAgentConversations);
   const fetchUnreadCounts = useChatStore((s) => s.fetchUnreadCounts);
-  // No agents → no one to start a conversation with, so hide the compose
-  // affordance until the user has created their first agent (the onboarding
-  // cards guide them there). Reappears the moment an active agent exists.
+  // No one to start a conversation with → hide the compose affordance until
+  // the user has created their first agent (the onboarding cards guide them
+  // there) or joined a workspace with another human in it.
   const hasAgents = useAgentStore((s) =>
     Object.values(s.agents).some((m) => m.agent.status !== "deactivated")
   );
+  const hasCoMembers = useHasWorkspaceCoMembers();
+  const canCompose = hasAgents || hasCoMembers;
 
   // The artifact pane belongs to the conversation it was opened from —
   // switching conversations closes it rather than showing a stale artifact.
@@ -148,9 +151,9 @@ export function MessagesView() {
         >
           <h2 className="text-sm font-semibold text-foreground">{t("nav:chats")}</h2>
           <div className="flex items-center gap-1">
-            {/* Refresh + new-conversation only make sense once the user has an
-                agent to talk to — hide both in the zero-agent onboarding state. */}
-            {hasAgents && (
+            {/* Refresh + new-conversation only make sense once the user has
+                someone to talk to — hide both in the onboarding state. */}
+            {canCompose && (
               <button
                 type="button"
                 onClick={handleRefresh}
@@ -162,7 +165,7 @@ export function MessagesView() {
                 <RefreshCw className={cn("h-4 w-4", refreshing && "animate-spin")} />
               </button>
             )}
-            {hasAgents && (
+            {canCompose && (
               <button
                 type="button"
                 onClick={() => setShowNew(true)}

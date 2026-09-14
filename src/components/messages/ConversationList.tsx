@@ -2,6 +2,7 @@ import { memo } from "react";
 import { useTranslation } from "react-i18next";
 import { useChatStore } from "../../stores/chatStore";
 import { useAgentStore } from "../../stores/agentStore";
+import { useHasWorkspaceCoMembers } from "../../stores/workspaceStore";
 import { useAuthStore } from "../../stores/authStore";
 import { usePresenceStore } from "../../stores/presenceStore";
 import { ExternalAgentBadge, externalToolOf, isExternalAgent } from "../ExternalAgentBadge";
@@ -50,11 +51,14 @@ export function ConversationList() {
   const streams = useStreamingStore((s) => s.streams);
   const currentUserId = useAuthStore((s) => s.participant?.id);
   // The "start one" hint points at the pencil (new-conversation) button, which
-  // is hidden until the user has an agent. Without an agent, guide them to
-  // create one instead of pointing at a button that isn't there.
+  // is hidden until the user has an agent or a workspace co-member. Without
+  // either, guide them to create an agent instead of pointing at a button
+  // that isn't there.
   const hasAgents = useAgentStore((s) =>
     Object.values(s.agents).some((m) => m.agent.status !== "deactivated")
   );
+  const hasCoMembers = useHasWorkspaceCoMembers();
+  const canCompose = hasAgents || hasCoMembers;
 
   if (loading && conversations.length === 0) {
     return (
@@ -72,7 +76,7 @@ export function ConversationList() {
           {t("noConversations")}
         </p>
         <p className="text-xs text-muted-foreground mt-1">
-          {hasAgents ? t("startOneHint") : t("welcomeBody")}
+          {canCompose ? t("startOneHint") : t("welcomeBody")}
         </p>
       </div>
     );
