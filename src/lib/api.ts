@@ -424,6 +424,7 @@ export interface PendingWorkspaceInvite {
   id: string;
   organizationId: string;
   organizationName?: string;
+  organizationAvatarUrl?: string | null;
   role: "admin" | "member";
   expiresAt?: string;
 }

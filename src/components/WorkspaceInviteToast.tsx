@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from "react";
-import { Loader2, Mail, X } from "lucide-react";
+import { ArrowRight, Loader2, X } from "lucide-react";
 import { useTranslation } from "react-i18next";
 
 import { ws } from "../services/websocket";
@@ -10,20 +10,56 @@ interface InviteEvent {
   inviteId: string;
   organizationId: string;
   organizationName?: string | null;
+  organizationAvatarUrl?: string | null;
   role?: string | null;
   invitedByName?: string | null;
 }
 
 /**
+ * Stable hue for a workspace without an avatar, so the same workspace
+ * always gets the same tile colour across toasts and sessions.
+ */
+function hueFor(name: string): number {
+  let h = 0;
+  for (let i = 0; i < name.length; i++) h = (h * 31 + name.charCodeAt(i)) >>> 0;
+  return h % 360;
+}
+
+function WorkspaceTile({ name, avatarUrl }: { name: string; avatarUrl?: string | null }) {
+  if (avatarUrl) {
+    return (
+      <img
+        src={avatarUrl}
+        alt=""
+        draggable={false}
+        className="h-12 w-12 shrink-0 rounded-xl object-cover ring-1 ring-border"
+      />
+    );
+  }
+  const hue = hueFor(name);
+  return (
+    <div
+      aria-hidden
+      className="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl text-lg font-semibold text-white shadow-inner"
+      style={{
+        background: `linear-gradient(135deg, hsl(${hue} 70% 55%), hsl(${(hue + 40) % 360} 70% 42%))`,
+      }}
+    >
+      {name.trim().charAt(0).toUpperCase() || "?"}
+    </div>
+  );
+}
+
+/**
  * Live "you've been invited" prompt. When an admin invites this account's
  * email while the app is open, the backend pushes `pending_invite_received`
- * with the workspace name, role, and inviter; this renders it as a toast
- * with Accept / Decline so joining doesn't require finding the switcher's
- * banner (or the email). Accept goes through `workspaceStore.acceptInvite`,
- * so the backend switches the active workspace and the store re-keys
- * exactly as the banner path does.
+ * with the workspace name, avatar, role, and inviter; this renders it as a
+ * card led by the workspace identity with Decline / Join, so joining
+ * doesn't require finding the switcher's banner (or the email). Join goes
+ * through `workspaceStore.acceptInvite`, so the backend switches the active
+ * workspace and the store re-keys exactly as the banner path does.
  *
- * The toast is dropped when the invite leaves `pendingInvites` — resolved
+ * The card is dropped when the invite leaves `pendingInvites` — resolved
  * from the banner, another device, or a revoke — so it can never offer an
  * invite that no longer exists. Mounted once in AppShell.
  */
@@ -82,65 +118,119 @@ export function WorkspaceInviteToast() {
   if (invites.length === 0) return null;
 
   return (
-    <div className="pointer-events-none fixed bottom-6 right-6 z-50 flex max-w-sm flex-col gap-2">
-      {invites.map((invite) => {
-        const workspace = invite.organizationName || t("workspace.fallbackName");
-        const body = invite.invitedByName
-          ? t("workspace.inviteToast.body", { inviter: invite.invitedByName, workspace })
-          : t("workspace.inviteToast.bodyNoInviter", { workspace });
-        const role = invite.role
-          ? t(`workspace.roles.${invite.role}`, { defaultValue: invite.role })
-          : null;
+    <div className="pointer-events-none fixed bottom-6 right-6 z-50 flex w-[22rem] max-w-[calc(100vw-3rem)] flex-col gap-3">
+      {invites.map((invite) => (
+        <InviteCard
+          key={invite.inviteId}
+          invite={invite}
+          busy={!!busy[invite.inviteId]}
+          error={errors[invite.inviteId]}
+          onJoin={() => void resolve(invite.inviteId, "accept")}
+          onDecline={() => void resolve(invite.inviteId, "decline")}
+          onDismiss={() => remove(invite.inviteId)}
+        />
+      ))}
+    </div>
+  );
+}
 
-        return (
-          <div
-            key={invite.inviteId}
-            role="status"
-            className="pointer-events-auto rounded-lg border border-border bg-card p-4 shadow-lg"
-          >
-            <div className="flex items-start gap-3">
-              <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-muted text-primary">
-                <Mail size={16} />
-              </div>
-              <div className="min-w-0 flex-1">
-                <p className="text-sm font-medium">{t("workspace.inviteToast.title")}</p>
-                <p className="mt-1 break-words text-xs text-muted-foreground">{body}</p>
-                {role && <p className="mt-1 text-xs text-muted-foreground">{role}</p>}
-                {errors[invite.inviteId] && (
-                  <p className="mt-1 text-xs text-destructive">{errors[invite.inviteId]}</p>
-                )}
-              </div>
-              <button
-                type="button"
-                onClick={() => remove(invite.inviteId)}
-                aria-label={t("common:dismiss")}
-                className="shrink-0 text-muted-foreground hover:text-foreground"
-              >
-                <X size={14} />
-              </button>
-            </div>
-            <div className="mt-3 flex flex-wrap justify-end gap-2">
-              <button
-                type="button"
-                disabled={busy[invite.inviteId]}
-                onClick={() => void resolve(invite.inviteId, "decline")}
-                className="rounded-md px-3 py-1 text-xs font-medium text-muted-foreground hover:bg-accent disabled:opacity-50"
-              >
-                {t("workspace.declineInvite")}
-              </button>
-              <button
-                type="button"
-                disabled={busy[invite.inviteId]}
-                onClick={() => void resolve(invite.inviteId, "accept")}
-                className="inline-flex items-center gap-1 rounded-md bg-primary px-3 py-1 text-xs font-medium text-primary-foreground hover:bg-primary/90 disabled:opacity-50"
-              >
-                {busy[invite.inviteId] && <Loader2 size={12} className="animate-spin" />}
-                {t("common:accept")}
-              </button>
-            </div>
+function InviteCard({
+  invite,
+  busy,
+  error,
+  onJoin,
+  onDecline,
+  onDismiss,
+}: {
+  invite: InviteEvent;
+  busy: boolean;
+  error?: string;
+  onJoin: () => void;
+  onDecline: () => void;
+  onDismiss: () => void;
+}) {
+  const { t } = useTranslation("settings");
+  // Slide-up + fade on mount; flipped on the frame after first paint so
+  // the transition actually runs.
+  const [shown, setShown] = useState(false);
+  useEffect(() => {
+    const raf = requestAnimationFrame(() => setShown(true));
+    return () => cancelAnimationFrame(raf);
+  }, []);
+
+  const workspace = invite.organizationName?.trim() || t("workspace.fallbackName");
+  const lead = invite.invitedByName
+    ? t("workspace.inviteToast.invitedBy", { inviter: invite.invitedByName })
+    : t("workspace.inviteToast.invited");
+  const role = invite.role
+    ? t(`workspace.roles.${invite.role}`, { defaultValue: invite.role })
+    : null;
+
+  return (
+    <div
+      role="status"
+      className={[
+        "pointer-events-auto relative overflow-hidden rounded-2xl border border-border bg-card shadow-xl ring-1 ring-primary/10",
+        "transition-all duration-300 ease-out motion-reduce:transition-none",
+        shown ? "translate-y-0 opacity-100" : "translate-y-3 opacity-0",
+      ].join(" ")}
+    >
+      {/* Accent stripe + soft primary wash so the card reads as an
+          invitation rather than a system notice. */}
+      <div className="absolute inset-x-0 top-0 h-1 bg-gradient-to-r from-primary via-primary/70 to-transparent" />
+      <div className="absolute inset-0 -z-0 bg-gradient-to-br from-primary/[0.07] via-transparent to-transparent" />
+
+      <div className="relative p-4">
+        <div className="flex items-start gap-3">
+          <WorkspaceTile name={workspace} avatarUrl={invite.organizationAvatarUrl} />
+          <div className="min-w-0 flex-1 pt-0.5">
+            <p className="text-[10px] font-semibold uppercase tracking-[0.12em] text-primary">
+              {t("workspace.inviteToast.title")}
+            </p>
+            <p className="mt-0.5 truncate text-base font-semibold leading-tight text-foreground">
+              {workspace}
+            </p>
+            <p className="mt-1 flex flex-wrap items-center gap-x-1.5 gap-y-1 text-xs text-muted-foreground">
+              <span className="break-words">{lead}</span>
+              {role && (
+                <span className="rounded-full border border-border bg-background/70 px-1.5 py-px text-[10px] font-medium text-foreground/80">
+                  {role}
+                </span>
+              )}
+            </p>
+            {error && <p className="mt-1.5 text-xs text-destructive">{error}</p>}
           </div>
-        );
-      })}
+          <button
+            type="button"
+            onClick={onDismiss}
+            aria-label={t("common:dismiss")}
+            className="-mr-1 -mt-1 shrink-0 rounded-md p-1 text-muted-foreground hover:bg-accent hover:text-foreground"
+          >
+            <X size={14} />
+          </button>
+        </div>
+
+        <div className="mt-3 flex items-center justify-end gap-2">
+          <button
+            type="button"
+            disabled={busy}
+            onClick={onDecline}
+            className="rounded-lg px-3 py-1.5 text-xs font-medium text-muted-foreground hover:bg-accent hover:text-foreground disabled:opacity-50"
+          >
+            {t("workspace.declineInvite")}
+          </button>
+          <button
+            type="button"
+            disabled={busy}
+            onClick={onJoin}
+            className="inline-flex items-center gap-1.5 rounded-lg bg-primary px-3.5 py-1.5 text-xs font-semibold text-primary-foreground shadow-sm hover:bg-primary/90 disabled:opacity-50"
+          >
+            {busy ? <Loader2 size={12} className="animate-spin" /> : null}
+            {t("workspace.inviteToast.join")}
+            {!busy && <ArrowRight size={12} />}
+          </button>
+        </div>
+      </div>
     </div>
   );
 }

@@ -4812,8 +4812,9 @@ export const resources = {
           "pending": "Pending"
         },
         "inviteToast": {
-          "body": "{{inviter}} invited you to join {{workspace}}",
-          "bodyNoInviter": "You've been invited to join {{workspace}}",
+          "invited": "You've been invited to join",
+          "invitedBy": "{{inviter}} invited you to join",
+          "join": "Join",
           "title": "Workspace invitation"
         },
         "leave": "Leave",
@@ -10191,8 +10192,9 @@ export const resources = {
           "pending": "Pendiente"
         },
         "inviteToast": {
-          "body": "{{inviter}} te invitó a unirte a {{workspace}}",
-          "bodyNoInviter": "Te han invitado a unirte a {{workspace}}",
+          "invited": "Te han invitado a unirte",
+          "invitedBy": "{{inviter}} te invitó a unirte",
+          "join": "Unirse",
           "title": "Invitación a un espacio de trabajo"
         },
         "leave": "Salir",
@@ -15570,8 +15572,9 @@ export const resources = {
           "pending": "Ausstehend"
         },
         "inviteToast": {
-          "body": "{{inviter}} hat dich eingeladen, {{workspace}} beizutreten",
-          "bodyNoInviter": "Du wurdest eingeladen, {{workspace}} beizutreten",
+          "invited": "Du wurdest eingeladen beizutreten",
+          "invitedBy": "{{inviter}} hat dich eingeladen beizutreten",
+          "join": "Beitreten",
           "title": "Workspace-Einladung"
         },
         "leave": "Verlassen",
@@ -20949,8 +20952,9 @@ export const resources = {
           "pending": "En attente"
         },
         "inviteToast": {
-          "body": "{{inviter}} vous a invité à rejoindre {{workspace}}",
-          "bodyNoInviter": "Vous avez été invité à rejoindre {{workspace}}",
+          "invited": "Vous avez été invité à rejoindre",
+          "invitedBy": "{{inviter}} vous a invité à rejoindre",
+          "join": "Rejoindre",
           "title": "Invitation à un espace de travail"
         },
         "leave": "Quitter",
@@ -26328,8 +26332,9 @@ export const resources = {
           "pending": "Pendente"
         },
         "inviteToast": {
-          "body": "{{inviter}} convidou você para entrar em {{workspace}}",
-          "bodyNoInviter": "Você foi convidado para entrar em {{workspace}}",
+          "invited": "Você foi convidado para entrar",
+          "invitedBy": "{{inviter}} convidou você para entrar",
+          "join": "Entrar",
           "title": "Convite para espaço de trabalho"
         },
         "leave": "Sair",
@@ -31707,8 +31712,9 @@ export const resources = {
           "pending": "保留中"
         },
         "inviteToast": {
-          "body": "{{inviter}} さんが {{workspace}} に招待しました",
-          "bodyNoInviter": "{{workspace}} に招待されました",
+          "invited": "招待されました",
+          "invitedBy": "{{inviter}} さんから招待されました",
+          "join": "参加",
           "title": "ワークスペースへの招待"
         },
         "leave": "退出",
@@ -37086,8 +37092,9 @@ export const resources = {
           "pending": "待处理"
         },
         "inviteToast": {
-          "body": "{{inviter}} 邀请你加入 {{workspace}}",
-          "bodyNoInviter": "你已被邀请加入 {{workspace}}",
+          "invited": "你已被邀请加入",
+          "invitedBy": "{{inviter}} 邀请你加入",
+          "join": "加入",
           "title": "工作区邀请"
         },
         "leave": "离开",
@@ -42465,8 +42472,9 @@ export const resources = {
           "pending": "대기 중"
         },
         "inviteToast": {
-          "body": "{{inviter}} 님이 {{workspace}}에 초대했습니다",
-          "bodyNoInviter": "{{workspace}}에 초대되었습니다",
+          "invited": "초대되었습니다",
+          "invitedBy": "{{inviter}} 님이 초대했습니다",
+          "join": "참여",
           "title": "워크스페이스 초대"
         },
         "leave": "나가기",
@@ -47844,8 +47852,9 @@ export const resources = {
           "pending": "In sospeso"
         },
         "inviteToast": {
-          "body": "{{inviter}} ti ha invitato a unirti a {{workspace}}",
-          "bodyNoInviter": "Sei stato invitato a unirti a {{workspace}}",
+          "invited": "Sei stato invitato a unirti",
+          "invitedBy": "{{inviter}} ti ha invitato a unirti",
+          "join": "Unisciti",
           "title": "Invito a uno spazio di lavoro"
         },
         "leave": "Abbandona",
@@ -53223,8 +53232,9 @@ export const resources = {
           "pending": "लंबित"
         },
         "inviteToast": {
-          "body": "{{inviter}} ने आपको {{workspace}} में शामिल होने के लिए आमंत्रित किया है",
-          "bodyNoInviter": "आपको {{workspace}} में शामिल होने के लिए आमंत्रित किया गया है",
+          "invited": "आपको शामिल होने के लिए आमंत्रित किया गया है",
+          "invitedBy": "{{inviter}} ने आपको शामिल होने के लिए आमंत्रित किया है",
+          "join": "शामिल हों",
           "title": "वर्कस्पेस आमंत्रण"
         },
         "leave": "छोड़ें",
