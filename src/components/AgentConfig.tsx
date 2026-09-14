@@ -150,7 +150,7 @@ import { WorkspaceAvatar } from "./WorkspaceSwitcher";
 import { FTUE_KEYS, hasSeenTour, markTourSeen } from "../lib/ftue";
 import { useLocalDeviceName } from "../hooks/useRunningElsewhere";
 import { useDeviceNicknameStore } from "../stores/deviceNicknameStore";
-
+import { seatErrorMessage } from "../lib/seatError";
 // First-run orientation for the details pane. Each step spotlights one
 // sidebar group (`groupKey`, matched to the `key` on `sectionGroups`) and
 // switches the pane to a representative section so the user sees real content
@@ -2567,8 +2567,15 @@ function PulsePanel({
       setProposed(true);
       setPulseIdea("");
     } catch (e) {
+      // Pulse authoring runs on the agent's own seat, so "offline" is an
+      // expected outcome with its own code — not a generic failure.
       setHbError(
-        e instanceof Error ? e.message : t("pulse.errors.generateFailed")
+        seatErrorMessage(
+          e,
+          managed.agent.displayName || t("fallbackName"),
+          t,
+          "pulse"
+        ) ?? (e instanceof Error ? e.message : t("pulse.errors.generateFailed"))
       );
     }
     setRevising(false);

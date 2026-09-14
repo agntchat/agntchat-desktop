@@ -2,6 +2,7 @@ import { useState, useEffect, useCallback } from "react";
 import { useTranslation, Trans } from "react-i18next";
 import { useAgentStore } from "../stores/agentStore";
 import { updateSoulMd, revertSoulMd, reviseSoulMd } from "../lib/api";
+import { seatErrorMessage } from "../lib/seatError";
 import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
 import { Save, Link, RotateCcw, Loader2 } from "lucide-react";
@@ -71,7 +72,12 @@ export function SoulEditor({ agentId }: SoulEditorProps) {
       setProposed(true);
       setInstruction("");
     } catch (e) {
-      setError(e instanceof Error ? e.message : t("soul.errors.generate"));
+      // Revision runs on the agent's own seat, so "offline" is an expected
+      // outcome with its own code — not a generic failure.
+      setError(
+        seatErrorMessage(e, agentName || t("fallbackName"), t, "soul") ??
+          (e instanceof Error ? e.message : t("soul.errors.generate"))
+      );
     } finally {
       setRevising(false);
     }
