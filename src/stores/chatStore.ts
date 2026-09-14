@@ -1329,6 +1329,60 @@ export const useChatStore = create<ChatState>((set, get) => ({
       })
     );
 
+    // A conversation vanished for this user: deleted outright, or we (or an
+    // agent we own) were removed from it — including every room of a
+    // workspace we just left. Drop it locally and leave its channel so no
+    // stale badge, draft or open view survives. Mirrors web's
+    // `dropConversation`.
+    const dropConversation = (convId: string) => {
+      let remainingCleared: Record<string, string[]> = {};
+      set((s) => {
+        const { [convId]: _m, ...remainingMessages } = s.messages;
+        const { [convId]: _d, ...remainingDrafts } = s.drafts;
+        const { [convId]: _c, ...restCleared } = s.clearedAt;
+        const { [convId]: _u, ...remainingUnread } = s.unreadCounts;
+        const { [convId]: _t, ...remainingTurnGroups } = s.unreadTurnGroups;
+        remainingCleared = restCleared;
+        return {
+          conversations: s.conversations.filter((c) => c.id !== convId),
+          agentConversations: s.agentConversations.filter((c) => c.id !== convId),
+          messages: remainingMessages,
+          drafts: remainingDrafts,
+          clearedAt: remainingCleared,
+          unreadCounts: remainingUnread,
+          unreadTurnGroups: remainingTurnGroups,
+          activeConversationId:
+            s.activeConversationId === convId ? null : s.activeConversationId,
+          activeThreadId: s.activeThreadId === convId ? null : s.activeThreadId,
+        };
+      });
+      writeClearedAtStorage(remainingCleared);
+      ws.leaveConversation(convId);
+    };
+
+    unsubs.push(
+      ws.on("conversation_deleted", (payload) => {
+        const convId = payload.conversationId as string;
+        if (convId) dropConversation(convId);
+      })
+    );
+
+    unsubs.push(
+      ws.on("removed_from_conversation", (payload) => {
+        const convId = payload.conversationId as string;
+        if (convId) dropConversation(convId);
+      })
+    );
+
+    // The conversation channel's own kick — empty payload, the id comes from
+    // the `_conversationId` tag the websocket service adds.
+    unsubs.push(
+      ws.on("conv:removed_from_conversation", (payload) => {
+        const convId = payload._conversationId as string;
+        if (convId) dropConversation(convId);
+      })
+    );
+
     unsubs.push(
       ws.on("new_conversation", (payload) => {
         const conv = payload.conversation as Conversation;
