@@ -4,6 +4,7 @@ import { useTranslation } from "react-i18next";
 
 import { ws } from "../services/websocket";
 import { useWorkspaceStore } from "../stores/workspaceStore";
+import { WorkspaceTile } from "./WorkspaceInviteTile";
 
 /** Wire payload of `pending_invite_received` on the user channel. */
 interface InviteEvent {
@@ -13,41 +14,6 @@ interface InviteEvent {
   organizationAvatarUrl?: string | null;
   role?: string | null;
   invitedByName?: string | null;
-}
-
-/**
- * Stable hue for a workspace without an avatar, so the same workspace
- * always gets the same tile colour across toasts and sessions.
- */
-function hueFor(name: string): number {
-  let h = 0;
-  for (let i = 0; i < name.length; i++) h = (h * 31 + name.charCodeAt(i)) >>> 0;
-  return h % 360;
-}
-
-function WorkspaceTile({ name, avatarUrl }: { name: string; avatarUrl?: string | null }) {
-  if (avatarUrl) {
-    return (
-      <img
-        src={avatarUrl}
-        alt=""
-        draggable={false}
-        className="h-12 w-12 shrink-0 rounded-xl object-cover ring-1 ring-border"
-      />
-    );
-  }
-  const hue = hueFor(name);
-  return (
-    <div
-      aria-hidden
-      className="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl text-lg font-semibold text-white shadow-inner"
-      style={{
-        background: `linear-gradient(135deg, hsl(${hue} 70% 55%), hsl(${(hue + 40) % 360} 70% 42%))`,
-      }}
-    >
-      {name.trim().charAt(0).toUpperCase() || "?"}
-    </div>
-  );
 }
 
 /**
@@ -175,14 +141,13 @@ function InviteCard({
         shown ? "translate-y-0 opacity-100" : "translate-y-3 opacity-0",
       ].join(" ")}
     >
-      {/* Accent stripe + soft primary wash so the card reads as an
-          invitation rather than a system notice. */}
-      <div className="absolute inset-x-0 top-0 h-1 bg-gradient-to-r from-primary via-primary/70 to-transparent" />
+      {/* Soft primary wash so the card reads as an invitation rather
+          than a system notice. */}
       <div className="absolute inset-0 -z-0 bg-gradient-to-br from-primary/[0.07] via-transparent to-transparent" />
 
       <div className="relative p-4">
         <div className="flex items-start gap-3">
-          <WorkspaceTile name={workspace} avatarUrl={invite.organizationAvatarUrl} />
+          <WorkspaceTile name={workspace} avatarUrl={invite.organizationAvatarUrl} size="lg" />
           <div className="min-w-0 flex-1 pt-0.5">
             <p className="text-[10px] font-semibold uppercase tracking-[0.12em] text-primary">
               {t("workspace.inviteToast.title")}
