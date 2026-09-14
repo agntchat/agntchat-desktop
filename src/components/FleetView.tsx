@@ -41,10 +41,14 @@ export function FleetView() {
   const { t } = useTranslation("platform");
   const participant = useAuthStore((s) => s.participant);
   const workspaces = useWorkspaces();
-  const orgId =
-    participant?.organizationId ??
-    workspaces.find((w) => w.isPersonal)?.id ??
-    null;
+  // Hosts belong to a workspace, so this view follows the ACTIVE one —
+  // switching workspaces re-keys the fetch effects below. It used to read
+  // the denormalized `participant.organizationId`, which is whatever org
+  // the user last created and never moves: hosts registered in any other
+  // workspace were invisible here.
+  const activeOrgId = participant?.activeOrganizationId;
+  const orgId = activeOrgId ?? workspaces.find((w) => w.isPersonal)?.id ?? null;
+  const activeWorkspace = workspaces.find((w) => w.id === orgId) ?? null;
 
   const [hosts, setHosts] = useState<api.OrganizationHost[]>([]);
   const [anthropicConnected, setAnthropicConnected] = useState(false);
@@ -113,7 +117,15 @@ export function FleetView() {
         <div className="flex items-center gap-2">
           <Server className="h-5 w-5 text-muted-foreground" />
           <div>
-            <h1 className="text-base font-semibold leading-none">{t("fleet.title")}</h1>
+            <div className="flex items-center gap-2">
+              <h1 className="text-base font-semibold leading-none">{t("fleet.title")}</h1>
+              {/* Workspace name is a proper noun, not copy — no i18n key. */}
+              {activeWorkspace && (
+                <span className="rounded-full bg-muted px-2 py-0.5 text-[11px] text-muted-foreground">
+                  {activeWorkspace.name}
+                </span>
+              )}
+            </div>
             <p className="mt-1 text-xs text-muted-foreground">
               {t("fleet.subtitle")}
             </p>

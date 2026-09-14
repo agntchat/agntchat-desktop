@@ -1009,36 +1009,10 @@ export async function listOrganizationHosts(
   return res.hosts;
 }
 
-export interface CreateHostResult {
-  host: OrganizationHost;
-  /** Plaintext API key — shown ONCE on creation. Server only persists the hash. */
-  apiKey: string;
-}
-
-export async function createOrganizationHost(
-  orgId: string,
-  name: string
-): Promise<CreateHostResult> {
-  return request<CreateHostResult>(`/api/organizations/${orgId}/hosts`, {
-    method: "POST",
-    body: JSON.stringify({ name }),
-  });
-}
-
-/**
- * Mint a fresh API key for an existing host. UUID stays the same;
- * the old plaintext is invalidated immediately. Caller must hand the
- * new plaintext to the host operator (re-run enroll.sh / update host.env).
- */
-export async function regenerateOrganizationHostApiKey(
-  orgId: string,
-  hostId: string
-): Promise<CreateHostResult> {
-  return request<CreateHostResult>(
-    `/api/organizations/${orgId}/hosts/${hostId}/regenerate-key`,
-    { method: "POST" }
-  );
-}
+/* API-key host enrollment (POST /hosts, regenerate-key) has no client
+   surface — hosts are enrolled from the Hosts view over SSH. The
+   endpoints stay for operators running the manual install; see
+   host/README.md. */
 
 export async function deleteOrganizationHost(
   orgId: string,

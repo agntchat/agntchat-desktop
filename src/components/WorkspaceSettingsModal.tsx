@@ -8,11 +8,10 @@ import { Avatar, AvatarFallback, AvatarImage } from "./ui/avatar";
 import { useAuthStore } from "../stores/authStore";
 import { useWorkspaceStore, useWorkspaces } from "../stores/workspaceStore";
 import type { WorkspaceMembership, OrganizationMembership, OrganizationInvite } from "../lib/api";
-import { HostsManagement } from "./HostsManagement";
 import { ProvidersManagement } from "./ProvidersManagement";
 import { ConnectionsManagement } from "./ConnectionsManagement";
 
-type Tab = "general" | "members" | "hosts" | "models" | "connections";
+type Tab = "general" | "members" | "models" | "connections";
 
 interface Props {
   workspaceId: string;
@@ -30,7 +29,8 @@ interface Props {
  * Workspace settings modal — opened from the gear icon next to a
  * non-personal workspace row in the switcher dropdown. Inviting lives
  * inside the Members tab (roster, invite form, pending invitations),
- * not in a tab of its own. Mirrors the
+ * not in a tab of its own. Hosts are NOT here: the Hosts rail view owns
+ * the fleet (SSH enrollment + ops) for the active workspace. Mirrors the
  * web component (`web/src/components/WorkspaceSettingsModal.tsx`)
  * tab-for-tab so behavior stays consistent across clients.
  *
@@ -93,11 +93,6 @@ export function WorkspaceSettingsModal({ workspaceId, onClose, initialTab, focus
             {t("workspace.tabs.members")}
           </TabButton>
           {isAdminOrOwner && (
-            <TabButton active={tab === "hosts"} onClick={() => setTab("hosts")}>
-              {t("workspace.tabs.hosts")}
-            </TabButton>
-          )}
-          {isAdminOrOwner && (
             <TabButton active={tab === "models"} onClick={() => setTab("models")}>
               {t("workspace.tabs.models")}
             </TabButton>
@@ -124,12 +119,6 @@ export function WorkspaceSettingsModal({ workspaceId, onClose, initialTab, focus
               isOwner={isOwner}
               isAdminOrOwner={isAdminOrOwner}
               focusInvite={focusInvite}
-            />
-          )}
-          {tab === "hosts" && isAdminOrOwner && (
-            <HostsManagement
-              orgId={workspace.id}
-              subtitle={t("workspace.hostsSubtitle")}
             />
           )}
           {tab === "models" && isAdminOrOwner && (
