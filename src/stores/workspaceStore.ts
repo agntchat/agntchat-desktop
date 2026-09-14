@@ -216,6 +216,7 @@ export const useWorkspaceStore = create<WorkspaceState>((set, get) => ({
 
   acceptInvite: async (inviteId, excludeAgentIds = []) => {
     await api.acceptPendingWorkspaceInvite(inviteId, excludeAgentIds);
+    track(ANALYTICS_EVENTS.INVITE_ACCEPTED);
     set((s) => ({
       pendingInvites: s.pendingInvites.filter((i) => i.id !== inviteId),
     }));
