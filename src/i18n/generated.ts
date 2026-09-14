@@ -4817,6 +4817,14 @@ export const resources = {
           "join": "Join",
           "title": "Workspace invitation"
         },
+        "joinDialog": {
+          "agentsHeading": "Your all-workspace agents",
+          "agentsHint": "These agents follow you into every workspace. Uncheck any you'd rather keep out of {{workspace}} — they stay in your current workspaces.",
+          "confirm": "Join workspace",
+          "loadFailed": "Couldn't load your agents. Try again.",
+          "loading": "Checking your agents…",
+          "title": "Join {{workspace}}"
+        },
         "leave": "Leave",
         "leaveButton": "Leave",
         "leaveConfirm": "Leave \"{{name}}\"?",
@@ -10196,6 +10204,14 @@ export const resources = {
           "invitedBy": "{{inviter}} te invitó a unirte",
           "join": "Unirse",
           "title": "Invitación a un espacio de trabajo"
+        },
+        "joinDialog": {
+          "agentsHeading": "Tus agentes de todos los espacios",
+          "agentsHint": "Estos agentes te siguen a todos los espacios de trabajo. Desmarca los que prefieras mantener fuera de {{workspace}}; se quedan en tus espacios actuales.",
+          "confirm": "Unirse al espacio",
+          "loadFailed": "No se pudieron cargar tus agentes. Inténtalo de nuevo.",
+          "loading": "Comprobando tus agentes…",
+          "title": "Unirse a {{workspace}}"
         },
         "leave": "Salir",
         "leaveButton": "Salir",
@@ -15577,6 +15593,14 @@ export const resources = {
           "join": "Beitreten",
           "title": "Workspace-Einladung"
         },
+        "joinDialog": {
+          "agentsHeading": "Deine Agenten für alle Workspaces",
+          "agentsHint": "Diese Agenten folgen dir in jeden Workspace. Wähle die ab, die nicht in {{workspace}} sein sollen — sie bleiben in deinen bisherigen Workspaces.",
+          "confirm": "Workspace beitreten",
+          "loadFailed": "Agenten konnten nicht geladen werden. Versuch es erneut.",
+          "loading": "Agenten werden geprüft…",
+          "title": "{{workspace}} beitreten"
+        },
         "leave": "Verlassen",
         "leaveButton": "Verlassen",
         "leaveConfirm": "\"{{name}}\" verlassen?",
@@ -20956,6 +20980,14 @@ export const resources = {
           "invitedBy": "{{inviter}} vous a invité à rejoindre",
           "join": "Rejoindre",
           "title": "Invitation à un espace de travail"
+        },
+        "joinDialog": {
+          "agentsHeading": "Vos agents « tous les espaces »",
+          "agentsHint": "Ces agents vous suivent dans chaque espace de travail. Décochez ceux que vous préférez garder hors de {{workspace}} ; ils restent dans vos espaces actuels.",
+          "confirm": "Rejoindre l'espace",
+          "loadFailed": "Impossible de charger vos agents. Réessayez.",
+          "loading": "Vérification de vos agents…",
+          "title": "Rejoindre {{workspace}}"
         },
         "leave": "Quitter",
         "leaveButton": "Quitter",
@@ -26337,6 +26369,14 @@ export const resources = {
           "join": "Entrar",
           "title": "Convite para espaço de trabalho"
         },
+        "joinDialog": {
+          "agentsHeading": "Seus agentes de todos os espaços",
+          "agentsHint": "Esses agentes acompanham você em todos os espaços de trabalho. Desmarque os que prefere manter fora de {{workspace}}; eles continuam nos seus espaços atuais.",
+          "confirm": "Entrar no espaço",
+          "loadFailed": "Não foi possível carregar seus agentes. Tente novamente.",
+          "loading": "Verificando seus agentes…",
+          "title": "Entrar em {{workspace}}"
+        },
         "leave": "Sair",
         "leaveButton": "Sair",
         "leaveConfirm": "Sair de \"{{name}}\"?",
@@ -31716,6 +31756,14 @@ export const resources = {
           "invitedBy": "{{inviter}} さんから招待されました",
           "join": "参加",
           "title": "ワークスペースへの招待"
+        },
+        "joinDialog": {
+          "agentsHeading": "すべてのワークスペース対象のエージェント",
+          "agentsHint": "これらのエージェントはすべてのワークスペースに同行します。{{workspace}} に含めたくないものはチェックを外してください。現在のワークスペースには残ります。",
+          "confirm": "ワークスペースに参加",
+          "loadFailed": "エージェントを読み込めませんでした。もう一度お試しください。",
+          "loading": "エージェントを確認中…",
+          "title": "{{workspace}} に参加"
         },
         "leave": "退出",
         "leaveButton": "退出",
@@ -37097,6 +37145,14 @@ export const resources = {
           "join": "加入",
           "title": "工作区邀请"
         },
+        "joinDialog": {
+          "agentsHeading": "你的全工作区智能体",
+          "agentsHint": "这些智能体会跟随你进入每个工作区。取消勾选你不想带入 {{workspace}} 的智能体，它们会留在你现有的工作区。",
+          "confirm": "加入工作区",
+          "loadFailed": "无法加载你的智能体，请重试。",
+          "loading": "正在检查你的智能体…",
+          "title": "加入 {{workspace}}"
+        },
         "leave": "离开",
         "leaveButton": "离开",
         "leaveConfirm": "离开“{{name}}”？",
@@ -42476,6 +42532,14 @@ export const resources = {
           "invitedBy": "{{inviter}} 님이 초대했습니다",
           "join": "참여",
           "title": "워크스페이스 초대"
+        },
+        "joinDialog": {
+          "agentsHeading": "모든 워크스페이스 에이전트",
+          "agentsHint": "이 에이전트들은 모든 워크스페이스에 함께 들어갑니다. {{workspace}}에 포함하지 않을 에이전트는 선택을 해제하세요. 현재 워크스페이스에는 그대로 남습니다.",
+          "confirm": "워크스페이스 참여",
+          "loadFailed": "에이전트를 불러오지 못했습니다. 다시 시도하세요.",
+          "loading": "에이전트 확인 중…",
+          "title": "{{workspace}} 참여"
         },
         "leave": "나가기",
         "leaveButton": "나가기",
@@ -47857,6 +47921,14 @@ export const resources = {
           "join": "Unisciti",
           "title": "Invito a uno spazio di lavoro"
         },
+        "joinDialog": {
+          "agentsHeading": "I tuoi agenti per tutti gli spazi",
+          "agentsHint": "Questi agenti ti seguono in ogni spazio di lavoro. Deseleziona quelli che preferisci tenere fuori da {{workspace}}: resteranno nei tuoi spazi attuali.",
+          "confirm": "Unisciti allo spazio",
+          "loadFailed": "Impossibile caricare i tuoi agenti. Riprova.",
+          "loading": "Controllo dei tuoi agenti…",
+          "title": "Unisciti a {{workspace}}"
+        },
         "leave": "Abbandona",
         "leaveButton": "Abbandona",
         "leaveConfirm": "Abbandonare \"{{name}}\"?",
@@ -53236,6 +53308,14 @@ export const resources = {
           "invitedBy": "{{inviter}} ने आपको शामिल होने के लिए आमंत्रित किया है",
           "join": "शामिल हों",
           "title": "वर्कस्पेस आमंत्रण"
+        },
+        "joinDialog": {
+          "agentsHeading": "आपके सभी-वर्कस्पेस एजेंट",
+          "agentsHint": "ये एजेंट हर वर्कस्पेस में आपके साथ आते हैं। जिन्हें आप {{workspace}} से बाहर रखना चाहते हैं उन्हें अनचेक करें — वे आपके मौजूदा वर्कस्पेस में बने रहेंगे।",
+          "confirm": "वर्कस्पेस में शामिल हों",
+          "loadFailed": "आपके एजेंट लोड नहीं हो सके। फिर से कोशिश करें।",
+          "loading": "आपके एजेंट जाँचे जा रहे हैं…",
+          "title": "{{workspace}} में शामिल हों"
         },
         "leave": "छोड़ें",
         "leaveButton": "छोड़ें",

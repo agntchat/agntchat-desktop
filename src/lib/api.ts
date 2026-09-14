@@ -437,8 +437,14 @@ export async function listPendingWorkspaceInvites(): Promise<PendingWorkspaceInv
   return res.invites;
 }
 
-export async function acceptPendingWorkspaceInvite(inviteId: string): Promise<void> {
-  await request(`/api/me/pending-invites/${inviteId}/accept`, { method: "POST" });
+export async function acceptPendingWorkspaceInvite(
+  inviteId: string,
+  excludeAgentIds: string[] = []
+): Promise<void> {
+  await request(`/api/me/pending-invites/${inviteId}/accept`, {
+    method: "POST",
+    body: JSON.stringify({ excludeAgentIds }),
+  });
 }
 
 export async function declinePendingWorkspaceInvite(inviteId: string): Promise<void> {

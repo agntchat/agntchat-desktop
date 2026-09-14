@@ -46,6 +46,7 @@ import { MemorySavedToast } from "./MemorySavedToast";
 import { OnboardingProgressToast } from "./OnboardingProgressToast";
 import { PermissionToast } from "./PermissionToast";
 import { WorkspaceInviteToast } from "./WorkspaceInviteToast";
+import { JoinWorkspaceDialog } from "./JoinWorkspaceDialog";
 import { UpdateToast } from "./UpdateToast";
 import { CredentialPrompt } from "./CredentialPrompt";
 import { RenameToGroupModal } from "./RenameToGroupModal";
@@ -224,6 +225,7 @@ export function AppShell() {
       <OnboardingProgressToast />
       <PermissionToast />
       <WorkspaceInviteToast />
+      <JoinWorkspaceDialog />
       <UpdateToast />
       <CredentialPrompt />
       <RenameToGroupModal />

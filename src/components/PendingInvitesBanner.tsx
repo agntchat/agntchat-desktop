@@ -1,7 +1,8 @@
 import { useState } from "react";
-import { ArrowRight, Loader2, X } from "lucide-react";
+import { ArrowRight, X } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import { useWorkspaceStore } from "../stores/workspaceStore";
+import { useWorkspaceJoinStore } from "../stores/workspaceJoinStore";
 import { WorkspaceTile } from "./WorkspaceInviteTile";
 
 interface Props {
@@ -28,7 +29,6 @@ interface Props {
 export function PendingInvitesBanner({ onAllResolved }: Props) {
   const { t } = useTranslation("settings");
   const invites = useWorkspaceStore((s) => s.pendingInvites);
-  const acceptInvite = useWorkspaceStore((s) => s.acceptInvite);
   const declineInvite = useWorkspaceStore((s) => s.declineInvite);
   const [dismissed, setDismissed] = useState(false);
   const [busyId, setBusyId] = useState<string | null>(null);
@@ -36,20 +36,28 @@ export function PendingInvitesBanner({ onAllResolved }: Props) {
 
   if (dismissed || invites.length === 0) return null;
 
-  async function resolve(inviteId: string, action: "accept" | "decline") {
+  async function decline(inviteId: string) {
     setBusyId(inviteId);
     setError(null);
     try {
-      if (action === "accept") await acceptInvite(inviteId);
-      else await declineInvite(inviteId);
+      await declineInvite(inviteId);
       if (invites.length <= 1) onAllResolved?.();
     } catch (e) {
-      const fallback =
-        action === "accept" ? t("workspace.acceptFailed") : t("workspace.declineFailed");
-      setError(e instanceof Error && e.message ? e.message : fallback);
+      setError(
+        e instanceof Error && e.message ? e.message : t("workspace.declineFailed")
+      );
     } finally {
       setBusyId(null);
     }
+  }
+
+  // Join is a hand-off: JoinWorkspaceDialog asks which all-workspaces
+  // agents come along, then accepts; the row drops with the store.
+  function join(inviteId: string) {
+    const invite = invites.find((i) => i.id === inviteId);
+    if (!invite) return;
+    onAllResolved?.();
+    useWorkspaceJoinStore.getState().begin(invite);
   }
 
   return (
@@ -78,7 +86,6 @@ export function PendingInvitesBanner({ onAllResolved }: Props) {
             ? t("workspace.inviteToast.invitedBy", { inviter: invite.invitedByName })
             : t("workspace.inviteToast.invited");
           const role = t(`workspace.roles.${invite.role}`, { defaultValue: invite.role });
-          const busy = busyId === invite.id;
 
           return (
             <div
@@ -102,7 +109,7 @@ export function PendingInvitesBanner({ onAllResolved }: Props) {
               <div className="mt-2 flex items-center justify-end gap-1.5">
                 <button
                   type="button"
-                  onClick={() => void resolve(invite.id, "decline")}
+                  onClick={() => void decline(invite.id)}
                   disabled={busyId !== null}
                   className="rounded-md px-2.5 py-1 text-xs font-medium text-muted-foreground hover:bg-accent hover:text-foreground disabled:opacity-50"
                 >
@@ -110,13 +117,12 @@ export function PendingInvitesBanner({ onAllResolved }: Props) {
                 </button>
                 <button
                   type="button"
-                  onClick={() => void resolve(invite.id, "accept")}
+                  onClick={() => join(invite.id)}
                   disabled={busyId !== null}
                   className="inline-flex items-center gap-1 rounded-md bg-primary px-3 py-1 text-xs font-semibold text-primary-foreground shadow-sm hover:bg-primary/90 disabled:opacity-50"
                 >
-                  {busy ? <Loader2 className="h-3 w-3 animate-spin" /> : null}
                   {t("workspace.inviteToast.join")}
-                  {!busy && <ArrowRight className="h-3 w-3" />}
+                  <ArrowRight className="h-3 w-3" />
                 </button>
               </div>
             </div>

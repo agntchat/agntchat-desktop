@@ -1,9 +1,10 @@
 import { useEffect, useRef, useState } from "react";
-import { ArrowRight, Loader2, X } from "lucide-react";
+import { ArrowRight, X } from "lucide-react";
 import { useTranslation } from "react-i18next";
 
 import { ws } from "../services/websocket";
 import { useWorkspaceStore } from "../stores/workspaceStore";
+import { useWorkspaceJoinStore } from "../stores/workspaceJoinStore";
 import { WorkspaceTile } from "./WorkspaceInviteTile";
 
 /** Wire payload of `pending_invite_received` on the user channel. */
@@ -35,7 +36,6 @@ export function WorkspaceInviteToast() {
   const [busy, setBusy] = useState<Record<string, boolean>>({});
   const [errors, setErrors] = useState<Record<string, string>>({});
   const pendingInvites = useWorkspaceStore((s) => s.pendingInvites);
-  const acceptInvite = useWorkspaceStore((s) => s.acceptInvite);
   const declineInvite = useWorkspaceStore((s) => s.declineInvite);
   // Ids the store has confirmed as pending at least once; an id that was
   // confirmed and then vanishes from the list was resolved elsewhere.
@@ -62,24 +62,34 @@ export function WorkspaceInviteToast() {
   const remove = (id: string) =>
     setInvites((prev) => prev.filter((p) => p.inviteId !== id));
 
-  const resolve = async (id: string, action: "accept" | "decline") => {
+  const decline = async (id: string) => {
     setBusy((b) => ({ ...b, [id]: true }));
     setErrors((e) => ({ ...e, [id]: "" }));
     try {
-      if (action === "accept") await acceptInvite(id);
-      else await declineInvite(id);
+      await declineInvite(id);
       remove(id);
     } catch (e) {
-      const fallback =
-        action === "accept" ? t("workspace.acceptFailed") : t("workspace.declineFailed");
       setErrors((errs) => ({
         ...errs,
-        [id]: e instanceof Error && e.message ? e.message : fallback,
+        [id]: e instanceof Error && e.message ? e.message : t("workspace.declineFailed"),
       }));
     } finally {
       setBusy((b) => ({ ...b, [id]: false }));
     }
   };
+
+  // Join is a hand-off: JoinWorkspaceDialog asks which all-workspaces
+  // agents come along, then accepts. The card drops once the invite
+  // leaves `pendingInvites`.
+  const join = (invite: InviteEvent) =>
+    useWorkspaceJoinStore.getState().begin({
+      id: invite.inviteId,
+      organizationId: invite.organizationId,
+      organizationName: invite.organizationName,
+      organizationAvatarUrl: invite.organizationAvatarUrl,
+      role: invite.role,
+      invitedByName: invite.invitedByName,
+    });
 
   if (invites.length === 0) return null;
 
@@ -91,8 +101,8 @@ export function WorkspaceInviteToast() {
           invite={invite}
           busy={!!busy[invite.inviteId]}
           error={errors[invite.inviteId]}
-          onJoin={() => void resolve(invite.inviteId, "accept")}
-          onDecline={() => void resolve(invite.inviteId, "decline")}
+          onJoin={() => join(invite)}
+          onDecline={() => void decline(invite.inviteId)}
           onDismiss={() => remove(invite.inviteId)}
         />
       ))}
@@ -190,9 +200,8 @@ function InviteCard({
             onClick={onJoin}
             className="inline-flex items-center gap-1.5 rounded-lg bg-primary px-3.5 py-1.5 text-xs font-semibold text-primary-foreground shadow-sm hover:bg-primary/90 disabled:opacity-50"
           >
-            {busy ? <Loader2 size={12} className="animate-spin" /> : null}
             {t("workspace.inviteToast.join")}
-            {!busy && <ArrowRight size={12} />}
+            <ArrowRight size={12} />
           </button>
         </div>
       </div>
