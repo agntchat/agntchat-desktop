@@ -676,7 +676,14 @@ function MemberRow({
         <p className="truncate text-sm font-medium">{name}</p>
       </div>
       <div className="flex items-center gap-2">
-        {isOnline && <span className="h-2 w-2 rounded-full bg-success" />}
+        {/* Always draw the dot — grey when offline — so a row reads as
+            "has a status" rather than "has nothing". */}
+        <span
+          className={cn(
+            "h-2 w-2 rounded-full",
+            isOnline ? "bg-success" : "bg-muted-foreground/40"
+          )}
+        />
         {isSelected && (
           <div className="flex h-5 w-5 items-center justify-center rounded-full bg-primary">
             <Check className="h-3 w-3 text-primary-foreground" />
@@ -718,7 +725,14 @@ function AgentRow({
         )}
       </div>
       <div className="flex items-center gap-2">
-        {isAgentOnline && <span className="h-2 w-2 rounded-full bg-success" />}
+        {/* Always draw the dot — grey when offline — so a row reads as
+            "has a status" rather than "has nothing". */}
+        <span
+          className={cn(
+            "h-2 w-2 rounded-full",
+            isAgentOnline ? "bg-success" : "bg-muted-foreground/40"
+          )}
+        />
         {isSelected && (
           <div className="flex h-5 w-5 items-center justify-center rounded-full bg-primary">
             <Check className="h-3 w-3 text-primary-foreground" />
