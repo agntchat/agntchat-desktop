@@ -50,7 +50,7 @@ interface WorkspaceState {
    *  matching the invite's. Accepting joins the workspace (the backend
    *  switches the active one and broadcasts it); both drop the row so
    *  the badge clears without a refetch. */
-  acceptInvite: (inviteId: string) => Promise<void>;
+  acceptInvite: (inviteId: string, excludeAgentIds?: string[]) => Promise<void>;
   declineInvite: (inviteId: string) => Promise<void>;
 
   /** Roster of a workspace, keyed by org id. Shared by the Members
@@ -214,8 +214,8 @@ export const useWorkspaceStore = create<WorkspaceState>((set, get) => ({
     }
   },
 
-  acceptInvite: async (inviteId) => {
-    await api.acceptPendingWorkspaceInvite(inviteId);
+  acceptInvite: async (inviteId, excludeAgentIds = []) => {
+    await api.acceptPendingWorkspaceInvite(inviteId, excludeAgentIds);
     set((s) => ({
       pendingInvites: s.pendingInvites.filter((i) => i.id !== inviteId),
     }));
