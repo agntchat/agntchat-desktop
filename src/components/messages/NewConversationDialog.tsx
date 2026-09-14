@@ -5,8 +5,14 @@ import { usePresenceStore } from "../../stores/presenceStore";
 import { useChatStore } from "../../stores/chatStore";
 import { useFriendStore } from "../../stores/friendStore";
 import { useAuthStore } from "../../stores/authStore";
+import {
+  useActiveWorkspace,
+  useWorkspaceMembers,
+  useWorkspacesEnabled,
+  useWorkspaceStore,
+} from "../../stores/workspaceStore";
 import * as api from "../../lib/api";
-import type { Agent, Participant } from "../../lib/api";
+import type { Agent, OrganizationMembership, Participant } from "../../lib/api";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -50,6 +56,23 @@ export function NewConversationDialog({ onClose }: Props) {
   const requestFriend = useFriendStore((s) => s.requestFriend);
   // Friends (and human people-search) are behind a per-user runtime flag.
   const friendsEnabled = useAuthStore((s) => s.participant?.features?.friends === true);
+
+  // Workspace co-members. In a shared workspace everyone on the roster
+  // already agreed to be visible to each other, so they're listed
+  // regardless of the friends flag — that flag only gates discovering
+  // strangers through people search. Personal workspaces have one member.
+  const workspacesEnabled = useWorkspacesEnabled();
+  const activeWorkspace = useActiveWorkspace();
+  const workspaceId =
+    workspacesEnabled && activeWorkspace && !activeWorkspace.isPersonal
+      ? activeWorkspace.id
+      : null;
+  const fetchMembers = useWorkspaceStore((s) => s.fetchMembers);
+  const workspaceMembers = useWorkspaceMembers(workspaceId);
+
+  useEffect(() => {
+    if (workspaceId) fetchMembers(workspaceId).catch(() => {});
+  }, [workspaceId, fetchMembers]);
 
   const [search, setSearch] = useState("");
   const [selected, setSelected] = useState<Set<string>>(new Set());
@@ -107,12 +130,45 @@ export function NewConversationDialog({ onClose }: Props) {
     return () => window.removeEventListener("keydown", onKey);
   }, [onClose]);
 
+  // Humans sharing the active workspace — self excluded, agents excluded
+  // (they come from the agent store), deactivated accounts excluded.
+  const coMembers = useMemo(
+    () =>
+      (workspaceMembers ?? []).filter(
+        (m) =>
+          m.participantId !== currentUserId &&
+          m.participant?.type === "human" &&
+          m.participant.status !== "deactivated"
+      ),
+    [workspaceMembers, currentUserId]
+  );
+
+  const filteredMembers = useMemo(() => {
+    if (!search) return coMembers;
+    const q = search.toLowerCase();
+    return coMembers.filter((m) =>
+      (m.participant?.displayName ?? "").toLowerCase().includes(q)
+    );
+  }, [coMembers, search]);
+
+  // A co-member who also matches people search would otherwise render
+  // twice — once selectable, once behind a Connect button.
+  const visiblePeople = useMemo(() => {
+    const memberIds = new Set(coMembers.map((m) => m.participantId));
+    return peopleResults.filter((p) => !memberIds.has(p.id));
+  }, [peopleResults, coMembers]);
+
   const participantMap = useMemo(() => {
     const map = new Map<string, { displayName: string }>();
     for (const a of agents) map.set(a.id, { displayName: a.displayName });
+    for (const m of coMembers) {
+      map.set(m.participantId, {
+        displayName: m.participant?.displayName ?? t("participant"),
+      });
+    }
     for (const p of peopleResults) map.set(p.id, { displayName: p.displayName });
     return map;
-  }, [agents, peopleResults]);
+  }, [agents, coMembers, peopleResults, t]);
 
   const activeAgents = useMemo(
     () => agents.filter((a) => a.status !== "deactivated"),
@@ -255,7 +311,8 @@ export function NewConversationDialog({ onClose }: Props) {
     onClose,
   ]);
 
-  const hasPeople = peopleResults.length > 0;
+  const hasPeople = visiblePeople.length > 0;
+  const hasMembers = filteredMembers.length > 0;
   const canCreate =
     mode === "channel"
       ? Boolean(groupTitle.trim()) && !creating
@@ -357,6 +414,14 @@ export function NewConversationDialog({ onClose }: Props) {
               </p>
             </div>
             <div className="flex-1 min-h-0 overflow-y-auto">
+              {filteredMembers.map((member) => (
+                <MemberRow
+                  key={member.participantId}
+                  member={member}
+                  isSelected={selected.has(member.participantId)}
+                  onClick={() => toggleParticipant(member.participantId)}
+                />
+              ))}
               {filteredAgents.map((agent) => (
                 <AgentRow
                   key={agent.id}
@@ -400,6 +465,24 @@ export function NewConversationDialog({ onClose }: Props) {
             )}
 
             <div className="flex-1 min-h-0 overflow-y-auto">
+              {hasMembers && (
+                <>
+                  <div className="px-4 py-1.5">
+                    <span className="text-[11px] font-medium uppercase tracking-wider text-muted-foreground">
+                      {t("nav:members")}
+                    </span>
+                  </div>
+                  {filteredMembers.map((member) => (
+                    <MemberRow
+                      key={member.participantId}
+                      member={member}
+                      isSelected={selected.has(member.participantId)}
+                      onClick={() => toggleParticipant(member.participantId)}
+                    />
+                  ))}
+                </>
+              )}
+
               {hasPeople && (
                 <>
                   <div className="px-4 py-1.5">
@@ -407,7 +490,7 @@ export function NewConversationDialog({ onClose }: Props) {
                       {t("newDialog.people")}
                     </span>
                   </div>
-                  {peopleResults.map((person) => (
+                  {visiblePeople.map((person) => (
                     <PersonRow
                       key={person.id}
                       person={person}
@@ -430,14 +513,14 @@ export function NewConversationDialog({ onClose }: Props) {
                 </div>
               )}
 
-              {(hasPeople || search.length >= 2) && (
+              {(hasMembers || hasPeople || search.length >= 2) && (
                 <div className="px-4 py-1.5">
                   <span className="text-[11px] font-medium uppercase tracking-wider text-muted-foreground">
                     {t("nav:agents")}
                   </span>
                 </div>
               )}
-              {filteredAgents.length === 0 && !hasPeople && !searchingPeople && (
+              {filteredAgents.length === 0 && !hasMembers && !hasPeople && !searchingPeople && (
                 <p className="p-4 text-center text-xs text-muted-foreground">
                   {search ? t("newDialog.noResults") : t("noAgentsAvailable")}
                 </p>
@@ -560,6 +643,46 @@ function PersonRow({
             : status}
         </span>
       )}
+    </button>
+  );
+}
+
+// A workspace co-member: always selectable (shared membership is the
+// consent), unlike PersonRow which gates on an accepted friend connection.
+function MemberRow({
+  member,
+  isSelected,
+  onClick,
+}: {
+  member: OrganizationMembership;
+  isSelected: boolean;
+  onClick: () => void;
+}) {
+  const { t } = useTranslation("chat");
+  const isOnline = usePresenceStore((s) => s.online.has(member.participantId));
+  const name = member.participant?.displayName ?? t("participant");
+  return (
+    <button
+      onClick={onClick}
+      className="flex w-full items-center gap-3 px-4 py-2.5 text-left transition-colors hover:bg-muted/50"
+    >
+      <Avatar className="h-8 w-8">
+        {member.participant?.avatarUrl && <AvatarImage src={member.participant.avatarUrl} />}
+        <AvatarFallback className="text-[10px]">
+          <User className="h-3.5 w-3.5" />
+        </AvatarFallback>
+      </Avatar>
+      <div className="min-w-0 flex-1">
+        <p className="truncate text-sm font-medium">{name}</p>
+      </div>
+      <div className="flex items-center gap-2">
+        {isOnline && <span className="h-2 w-2 rounded-full bg-success" />}
+        {isSelected && (
+          <div className="flex h-5 w-5 items-center justify-center rounded-full bg-primary">
+            <Check className="h-3 w-3 text-primary-foreground" />
+          </div>
+        )}
+      </div>
     </button>
   );
 }
