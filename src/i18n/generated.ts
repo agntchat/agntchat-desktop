@@ -1331,8 +1331,6 @@ export const resources = {
         "deliveryHint": "Which workspace should pulse alerts post into?",
         "editorPlaceholder": "e.g., Check if any reminders are due... or: [every: 6h] Check the inbox",
         "errors": {
-          "agentOffline": "{{name}} must be online for this. Bring the agent online and try again.",
-          "agentTimeout": "{{name}} didn't respond in time. Try again in a moment.",
           "generateFailed": "Failed to generate.",
           "invalidHoursMessage": "Active hours: start and end must differ (zero-length window).",
           "invalidHoursTitle": "Invalid active hours",
@@ -1731,8 +1729,6 @@ export const resources = {
         "detached": "Detached from {{source}} — local edits override the source.",
         "enterShiftHint": "Enter to generate · Shift+Enter for a new line",
         "errors": {
-          "agentOffline": "{{name}} must be online for this. Bring the agent online and try again.",
-          "agentTimeout": "{{name}} didn't respond in time. Try again in a moment.",
           "generate": "Failed to generate update",
           "revert": "Failed to revert",
           "save": "Failed to save"
@@ -6699,8 +6695,6 @@ export const resources = {
         "deliveryHint": "¿En qué espacio de trabajo deben publicarse las alertas del pulso?",
         "editorPlaceholder": "p. ej., Comprueba si vence algún recordatorio... o: [every: 6h] Revisa la bandeja de entrada",
         "errors": {
-          "agentOffline": "{{name}} debe estar en línea para esto. Conecta el agente e inténtalo de nuevo.",
-          "agentTimeout": "{{name}} no respondió a tiempo. Vuelve a intentarlo en un momento.",
           "generateFailed": "No se pudo generar.",
           "invalidHoursMessage": "Horas activas: el inicio y el fin deben ser distintos (la ventana no puede ser de duración cero).",
           "invalidHoursTitle": "Horas activas no válidas",
@@ -7099,8 +7093,6 @@ export const resources = {
         "detached": "Separado de {{source}}: las ediciones locales prevalecen sobre el origen.",
         "enterShiftHint": "Enter para generar · Mayús+Enter para una nueva línea",
         "errors": {
-          "agentOffline": "{{name}} debe estar en línea para esto. Conecta el agente e inténtalo de nuevo.",
-          "agentTimeout": "{{name}} no respondió a tiempo. Vuelve a intentarlo en un momento.",
           "generate": "No se pudo generar la actualización",
           "revert": "No se pudo revertir",
           "save": "No se pudo guardar"
@@ -12067,8 +12059,6 @@ export const resources = {
         "deliveryHint": "In welchen Arbeitsbereich sollen Pulsmeldungen gepostet werden?",
         "editorPlaceholder": "z. B. Prüfen, ob Erinnerungen fällig sind … oder: [every: 6h] Posteingang prüfen",
         "errors": {
-          "agentOffline": "{{name}} muss dafür online sein. Bringe den Agenten online und versuche es erneut.",
-          "agentTimeout": "{{name}} hat nicht rechtzeitig geantwortet. Versuche es gleich noch einmal.",
           "generateFailed": "Generieren fehlgeschlagen.",
           "invalidHoursMessage": "Aktive Stunden: Start und Ende müssen sich unterscheiden (Zeitfenster mit Länge null).",
           "invalidHoursTitle": "Ungültige aktive Stunden",
@@ -12467,8 +12457,6 @@ export const resources = {
         "detached": "Von {{source}} getrennt — lokale Änderungen überschreiben die Quelle.",
         "enterShiftHint": "Eingabetaste zum Generieren · Umschalt+Eingabetaste für eine neue Zeile",
         "errors": {
-          "agentOffline": "{{name}} muss dafür online sein. Bringe den Agenten online und versuche es erneut.",
-          "agentTimeout": "{{name}} hat nicht rechtzeitig geantwortet. Versuche es gleich noch einmal.",
           "generate": "Generieren der Aktualisierung fehlgeschlagen",
           "revert": "Zurücksetzen fehlgeschlagen",
           "save": "Speichern fehlgeschlagen"
@@ -17435,8 +17423,6 @@ export const resources = {
         "deliveryHint": "Dans quel espace de travail les alertes de pulsation doivent-elles être publiées ?",
         "editorPlaceholder": "ex. : Vérifier si des rappels sont dus... ou : [every: 6h] Vérifier la boîte de réception",
         "errors": {
-          "agentOffline": "{{name}} doit être en ligne pour cela. Mettez l'agent en ligne et réessayez.",
-          "agentTimeout": "{{name}} n'a pas répondu à temps. Réessayez dans un instant.",
           "generateFailed": "Échec de la génération.",
           "invalidHoursMessage": "Heures actives : le début et la fin doivent être différents (plage de durée nulle).",
           "invalidHoursTitle": "Heures actives invalides",
@@ -17835,8 +17821,6 @@ export const resources = {
         "detached": "Détachée de {{source}} — les modifications locales prévalent sur la source.",
         "enterShiftHint": "Entrée pour générer · Maj+Entrée pour un saut de ligne",
         "errors": {
-          "agentOffline": "{{name}} doit être en ligne pour cela. Mettez l'agent en ligne et réessayez.",
-          "agentTimeout": "{{name}} n'a pas répondu à temps. Réessayez dans un instant.",
           "generate": "Échec de la génération de la mise à jour",
           "revert": "Échec de la restauration",
           "save": "Échec de l'enregistrement"
@@ -22803,8 +22787,6 @@ export const resources = {
         "deliveryHint": "Em qual workspace os alertas de pulso devem ser publicados?",
         "editorPlaceholder": "ex.: Verifique se há lembretes pendentes... ou: [every: 6h] Verifique a caixa de entrada",
         "errors": {
-          "agentOffline": "{{name}} precisa estar on-line para isso. Coloque o agente on-line e tente novamente.",
-          "agentTimeout": "{{name}} não respondeu a tempo. Tente novamente em instantes.",
           "generateFailed": "Falha ao gerar.",
           "invalidHoursMessage": "Horário ativo: início e fim devem ser diferentes (janela de duração zero).",
           "invalidHoursTitle": "Horário ativo inválido",
@@ -23203,8 +23185,6 @@ export const resources = {
         "detached": "Desvinculado de {{source}} — edições locais substituem a origem.",
         "enterShiftHint": "Enter para gerar · Shift+Enter para nova linha",
         "errors": {
-          "agentOffline": "{{name}} precisa estar on-line para isso. Coloque o agente on-line e tente novamente.",
-          "agentTimeout": "{{name}} não respondeu a tempo. Tente novamente em instantes.",
           "generate": "Falha ao gerar atualização",
           "revert": "Falha ao reverter",
           "save": "Falha ao salvar"
@@ -28171,8 +28151,6 @@ export const resources = {
         "deliveryHint": "パルスの通知はどのワークスペースに投稿しますか？",
         "editorPlaceholder": "例: リマインダーが期限切れでないか確認する... または: [every: 6h] 受信トレイを確認",
         "errors": {
-          "agentOffline": "これには {{name}} がオンラインである必要があります。エージェントをオンラインにして再試行してください。",
-          "agentTimeout": "{{name}} が時間内に応答しませんでした。しばらくしてから再試行してください。",
           "generateFailed": "生成に失敗しました。",
           "invalidHoursMessage": "アクティブ時間: 開始と終了は異なる値にする必要があります（長さゼロの範囲です）。",
           "invalidHoursTitle": "無効なアクティブ時間",
@@ -28571,8 +28549,6 @@ export const resources = {
         "detached": "{{source}}から切り離されました — ローカルの編集がソースより優先されます。",
         "enterShiftHint": "Enterで生成 ・ Shift+Enterで改行",
         "errors": {
-          "agentOffline": "これには {{name}} がオンラインである必要があります。エージェントをオンラインにして再試行してください。",
-          "agentTimeout": "{{name}} が時間内に応答しませんでした。しばらくしてから再試行してください。",
           "generate": "更新の生成に失敗しました",
           "revert": "元に戻すことに失敗しました",
           "save": "保存に失敗しました"
@@ -33539,8 +33515,6 @@ export const resources = {
         "deliveryHint": "脉搏提醒应发布到哪个工作区？",
         "editorPlaceholder": "例如：检查是否有提醒事项到期… 或：[every: 6h] 检查收件箱",
         "errors": {
-          "agentOffline": "此操作需要 {{name}} 处于在线状态。请先让该智能体上线，然后重试。",
-          "agentTimeout": "{{name}} 未及时响应。请稍后重试。",
           "generateFailed": "生成失败。",
           "invalidHoursMessage": "生效时段：起始和结束时间必须不同（时间窗口长度为零）。",
           "invalidHoursTitle": "无效的生效时段",
@@ -33939,8 +33913,6 @@ export const resources = {
         "detached": "已与 {{source}} 分离——本地编辑将覆盖来源。",
         "enterShiftHint": "Enter 生成 · Shift+Enter 换行",
         "errors": {
-          "agentOffline": "此操作需要 {{name}} 处于在线状态。请先让该智能体上线，然后重试。",
-          "agentTimeout": "{{name}} 未及时响应。请稍后重试。",
           "generate": "生成更新失败",
           "revert": "还原失败",
           "save": "保存失败"
@@ -38907,8 +38879,6 @@ export const resources = {
         "deliveryHint": "펄스 알림을 어느 워크스페이스에 게시해야 하나요?",
         "editorPlaceholder": "예: 마감된 리마인더가 있는지 확인... 또는: [every: 6h] 받은편지함 확인",
         "errors": {
-          "agentOffline": "이 작업에는 {{name}}이(가) 온라인 상태여야 합니다. 에이전트를 온라인으로 전환한 후 다시 시도하세요.",
-          "agentTimeout": "{{name}}이(가) 제때 응답하지 않았습니다. 잠시 후 다시 시도하세요.",
           "generateFailed": "생성에 실패했습니다.",
           "invalidHoursMessage": "활성 시간: 시작과 종료가 달라야 합니다(길이가 0인 구간).",
           "invalidHoursTitle": "잘못된 활성 시간",
@@ -39307,8 +39277,6 @@ export const resources = {
         "detached": "{{source}}에서 분리됨 — 로컬 수정사항이 소스보다 우선합니다.",
         "enterShiftHint": "Enter로 생성 · Shift+Enter로 줄바꿈",
         "errors": {
-          "agentOffline": "이 작업에는 {{name}}이(가) 온라인 상태여야 합니다. 에이전트를 온라인으로 전환한 후 다시 시도하세요.",
-          "agentTimeout": "{{name}}이(가) 제때 응답하지 않았습니다. 잠시 후 다시 시도하세요.",
           "generate": "업데이트 생성에 실패했습니다",
           "revert": "되돌리기에 실패했습니다",
           "save": "저장에 실패했습니다"
@@ -44275,8 +44243,6 @@ export const resources = {
         "deliveryHint": "In quale workspace dovrebbero essere pubblicati gli avvisi pulse?",
         "editorPlaceholder": "es.: Controlla se ci sono promemoria in scadenza... oppure: [every: 6h] Controlla la posta",
         "errors": {
-          "agentOffline": "{{name}} deve essere online per questo. Porta l'agente online e riprova.",
-          "agentTimeout": "{{name}} non ha risposto in tempo. Riprova tra un momento.",
           "generateFailed": "Impossibile generare.",
           "invalidHoursMessage": "Ore attive: l'inizio e la fine devono essere diversi (intervallo di lunghezza zero).",
           "invalidHoursTitle": "Ore attive non valide",
@@ -44675,8 +44641,6 @@ export const resources = {
         "detached": "Scollegato da {{source}} — le modifiche locali sovrascrivono la fonte.",
         "enterShiftHint": "Invio per generare · Shift+Invio per una nuova riga",
         "errors": {
-          "agentOffline": "{{name}} deve essere online per questo. Porta l'agente online e riprova.",
-          "agentTimeout": "{{name}} non ha risposto in tempo. Riprova tra un momento.",
           "generate": "Impossibile generare l'aggiornamento",
           "revert": "Impossibile ripristinare",
           "save": "Impossibile salvare"
@@ -49643,8 +49607,6 @@ export const resources = {
         "deliveryHint": "पल्स अलर्ट किस वर्कस्पेस में पोस्ट होने चाहिए?",
         "editorPlaceholder": "जैसे, जाँचें कि कोई रिमाइंडर देय है या नहीं... या: [every: 6h] इनबॉक्स जाँचें",
         "errors": {
-          "agentOffline": "इसके लिए {{name}} का ऑनलाइन होना ज़रूरी है। एजेंट को ऑनलाइन करके दोबारा कोशिश करें।",
-          "agentTimeout": "{{name}} ने समय पर जवाब नहीं दिया। थोड़ी देर बाद दोबारा कोशिश करें।",
           "generateFailed": "जनरेट करने में विफल।",
           "invalidHoursMessage": "सक्रिय घंटे: प्रारंभ और समाप्ति समय अलग होने चाहिए (शून्य-लंबाई विंडो)।",
           "invalidHoursTitle": "अमान्य सक्रिय घंटे",
@@ -50043,8 +50005,6 @@ export const resources = {
         "detached": "{{source}} से अलग हो गया — स्थानीय संपादन सोर्स को ओवरराइड करते हैं।",
         "enterShiftHint": "जनरेट करने के लिए Enter · नई लाइन के लिए Shift+Enter",
         "errors": {
-          "agentOffline": "इसके लिए {{name}} का ऑनलाइन होना ज़रूरी है। एजेंट को ऑनलाइन करके दोबारा कोशिश करें।",
-          "agentTimeout": "{{name}} ने समय पर जवाब नहीं दिया। थोड़ी देर बाद दोबारा कोशिश करें।",
           "generate": "अपडेट जनरेट करने में विफल",
           "revert": "वापस लौटाने में विफल",
           "save": "सहेजने में विफल"
