@@ -45,6 +45,7 @@ import { MessageNotifier } from "./MessageNotifier";
 import { MemorySavedToast } from "./MemorySavedToast";
 import { OnboardingProgressToast } from "./OnboardingProgressToast";
 import { PermissionToast } from "./PermissionToast";
+import { WorkspaceInviteToast } from "./WorkspaceInviteToast";
 import { UpdateToast } from "./UpdateToast";
 import { CredentialPrompt } from "./CredentialPrompt";
 import { RenameToGroupModal } from "./RenameToGroupModal";
@@ -222,6 +223,7 @@ export function AppShell() {
       <MemorySavedToast />
       <OnboardingProgressToast />
       <PermissionToast />
+      <WorkspaceInviteToast />
       <UpdateToast />
       <CredentialPrompt />
       <RenameToGroupModal />

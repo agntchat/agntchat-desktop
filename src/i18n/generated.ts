@@ -4811,6 +4811,11 @@ export const resources = {
           "expired": "Expired",
           "pending": "Pending"
         },
+        "inviteToast": {
+          "body": "{{inviter}} invited you to join {{workspace}}",
+          "bodyNoInviter": "You've been invited to join {{workspace}}",
+          "title": "Workspace invitation"
+        },
         "leave": "Leave",
         "leaveButton": "Leave",
         "leaveConfirm": "Leave \"{{name}}\"?",
@@ -10184,6 +10189,11 @@ export const resources = {
         "inviteStatus": {
           "expired": "Caducada",
           "pending": "Pendiente"
+        },
+        "inviteToast": {
+          "body": "{{inviter}} te invitó a unirte a {{workspace}}",
+          "bodyNoInviter": "Te han invitado a unirte a {{workspace}}",
+          "title": "Invitación a un espacio de trabajo"
         },
         "leave": "Salir",
         "leaveButton": "Salir",
@@ -15559,6 +15569,11 @@ export const resources = {
           "expired": "Abgelaufen",
           "pending": "Ausstehend"
         },
+        "inviteToast": {
+          "body": "{{inviter}} hat dich eingeladen, {{workspace}} beizutreten",
+          "bodyNoInviter": "Du wurdest eingeladen, {{workspace}} beizutreten",
+          "title": "Workspace-Einladung"
+        },
         "leave": "Verlassen",
         "leaveButton": "Verlassen",
         "leaveConfirm": "\"{{name}}\" verlassen?",
@@ -20932,6 +20947,11 @@ export const resources = {
         "inviteStatus": {
           "expired": "Expirée",
           "pending": "En attente"
+        },
+        "inviteToast": {
+          "body": "{{inviter}} vous a invité à rejoindre {{workspace}}",
+          "bodyNoInviter": "Vous avez été invité à rejoindre {{workspace}}",
+          "title": "Invitation à un espace de travail"
         },
         "leave": "Quitter",
         "leaveButton": "Quitter",
@@ -26307,6 +26327,11 @@ export const resources = {
           "expired": "Expirado",
           "pending": "Pendente"
         },
+        "inviteToast": {
+          "body": "{{inviter}} convidou você para entrar em {{workspace}}",
+          "bodyNoInviter": "Você foi convidado para entrar em {{workspace}}",
+          "title": "Convite para espaço de trabalho"
+        },
         "leave": "Sair",
         "leaveButton": "Sair",
         "leaveConfirm": "Sair de \"{{name}}\"?",
@@ -31680,6 +31705,11 @@ export const resources = {
         "inviteStatus": {
           "expired": "期限切れ",
           "pending": "保留中"
+        },
+        "inviteToast": {
+          "body": "{{inviter}} さんが {{workspace}} に招待しました",
+          "bodyNoInviter": "{{workspace}} に招待されました",
+          "title": "ワークスペースへの招待"
         },
         "leave": "退出",
         "leaveButton": "退出",
@@ -37055,6 +37085,11 @@ export const resources = {
           "expired": "已过期",
           "pending": "待处理"
         },
+        "inviteToast": {
+          "body": "{{inviter}} 邀请你加入 {{workspace}}",
+          "bodyNoInviter": "你已被邀请加入 {{workspace}}",
+          "title": "工作区邀请"
+        },
         "leave": "离开",
         "leaveButton": "离开",
         "leaveConfirm": "离开“{{name}}”？",
@@ -42428,6 +42463,11 @@ export const resources = {
         "inviteStatus": {
           "expired": "만료됨",
           "pending": "대기 중"
+        },
+        "inviteToast": {
+          "body": "{{inviter}} 님이 {{workspace}}에 초대했습니다",
+          "bodyNoInviter": "{{workspace}}에 초대되었습니다",
+          "title": "워크스페이스 초대"
         },
         "leave": "나가기",
         "leaveButton": "나가기",
@@ -47803,6 +47843,11 @@ export const resources = {
           "expired": "Scaduto",
           "pending": "In sospeso"
         },
+        "inviteToast": {
+          "body": "{{inviter}} ti ha invitato a unirti a {{workspace}}",
+          "bodyNoInviter": "Sei stato invitato a unirti a {{workspace}}",
+          "title": "Invito a uno spazio di lavoro"
+        },
         "leave": "Abbandona",
         "leaveButton": "Abbandona",
         "leaveConfirm": "Abbandonare \"{{name}}\"?",
@@ -53176,6 +53221,11 @@ export const resources = {
         "inviteStatus": {
           "expired": "समाप्त",
           "pending": "लंबित"
+        },
+        "inviteToast": {
+          "body": "{{inviter}} ने आपको {{workspace}} में शामिल होने के लिए आमंत्रित किया है",
+          "bodyNoInviter": "आपको {{workspace}} में शामिल होने के लिए आमंत्रित किया गया है",
+          "title": "वर्कस्पेस आमंत्रण"
         },
         "leave": "छोड़ें",
         "leaveButton": "छोड़ें",
