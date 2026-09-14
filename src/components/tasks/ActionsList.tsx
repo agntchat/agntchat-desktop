@@ -1,13 +1,26 @@
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
-import { Bell, ChevronDown, ChevronRight, ListTodo, Loader2, Plus, Search, SlidersHorizontal, X } from "lucide-react";
+import {
+  Bell,
+  Bot,
+  Check,
+  ChevronDown,
+  ChevronRight,
+  ListFilter,
+  ListTodo,
+  Loader2,
+  Plus,
+  Search,
+  X,
+} from "lucide-react";
 import { Input } from "../ui/input";
+import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
 import { useUnifiedActions, type Person } from "../../hooks/useUnifiedActions";
 import { useTodoStore } from "../../stores/todoStore";
 import { useTaskStore } from "../../stores/taskStore";
 import { useAuthStore } from "../../stores/authStore";
 import ActionRow from "./ActionRow";
-import { cn } from "../../lib/utils";
+import { cn, getInitials } from "../../lib/utils";
 import type { ActionSelection } from "./selection";
 
 /**
@@ -19,6 +32,13 @@ import type { ActionSelection } from "./selection";
  *
  * Rows never open a modal: picking one hands the selection up to
  * `TasksView`, which renders it in the detail column.
+ *
+ * Chrome above the list is split by purpose: *creating* sits under the
+ * quick-add field as a palette of named types (to-do, reminder), because
+ * an unlabelled bell never said "this makes a reminder"; *narrowing*
+ * (person filter, search) lives in the header and stays collapsed until
+ * used, so the resting state is the list itself rather than a row of
+ * people chips nobody asked for.
  */
 export function ActionsList({
   width,
@@ -74,6 +94,8 @@ export function ActionsList({
     return (p as Person).displayName;
   };
 
+  const activePerson = people.find((p) => p.id === personFilter);
+
   return (
     <aside
       ref={innerRef}
@@ -81,38 +103,69 @@ export function ActionsList({
       style={{ width: width ?? 320, WebkitAppRegion: "drag" } as React.CSSProperties}
     >
       <div
-        className="h-14 shrink-0 px-4 border-b border-border flex items-center"
+        className="h-14 shrink-0 px-4 border-b border-border flex items-center gap-1"
         style={{ WebkitAppRegion: "drag" } as React.CSSProperties}
       >
-        <h2 className="text-sm font-semibold text-foreground">{t("nav:tasks")}</h2>
+        <h2 className="flex-1 text-sm font-semibold text-foreground">{t("nav:tasks")}</h2>
+        {/* Narrowing controls live here, out of the create area. They
+            show as icons because their state is visible elsewhere: an
+            active person filter renders a chip above the list. */}
+        <div className="flex items-center gap-0.5" style={{ WebkitAppRegion: "no-drag" } as React.CSSProperties}>
+          {people.length > 0 && (
+            <PersonFilterMenu
+              people={people}
+              personFilter={personFilter}
+              setPersonFilter={setPersonFilter}
+              personLabel={personLabel}
+            />
+          )}
+          <button
+            type="button"
+            onClick={() => setSearchOpen((v) => !v)}
+            aria-label={t("common:search")}
+            title={t("common:search")}
+            className={cn(
+              "rounded-full p-1.5 hover:bg-muted hover:text-foreground",
+              searchOpen || searchQuery ? "text-primary" : "text-muted-foreground"
+            )}
+          >
+            <Search className="h-4 w-4" />
+          </button>
+        </div>
       </div>
 
       <div className="flex min-h-0 flex-1 flex-col px-3" style={{ WebkitAppRegion: "no-drag" } as React.CSSProperties}>
-      {/* Pinned add-to-do row — enter for a quick title-only item, the
-          sliders icon for the full editor in the detail column
-          (due/delegate/remind/details). */}
-      <div className="flex items-center gap-2 pt-3 pb-2">
-        <Plus className="h-4 w-4 shrink-0 text-muted-foreground" />
-        <Input
-          placeholder={t("todo.addPlaceholder")}
-          value={draft}
-          onChange={(e) => setDraft(e.target.value)}
-          onKeyDown={(e) => {
-            if (e.key === "Enter") submitDraft();
-          }}
-          className="h-9 flex-1 text-sm"
-        />
-        <button
-          type="button"
-          onClick={() => onSelect({ kind: "todo", id: null, draftTitle: draft })}
-          className="shrink-0 rounded p-1.5 text-muted-foreground hover:bg-muted hover:text-foreground"
-        >
-          <SlidersHorizontal className="h-4 w-4" />
-        </button>
+      {/* Create area — the quick-add field makes a title-only to-do on
+          Enter; the palette beneath it names each thing you can create
+          and opens the full editor for it in the detail column. */}
+      <div className="pt-3 pb-2">
+        <div className="flex items-center gap-2">
+          <Plus className="h-4 w-4 shrink-0 text-muted-foreground" />
+          <Input
+            placeholder={t("todo.addPlaceholder")}
+            value={draft}
+            onChange={(e) => setDraft(e.target.value)}
+            onKeyDown={(e) => {
+              if (e.key === "Enter") submitDraft();
+            }}
+            className="h-9 flex-1 text-sm"
+          />
+        </div>
+        <div className="mt-1.5 flex items-center gap-1.5 pl-6">
+          <CreateChip
+            icon={ListTodo}
+            label={t("todo.sheetNew")}
+            onClick={() => onSelect({ kind: "todo", id: null, draftTitle: draft })}
+          />
+          <CreateChip
+            icon={Bell}
+            label={t("reminder.addTitle")}
+            onClick={() => onSelect({ kind: "reminder", id: null })}
+          />
+        </div>
       </div>
 
-      {/* Toolbar — person filter chips + add-reminder + search toggle. */}
-      {searchOpen ? (
+      {searchOpen && (
         <div className="flex items-center gap-1.5 pb-2">
           <div className="flex flex-1 items-center gap-1.5 rounded-lg bg-muted px-2.5 py-1.5">
             <Search className="h-4 w-4 shrink-0 text-muted-foreground" />
@@ -135,42 +188,21 @@ export function ActionsList({
             <X className="h-4 w-4" />
           </button>
         </div>
-      ) : (
-        <div className="flex items-center gap-1 pb-2">
-          <div className="flex flex-1 gap-1.5 overflow-x-auto">
-            {([{ id: "all" } as const, ...people] as (Person | { id: "all" })[]).map((p) => {
-              const isActive = personFilter === p.id;
-              return (
-                <button
-                  type="button"
-                  key={p.id}
-                  onClick={() => setPersonFilter(p.id)}
-                  className={cn(
-                    "shrink-0 rounded-full border px-2.5 py-1.5 text-xs font-medium transition-colors",
-                    isActive
-                      ? "border-primary bg-primary/10 text-primary"
-                      : "border-input bg-transparent text-foreground hover:bg-muted"
-                  )}
-                >
-                  {personLabel(p)}
-                </button>
-              );
-            })}
-          </div>
+      )}
+
+      {/* A set person filter is the only thing that puts people back on
+          screen — as one removable chip, not the whole roster. */}
+      {personFilter !== "all" && (
+        <div className="flex items-center gap-1.5 pb-2">
           <button
             type="button"
-            onClick={() => onSelect({ kind: "reminder", id: null })}
-            className="shrink-0 rounded-full p-1.5 text-muted-foreground hover:bg-muted hover:text-foreground"
-            title={t("reminder.addTitle")}
+            onClick={() => setPersonFilter("all")}
+            title={t("unified.clearFilter")}
+            className="flex min-w-0 items-center gap-1.5 rounded-full border border-primary bg-primary/10 px-2.5 py-1 text-xs font-medium text-primary"
           >
-            <Bell className="h-4 w-4" />
-          </button>
-          <button
-            type="button"
-            onClick={() => setSearchOpen(true)}
-            className="shrink-0 rounded-full p-1.5 text-muted-foreground hover:bg-muted hover:text-foreground"
-          >
-            <Search className="h-4 w-4" />
+            {activePerson && <PersonAvatar person={activePerson} />}
+            <span className="truncate">{activePerson ? personLabel(activePerson) : personFilter}</span>
+            <X className="h-3 w-3 shrink-0" />
           </button>
         </div>
       )}
@@ -219,6 +251,129 @@ export function ActionsList({
       </div>
       </div>
     </aside>
+  );
+}
+
+/** One named thing you can create, spelled out rather than implied by an
+ *  icon — the whole point of the palette. */
+function CreateChip({
+  icon: Icon,
+  label,
+  onClick,
+}: {
+  icon: typeof ListTodo;
+  label: string;
+  onClick: () => void;
+}) {
+  return (
+    <button
+      type="button"
+      onClick={onClick}
+      className="flex shrink-0 items-center gap-1.5 rounded-full border border-input bg-transparent px-2.5 py-1 text-xs font-medium text-muted-foreground transition-colors hover:bg-muted hover:text-foreground"
+    >
+      <Icon className="h-3.5 w-3.5" />
+      {label}
+    </button>
+  );
+}
+
+function PersonAvatar({ person }: { person: Person }) {
+  return (
+    <Avatar className="h-4 w-4">
+      {person.avatarUrl && <AvatarImage src={person.avatarUrl} />}
+      <AvatarFallback className="text-[8px]">
+        {person.isAgent ? <Bot className="h-2.5 w-2.5" /> : getInitials(person.displayName)}
+      </AvatarFallback>
+    </Avatar>
+  );
+}
+
+/** Person filter as a dropdown instead of an always-on chip rail: the
+ *  roster only costs screen space while you're choosing from it. */
+function PersonFilterMenu({
+  people,
+  personFilter,
+  setPersonFilter,
+  personLabel,
+}: {
+  people: Person[];
+  personFilter: string;
+  setPersonFilter: (id: string) => void;
+  personLabel: (p: Person | { id: "all" }) => string;
+}) {
+  const { t } = useTranslation("tasks");
+  const [open, setOpen] = useState(false);
+  const containerRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    if (!open) return;
+    function onDoc(e: MouseEvent) {
+      if (containerRef.current && !containerRef.current.contains(e.target as Node)) setOpen(false);
+    }
+    function onKey(e: KeyboardEvent) {
+      if (e.key === "Escape") setOpen(false);
+    }
+    document.addEventListener("mousedown", onDoc);
+    document.addEventListener("keydown", onKey);
+    return () => {
+      document.removeEventListener("mousedown", onDoc);
+      document.removeEventListener("keydown", onKey);
+    };
+  }, [open]);
+
+  const isFiltered = personFilter !== "all";
+
+  return (
+    <div ref={containerRef} className="relative">
+      <button
+        type="button"
+        onClick={() => setOpen((v) => !v)}
+        aria-haspopup="listbox"
+        aria-expanded={open}
+        aria-label={t("unified.filterPerson")}
+        title={t("unified.filterPerson")}
+        className={cn(
+          "rounded-full p-1.5 hover:bg-muted hover:text-foreground",
+          isFiltered || open ? "text-primary" : "text-muted-foreground"
+        )}
+      >
+        <ListFilter className="h-4 w-4" />
+      </button>
+      {open && (
+        <div
+          role="listbox"
+          className="absolute right-0 top-full z-30 mt-1 max-h-72 w-52 overflow-y-auto rounded-lg border border-border bg-popover p-1 shadow-lg"
+        >
+          {([{ id: "all" } as const, ...people] as (Person | { id: "all" })[]).map((p) => {
+            const isActive = personFilter === p.id;
+            return (
+              <button
+                type="button"
+                key={p.id}
+                role="option"
+                aria-selected={isActive}
+                onClick={() => {
+                  setPersonFilter(p.id);
+                  setOpen(false);
+                }}
+                className={cn(
+                  "flex w-full items-center gap-2 rounded-md px-2 py-1.5 text-left text-sm hover:bg-muted",
+                  isActive ? "text-primary" : "text-foreground"
+                )}
+              >
+                {p.id === "all" ? (
+                  <ListFilter className="h-4 w-4 shrink-0 text-muted-foreground" />
+                ) : (
+                  <PersonAvatar person={p as Person} />
+                )}
+                <span className="min-w-0 flex-1 truncate">{personLabel(p)}</span>
+                {isActive && <Check className="h-3.5 w-3.5 shrink-0" />}
+              </button>
+            );
+          })}
+        </div>
+      )}
+    </div>
   );
 }
 
