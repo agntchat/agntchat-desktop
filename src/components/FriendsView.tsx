@@ -1387,8 +1387,9 @@ function ReportUserDialog({
  * memberships; tap a row to start/open a 1:1 DM with that member in
  * the current workspace. Workspace membership doesn't auto-add anyone
  * to the personal friend graph (orthogonal — see ARCHITECTURE.md
- * § 17b). Admins/owners get an Invite button that opens the
- * workspace settings modal so invite writes stay in one place.
+ * § 17b). Admins/owners get an Invite button that opens the workspace
+ * settings modal on its Members tab, focused on the invite field, so
+ * invite writes stay in one place.
  */
 function MembersView({
   workspaceId,
@@ -1542,7 +1543,8 @@ function MembersView({
       {settingsOpen && (
         <WorkspaceSettingsModal
           workspaceId={workspaceId}
-          initialTab="invites"
+          initialTab="members"
+          focusInvite
           onClose={() => setSettingsOpen(false)}
         />
       )}

@@ -12,18 +12,25 @@ import { HostsManagement } from "./HostsManagement";
 import { ProvidersManagement } from "./ProvidersManagement";
 import { ConnectionsManagement } from "./ConnectionsManagement";
 
-type Tab = "general" | "members" | "hosts" | "models" | "connections" | "invites";
+type Tab = "general" | "members" | "hosts" | "models" | "connections";
 
 interface Props {
   workspaceId: string;
   onClose: () => void;
-  /** Tab to open on. Members-area "Invite" jumps straight to invites. */
+  /** Tab to open on. */
   initialTab?: Tab;
+  /**
+   * Open on Members with the invite field focused — what the Members
+   * area's "Invite" button wants, now that inviting lives in that tab.
+   */
+  focusInvite?: boolean;
 }
 
 /**
  * Workspace settings modal — opened from the gear icon next to a
- * non-personal workspace row in the switcher dropdown. Mirrors the
+ * non-personal workspace row in the switcher dropdown. Inviting lives
+ * inside the Members tab (roster, invite form, pending invitations),
+ * not in a tab of its own. Mirrors the
  * web component (`web/src/components/WorkspaceSettingsModal.tsx`)
  * tab-for-tab so behavior stays consistent across clients.
  *
@@ -33,7 +40,7 @@ interface Props {
  * stale snapshot and clicking actions runs them against a workspace
  * the user is no longer in.
  */
-export function WorkspaceSettingsModal({ workspaceId, onClose, initialTab }: Props) {
+export function WorkspaceSettingsModal({ workspaceId, onClose, initialTab, focusInvite }: Props) {
   const { t } = useTranslation("settings");
   const [tab, setTab] = useState<Tab>(initialTab ?? "general");
   const workspace = useWorkspaces().find((w) => w.id === workspaceId);
@@ -100,11 +107,6 @@ export function WorkspaceSettingsModal({ workspaceId, onClose, initialTab }: Pro
               {t("workspace.tabs.connections")}
             </TabButton>
           )}
-          {isAdminOrOwner && (
-            <TabButton active={tab === "invites"} onClick={() => setTab("invites")}>
-              {t("workspace.tabs.invites")}
-            </TabButton>
-          )}
         </div>
 
         <div className="flex-1 overflow-y-auto px-5 py-4">
@@ -117,7 +119,12 @@ export function WorkspaceSettingsModal({ workspaceId, onClose, initialTab }: Pro
             />
           )}
           {tab === "members" && (
-            <MembersTab workspace={workspace} isOwner={isOwner} isAdminOrOwner={isAdminOrOwner} />
+            <MembersTab
+              workspace={workspace}
+              isOwner={isOwner}
+              isAdminOrOwner={isAdminOrOwner}
+              focusInvite={focusInvite}
+            />
           )}
           {tab === "hosts" && isAdminOrOwner && (
             <HostsManagement
@@ -134,7 +141,6 @@ export function WorkspaceSettingsModal({ workspaceId, onClose, initialTab }: Pro
           {tab === "connections" && isAdminOrOwner && (
             <ConnectionsManagement orgId={workspace.id} />
           )}
-          {tab === "invites" && isAdminOrOwner && <InvitesTab workspace={workspace} />}
         </div>
       </div>
     </div>
@@ -416,17 +422,32 @@ function GeneralTab({
 
 // --- Members tab -------------------------------------------------------
 
+/**
+ * Members tab — the whole "who is in this workspace" surface: invite
+ * someone, see the roster, and manage invitations that haven't been
+ * accepted yet. Invites used to live in their own tab, which split one
+ * task across two places; a pending invite is a member-in-waiting, so
+ * it belongs next to the roster (mobile already works this way).
+ *
+ * Members load for everyone; the invite form and the pending list are
+ * admin/owner-only, and their fetch is skipped entirely for members so
+ * the tab doesn't fire a request the backend would reject.
+ */
 function MembersTab({
   workspace,
   isOwner,
   isAdminOrOwner,
+  focusInvite,
 }: {
   workspace: WorkspaceMembership;
   isOwner: boolean;
   isAdminOrOwner: boolean;
+  /** Put the cursor in the invite field on open (Members-area "Invite"). */
+  focusInvite?: boolean;
 }) {
   const { t } = useTranslation("settings");
   const [members, setMembers] = useState<OrganizationMembership[] | null>(null);
+  const [invites, setInvites] = useState<OrganizationInvite[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const removeMember = useWorkspaceStore((s) => s.removeMember);
@@ -437,14 +458,18 @@ function MembersTab({
     setLoading(true);
     setError(null);
     try {
-      const result = await api.listOrganizationMembers(workspace.id);
+      const [result, inviteList] = await Promise.all([
+        api.listOrganizationMembers(workspace.id),
+        isAdminOrOwner ? api.listOrganizationInvites(workspace.id) : Promise.resolve([]),
+      ]);
       setMembers(result);
+      setInvites(inviteList.filter((i) => !i.redeemedAt));
     } catch (e) {
       setError(e instanceof Error ? e.message : t("workspace.errors.loadMembers"));
     } finally {
       setLoading(false);
     }
-  }, [workspace.id, t]);
+  }, [workspace.id, isAdminOrOwner, t]);
 
   useEffect(() => {
     load();
@@ -470,67 +495,271 @@ function MembersTab({
     }
   }
 
-  if (loading) {
-    return (
-      <div className="flex justify-center py-8">
-        <Loader2 className="h-5 w-5 animate-spin text-muted-foreground" />
-      </div>
-    );
-  }
+  return (
+    <div className="space-y-5">
+      {isAdminOrOwner && (
+        <InviteForm
+          workspace={workspace}
+          autoFocus={focusInvite}
+          onSent={load}
+          onError={setError}
+        />
+      )}
 
-  if (error) {
-    return (
-      <p className="text-xs text-destructive" role="alert">
-        {error}
-      </p>
-    );
+      {error && (
+        <p className="text-xs text-destructive" role="alert">
+          {error}
+        </p>
+      )}
+
+      <section>
+        <SectionHeading
+          label={t("workspace.tabs.members")}
+          count={members?.length}
+        />
+        {loading ? (
+          <div className="flex justify-center py-8">
+            <Loader2 className="h-5 w-5 animate-spin text-muted-foreground" />
+          </div>
+        ) : (
+          <div className="space-y-2">
+            {members?.map((m) => {
+              const isSelf = m.participantId === currentUserId;
+              return (
+                <div
+                  key={m.participantId}
+                  className="flex items-center gap-3 rounded-md border border-border px-3 py-2"
+                >
+                  <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-muted text-[11px] font-medium">
+                    {getInitials(m.participant?.displayName ?? "?")}
+                  </div>
+                  <div className="min-w-0 flex-1">
+                    <div className="flex items-center gap-1.5">
+                      <span className="truncate text-sm font-medium">
+                        {m.participant?.displayName ?? t("common:unknown")}
+                      </span>
+                      {isSelf && <span className="text-[10px] text-muted-foreground">{t("workspace.youTag")}</span>}
+                    </div>
+                  </div>
+                  <RoleBadge role={m.role} />
+                  {isOwner && m.role !== "owner" && (
+                    <select
+                      value={m.role}
+                      onChange={(e) => handleRoleChange(m, e.target.value as "admin" | "member")}
+                      className="h-7 rounded-md border border-border bg-background px-2 text-xs"
+                      aria-label={t("workspace.roleLabel")}
+                    >
+                      <option value="member">{t("workspace.roles.member")}</option>
+                      <option value="admin">{t("workspace.roles.admin")}</option>
+                    </select>
+                  )}
+                  {isAdminOrOwner && m.role !== "owner" && !isSelf && (
+                    <button
+                      type="button"
+                      onClick={() => handleRemove(m)}
+                      className="shrink-0 rounded-md px-2 py-1 text-xs text-destructive hover:bg-destructive/10"
+                    >
+                      {t("common:remove")}
+                    </button>
+                  )}
+                </div>
+              );
+            })}
+          </div>
+        )}
+      </section>
+
+      {isAdminOrOwner && !loading && invites.length > 0 && (
+        <PendingInvites
+          workspace={workspace}
+          invites={invites}
+          onChanged={load}
+          onError={setError}
+        />
+      )}
+    </div>
+  );
+}
+
+function SectionHeading({ label, count }: { label: string; count?: number }) {
+  return (
+    <h3 className="mb-2 flex items-center gap-1.5 text-xs font-semibold uppercase tracking-wide text-muted-foreground">
+      {label}
+      {count !== undefined && (
+        <span className="rounded-full bg-muted px-1.5 py-0.5 text-[10px] font-medium normal-case tracking-normal">
+          {count}
+        </span>
+      )}
+    </h3>
+  );
+}
+
+/** Email + role + Send. Sits at the top of the Members tab for admins. */
+function InviteForm({
+  workspace,
+  autoFocus,
+  onSent,
+  onError,
+}: {
+  workspace: WorkspaceMembership;
+  autoFocus?: boolean;
+  onSent: () => Promise<void> | void;
+  onError: (message: string | null) => void;
+}) {
+  const { t } = useTranslation("settings");
+  const [email, setEmail] = useState("");
+  const [role, setRole] = useState<"admin" | "member">("member");
+  const [sending, setSending] = useState(false);
+  const sendInvite = useWorkspaceStore((s) => s.sendInvite);
+
+  async function handleSend(e: React.FormEvent) {
+    e.preventDefault();
+    if (!email.trim()) return;
+    setSending(true);
+    onError(null);
+    try {
+      await sendInvite(workspace.id, email.trim(), role);
+      setEmail("");
+      setRole("member");
+      await onSent();
+    } catch (err) {
+      onError(err instanceof Error ? err.message : t("workspace.errors.sendInvite"));
+    } finally {
+      setSending(false);
+    }
   }
 
   return (
-    <div className="space-y-2">
-      {members?.map((m) => {
-        const isSelf = m.participantId === currentUserId;
-        return (
+    <form onSubmit={handleSend} className="space-y-2">
+      <label className="text-xs font-medium">{t("workspace.invitePeople")}</label>
+      <div className="flex gap-2">
+        <input
+          type="email"
+          value={email}
+          autoFocus={autoFocus}
+          onChange={(e) => setEmail(e.target.value)}
+          placeholder={t("workspace.inviteEmailPlaceholder")}
+          className="h-9 flex-1 rounded-md border border-border bg-background px-3 text-sm"
+        />
+        <select
+          value={role}
+          onChange={(e) => setRole(e.target.value as "admin" | "member")}
+          className="h-9 rounded-md border border-border bg-background px-2 text-sm"
+          aria-label={t("workspace.roleLabel")}
+        >
+          <option value="member">{t("workspace.roles.member")}</option>
+          <option value="admin">{t("workspace.roles.admin")}</option>
+        </select>
+        <button
+          type="submit"
+          disabled={!email.trim() || sending}
+          className="flex items-center rounded-md bg-primary px-3 py-1.5 text-sm font-medium text-primary-foreground hover:bg-primary/90 disabled:opacity-50"
+        >
+          {sending ? (
+            <Loader2 className="mr-1.5 h-3 w-3 animate-spin" />
+          ) : (
+            <Send className="mr-1.5 h-3 w-3" />
+          )}
+          {t("common:send")}
+        </button>
+      </div>
+    </form>
+  );
+}
+
+/** Invitations that haven't been accepted — resend or revoke. */
+function PendingInvites({
+  workspace,
+  invites,
+  onChanged,
+  onError,
+}: {
+  workspace: WorkspaceMembership;
+  invites: OrganizationInvite[];
+  onChanged: () => Promise<void> | void;
+  onError: (message: string | null) => void;
+}) {
+  const { t } = useTranslation("settings");
+  const [resendingId, setResendingId] = useState<string | null>(null);
+  const [resentId, setResentId] = useState<string | null>(null);
+  const revokeInvite = useWorkspaceStore((s) => s.revokeInvite);
+
+  async function handleResend(invite: OrganizationInvite) {
+    setResendingId(invite.id);
+    setResentId(null);
+    onError(null);
+    try {
+      await api.resendOrganizationInvite(workspace.id, invite.id);
+      await onChanged();
+      setResentId(invite.id);
+    } catch (e) {
+      onError(e instanceof Error ? e.message : t("workspace.errors.resendInvite"));
+    } finally {
+      setResendingId(null);
+    }
+  }
+
+  async function handleRevoke(invite: OrganizationInvite) {
+    if (!confirm(t("workspace.revokeInviteConfirm", { email: invite.email }))) return;
+    try {
+      await revokeInvite(workspace.id, invite.id);
+      await onChanged();
+    } catch (e) {
+      onError(e instanceof Error ? e.message : t("workspace.errors.revokeInvite"));
+    }
+  }
+
+  return (
+    <section>
+      <SectionHeading label={t("workspace.pendingInvites")} count={invites.length} />
+      <div className="space-y-1">
+        {invites.map((invite) => (
           <div
-            key={m.participantId}
+            key={invite.id}
             className="flex items-center gap-3 rounded-md border border-border px-3 py-2"
           >
-            <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-muted text-[11px] font-medium">
-              {getInitials(m.participant?.displayName ?? "?")}
-            </div>
+            <Mail className="h-4 w-4 shrink-0 text-muted-foreground" />
             <div className="min-w-0 flex-1">
-              <div className="flex items-center gap-1.5">
-                <span className="truncate text-sm font-medium">
-                  {m.participant?.displayName ?? t("common:unknown")}
-                </span>
-                {isSelf && <span className="text-[10px] text-muted-foreground">{t("workspace.youTag")}</span>}
+              <div className="flex items-center gap-2">
+                <p className="truncate text-sm">{invite.email}</p>
+                {invite.status === "expired" && (
+                  <span className="shrink-0 rounded-full bg-warning/10 px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wide text-warning">
+                    {t("workspace.inviteStatus.expired")}
+                  </span>
+                )}
               </div>
+              <p className="text-[11px] text-muted-foreground">
+                {t(`workspace.roles.${invite.role}`)}
+              </p>
             </div>
-            <RoleBadge role={m.role} />
-            {isOwner && m.role !== "owner" && (
-              <select
-                value={m.role}
-                onChange={(e) => handleRoleChange(m, e.target.value as "admin" | "member")}
-                className="h-7 rounded-md border border-border bg-background px-2 text-xs"
-                aria-label={t("workspace.roleLabel")}
-              >
-                <option value="member">{t("workspace.roles.member")}</option>
-                <option value="admin">{t("workspace.roles.admin")}</option>
-              </select>
+            {resentId === invite.id && (
+              <span className="text-[11px] text-success">
+                {t("workspace.inviteResent")}
+              </span>
             )}
-            {isAdminOrOwner && m.role !== "owner" && !isSelf && (
-              <button
-                type="button"
-                onClick={() => handleRemove(m)}
-                className="shrink-0 rounded-md px-2 py-1 text-xs text-destructive hover:bg-destructive/10"
-              >
-                {t("common:remove")}
-              </button>
-            )}
+            <button
+              type="button"
+              onClick={() => handleResend(invite)}
+              disabled={resendingId === invite.id}
+              className="rounded-md px-2 py-1 text-xs text-muted-foreground hover:bg-accent hover:text-foreground disabled:opacity-50"
+            >
+              {resendingId === invite.id ? (
+                <Loader2 className="h-3 w-3 animate-spin" />
+              ) : (
+                t("workspace.resendInvite")
+              )}
+            </button>
+            <button
+              type="button"
+              onClick={() => handleRevoke(invite)}
+              className="rounded-md px-2 py-1 text-xs text-destructive hover:bg-destructive/10"
+            >
+              {t("workspace.revoke")}
+            </button>
           </div>
-        );
-      })}
-    </div>
+        ))}
+      </div>
+    </section>
   );
 }
 
@@ -568,188 +797,5 @@ function RoleBadge({ role }: { role: "owner" | "admin" | "member" }) {
       <Icon className="h-3 w-3" />
       {label}
     </span>
-  );
-}
-
-// --- Invites tab -------------------------------------------------------
-
-function InvitesTab({ workspace }: { workspace: WorkspaceMembership }) {
-  const { t } = useTranslation("settings");
-  const [invites, setInvites] = useState<OrganizationInvite[] | null>(null);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
-  const [email, setEmail] = useState("");
-  const [role, setRole] = useState<"admin" | "member">("member");
-  const [sending, setSending] = useState(false);
-  const [resendingId, setResendingId] = useState<string | null>(null);
-  const [resentId, setResentId] = useState<string | null>(null);
-
-  const sendInvite = useWorkspaceStore((s) => s.sendInvite);
-  const revokeInvite = useWorkspaceStore((s) => s.revokeInvite);
-
-  const load = useCallback(async () => {
-    setLoading(true);
-    setError(null);
-    try {
-      const list = await api.listOrganizationInvites(workspace.id);
-      setInvites(list.filter((i) => !i.redeemedAt));
-    } catch (e) {
-      setError(e instanceof Error ? e.message : t("workspace.errors.loadInvites"));
-    } finally {
-      setLoading(false);
-    }
-  }, [workspace.id, t]);
-
-  useEffect(() => {
-    load();
-  }, [load]);
-
-  async function handleSend(e: React.FormEvent) {
-    e.preventDefault();
-    if (!email.trim()) return;
-    setSending(true);
-    setError(null);
-    try {
-      await sendInvite(workspace.id, email.trim(), role);
-      setEmail("");
-      setRole("member");
-      await load();
-    } catch (e) {
-      setError(e instanceof Error ? e.message : t("workspace.errors.sendInvite"));
-    } finally {
-      setSending(false);
-    }
-  }
-
-  async function handleResend(invite: OrganizationInvite) {
-    setResendingId(invite.id);
-    setResentId(null);
-    setError(null);
-    try {
-      await api.resendOrganizationInvite(workspace.id, invite.id);
-      await load();
-      setResentId(invite.id);
-    } catch (e) {
-      setError(e instanceof Error ? e.message : t("workspace.errors.resendInvite"));
-    } finally {
-      setResendingId(null);
-    }
-  }
-
-  async function handleRevoke(invite: OrganizationInvite) {
-    if (!confirm(t("workspace.revokeInviteConfirm", { email: invite.email }))) return;
-    try {
-      await revokeInvite(workspace.id, invite.id);
-      await load();
-    } catch (e) {
-      setError(e instanceof Error ? e.message : t("workspace.errors.revokeInvite"));
-    }
-  }
-
-  return (
-    <div className="space-y-5">
-      <form onSubmit={handleSend} className="space-y-2">
-        <label className="text-xs font-medium">{t("workspace.inviteByEmail")}</label>
-        <div className="flex gap-2">
-          <input
-            type="email"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            placeholder={t("workspace.inviteEmailPlaceholder")}
-            className="h-9 flex-1 rounded-md border border-border bg-background px-3 text-sm"
-          />
-          <select
-            value={role}
-            onChange={(e) => setRole(e.target.value as "admin" | "member")}
-            className="h-9 rounded-md border border-border bg-background px-2 text-sm"
-            aria-label={t("workspace.roleLabel")}
-          >
-            <option value="member">{t("workspace.roles.member")}</option>
-            <option value="admin">{t("workspace.roles.admin")}</option>
-          </select>
-          <button
-            type="submit"
-            disabled={!email.trim() || sending}
-            className="flex items-center rounded-md bg-primary px-3 py-1.5 text-sm font-medium text-primary-foreground hover:bg-primary/90 disabled:opacity-50"
-          >
-            {sending ? (
-              <Loader2 className="mr-1.5 h-3 w-3 animate-spin" />
-            ) : (
-              <Send className="mr-1.5 h-3 w-3" />
-            )}
-            {t("common:send")}
-          </button>
-        </div>
-      </form>
-
-      {error && (
-        <p className="text-xs text-destructive" role="alert">
-          {error}
-        </p>
-      )}
-
-      <div>
-        <h3 className="mb-2 text-xs font-semibold uppercase tracking-wide text-muted-foreground">
-          {t("workspace.pendingInvites")}
-        </h3>
-        {loading ? (
-          <div className="flex justify-center py-6">
-            <Loader2 className="h-5 w-5 animate-spin text-muted-foreground" />
-          </div>
-        ) : (invites ?? []).length === 0 ? (
-          <p className="py-4 text-center text-xs text-muted-foreground">
-            {t("workspace.noPendingInvites")}
-          </p>
-        ) : (
-          <div className="space-y-1">
-            {invites!.map((invite) => (
-              <div
-                key={invite.id}
-                className="flex items-center gap-3 rounded-md border border-border px-3 py-2"
-              >
-                <Mail className="h-4 w-4 shrink-0 text-muted-foreground" />
-                <div className="min-w-0 flex-1">
-                  <div className="flex items-center gap-2">
-                    <p className="truncate text-sm">{invite.email}</p>
-                    {invite.status === "expired" && (
-                      <span className="shrink-0 rounded-full bg-warning/10 px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wide text-warning">
-                        {t("workspace.inviteStatus.expired")}
-                      </span>
-                    )}
-                  </div>
-                  <p className="text-[11px] text-muted-foreground">
-                    {t(`workspace.roles.${invite.role}`)}
-                  </p>
-                </div>
-                {resentId === invite.id && (
-                  <span className="text-[11px] text-success">
-                    {t("workspace.inviteResent")}
-                  </span>
-                )}
-                <button
-                  type="button"
-                  onClick={() => handleResend(invite)}
-                  disabled={resendingId === invite.id}
-                  className="rounded-md px-2 py-1 text-xs text-muted-foreground hover:bg-accent hover:text-foreground disabled:opacity-50"
-                >
-                  {resendingId === invite.id ? (
-                    <Loader2 className="h-3 w-3 animate-spin" />
-                  ) : (
-                    t("workspace.resendInvite")
-                  )}
-                </button>
-                <button
-                  type="button"
-                  onClick={() => handleRevoke(invite)}
-                  className="rounded-md px-2 py-1 text-xs text-destructive hover:bg-destructive/10"
-                >
-                  {t("workspace.revoke")}
-                </button>
-              </div>
-            ))}
-          </div>
-        )}
-      </div>
-    </div>
   );
 }
