@@ -166,6 +166,11 @@ export const useWorkspaceStore = create<WorkspaceState>((set, get) => ({
       ws.on("pending_invite_received", () => {
         void get().fetchPendingInvites();
       }),
+      // This account accepted, declined, or lost an invite on another
+      // device. Refetch so the badge, banner, and toast clear here too.
+      ws.on("pending_invites_changed", () => {
+        void get().fetchPendingInvites();
+      }),
       // Anything that can change another workspace's attention count —
       // a message landing, a read on another device, a permission
       // request appearing or being resolved — schedules one debounced

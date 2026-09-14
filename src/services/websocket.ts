@@ -169,6 +169,7 @@ class WebSocketService {
       // the second one badges the switcher tile.
       "workspaces_updated",
       "pending_invite_received",
+      "pending_invites_changed",
       // Cross-device read sync: another of the user's devices marked a
       // conversation read. chatStore zeroes the local unread badge.
       "conversation_read",
