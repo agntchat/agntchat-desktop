@@ -13,10 +13,13 @@ import type { AgentReminder } from "../../lib/api";
  */
 export default function ReminderDetail({
   group,
+  initialTitle,
   onClose,
 }: {
   /** Present → edit that group. Absent → create mode. */
   group?: AgentReminder[];
+  /** Seeds the label in create mode (the quick-add draft). */
+  initialTitle?: string;
   onClose: () => void;
 }) {
   const { t } = useTranslation("tasks");
@@ -49,7 +52,7 @@ export default function ReminderDetail({
         )}
       </header>
 
-      <ReminderForm group={group} onDone={onClose} variant="panel" />
+      <ReminderForm group={group} initialTitle={initialTitle} onDone={onClose} variant="panel" />
     </div>
   );
 }

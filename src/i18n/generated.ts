@@ -5234,14 +5234,18 @@ export const resources = {
       "unassigned": "Unassigned",
       "unified": {
         "actionBadge": "Action",
+        "addPlaceholder": "Add a to-do or reminder…",
         "clearFilter": "Clear filter",
         "empty": "Nothing here yet",
         "emptyHint": "Actions and to-dos will show up here.",
         "filterPerson": "Filter by person",
         "loadFailed": "Couldn't load your list. Check your connection and try again.",
         "noMatching": "No matches",
+        "openAs": "Open as",
+        "reminderType": "Reminder",
         "remindersSection": "Reminders",
-        "searchPlaceholder": "Search…"
+        "searchPlaceholder": "Search…",
+        "todoType": "To-do"
       },
       "untitled": "Untitled task",
       "untitledAction": "Untitled Action",
@@ -10604,14 +10608,18 @@ export const resources = {
       "unassigned": "Sin asignar",
       "unified": {
         "actionBadge": "Acción",
+        "addPlaceholder": "Añadir un pendiente o recordatorio…",
         "clearFilter": "Quitar filtro",
         "empty": "Nada por aquí todavía",
         "emptyHint": "Las acciones y los pendientes aparecerán aquí.",
         "filterPerson": "Filtrar por persona",
         "loadFailed": "No se pudo cargar tu lista. Comprueba tu conexión e inténtalo de nuevo.",
         "noMatching": "Sin coincidencias",
+        "openAs": "Abrir como",
+        "reminderType": "Recordatorio",
         "remindersSection": "Recordatorios",
-        "searchPlaceholder": "Buscar…"
+        "searchPlaceholder": "Buscar…",
+        "todoType": "Pendiente"
       },
       "untitled": "Tarea sin título",
       "untitledAction": "Acción sin título",
@@ -15974,14 +15982,18 @@ export const resources = {
       "unassigned": "Nicht zugewiesen",
       "unified": {
         "actionBadge": "Aktion",
+        "addPlaceholder": "To-do oder Erinnerung hinzufügen…",
         "clearFilter": "Filter zurücksetzen",
         "empty": "Noch nichts hier",
         "emptyHint": "Aktionen und To-dos werden hier angezeigt.",
         "filterPerson": "Nach Person filtern",
         "loadFailed": "Liste konnte nicht geladen werden. Prüfen Sie Ihre Verbindung und versuchen Sie es erneut.",
         "noMatching": "Keine Treffer",
+        "openAs": "Öffnen als",
+        "reminderType": "Erinnerung",
         "remindersSection": "Erinnerungen",
-        "searchPlaceholder": "Suchen…"
+        "searchPlaceholder": "Suchen…",
+        "todoType": "To-do"
       },
       "untitled": "Unbenannte Aufgabe",
       "untitledAction": "Unbenannte Aktion",
@@ -21344,14 +21356,18 @@ export const resources = {
       "unassigned": "Non assignée",
       "unified": {
         "actionBadge": "Action",
+        "addPlaceholder": "Ajouter une tâche ou un rappel…",
         "clearFilter": "Effacer le filtre",
         "empty": "Rien ici pour le moment",
         "emptyHint": "Les actions et les tâches apparaîtront ici.",
         "filterPerson": "Filtrer par personne",
         "loadFailed": "Impossible de charger votre liste. Vérifiez votre connexion et réessayez.",
         "noMatching": "Aucun résultat",
+        "openAs": "Ouvrir comme",
+        "reminderType": "Rappel",
         "remindersSection": "Rappels",
-        "searchPlaceholder": "Rechercher…"
+        "searchPlaceholder": "Rechercher…",
+        "todoType": "Tâche"
       },
       "untitled": "Tâche sans titre",
       "untitledAction": "Action sans titre",
@@ -26714,14 +26730,18 @@ export const resources = {
       "unassigned": "Não atribuída",
       "unified": {
         "actionBadge": "Ação",
+        "addPlaceholder": "Adicionar um afazer ou lembrete…",
         "clearFilter": "Limpar filtro",
         "empty": "Ainda não há nada aqui",
         "emptyHint": "Ações e afazeres vão aparecer aqui.",
         "filterPerson": "Filtrar por pessoa",
         "loadFailed": "Não foi possível carregar sua lista. Verifique sua conexão e tente novamente.",
         "noMatching": "Nenhum resultado",
+        "openAs": "Abrir como",
+        "reminderType": "Lembrete",
         "remindersSection": "Lembretes",
-        "searchPlaceholder": "Buscar…"
+        "searchPlaceholder": "Buscar…",
+        "todoType": "Afazer"
       },
       "untitled": "Tarefa sem título",
       "untitledAction": "Ação sem título",
@@ -32084,14 +32104,18 @@ export const resources = {
       "unassigned": "未割り当て",
       "unified": {
         "actionBadge": "アクション",
+        "addPlaceholder": "To-doやリマインダーを追加…",
         "clearFilter": "絞り込みを解除",
         "empty": "ここにはまだ何もありません",
         "emptyHint": "アクションとTo-doがここに表示されます。",
         "filterPerson": "人で絞り込む",
         "loadFailed": "リストを読み込めませんでした。接続を確認して、もう一度お試しください。",
         "noMatching": "一致する項目がありません",
+        "openAs": "開く形式",
+        "reminderType": "リマインダー",
         "remindersSection": "リマインダー",
-        "searchPlaceholder": "検索…"
+        "searchPlaceholder": "検索…",
+        "todoType": "To-do"
       },
       "untitled": "無題のタスク",
       "untitledAction": "無題のアクション",
@@ -37454,14 +37478,18 @@ export const resources = {
       "unassigned": "未分配",
       "unified": {
         "actionBadge": "操作",
+        "addPlaceholder": "添加待办或提醒…",
         "clearFilter": "清除筛选",
         "empty": "这里还没有内容",
         "emptyHint": "操作和待办事项会显示在这里。",
         "filterPerson": "按人员筛选",
         "loadFailed": "无法加载您的列表。请检查网络连接后重试。",
         "noMatching": "没有匹配项",
+        "openAs": "打开为",
+        "reminderType": "提醒",
         "remindersSection": "提醒",
-        "searchPlaceholder": "搜索…"
+        "searchPlaceholder": "搜索…",
+        "todoType": "待办"
       },
       "untitled": "未命名任务",
       "untitledAction": "未命名操作",
@@ -42824,14 +42852,18 @@ export const resources = {
       "unassigned": "미배정",
       "unified": {
         "actionBadge": "작업",
+        "addPlaceholder": "할 일 또는 리마인더 추가…",
         "clearFilter": "필터 해제",
         "empty": "아직 여기에 아무것도 없습니다",
         "emptyHint": "작업과 할 일이 여기에 표시됩니다.",
         "filterPerson": "사람별 필터",
         "loadFailed": "목록을 불러오지 못했습니다. 연결을 확인하고 다시 시도해 주세요.",
         "noMatching": "일치하는 항목이 없습니다",
+        "openAs": "다음으로 열기",
+        "reminderType": "리마인더",
         "remindersSection": "리마인더",
-        "searchPlaceholder": "검색…"
+        "searchPlaceholder": "검색…",
+        "todoType": "할 일"
       },
       "untitled": "제목 없는 작업",
       "untitledAction": "제목 없는 작업",
@@ -48194,14 +48226,18 @@ export const resources = {
       "unassigned": "Non assegnato",
       "unified": {
         "actionBadge": "Azione",
+        "addPlaceholder": "Aggiungi una cosa da fare o un promemoria…",
         "clearFilter": "Rimuovi filtro",
         "empty": "Ancora nulla qui",
         "emptyHint": "Azioni e cose da fare appariranno qui.",
         "filterPerson": "Filtra per persona",
         "loadFailed": "Impossibile caricare la tua lista. Controlla la connessione e riprova.",
         "noMatching": "Nessun risultato",
+        "openAs": "Apri come",
+        "reminderType": "Promemoria",
         "remindersSection": "Promemoria",
-        "searchPlaceholder": "Cerca…"
+        "searchPlaceholder": "Cerca…",
+        "todoType": "Cosa da fare"
       },
       "untitled": "Attività senza titolo",
       "untitledAction": "Azione senza titolo",
@@ -53564,14 +53600,18 @@ export const resources = {
       "unassigned": "सौंपा नहीं गया",
       "unified": {
         "actionBadge": "कार्रवाई",
+        "addPlaceholder": "टू-डू या रिमाइंडर जोड़ें…",
         "clearFilter": "फ़िल्टर हटाएँ",
         "empty": "यहाँ अभी कुछ नहीं है",
         "emptyHint": "कार्रवाइयाँ और टू-डू यहाँ दिखाई देंगे।",
         "filterPerson": "व्यक्ति के अनुसार फ़िल्टर करें",
         "loadFailed": "आपकी सूची लोड नहीं हो सकी। अपना कनेक्शन जाँचें और फिर से प्रयास करें।",
         "noMatching": "कोई मेल नहीं",
+        "openAs": "इस रूप में खोलें",
+        "reminderType": "रिमाइंडर",
         "remindersSection": "रिमाइंडर",
-        "searchPlaceholder": "खोजें…"
+        "searchPlaceholder": "खोजें…",
+        "todoType": "टू-डू"
       },
       "untitled": "बिना शीर्षक वाला कार्य",
       "untitledAction": "बिना शीर्षक वाली कार्रवाई",

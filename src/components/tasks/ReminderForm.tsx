@@ -10,6 +10,9 @@ export interface ReminderFormProps {
   /** Present → edit/delete (a single reminder) or view/delete-all (2+
    *  sharing a source event). Absent → create mode. */
   group?: AgentReminder[];
+  /** Seeds the label in create mode — what the user already typed into
+   *  the Actions quick-add field before choosing "Reminder". */
+  initialTitle?: string;
   /** Fired after a successful create/update/delete, and on cancel. */
   onDone: () => void;
   /** Chrome around the fields: the modal footer used on agent pages, or
@@ -56,7 +59,7 @@ function remindTypeLabel(t: (key: string) => string, remindType: AgentReminder["
  * breakdown with a "delete all N" action instead of per-member editing,
  * since editing one leg would desync it from the others.
  */
-export default function ReminderForm({ group, onDone, variant }: ReminderFormProps) {
+export default function ReminderForm({ group, initialTitle, onDone, variant }: ReminderFormProps) {
   const { t } = useTranslation("tasks");
   const addReminder = useReminderStore((s) => s.addReminder);
   const updateReminder = useReminderStore((s) => s.updateReminder);
@@ -70,7 +73,7 @@ export default function ReminderForm({ group, onDone, variant }: ReminderFormPro
   const isMultiGroup = (group?.length ?? 0) > 1;
   const isEditable = !isEdit || (!isMultiGroup && reminder?.remindType === "exact");
 
-  const [title, setTitle] = useState("");
+  const [title, setTitle] = useState(initialTitle ?? "");
   const [selected, setSelected] = useState<string | null>(null);
   const [submitting, setSubmitting] = useState(false);
   const [confirmingDelete, setConfirmingDelete] = useState(false);
@@ -78,7 +81,7 @@ export default function ReminderForm({ group, onDone, variant }: ReminderFormPro
   // Re-seed whenever the target changes — keyed on the id rather than the
   // object so a store refresh doesn't wipe in-progress typing.
   useEffect(() => {
-    setTitle(reminder?.eventLabel ?? "");
+    setTitle(reminder?.eventLabel ?? initialTitle ?? "");
     setSelected(null);
     setConfirmingDelete(false);
     // eslint-disable-next-line react-hooks/exhaustive-deps

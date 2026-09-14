@@ -33,12 +33,15 @@ import type { ActionSelection } from "./selection";
  * Rows never open a modal: picking one hands the selection up to
  * `TasksView`, which renders it in the detail column.
  *
- * Chrome above the list is split by purpose: *creating* sits under the
- * quick-add field as a palette of named types (to-do, reminder), because
- * an unlabelled bell never said "this makes a reminder"; *narrowing*
- * (person filter, search) lives in the header and stays collapsed until
- * used, so the resting state is the list itself rather than a row of
- * people chips nobody asked for.
+ * Chrome above the list is split by purpose. *Creating* is one field:
+ * Enter makes a title-only to-do, and while the field is in use a row of
+ * named types appears beneath it — the same text, opened as a to-do or a
+ * reminder in the detail column. Naming them is the point (an unlabelled
+ * bell never said "this makes a reminder"), and hiding them at rest is
+ * what keeps them from reading as a second copy of the field.
+ * *Narrowing* (person filter, search) lives in the header and stays
+ * collapsed until used, so the resting state is the list itself rather
+ * than a row of people chips nobody asked for.
  */
 export function ActionsList({
   width,
@@ -75,6 +78,7 @@ export function ActionsList({
   const selectedTaskId = useTaskStore((s) => s.selectedTaskId);
 
   const [draft, setDraft] = useState("");
+  const [composing, setComposing] = useState(false);
   const [searchOpen, setSearchOpen] = useState(false);
 
   const submitDraft = async () => {
@@ -84,6 +88,11 @@ export function ActionsList({
     const created = await addTodo({ title });
     if (!created) setDraft(title);
   };
+
+  // The type row belongs to the field: it shows while you're composing
+  // (focused, or with text parked in it) and folds away the rest of the
+  // time so the resting create area is a single row.
+  const showTypes = composing || draft.trim().length > 0;
 
   const hasAnyFilter = personFilter !== "all" || searchQuery.length > 0;
   const totalItems = sections.reduce((n, s) => n + s.data.length, 0);
@@ -142,27 +151,33 @@ export function ActionsList({
         <div className="flex items-center gap-2">
           <Plus className="h-4 w-4 shrink-0 text-muted-foreground" />
           <Input
-            placeholder={t("todo.addPlaceholder")}
+            placeholder={t("unified.addPlaceholder")}
             value={draft}
             onChange={(e) => setDraft(e.target.value)}
+            onFocus={() => setComposing(true)}
+            onBlur={() => setComposing(false)}
             onKeyDown={(e) => {
               if (e.key === "Enter") submitDraft();
+              if (e.key === "Escape") setDraft("");
             }}
             className="h-9 flex-1 text-sm"
           />
         </div>
-        <div className="mt-1.5 flex items-center gap-1.5 pl-6">
-          <CreateChip
-            icon={ListTodo}
-            label={t("todo.sheetNew")}
-            onClick={() => onSelect({ kind: "todo", id: null, draftTitle: draft })}
-          />
-          <CreateChip
-            icon={Bell}
-            label={t("reminder.addTitle")}
-            onClick={() => onSelect({ kind: "reminder", id: null })}
-          />
-        </div>
+        {showTypes && (
+          <div className="mt-1.5 flex items-center gap-1.5 pl-6">
+            <span className="text-[11px] text-muted-foreground">{t("unified.openAs")}</span>
+            <CreateChip
+              icon={ListTodo}
+              label={t("unified.todoType")}
+              onClick={() => onSelect({ kind: "todo", id: null, draftTitle: draft })}
+            />
+            <CreateChip
+              icon={Bell}
+              label={t("unified.reminderType")}
+              onClick={() => onSelect({ kind: "reminder", id: null, draftTitle: draft })}
+            />
+          </div>
+        )}
       </div>
 
       {searchOpen && (
@@ -268,6 +283,9 @@ function CreateChip({
   return (
     <button
       type="button"
+      // Mouse-down on a chip would blur the field and unmount this row
+      // before the click resolved, so focus stays put.
+      onMouseDown={(e) => e.preventDefault()}
       onClick={onClick}
       className="flex shrink-0 items-center gap-1.5 rounded-full border border-input bg-transparent px-2.5 py-1 text-xs font-medium text-muted-foreground transition-colors hover:bg-muted hover:text-foreground"
     >

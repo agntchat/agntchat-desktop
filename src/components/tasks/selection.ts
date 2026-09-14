@@ -10,7 +10,7 @@
  */
 export type ActionSelection =
   | { kind: "todo"; id: string | null; draftTitle?: string }
-  | { kind: "reminder"; id: string | null }
+  | { kind: "reminder"; id: string | null; draftTitle?: string }
   /** Routines are created on their agent's page, so this is always an
    *  existing one — no `null` create case. */
   | { kind: "routine"; id: string }

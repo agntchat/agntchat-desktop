@@ -119,6 +119,7 @@ export function TasksView({
           <ReminderDetail
             key={selection.id ?? "new"}
             group={selectedReminderGroup}
+            initialTitle={selection.draftTitle}
             onClose={() => setSelection(null)}
           />
         ) : selection?.kind === "routine" && selectedRoutine ? (
