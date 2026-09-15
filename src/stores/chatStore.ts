@@ -1171,6 +1171,30 @@ export const useChatStore = create<ChatState>((set, get) => ({
       })
     );
 
+    // Server-side metadata edits on an existing row — today the
+    // `awaiting_agent` hold stamp set/cleared around a busy agent's task
+    // (backend `Messaging.AwaitingAgent`). Replace, don't merge: the payload
+    // is the row's full metadata after the change.
+    unsubs.push(
+      ws.on("conv:message_metadata_changed", (payload) => {
+        const convId = payload._conversationId as string;
+        const messageId = payload.messageId as string;
+        const metadata = payload.metadata as Record<string, unknown> | undefined;
+        if (!convId || !messageId || !metadata) return;
+        set((s) => {
+          const current = s.messages[convId] ?? [];
+          const existing = current.find((m) => m.id === messageId);
+          if (!existing) return s;
+          return {
+            messages: {
+              ...s.messages,
+              [convId]: current.map((m) => (m === existing ? { ...m, metadata } : m)),
+            },
+          };
+        });
+      })
+    );
+
     for (const [event, kind] of [
       ["conv:reaction_added", "added"],
       ["conv:reaction_removed", "removed"],

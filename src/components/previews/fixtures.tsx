@@ -1477,7 +1477,7 @@ export function buildPreviewCategories(
             <ToastFrame>
               <AgentBusyToastCard
                 name="Atlas"
-                taskLabel={"“Book travel for the Berlin trip”"}
+                taskTitle="Book travel for the Berlin trip"
                 onOpen={noop}
                 onDismiss={noop}
               />

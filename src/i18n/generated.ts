@@ -2434,8 +2434,8 @@ export const resources = {
         "working_other": "{{count}} working"
       },
       "agentBusy": {
-        "bodyGeneric": "They're working on a task. Your message went to the work room — open it to continue the thread.",
-        "bodyTask": "They're working on “{{task}}”. Your message went to the work room — open it to continue the thread.",
+        "bodyGeneric": "They're working on a task. Your message is held here until they finish — or open the work room to reach them now.",
+        "bodyTask": "They're working on “{{task}}”. Your message is held here until they finish — or open the work room to reach them now.",
         "defaultAgentName": "This agent",
         "openWorkRoom": "Open work room",
         "title": "{{name}} is busy"
@@ -2454,6 +2454,10 @@ export const resources = {
       },
       "approvalSendFailed": "Couldn't send your response. Please try again.",
       "attachmentCaptionHint": "Add a description for context...",
+      "awaitingAgent": {
+        "hint": "Held until they finish their current task — it hasn't been skipped.",
+        "label": "Waiting for {{name}}"
+      },
       "backToParent": "Back to parent conversation",
       "branch": {
         "cancelledCount": "{{count}} cancelled",
@@ -7822,8 +7826,8 @@ export const resources = {
         "working_other": "{{count}} trabajando"
       },
       "agentBusy": {
-        "bodyGeneric": "Está trabajando en una tarea. Tu mensaje fue a la sala de trabajo — ábrela para continuar el hilo.",
-        "bodyTask": "Está trabajando en «{{task}}». Tu mensaje fue a la sala de trabajo — ábrela para continuar el hilo.",
+        "bodyGeneric": "Está trabajando en una tarea. Tu mensaje queda en espera aquí hasta que termine — o abre la sala de trabajo para contactarle ahora.",
+        "bodyTask": "Está trabajando en “{{task}}”. Tu mensaje queda en espera aquí hasta que termine — o abre la sala de trabajo para contactarle ahora.",
         "defaultAgentName": "Este agente",
         "openWorkRoom": "Abrir sala de trabajo",
         "title": "{{name}} está ocupado"
@@ -7842,6 +7846,10 @@ export const resources = {
       },
       "approvalSendFailed": "No se pudo enviar tu respuesta. Vuelve a intentarlo.",
       "attachmentCaptionHint": "Añade una descripción para dar contexto...",
+      "awaitingAgent": {
+        "hint": "En espera hasta que termine su tarea actual — no se ha omitido.",
+        "label": "Esperando a {{name}}"
+      },
       "backToParent": "Volver a la conversación principal",
       "branch": {
         "cancelledCount": "{{count}} canceladas",
@@ -13210,8 +13218,8 @@ export const resources = {
         "working_other": "{{count}} arbeiten"
       },
       "agentBusy": {
-        "bodyGeneric": "Der Agent arbeitet an einer Aufgabe. Ihre Nachricht wurde an den Arbeitsraum gesendet — öffnen Sie ihn, um den Thread fortzusetzen.",
-        "bodyTask": "Der Agent arbeitet an „{{task}}“. Ihre Nachricht wurde an den Arbeitsraum gesendet — öffnen Sie ihn, um den Thread fortzusetzen.",
+        "bodyGeneric": "Der Agent arbeitet an einer Aufgabe. Ihre Nachricht wartet hier, bis sie erledigt ist — oder öffnen Sie den Arbeitsraum, um den Agenten jetzt zu erreichen.",
+        "bodyTask": "Der Agent arbeitet an „{{task}}“. Ihre Nachricht wartet hier, bis die Aufgabe erledigt ist — oder öffnen Sie den Arbeitsraum, um den Agenten jetzt zu erreichen.",
         "defaultAgentName": "Dieser Agent",
         "openWorkRoom": "Arbeitsraum öffnen",
         "title": "{{name}} ist beschäftigt"
@@ -13230,6 +13238,10 @@ export const resources = {
       },
       "approvalSendFailed": "Ihre Antwort konnte nicht gesendet werden. Bitte versuchen Sie es erneut.",
       "attachmentCaptionHint": "Beschreibung zum Kontext hinzufügen...",
+      "awaitingAgent": {
+        "hint": "Wird zurückgehalten, bis die aktuelle Aufgabe erledigt ist — nicht übersprungen.",
+        "label": "Wartet auf {{name}}"
+      },
       "backToParent": "Zurück zur übergeordneten Unterhaltung",
       "branch": {
         "cancelledCount": "{{count}} abgebrochen",
@@ -18598,8 +18610,8 @@ export const resources = {
         "working_other": "{{count}} en cours"
       },
       "agentBusy": {
-        "bodyGeneric": "Cet agent travaille sur une tâche. Votre message a été envoyé dans la salle de travail — ouvrez-la pour continuer le fil.",
-        "bodyTask": "Cet agent travaille sur «{{task}}». Votre message a été envoyé dans la salle de travail — ouvrez-la pour continuer le fil.",
+        "bodyGeneric": "Il travaille sur une tâche. Votre message reste en attente ici jusqu'à ce qu'il ait terminé — ou ouvrez la salle de travail pour le joindre maintenant.",
+        "bodyTask": "Il travaille sur « {{task}} ». Votre message reste en attente ici jusqu'à ce qu'il ait terminé — ou ouvrez la salle de travail pour le joindre maintenant.",
         "defaultAgentName": "Cet agent",
         "openWorkRoom": "Ouvrir la salle de travail",
         "title": "{{name}} est occupé"
@@ -18618,6 +18630,10 @@ export const resources = {
       },
       "approvalSendFailed": "Impossible d'envoyer votre réponse. Veuillez réessayer.",
       "attachmentCaptionHint": "Ajoutez une description pour le contexte...",
+      "awaitingAgent": {
+        "hint": "Mis en attente jusqu'à la fin de sa tâche en cours — il n'a pas été ignoré.",
+        "label": "En attente de {{name}}"
+      },
       "backToParent": "Retour à la conversation parente",
       "branch": {
         "cancelledCount": "{{count}} annulé(s)",
@@ -23986,8 +24002,8 @@ export const resources = {
         "working_other": "{{count}} trabalhando"
       },
       "agentBusy": {
-        "bodyGeneric": "Está trabalhando em uma tarefa. Sua mensagem foi para a sala de trabalho — abra-a para continuar a conversa.",
-        "bodyTask": "Está trabalhando em “{{task}}”. Sua mensagem foi para a sala de trabalho — abra-a para continuar a conversa.",
+        "bodyGeneric": "Está trabalhando em uma tarefa. Sua mensagem fica em espera aqui até que termine — ou abra a sala de trabalho para falar agora.",
+        "bodyTask": "Está trabalhando em “{{task}}”. Sua mensagem fica em espera aqui até que termine — ou abra a sala de trabalho para falar agora.",
         "defaultAgentName": "Este agente",
         "openWorkRoom": "Abrir sala de trabalho",
         "title": "{{name}} está ocupado"
@@ -24006,6 +24022,10 @@ export const resources = {
       },
       "approvalSendFailed": "Não foi possível enviar sua resposta. Tente novamente.",
       "attachmentCaptionHint": "Adicione uma descrição para contexto...",
+      "awaitingAgent": {
+        "hint": "Em espera até que termine a tarefa atual — não foi ignorada.",
+        "label": "Aguardando {{name}}"
+      },
       "backToParent": "Voltar à conversa principal",
       "branch": {
         "cancelledCount": "{{count}} cancelada(s)",
@@ -29374,8 +29394,8 @@ export const resources = {
         "working_other": "{{count}}人が作業中"
       },
       "agentBusy": {
-        "bodyGeneric": "現在タスクに取り組んでいます。あなたのメッセージは作業ルームに送信されました — 開いてスレッドを続けてください。",
-        "bodyTask": "「{{task}}」に取り組んでいます。あなたのメッセージは作業ルームに送信されました — 開いてスレッドを続けてください。",
+        "bodyGeneric": "タスクに取り組んでいます。メッセージは完了するまでここで保留されます — 今すぐ連絡するには作業ルームを開いてください。",
+        "bodyTask": "「{{task}}」に取り組んでいます。メッセージは完了するまでここで保留されます — 今すぐ連絡するには作業ルームを開いてください。",
         "defaultAgentName": "このエージェント",
         "openWorkRoom": "作業ルームを開く",
         "title": "{{name}}は取り込み中です"
@@ -29394,6 +29414,10 @@ export const resources = {
       },
       "approvalSendFailed": "回答を送信できませんでした。もう一度お試しください。",
       "attachmentCaptionHint": "コンテキストのための説明を追加…",
+      "awaitingAgent": {
+        "hint": "現在のタスクが終わるまで保留されています — スキップされたわけではありません。",
+        "label": "{{name}}を待機中"
+      },
       "backToParent": "親会話に戻る",
       "branch": {
         "cancelledCount": "{{count}}件キャンセル",
@@ -34762,8 +34786,8 @@ export const resources = {
         "working_other": "{{count}} 位正在处理"
       },
       "agentBusy": {
-        "bodyGeneric": "对方正在处理一项任务。你的消息已发送到工作室——打开它以继续对话。",
-        "bodyTask": "对方正在处理「{{task}}」。你的消息已发送到工作室——打开它以继续对话。",
+        "bodyGeneric": "对方正在处理一项任务。你的消息将在此等待，直到对方完成——或打开工作室立即联系。",
+        "bodyTask": "对方正在处理「{{task}}」。你的消息将在此等待，直到对方完成——或打开工作室立即联系。",
         "defaultAgentName": "该智能体",
         "openWorkRoom": "打开工作室",
         "title": "{{name}} 正忙"
@@ -34782,6 +34806,10 @@ export const resources = {
       },
       "approvalSendFailed": "无法发送您的回复。请重试。",
       "attachmentCaptionHint": "添加说明以提供背景信息…",
+      "awaitingAgent": {
+        "hint": "在对方完成当前任务前暂时保留 — 并未被跳过。",
+        "label": "等待{{name}}"
+      },
       "backToParent": "返回上级对话",
       "branch": {
         "cancelledCount": "{{count}} 个已取消",
@@ -40150,8 +40178,8 @@ export const resources = {
         "working_other": "{{count}}명 작업 중"
       },
       "agentBusy": {
-        "bodyGeneric": "작업을 진행 중입니다. 메시지가 작업방으로 전달되었습니다 — 대화를 이어가려면 열어보세요.",
-        "bodyTask": "\"{{task}}\" 작업을 진행 중입니다. 메시지가 작업방으로 전달되었습니다 — 대화를 이어가려면 열어보세요.",
+        "bodyGeneric": "작업을 진행 중입니다. 메시지는 작업이 끝날 때까지 여기서 대기합니다 — 지금 바로 연락하려면 작업방을 열어보세요.",
+        "bodyTask": "\"{{task}}\" 작업을 진행 중입니다. 메시지는 작업이 끝날 때까지 여기서 대기합니다 — 지금 바로 연락하려면 작업방을 열어보세요.",
         "defaultAgentName": "이 에이전트",
         "openWorkRoom": "작업방 열기",
         "title": "{{name}}이(가) 사용 중입니다"
@@ -40170,6 +40198,10 @@ export const resources = {
       },
       "approvalSendFailed": "응답을 보내지 못했습니다. 다시 시도하세요.",
       "attachmentCaptionHint": "설명을 추가하세요...",
+      "awaitingAgent": {
+        "hint": "현재 작업이 끝날 때까지 보류됩니다 — 건너뛴 것이 아닙니다.",
+        "label": "{{name}} 대기 중"
+      },
       "backToParent": "상위 대화로 돌아가기",
       "branch": {
         "cancelledCount": "{{count}}개 취소됨",
@@ -45538,8 +45570,8 @@ export const resources = {
         "working_other": "{{count}} al lavoro"
       },
       "agentBusy": {
-        "bodyGeneric": "Sta lavorando a un'attività. Il tuo messaggio è stato inviato alla stanza di lavoro — aprila per continuare la conversazione.",
-        "bodyTask": "Sta lavorando a “{{task}}”. Il tuo messaggio è stato inviato alla stanza di lavoro — aprila per continuare la conversazione.",
+        "bodyGeneric": "Sta lavorando a un'attività. Il tuo messaggio resta in attesa qui finché non ha finito — oppure apri la stanza di lavoro per raggiungerlo subito.",
+        "bodyTask": "Sta lavorando a “{{task}}”. Il tuo messaggio resta in attesa qui finché non ha finito — oppure apri la stanza di lavoro per raggiungerlo subito.",
         "defaultAgentName": "Questo agente",
         "openWorkRoom": "Apri stanza di lavoro",
         "title": "{{name}} è occupato"
@@ -45558,6 +45590,10 @@ export const resources = {
       },
       "approvalSendFailed": "Impossibile inviare la tua risposta. Riprova.",
       "attachmentCaptionHint": "Aggiungi una descrizione per contesto...",
+      "awaitingAgent": {
+        "hint": "In sospeso finché non termina l'attività in corso — non è stato saltato.",
+        "label": "In attesa di {{name}}"
+      },
       "backToParent": "Torna alla conversazione principale",
       "branch": {
         "cancelledCount": "{{count}} annullati",
@@ -50926,8 +50962,8 @@ export const resources = {
         "working_other": "{{count}} काम कर रहे हैं"
       },
       "agentBusy": {
-        "bodyGeneric": "वे एक कार्य पर काम कर रहे हैं। आपका संदेश वर्करूम में भेजा गया — बातचीत जारी रखने के लिए उसे खोलें।",
-        "bodyTask": "वे “{{task}}” पर काम कर रहे हैं। आपका संदेश वर्करूम में भेजा गया — बातचीत जारी रखने के लिए उसे खोलें।",
+        "bodyGeneric": "वे एक कार्य पर काम कर रहे हैं। आपका संदेश यहाँ तब तक प्रतीक्षा में रहेगा जब तक वे पूरा न कर लें — या अभी उनसे संपर्क करने के लिए वर्क रूम खोलें।",
+        "bodyTask": "वे “{{task}}” पर काम कर रहे हैं। आपका संदेश यहाँ तब तक प्रतीक्षा में रहेगा जब तक वे पूरा न कर लें — या अभी उनसे संपर्क करने के लिए वर्क रूम खोलें।",
         "defaultAgentName": "यह एजेंट",
         "openWorkRoom": "वर्करूम खोलें",
         "title": "{{name}} व्यस्त है"
@@ -50946,6 +50982,10 @@ export const resources = {
       },
       "approvalSendFailed": "आपका उत्तर नहीं भेजा जा सका। कृपया पुनः प्रयास करें।",
       "attachmentCaptionHint": "संदर्भ के लिए विवरण जोड़ें...",
+      "awaitingAgent": {
+        "hint": "मौजूदा कार्य पूरा होने तक रोका गया है — इसे छोड़ा नहीं गया है।",
+        "label": "{{name}} की प्रतीक्षा में"
+      },
       "backToParent": "मूल बातचीत पर वापस जाएँ",
       "branch": {
         "cancelledCount": "{{count}} रद्द",

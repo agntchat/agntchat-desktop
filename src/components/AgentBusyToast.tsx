@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { useTranslation } from "react-i18next";
 import { ws } from "../services/websocket";
 import { useChatStore } from "../stores/chatStore";
 
@@ -13,9 +14,10 @@ interface BusyNotice {
 
 /**
  * Shows when the user sends into a parent DM while the target agent
- * is busy on a subtask. The backend silently redirects the message
- * to the work room; this surfaces that redirect so the user can
- * actually find their thread.
+ * is busy on a subtask. The backend holds the message (stamping it
+ * `metadata.awaiting_agent`, which the bubble renders as "waiting for
+ * X") and redelivers it when the task closes; this toast explains the
+ * hold and offers the work room for anyone who can't wait.
  */
 export function AgentBusyToast() {
   const [notice, setNotice] = useState<BusyNotice | null>(null);
@@ -41,14 +43,11 @@ export function AgentBusyToast() {
     setNotice(null);
   };
 
-  const name = notice.agentName ?? "This agent";
-  const taskLabel = notice.taskTitle ? `“${notice.taskTitle}”` : "a task";
-
   return (
     <div className="pointer-events-none fixed bottom-6 right-6 z-50 max-w-sm">
       <AgentBusyToastCard
-        name={name}
-        taskLabel={taskLabel}
+        name={notice.agentName}
+        taskTitle={notice.taskTitle}
         onOpen={open}
         onDismiss={() => setNotice(null)}
       />
@@ -60,33 +59,38 @@ export function AgentBusyToast() {
  *  preview gallery can render it with sample data. */
 export function AgentBusyToastCard({
   name,
-  taskLabel,
+  taskTitle,
   onOpen,
   onDismiss,
 }: {
-  name: string;
-  taskLabel: string;
+  name?: string;
+  taskTitle?: string;
   onOpen: () => void;
   onDismiss: () => void;
 }) {
+  const { t } = useTranslation("chat");
+  const displayName = name ?? t("agentBusy.defaultAgentName");
+
   return (
     <div className="pointer-events-auto rounded-lg border border-border bg-card p-4 shadow-lg">
-      <p className="text-sm font-medium">{name} is busy</p>
+      <p className="text-sm font-medium">{t("agentBusy.title", { name: displayName })}</p>
       <p className="mt-1 text-xs text-muted-foreground">
-        They&apos;re working on {taskLabel}. Your message went to the work room — open it to continue the thread.
+        {taskTitle
+          ? t("agentBusy.bodyTask", { task: taskTitle })
+          : t("agentBusy.bodyGeneric")}
       </p>
       <div className="mt-3 flex gap-2">
         <button
           onClick={onOpen}
           className="rounded-md bg-primary px-3 py-1 text-xs font-medium text-primary-foreground hover:bg-primary/90"
         >
-          Open work room
+          {t("agentBusy.openWorkRoom")}
         </button>
         <button
           onClick={onDismiss}
           className="rounded-md px-3 py-1 text-xs font-medium text-muted-foreground hover:bg-accent"
         >
-          Dismiss
+          {t("common:dismiss")}
         </button>
       </div>
     </div>

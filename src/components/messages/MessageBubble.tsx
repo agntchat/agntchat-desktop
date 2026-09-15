@@ -15,7 +15,7 @@ import {
   MessageFooter,
   MessageHeader,
 } from "@/components/ui/message";
-import { Bot, LogIn, Reply as ReplyIcon, Terminal } from "lucide-react";
+import { Bot, Hourglass, LogIn, Reply as ReplyIcon, Terminal } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useModelCatalog } from "../../stores/modelCatalogStore";
 import { MarkdownContent } from "./MarkdownContent";
@@ -35,6 +35,7 @@ import {
   CompactionSummaryMessage,
 } from "./CompactionSummaryMessage";
 import type { Message } from "../../lib/api";
+import { awaitingAgent } from "../../lib/awaitingAgent";
 
 function isResultPresentationMessage(message: Message): boolean {
   // Primary path: backend sets messageType="ResultPresentation" when
@@ -188,6 +189,10 @@ export const MessageBubble = memo(function MessageBubble({
   // button anyway (Jarvis, Aug 2026) because errorKind alone doesn't say
   // *which* credential broke.
   const senderManaged = useAgentStore((s) => s.agents[message.senderId]);
+  // Held because the agent is busy in a task work room — the backend clears
+  // the stamp (and this note) when the task closes and the message is
+  // actually delivered. See lib/awaitingAgent.ts.
+  const awaiting = awaitingAgent(message);
   const showClaudeSignIn =
     message.metadata?.errorKind === "auth_failure" &&
     isAgent &&
@@ -393,6 +398,17 @@ export const MessageBubble = memo(function MessageBubble({
         <MessageFooter className="mt-0.5 px-1 text-[10px] font-normal">
           {formatClockTime(message.insertedAt)}
           {message.pending && ` · ${t("sending")}`}
+          {awaiting && (
+            <span
+              className="ml-1.5 inline-flex items-center gap-1"
+              title={t("chat:awaitingAgent.hint")}
+            >
+              <Hourglass className="h-2.5 w-2.5" aria-hidden />
+              {t("chat:awaitingAgent.label", {
+                name: awaiting.agent_name ?? t("chat:agentBusy.defaultAgentName"),
+              })}
+            </span>
+          )}
         </MessageFooter>
       </MessageContent>
     </MessageRow>

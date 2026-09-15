@@ -232,6 +232,7 @@ class WebSocketService {
       "conversation_metadata_changed",
       "conversation_avatar_changed",
       "message_deleted",
+      "message_metadata_changed",
       "reaction_added",
       "reaction_removed",
       "message_streaming",
