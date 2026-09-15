@@ -88,7 +88,8 @@ import {
 } from "lucide-react";
 import { deviceTimezone, filterTimezones, formatTimezoneLabel } from "../lib/timezones";
 import { getInitials } from "../lib/utils";
-import { uploadAvatar } from "../lib/imageProcessor";
+import { uploadProcessedBlob } from "../lib/imageProcessor";
+import { AvatarCropDialog } from "./AvatarCropDialog";
 import { FriendsView } from "./FriendsView";
 import { open as tauriOpen } from "@tauri-apps/plugin-shell";
 import { openExternal } from "../lib/openExternal";
@@ -216,6 +217,8 @@ export function Profile({ onClose }: { onClose: () => void }) {
   const [profileSaved, setProfileSaved] = useState(false);
   const [uploadingAvatar, setUploadingAvatar] = useState(false);
   const [avatarError, setAvatarError] = useState<string | null>(null);
+  // Object URL of the picked file while the crop dialog is open.
+  const [cropImage, setCropImage] = useState<string | null>(null);
 
   // ---- Integration state ----
   const [providers, setProviders] = useState<api.ProviderInfo[]>([]);
@@ -375,16 +378,32 @@ export function Profile({ onClose }: { onClose: () => void }) {
     }
   };
 
-  const handleAvatarChange = async (
-    e: React.ChangeEvent<HTMLInputElement>
-  ) => {
+  // Picking a file opens the cropper (same flow as agent avatars) so the
+  // user frames the shot instead of getting a blind centre crop.
+  const handleAvatarChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
+    e.target.value = "";
     if (!file || !participant) return;
+    setAvatarError(null);
+    setCropImage(URL.createObjectURL(file));
+  };
 
+  const closeCrop = () => {
+    if (cropImage) URL.revokeObjectURL(cropImage);
+    setCropImage(null);
+  };
+
+  const handleCropConfirm = async (blob: Blob) => {
+    closeCrop();
+    if (!participant) return;
     setUploadingAvatar(true);
     setAvatarError(null);
     try {
-      const newUrl = await uploadAvatar(file, `avatars/${participant.id}`);
+      const newUrl = await uploadProcessedBlob(
+        blob,
+        blob.type || "image/jpeg",
+        `avatars/${participant.id}`
+      );
       const updated = await api.updateProfile({ avatarUrl: newUrl });
       persistParticipant(updated);
     } catch (err) {
@@ -393,7 +412,6 @@ export function Profile({ onClose }: { onClose: () => void }) {
       );
     } finally {
       setUploadingAvatar(false);
-      e.target.value = "";
     }
   };
 
@@ -807,6 +825,14 @@ export function Profile({ onClose }: { onClose: () => void }) {
             </div>
             {avatarError && (
               <p className="text-xs text-destructive">{avatarError}</p>
+            )}
+            {cropImage && (
+              <AvatarCropDialog
+                open
+                imageSrc={cropImage}
+                onClose={closeCrop}
+                onConfirm={handleCropConfirm}
+              />
             )}
 
             {/* First / Last name */}
