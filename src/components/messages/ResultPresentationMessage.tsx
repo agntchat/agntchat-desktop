@@ -708,7 +708,7 @@ async function executeCTAAction(
   itemTitle: string | undefined,
   itemDetails: Record<string, unknown>,
   t: TFunction<"chat">
-): Promise<string | null> {
+): Promise<CTAOutcome | null> {
   if (action === "send_email" || action === "save_draft") {
     const { request } = await import("../../lib/api");
     const to = String(itemDetails.to ?? "");
@@ -716,10 +716,10 @@ async function executeCTAAction(
     const body = String(itemDetails.body ?? "");
 
     if (action === "send_email" && (!to || !body)) {
-      return t("results.cannotSendMissing");
+      return { done: false, label: t("results.cannotSendMissing") };
     }
     if (action === "save_draft" && !body) {
-      return t("results.cannotSaveDraftEmpty");
+      return { done: false, label: t("results.cannotSaveDraftEmpty") };
     }
 
     const contentType = /<[a-z][\s\S]*>/i.test(body) ? "text/html" : "text/plain";
@@ -737,16 +737,68 @@ async function executeCTAAction(
         method: "POST",
         body: JSON.stringify(payload),
       });
-      return t("results.emailSentTo", { to: result?.sent_to || to });
+      return { done: true, label: t("results.emailSentTo", { to: result?.sent_to || to }) };
     }
     await request("/api/google/gmail/drafts", {
       method: "POST",
       body: JSON.stringify(payload),
     });
-    return t("results.draftSaved", { subject });
+    return { done: true, label: t("results.draftSaved", { subject }) };
   }
 
   return null; // unknown action — caller falls through to the WS relay
+}
+
+/** `done` is false for a refusal (missing recipient) — shown, never recorded. */
+interface CTAOutcome {
+  done: boolean;
+  label: string;
+}
+
+/**
+ * Completions the backend stamped on the message row
+ * (`metadata.cta_completions`, keyed `"<itemIndex>:<action>"` —
+ * `Agentchat.Messaging.CtaCompletions`). The reason a pressed Send stays
+ * "Email sent" after leaving and reopening the conversation, on any device.
+ */
+type CtaCompletions = Record<string, { participant_id?: string; completed_at?: string }>;
+
+function ctaCompletionKey(itemIndex: number, action: string) {
+  return `${itemIndex}:${action}`;
+}
+
+/** Label for a completion recorded on the row — recomputed locally so it is
+ * in the viewer's locale, not whichever client pressed the button. */
+function completedLabel(
+  cta: ResultCTA,
+  itemTitle: string | undefined,
+  itemDetails: Record<string, unknown>,
+  t: TFunction<"chat">
+): string {
+  if (cta.action === "send_email") {
+    return t("results.emailSentTo", { to: String(itemDetails.to ?? "") });
+  }
+  if (cta.action === "save_draft") {
+    return t("results.draftSaved", {
+      subject: itemTitle || String(itemDetails.subject ?? ""),
+    });
+  }
+  return cta.label;
+}
+
+// Persist the press on the message row. Best effort: the action itself
+// already happened, so a failure here only costs the remembered state and
+// must not surface as a failed action.
+async function recordCtaCompletion(messageId: string, itemIndex: number, action: string) {
+  try {
+    const { request } = await import("../../lib/api");
+    await request(`/api/messages/${messageId}/cta-completions`, {
+      method: "POST",
+      body: JSON.stringify({ item_index: itemIndex, action }),
+    });
+  } catch (e) {
+    console.warn("CTA completion not recorded:", e);
+  }
 }
 
 function CTAButton({
@@ -755,16 +807,26 @@ function CTAButton({
   itemTitle,
   itemDetails,
   conversationId,
+  messageId,
+  itemIndex,
+  completions,
 }: {
   cta: ResultCTA;
   primary?: boolean;
   itemTitle?: string;
   itemDetails: Record<string, unknown>;
   conversationId?: string;
+  messageId?: string;
+  itemIndex: number;
+  completions?: CtaCompletions;
 }) {
   const { t } = useTranslation("chat");
   const [busy, setBusy] = useState(false);
-  const [done, setDone] = useState<string | null>(null);
+  const [localDone, setLocalDone] = useState<string | null>(null);
+  // Row-recorded completion wins over nothing; a fresh local press wins
+  // over the row until the metadata broadcast catches up.
+  const recorded = cta.action ? completions?.[ctaCompletionKey(itemIndex, cta.action)] : undefined;
+  const done = localDone ?? (recorded ? completedLabel(cta, itemTitle, itemDetails, t) : null);
 
   const className = cn(
     "inline-flex items-center gap-1.5 rounded-md px-3 py-1.5 text-xs font-medium",
@@ -791,7 +853,10 @@ function CTAButton({
     try {
       const result = await executeCTAAction(cta.action!, itemTitle, itemDetails, t);
       if (result != null) {
-        setDone(result);
+        setLocalDone(result.label);
+        if (result.done && messageId) {
+          void recordCtaCompletion(messageId, itemIndex, cta.action!);
+        }
         return;
       }
       // Unknown action: relay to the agent as a structured UserAction event.
@@ -801,11 +866,12 @@ function CTAButton({
           label: cta.label,
           details: itemDetails,
         });
-        setDone(cta.label);
+        setLocalDone(cta.label);
+        if (messageId) void recordCtaCompletion(messageId, itemIndex, cta.action!);
       }
     } catch (e) {
       console.error("CTA action failed:", e);
-      setDone(t("results.actionFailed"));
+      setLocalDone(t("results.actionFailed"));
     } finally {
       setBusy(false);
     }
@@ -832,11 +898,17 @@ function CTAButtons({
   itemTitle,
   itemDetails,
   conversationId,
+  messageId,
+  itemIndex,
+  completions,
 }: {
   cta: { primary?: ResultCTA; secondary?: ResultCTA[] };
   itemTitle?: string;
   itemDetails: Record<string, unknown>;
   conversationId?: string;
+  messageId?: string;
+  itemIndex: number;
+  completions?: CtaCompletions;
 }) {
   return (
     <div className="flex flex-wrap gap-2">
@@ -847,6 +919,9 @@ function CTAButtons({
           itemTitle={itemTitle}
           itemDetails={itemDetails}
           conversationId={conversationId}
+          messageId={messageId}
+          itemIndex={itemIndex}
+          completions={completions}
         />
       )}
       {cta.secondary?.map((s, i) => (
@@ -856,6 +931,9 @@ function CTAButtons({
           itemTitle={itemTitle}
           itemDetails={itemDetails}
           conversationId={conversationId}
+          messageId={messageId}
+          itemIndex={itemIndex}
+          completions={completions}
         />
       ))}
     </div>
@@ -908,12 +986,18 @@ function Citations({
 
 function ResultCard({
   item,
+  itemIndex,
   resultType,
   conversationId,
+  messageId,
+  completions,
 }: {
   item: ResultItem;
+  itemIndex: number;
   resultType?: string;
   conversationId?: string;
+  messageId?: string;
+  completions?: CtaCompletions;
 }) {
   const { t } = useTranslation("chat");
   const TypeIcon = resultTypeIcon(item.type ?? resultType);
@@ -1001,6 +1085,9 @@ function ResultCard({
             itemTitle={item.title}
             itemDetails={details}
             conversationId={conversationId}
+            messageId={messageId}
+            itemIndex={itemIndex}
+            completions={completions}
           />
         )}
 
@@ -1032,6 +1119,9 @@ export function ResultPresentationMessage({
   const { t } = useTranslation("chat");
   const data = (message.contentStructured?.data ?? {}) as RPData;
   const items = data.items ?? [];
+  const completions = (message.metadata?.cta_completions ?? undefined) as
+    | CtaCompletions
+    | undefined;
 
   if (items.length === 0) {
     return <p className="text-sm">{message.content}</p>;
@@ -1057,14 +1147,19 @@ export function ResultPresentationMessage({
       {singleItem ? (
         <ResultCard
           item={items[0]!}
+          itemIndex={0}
           resultType={data.result_type}
           conversationId={message.conversationId}
+          messageId={message.id}
+          completions={completions}
         />
       ) : (
         <Carousel
           items={items}
           resultType={data.result_type}
           conversationId={message.conversationId}
+          messageId={message.id}
+          completions={completions}
         />
       )}
 
@@ -1086,10 +1181,14 @@ function Carousel({
   items,
   resultType,
   conversationId,
+  messageId,
+  completions,
 }: {
   items: ResultItem[];
   resultType?: string;
   conversationId?: string;
+  messageId?: string;
+  completions?: CtaCompletions;
 }) {
   const { t } = useTranslation("common");
   const [activeIndex, setActiveIndex] = useState(0);
@@ -1104,8 +1203,11 @@ function Carousel({
     <div>
       <ResultCard
         item={items[activeIndex]!}
+        itemIndex={activeIndex}
         resultType={resultType}
         conversationId={conversationId}
+        messageId={messageId}
+        completions={completions}
       />
 
       {/* Navigation bar */}
