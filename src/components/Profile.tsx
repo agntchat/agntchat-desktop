@@ -2517,12 +2517,14 @@ function NotificationsSection() {
       .finally(() => setLoaded(true));
   }, []);
 
-  const handleToggle = useCallback(async (key: keyof NotificationPrefs) => {
-    let newValue = false;
-    setPrefs((p) => {
-      newValue = !p[key];
-      return { ...p, [key]: newValue };
-    });
+  // The new value is read from the rendered state, not assigned inside the
+  // setState updater: React only runs the updater eagerly when nothing else
+  // is pending, so the old pattern could PATCH the `false` default (turning
+  // a category OFF when the user meant ON) while the switch showed the
+  // optimistic change.
+  const handleToggle = async (key: keyof NotificationPrefs) => {
+    const newValue = !prefs[key];
+    setPrefs((p) => ({ ...p, [key]: newValue }));
     try {
       await api.request("/api/me/notification-preferences", {
         method: "PATCH",
@@ -2531,7 +2533,7 @@ function NotificationsSection() {
     } catch {
       setPrefs((p) => ({ ...p, [key]: !newValue }));
     }
-  }, []);
+  };
 
   if (!loaded) {
     return (

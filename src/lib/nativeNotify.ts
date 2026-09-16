@@ -25,7 +25,10 @@ export async function notifyIfEnabled(
         "/api/me/notification-preferences"
       )
       .then((data) => data.notificationPreferences[category] !== false)
-      .catch(() => true);
+      // Fail CLOSED: if we can't read the preference, stay quiet. A missed
+      // notification is recoverable (the message is still in the app); a
+      // notification the user explicitly switched off is not.
+      .catch(() => false);
     if (!enabled) return;
 
     let granted = await isPermissionGranted();

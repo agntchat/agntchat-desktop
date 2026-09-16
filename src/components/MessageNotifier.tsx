@@ -39,6 +39,10 @@ export function MessageNotifier() {
         return;
       }
 
+      // Computed per RECIPIENT by the user channel: `null` means "not for
+      // you" — a suppressed pulse confirmation, or agents talking in a task
+      // workroom this user was never added to (they hear it only because an
+      // agent they own is in it). `mentions` means *this* user was mentioned.
       const category = lastMessage.notificationCategory;
       if (!category || category === REMINDER_CATEGORY) return;
 
