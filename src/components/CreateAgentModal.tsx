@@ -1,4 +1,5 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { useNavStore } from "../stores/navStore";
 import { Trans, useTranslation } from "react-i18next";
 import {
   X,
@@ -114,9 +115,10 @@ type CreationPath = "quick" | "preset" | "advanced";
 
 // Display names for credentialed providers on the tools step's Connect
 // buttons (provider ids are lowercase machine keys).
-const PROVIDER_LABELS: Record<"google" | "github", string> = {
+const PROVIDER_LABELS: Record<"google" | "github" | "x", string> = {
   google: "Google",
   github: "GitHub",
+  x: "X",
 };
 
 // Icons for the preset picker stay UI-side, like TYPE_ICONS below.
@@ -263,7 +265,12 @@ export function CreateAgentModal({ onClose }: { onClose: () => void }) {
   // Launch OAuth in the system browser and poll until the credential lands
   // (same mechanics as the post-create connect pane — there's no in-app
   // completion event).
-  const handleWizardConnect = async (provider: "google" | "github") => {
+  const handleWizardConnect = async (provider: "google" | "github" | "x") => {
+    // X needs its Connected Accounts setup form (own app credentials).
+    if (provider === "x") {
+      useNavStore.getState().openProfile();
+      return;
+    }
     try {
       const { authorizeUrl } = await authorizeProvider(provider);
       openExternal(authorizeUrl);

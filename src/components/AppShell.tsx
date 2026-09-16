@@ -82,6 +82,10 @@ export function AppShell() {
   const setView = useNavStore((s) => s.setView);
   const participant = useAuthStore((s) => s.participant);
   const [showProfile, setShowProfile] = useState(false);
+  const profileRequest = useNavStore((s) => s.profileRequest);
+  useEffect(() => {
+    if (profileRequest > 0) setShowProfile(true);
+  }, [profileRequest]);
 
   // Mirrors LeftRail's isWorkspaceMode — the "friends" view doubles as the
   // Members view in a shared workspace, so the view gate below must match

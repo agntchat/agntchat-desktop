@@ -17,6 +17,11 @@ export type View =
 interface NavState {
   view: View;
   setView: (view: View) => void;
+  /** Bumped by `openProfile()`; AppShell opens the profile drawer on change.
+   *  Lets deep surfaces (tools tab, create wizard) send the user to
+   *  Connected Accounts — e.g. X needs its setup form there. */
+  profileRequest: number;
+  openProfile: () => void;
   /** Set when the memory island's "Review" is clicked — consumed by
    *  Dashboard to select the owning agent and open AgentConfig straight
    *  into its Memory section on the saved memory's scope tab. */
@@ -38,6 +43,8 @@ interface NavState {
 
 export const useNavStore = create<NavState>((set) => ({
   view: "chat",
+  profileRequest: 0,
+  openProfile: () => set((s) => ({ profileRequest: s.profileRequest + 1 })),
   setView: (view) => {
     trackScreen(view);
     set({ view });

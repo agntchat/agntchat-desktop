@@ -1,4 +1,5 @@
 import { useCallback, useEffect, useState } from "react";
+import { useNavStore } from "../stores/navStore";
 import { useTranslation } from "react-i18next";
 import { Check, ChevronDown, ChevronRight, Wrench } from "lucide-react";
 import {
@@ -177,6 +178,12 @@ export function AgentTools({ agentId, onCount }: AgentToolsProps) {
 
   const handleConnect = async (provider: string) => {
     setError(null);
+    // X is bring-your-own-app: its setup form (client credentials, DM
+    // option) lives in Connected Accounts, not behind a one-click authorize.
+    if (provider === "x") {
+      useNavStore.getState().openProfile();
+      return;
+    }
     try {
       const { authorizeUrl } = await authorizeProvider(provider);
       openExternal(authorizeUrl);

@@ -1844,7 +1844,8 @@ export const resources = {
           "jobs": "Job search",
           "other": "Other",
           "payments": "Payments & finance",
-          "sheets": "Google Sheets"
+          "sheets": "Google Sheets",
+          "x": "X"
         },
         "integrations": "Integrations",
         "loading": "Loading tools…",
@@ -7267,7 +7268,8 @@ export const resources = {
           "jobs": "Búsqueda de empleo",
           "other": "Otros",
           "payments": "Pagos y finanzas",
-          "sheets": "Google Sheets"
+          "sheets": "Google Sheets",
+          "x": "X"
         },
         "integrations": "Integraciones",
         "loading": "Cargando herramientas…",
@@ -12690,7 +12692,8 @@ export const resources = {
           "jobs": "Jobsuche",
           "other": "Sonstige",
           "payments": "Zahlungen & Finanzen",
-          "sheets": "Google Sheets"
+          "sheets": "Google Sheets",
+          "x": "X"
         },
         "integrations": "Integrationen",
         "loading": "Werkzeuge werden geladen…",
@@ -18113,7 +18116,8 @@ export const resources = {
           "jobs": "Recherche d'emploi",
           "other": "Autres",
           "payments": "Paiements et finances",
-          "sheets": "Google Sheets"
+          "sheets": "Google Sheets",
+          "x": "X"
         },
         "integrations": "Intégrations",
         "loading": "Chargement des outils…",
@@ -23536,7 +23540,8 @@ export const resources = {
           "jobs": "Busca de vagas",
           "other": "Outros",
           "payments": "Pagamentos e finanças",
-          "sheets": "Google Sheets"
+          "sheets": "Google Sheets",
+          "x": "X"
         },
         "integrations": "Integrações",
         "loading": "Carregando ferramentas…",
@@ -28959,7 +28964,8 @@ export const resources = {
           "jobs": "求人検索",
           "other": "その他",
           "payments": "決済・金融",
-          "sheets": "Google スプレッドシート"
+          "sheets": "Google スプレッドシート",
+          "x": "X"
         },
         "integrations": "連携",
         "loading": "ツールを読み込み中…",
@@ -34382,7 +34388,8 @@ export const resources = {
           "jobs": "职位搜索",
           "other": "其他",
           "payments": "支付与金融",
-          "sheets": "Google 表格"
+          "sheets": "Google 表格",
+          "x": "X"
         },
         "integrations": "集成",
         "loading": "正在加载工具…",
@@ -39805,7 +39812,8 @@ export const resources = {
           "jobs": "구직 검색",
           "other": "기타",
           "payments": "결제 및 금융",
-          "sheets": "Google 스프레드시트"
+          "sheets": "Google 스프레드시트",
+          "x": "X"
         },
         "integrations": "통합",
         "loading": "도구 불러오는 중…",
@@ -45228,7 +45236,8 @@ export const resources = {
           "jobs": "Ricerca di lavoro",
           "other": "Altri",
           "payments": "Pagamenti e finanza",
-          "sheets": "Google Sheets"
+          "sheets": "Google Sheets",
+          "x": "X"
         },
         "integrations": "Integrazioni",
         "loading": "Caricamento degli strumenti…",
@@ -50651,7 +50660,8 @@ export const resources = {
           "jobs": "नौकरी खोज",
           "other": "अन्य",
           "payments": "भुगतान और वित्त",
-          "sheets": "Google Sheets"
+          "sheets": "Google Sheets",
+          "x": "X"
         },
         "integrations": "इंटीग्रेशन",
         "loading": "टूल लोड हो रहे हैं…",
