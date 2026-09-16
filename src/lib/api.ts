@@ -2273,6 +2273,10 @@ export interface UserCredential {
   // User-chosen name for the connection; defaults to the provider name.
   label?: string;
   providerUid?: string;
+  // Raw provider metadata. For custom rows this is where the origin lives:
+  // `created_by_agent_id` (agent-saved) / `requested_by_agent_id`
+  // (fulfilled from a credential request); absent on hand-entered rows.
+  providerMetadata?: Record<string, unknown>;
   lastUsedAt?: string;
   tokenExpiresAt?: string;
   // Custom-endpoint extras (see backend serializer). Secret field VALUES are
@@ -2394,6 +2398,9 @@ export async function storeProviderToken(
     // Store a SECOND key for the same service (non-default row) bound to
     // different agents, rather than upserting the default.
     additional?: boolean;
+    // Rotate THIS row's key in place (multi-row custom connections). Without
+    // it a re-save upserts the provider's default row.
+    keyId?: string;
   }
 ): Promise<{ credential: UserCredential }> {
   return request(`/api/integrations/${provider}/token`, {
@@ -2410,6 +2417,7 @@ export async function storeProviderToken(
       grantScope: extras?.grantScope,
       grantedAgentIds: extras?.grantedAgentIds,
       additional: extras?.additional,
+      keyId: extras?.keyId,
     }),
   });
 }
@@ -2430,6 +2438,8 @@ export async function updateProviderConnection(
     authHeader?: string;
     grantScope?: CredentialGrantScope;
     grantedAgentIds?: string[];
+    // Edit THIS row (multi-row custom connections); omitted = the default row.
+    keyId?: string;
   }
 ): Promise<{ credential: UserCredential }> {
   return request(`/api/integrations/${provider}`, {
@@ -2443,6 +2453,7 @@ export async function updateProviderConnection(
       authHeader: changes.authHeader,
       grantScope: changes.grantScope,
       grantedAgentIds: changes.grantedAgentIds,
+      keyId: changes.keyId,
     }),
   });
 }

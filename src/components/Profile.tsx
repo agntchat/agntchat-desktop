@@ -173,15 +173,47 @@ type SectionValue = (typeof SECTIONS)[number]["value"];
 // Custom API persistence
 // ---------------------------------------------------------------------------
 
-// The custom endpoint is stored backend-side under the `custom` provider so
-// agents can actually resolve it (encrypted at rest, walks the ownership
-// chain). A single custom endpoint per user, with an API key plus any number
-// of extra named values (secret ones encrypted).
+// Custom endpoints are stored backend-side under the `custom` provider so
+// agents can actually resolve them (encrypted at rest, walks the ownership
+// chain). An owner holds any number of custom rows — the one they entered
+// here, rows fulfilled from an agent's credential request, and rows an agent
+// saved with `save_custom_api_connection` — each with its own API key, extra
+// named values (secret ones encrypted), and agent grant. Exactly one row is
+// the default: what `call_custom_api` uses when the agent doesn't name a
+// connection.
 // `existing` marks rows prefilled from stored fieldDefs on edit. A secret
 // row's value is never returned by the server, so an existing secret with a
 // blank value means "unchanged" and MUST still be submitted — dropping it
 // would delete the field's definition (and stored value) server-side.
 type CustomFieldRow = api.CredentialFieldInput & { existing?: boolean };
+
+// Which agent brought a custom connection in: `created_by_agent_id` for an
+// agent-saved row, `requested_by_agent_id` for one fulfilled from a
+// credential request. Hand-entered rows carry neither.
+function customOriginAgentId(c: api.UserCredential): string | undefined {
+  const meta = c.providerMetadata ?? {};
+  const id = meta.created_by_agent_id ?? meta.requested_by_agent_id;
+  return typeof id === "string" && id ? id : undefined;
+}
+
+// The label defaults to the provider name ("custom") server-side; treat that
+// as unnamed and fall back to the endpoint.
+function customConnectionName(
+  c: api.UserCredential,
+  fallback: string
+): string {
+  if (c.label && c.label !== "custom") return c.label;
+  return c.endpoint || fallback;
+}
+
+// Default row first, then oldest first — stable across refetches so rows
+// don't jump when one is edited.
+function sortCustomCredentials(rows: api.UserCredential[]): api.UserCredential[] {
+  return [...rows].sort((a, b) => {
+    if (!!a.isDefault !== !!b.isDefault) return a.isDefault ? -1 : 1;
+    return a.insertedAt.localeCompare(b.insertedAt);
+  });
+}
 
 // ---------------------------------------------------------------------------
 // Component
@@ -264,6 +296,10 @@ export function Profile({ onClose }: { onClose: () => void }) {
 
   // ---- Custom API state (backend `custom` provider) ----
   const [customApiDialog, setCustomApiDialog] = useState(false);
+  // The row the dialog is editing; null while adding a new connection.
+  const [editingCustom, setEditingCustom] = useState<api.UserCredential | null>(
+    null
+  );
   const [customName, setCustomName] = useState("");
   const [customEndpoint, setCustomEndpoint] = useState("");
   // What the API is / how to call it. This is the only thing that tells an
@@ -281,7 +317,9 @@ export function Profile({ onClose }: { onClose: () => void }) {
   const [customFields, setCustomFields] = useState<CustomFieldRow[]>([]);
   const [customApiError, setCustomApiError] = useState<string | null>(null);
   const [savingCustomApi, setSavingCustomApi] = useState(false);
-  const [deleteCustomApi, setDeleteCustomApi] = useState(false);
+  // The row awaiting delete confirmation.
+  const [deleteCustomApi, setDeleteCustomApi] =
+    useState<api.UserCredential | null>(null);
 
   // ---- Fetch providers & credentials on mount ----
   const fetchIntegrations = useCallback(async () => {
@@ -545,31 +583,54 @@ export function Profile({ onClose }: { onClose: () => void }) {
 
   // ---- Custom API handlers (backend `custom` provider) ----
 
-  const customCredential = credentials.find((c) => c.provider === "custom");
+  // Every custom connection the owner holds — see the note above
+  // CustomFieldRow. Each renders as its own card.
+  const customCredentials = sortCustomCredentials(
+    credentials.filter((c) => c.provider === "custom")
+  );
 
-  const openCustomApiDialog = () => {
+  // The provider row the Access dialog is keyed on; the backend's list may
+  // omit `custom` (it's managed here), so synthesize a minimal one.
+  const customProviderInfo: api.ProviderInfo = providers.find(
+    (p) => p.name === "custom"
+  ) ?? {
+    name: "custom",
+    type: "api_token",
+    displayName: t("customApis.title"),
+  };
+
+  // "Added by <agent>" for agent-originated rows; null for hand-entered ones.
+  // An agent that has since been deleted still gets a generic line so the
+  // row's provenance isn't silently lost.
+  const customOriginLabel = (c: api.UserCredential): string | null => {
+    const agentId = customOriginAgentId(c);
+    if (!agentId) return null;
+    const agent = ownedAgents.find((a) => a.id === agentId);
+    return agent
+      ? t("customApis.addedBy", { agent: agent.displayName })
+      : t("customApis.addedByAgent");
+  };
+
+  const openCustomApiDialog = (cred: api.UserCredential | null) => {
     // Prefill from the stored credential (edit). Secret values are never
     // returned by the server — start them blank so the user only re-enters
     // what they want to change; public values pre-fill from publicFields.
     // The label defaults to "custom" server-side; treat that as unnamed.
-    setCustomName(
-      customCredential?.label && customCredential.label !== "custom"
-        ? customCredential.label
-        : ""
-    );
-    setCustomEndpoint(customCredential?.endpoint ?? "");
-    setCustomDescription(customCredential?.description ?? "");
+    setEditingCustom(cred);
+    setCustomName(cred?.label && cred.label !== "custom" ? cred.label : "");
+    setCustomEndpoint(cred?.endpoint ?? "");
+    setCustomDescription(cred?.description ?? "");
     setCustomApiKey("");
-    const authMode = customCredential?.authMode ?? "bearer";
+    const authMode = cred?.authMode ?? "bearer";
     setCustomAuthMode(authMode);
-    setCustomAuthHeader(customCredential?.authHeader ?? "");
-    const fieldDefs = customCredential?.fieldDefs ?? [];
+    setCustomAuthHeader(cred?.authHeader ?? "");
+    const fieldDefs = cred?.fieldDefs ?? [];
     setCustomFields(
       fieldDefs.map((d) => ({
         key: d.key,
         label: d.label,
         secret: d.secret,
-        value: d.secret ? "" : customCredential?.publicFields?.[d.key] ?? "",
+        value: d.secret ? "" : cred?.publicFields?.[d.key] ?? "",
         existing: true,
       }))
     );
@@ -602,7 +663,7 @@ export function Profile({ onClose }: { onClose: () => void }) {
     // On CREATE the API key is required (it's the credential's access_token).
     // On EDIT it's optional — a blank key routes through the metadata-only
     // PATCH, leaving the stored token and secrets untouched.
-    const editing = !!customCredential;
+    const editing = !!editingCustom;
     if (!customApiKey.trim() && !editing) {
       setCustomApiError(t("customApis.errors.apiKeyRequired"));
       return;
@@ -644,26 +705,32 @@ export function Profile({ onClose }: { onClose: () => void }) {
       const authHeader =
         customAuthMode === "header" ? customAuthHeader.trim() : "";
 
+      const payload = {
+        endpoint: customEndpoint.trim(),
+        description: customDescription.trim(),
+        label: customName.trim() || undefined,
+        fields,
+        authMode: customAuthMode,
+        authHeader,
+      };
+
+      // Every write is row-addressed: an edit targets the row being edited
+      // (metadata-only, or rotating that row's key), and an add lands a new
+      // row beside the existing ones. Only the very first connection goes
+      // through the default-row upsert — that's what makes it the default.
       const { credential } =
-        editing && !customApiKey.trim()
+        editingCustom && !customApiKey.trim()
           ? await api.updateProviderConnection("custom", {
-              endpoint: customEndpoint.trim(),
-              description: customDescription.trim(),
-              label: customName.trim() || undefined,
-              fields,
-              authMode: customAuthMode,
-              authHeader,
+              ...payload,
+              keyId: editingCustom.id,
             })
           : await api.storeProviderToken("custom", customApiKey.trim(), {
-              endpoint: customEndpoint.trim(),
-              description: customDescription.trim(),
-              label: customName.trim() || undefined,
-              fields,
-              authMode: customAuthMode,
-              authHeader,
+              ...payload,
+              keyId: editingCustom?.id,
+              additional: !editingCustom && customCredentials.length > 0,
             });
       setCredentials((prev) => [
-        ...prev.filter((c) => c.provider !== "custom"),
+        ...prev.filter((c) => c.id !== credential.id),
         credential,
       ]);
       setCustomApiDialog(false);
@@ -677,15 +744,19 @@ export function Profile({ onClose }: { onClose: () => void }) {
   };
 
   const handleDeleteCustomApi = async () => {
+    if (!deleteCustomApi) return;
     try {
-      await api.disconnectProvider("custom");
-      setCredentials((prev) => prev.filter((c) => c.provider !== "custom"));
+      await api.disconnectProvider("custom", deleteCustomApi.id);
+      // Deleting the default promotes another row server-side — re-pull
+      // rather than guess which one became the default.
+      const { credentials: fresh } = await api.listCredentials();
+      setCredentials(fresh);
     } catch (e) {
       setIntegrationError(
         e instanceof Error ? e.message : t("customApis.errors.deleteFailed")
       );
     } finally {
-      setDeleteCustomApi(false);
+      setDeleteCustomApi(null);
     }
   };
 
@@ -992,8 +1063,10 @@ export function Profile({ onClose }: { onClose: () => void }) {
 
         {activeSection === "connections" && (
           <div className="flex-1 overflow-y-auto p-5 space-y-6">
-            {/* Custom API — a single bring-your-own endpoint stored backend-side
-                (encrypted, agent-usable) under the `custom` provider. */}
+            {/* Custom APIs — bring-your-own endpoints stored backend-side
+                (encrypted, agent-usable) under the `custom` provider. One
+                card per row: the owner's own, request-fulfilled ones, and
+                ones an agent saved. */}
             <section>
               <SectionHeader
                 title={t("customApis.title")}
@@ -1001,83 +1074,90 @@ export function Profile({ onClose }: { onClose: () => void }) {
               />
 
               <div className="rounded-xl border border-border bg-card divide-y divide-border overflow-hidden">
-                {customCredential ? (
-                  <div className="flex items-center gap-3 px-4 py-3">
-                    <div className="w-8 h-8 rounded-md flex items-center justify-center flex-shrink-0 bg-primary/10 border border-primary/20">
-                      <Globe className="w-4 h-4 text-primary" />
+                {customCredentials.map((cred) => {
+                  const origin = customOriginLabel(cred);
+                  return (
+                    <div key={cred.id} className="flex items-center gap-3 px-4 py-3">
+                      <div className="w-8 h-8 rounded-md flex items-center justify-center flex-shrink-0 bg-primary/10 border border-primary/20">
+                        <Globe className="w-4 h-4 text-primary" />
+                      </div>
+                      <div className="flex-1 min-w-0">
+                        <div className="flex items-center gap-2 min-w-0">
+                          <p className="text-sm font-medium truncate">
+                            {customConnectionName(cred, t("customApis.customEndpoint"))}
+                          </p>
+                          {/* Only worth flagging once there's a choice. */}
+                          {cred.isDefault && customCredentials.length > 1 && (
+                            <Badge
+                              variant="secondary"
+                              className="text-[10px] py-0 bg-primary/10 text-primary flex-shrink-0"
+                              title={t("customApis.defaultHint")}
+                            >
+                              {t("customApis.defaultBadge")}
+                            </Badge>
+                          )}
+                        </div>
+                        <p className="text-xs text-muted-foreground truncate mt-0.5">
+                          {cred.endpoint || t("common:apiKey")}
+                          {(cred.fieldDefs?.length ?? 0) > 0
+                            ? ` · ${t("customApis.values", {
+                                count: cred.fieldDefs!.length,
+                              })}`
+                            : ""}
+                        </p>
+                        <p className="flex items-center gap-1 text-[11px] text-muted-foreground truncate mt-0.5">
+                          <Users className="w-3 h-3 flex-shrink-0" />
+                          <span className="truncate">
+                            {cred.grantScope === "agents"
+                              ? t("integrations.access.someAgents", {
+                                  count: cred.grantedAgentIds?.length ?? 0,
+                                })
+                              : t("integrations.access.allAgents")}
+                            {origin ? ` · ${origin}` : ""}
+                          </span>
+                        </p>
+                      </div>
+                      <div className="flex items-center gap-1 flex-shrink-0">
+                        <Button
+                          variant="ghost"
+                          size="icon-sm"
+                          className="text-muted-foreground hover:text-foreground"
+                          onClick={() => openAccessDialog(customProviderInfo, cred)}
+                          title={t("integrations.access.button")}
+                        >
+                          <Users className="w-3.5 h-3.5" />
+                        </Button>
+                        <Button
+                          variant="ghost"
+                          size="icon-sm"
+                          className="text-muted-foreground hover:text-foreground"
+                          onClick={() => openCustomApiDialog(cred)}
+                          title={t("common:edit")}
+                        >
+                          <Pencil className="w-3.5 h-3.5" />
+                        </Button>
+                        <Button
+                          variant="ghost"
+                          size="icon-sm"
+                          className="text-muted-foreground hover:text-destructive"
+                          onClick={() => setDeleteCustomApi(cred)}
+                          title={t("common:delete")}
+                        >
+                          <Trash2 className="w-3.5 h-3.5" />
+                        </Button>
+                      </div>
                     </div>
-                    <div className="flex-1 min-w-0">
-                      <p className="text-sm font-medium truncate">
-                        {customCredential.label &&
-                        customCredential.label !== "custom"
-                          ? customCredential.label
-                          : customCredential.endpoint || t("customApis.customEndpoint")}
-                      </p>
-                      <p className="text-xs text-muted-foreground truncate mt-0.5">
-                        {customCredential.endpoint || t("common:apiKey")}
-                        {(customCredential.fieldDefs?.length ?? 0) > 0
-                          ? ` · ${t("customApis.values", {
-                              count: customCredential.fieldDefs!.length,
-                            })}`
-                          : ""}
-                      </p>
-                      <p className="flex items-center gap-1 text-[11px] text-muted-foreground truncate mt-0.5">
-                        <Users className="w-3 h-3 flex-shrink-0" />
-                        {customCredential.grantScope === "agents"
-                          ? t("integrations.access.someAgents", {
-                              count: customCredential.grantedAgentIds?.length ?? 0,
-                            })
-                          : t("integrations.access.allAgents")}
-                      </p>
-                    </div>
-                    <div className="flex items-center gap-1 flex-shrink-0">
-                      <Button
-                        variant="ghost"
-                        size="icon-sm"
-                        className="text-muted-foreground hover:text-foreground"
-                        onClick={() =>
-                          openAccessDialog(
-                            providers.find((p) => p.name === "custom") ?? {
-                              name: "custom",
-                              type: "api_token",
-                              displayName: t("customApis.title"),
-                            },
-                            customCredential
-                          )
-                        }
-                        title={t("integrations.access.button")}
-                      >
-                        <Users className="w-3.5 h-3.5" />
-                      </Button>
-                      <Button
-                        variant="ghost"
-                        size="icon-sm"
-                        className="text-muted-foreground hover:text-foreground"
-                        onClick={openCustomApiDialog}
-                      >
-                        <Pencil className="w-3.5 h-3.5" />
-                      </Button>
-                      <Button
-                        variant="ghost"
-                        size="icon-sm"
-                        className="text-muted-foreground hover:text-destructive"
-                        onClick={() => setDeleteCustomApi(true)}
-                      >
-                        <Trash2 className="w-3.5 h-3.5" />
-                      </Button>
-                    </div>
-                  </div>
-                ) : (
-                  <button
-                    onClick={openCustomApiDialog}
-                    className="w-full flex items-center gap-3 px-4 py-3 text-left text-muted-foreground hover:text-foreground hover:bg-muted/40 transition-colors cursor-pointer"
-                  >
-                    <span className="w-8 h-8 rounded-md border border-dashed border-border flex items-center justify-center flex-shrink-0">
-                      <Plus className="w-4 h-4" />
-                    </span>
-                    <span className="text-sm font-medium">{t("customApis.add")}</span>
-                  </button>
-                )}
+                  );
+                })}
+                <button
+                  onClick={() => openCustomApiDialog(null)}
+                  className="w-full flex items-center gap-3 px-4 py-3 text-left text-muted-foreground hover:text-foreground hover:bg-muted/40 transition-colors cursor-pointer"
+                >
+                  <span className="w-8 h-8 rounded-md border border-dashed border-border flex items-center justify-center flex-shrink-0">
+                    <Plus className="w-4 h-4" />
+                  </span>
+                  <span className="text-sm font-medium">{t("customApis.add")}</span>
+                </button>
               </div>
             </section>
 
@@ -1390,7 +1470,7 @@ export function Profile({ onClose }: { onClose: () => void }) {
         <DialogContent className="sm:max-w-md">
           <DialogHeader>
             <DialogTitle>
-              {customCredential ? t("customApis.editTitle") : t("customApis.add")}
+              {editingCustom ? t("customApis.editTitle") : t("customApis.add")}
             </DialogTitle>
             <DialogDescription>
               {t("customApis.dialogDescription")}
@@ -1442,7 +1522,7 @@ export function Profile({ onClose }: { onClose: () => void }) {
             <div className="space-y-1.5">
               <Label className="text-xs">
                 {t("common:apiKey")}
-                {customCredential ? (
+                {editingCustom ? (
                   <span className="text-muted-foreground font-normal">
                     {" "}
                     — {t("llmKeys.leaveBlankHint")}
@@ -1457,7 +1537,7 @@ export function Profile({ onClose }: { onClose: () => void }) {
                   setCustomApiError(null);
                 }}
                 placeholder={
-                  customCredential
+                  editingCustom
                     ? t("customApis.unchanged")
                     : t("customApis.apiKeyPlaceholder")
                 }
@@ -1624,7 +1704,7 @@ export function Profile({ onClose }: { onClose: () => void }) {
                   <Loader2 className="w-3.5 h-3.5 animate-spin" />
                   {t("common:saving")}
                 </>
-              ) : customCredential ? (
+              ) : editingCustom ? (
                 t("common:save")
               ) : (
                 t("common:add")
@@ -1638,9 +1718,9 @@ export function Profile({ onClose }: { onClose: () => void }) {
       {/* DELETE CUSTOM API CONFIRMATION                                     */}
       {/* ================================================================= */}
       <Dialog
-        open={deleteCustomApi}
+        open={!!deleteCustomApi}
         onOpenChange={(open) => {
-          if (!open) setDeleteCustomApi(false);
+          if (!open) setDeleteCustomApi(null);
         }}
       >
         <DialogContent className="sm:max-w-sm">
@@ -1651,8 +1731,12 @@ export function Profile({ onClose }: { onClose: () => void }) {
                 i18nKey="customApis.deleteConfirm"
                 ns="settings"
                 values={{
-                  name:
-                    customCredential?.endpoint || t("customApis.thisEndpoint"),
+                  name: deleteCustomApi
+                    ? customConnectionName(
+                        deleteCustomApi,
+                        t("customApis.thisEndpoint")
+                      )
+                    : t("customApis.thisEndpoint"),
                 }}
                 components={{
                   b: <span className="font-medium text-foreground" />,
@@ -1664,7 +1748,7 @@ export function Profile({ onClose }: { onClose: () => void }) {
             <Button
               variant="outline"
               size="sm"
-              onClick={() => setDeleteCustomApi(false)}
+              onClick={() => setDeleteCustomApi(null)}
             >
               {t("common:cancel")}
             </Button>
