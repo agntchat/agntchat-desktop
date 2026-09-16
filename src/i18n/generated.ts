@@ -1836,14 +1836,18 @@ export const resources = {
           "toggleFailed": "Couldn't update the tool. Try again."
         },
         "groups": {
+          "a2a": "Agent-to-agent",
           "calendar": "Google Calendar",
+          "credentials": "Credential requests",
+          "customApis": "Custom APIs",
           "docs": "Google Docs",
           "drive": "Google Drive",
           "github": "GitHub",
           "gmail": "Gmail",
           "jobs": "Job search",
+          "marketData": "Market data",
           "other": "Other",
-          "payments": "Payments & finance",
+          "payments": "Payments",
           "sheets": "Google Sheets",
           "x": "X"
         },
@@ -7260,14 +7264,18 @@ export const resources = {
           "toggleFailed": "No se pudo actualizar la herramienta. Inténtalo de nuevo."
         },
         "groups": {
+          "a2a": "Agente a agente",
           "calendar": "Google Calendar",
+          "credentials": "Solicitudes de credenciales",
+          "customApis": "APIs personalizadas",
           "docs": "Google Docs",
           "drive": "Google Drive",
           "github": "GitHub",
           "gmail": "Gmail",
           "jobs": "Búsqueda de empleo",
+          "marketData": "Datos de mercado",
           "other": "Otros",
-          "payments": "Pagos y finanzas",
+          "payments": "Pagos",
           "sheets": "Google Sheets",
           "x": "X"
         },
@@ -12684,14 +12692,18 @@ export const resources = {
           "toggleFailed": "Werkzeug konnte nicht aktualisiert werden. Versuchen Sie es erneut."
         },
         "groups": {
+          "a2a": "Agent-zu-Agent",
           "calendar": "Google Kalender",
+          "credentials": "Zugangsdaten-Anfragen",
+          "customApis": "Benutzerdefinierte APIs",
           "docs": "Google Docs",
           "drive": "Google Drive",
           "github": "GitHub",
           "gmail": "Gmail",
           "jobs": "Jobsuche",
+          "marketData": "Marktdaten",
           "other": "Sonstige",
-          "payments": "Zahlungen & Finanzen",
+          "payments": "Zahlungen",
           "sheets": "Google Sheets",
           "x": "X"
         },
@@ -18108,14 +18120,18 @@ export const resources = {
           "toggleFailed": "Impossible de mettre à jour l'outil. Réessayez."
         },
         "groups": {
+          "a2a": "Agent à agent",
           "calendar": "Google Agenda",
+          "credentials": "Demandes d'identifiants",
+          "customApis": "API personnalisées",
           "docs": "Google Docs",
           "drive": "Google Drive",
           "github": "GitHub",
           "gmail": "Gmail",
           "jobs": "Recherche d'emploi",
+          "marketData": "Données de marché",
           "other": "Autres",
-          "payments": "Paiements et finances",
+          "payments": "Paiements",
           "sheets": "Google Sheets",
           "x": "X"
         },
@@ -23532,14 +23548,18 @@ export const resources = {
           "toggleFailed": "Não foi possível atualizar a ferramenta. Tente novamente."
         },
         "groups": {
+          "a2a": "Agente para agente",
           "calendar": "Google Agenda",
+          "credentials": "Solicitações de credenciais",
+          "customApis": "APIs personalizadas",
           "docs": "Google Docs",
           "drive": "Google Drive",
           "github": "GitHub",
           "gmail": "Gmail",
           "jobs": "Busca de vagas",
+          "marketData": "Dados de mercado",
           "other": "Outros",
-          "payments": "Pagamentos e finanças",
+          "payments": "Pagamentos",
           "sheets": "Google Sheets",
           "x": "X"
         },
@@ -28956,14 +28976,18 @@ export const resources = {
           "toggleFailed": "ツールを更新できませんでした。もう一度お試しください。"
         },
         "groups": {
+          "a2a": "エージェント間",
           "calendar": "Googleカレンダー",
+          "credentials": "認証情報リクエスト",
+          "customApis": "カスタムAPI",
           "docs": "Google Docs",
           "drive": "Google ドライブ",
           "github": "GitHub",
           "gmail": "Gmail",
           "jobs": "求人検索",
+          "marketData": "市場データ",
           "other": "その他",
-          "payments": "決済・金融",
+          "payments": "決済",
           "sheets": "Google スプレッドシート",
           "x": "X"
         },
@@ -34380,14 +34404,18 @@ export const resources = {
           "toggleFailed": "无法更新工具，请重试。"
         },
         "groups": {
+          "a2a": "智能体间",
           "calendar": "Google 日历",
+          "credentials": "凭据请求",
+          "customApis": "自定义 API",
           "docs": "Google Docs",
           "drive": "Google 云端硬盘",
           "github": "GitHub",
           "gmail": "Gmail",
           "jobs": "职位搜索",
+          "marketData": "市场数据",
           "other": "其他",
-          "payments": "支付与金融",
+          "payments": "支付",
           "sheets": "Google 表格",
           "x": "X"
         },
@@ -39804,14 +39832,18 @@ export const resources = {
           "toggleFailed": "도구를 업데이트하지 못했습니다. 다시 시도하세요."
         },
         "groups": {
+          "a2a": "에이전트 간",
           "calendar": "Google 캘린더",
+          "credentials": "자격 증명 요청",
+          "customApis": "사용자 지정 API",
           "docs": "Google Docs",
           "drive": "Google 드라이브",
           "github": "GitHub",
           "gmail": "Gmail",
           "jobs": "구직 검색",
+          "marketData": "시장 데이터",
           "other": "기타",
-          "payments": "결제 및 금융",
+          "payments": "결제",
           "sheets": "Google 스프레드시트",
           "x": "X"
         },
@@ -45228,14 +45260,18 @@ export const resources = {
           "toggleFailed": "Impossibile aggiornare lo strumento. Riprova."
         },
         "groups": {
+          "a2a": "Da agente ad agente",
           "calendar": "Google Calendar",
+          "credentials": "Richieste di credenziali",
+          "customApis": "API personalizzate",
           "docs": "Google Docs",
           "drive": "Google Drive",
           "github": "GitHub",
           "gmail": "Gmail",
           "jobs": "Ricerca di lavoro",
+          "marketData": "Dati di mercato",
           "other": "Altri",
-          "payments": "Pagamenti e finanza",
+          "payments": "Pagamenti",
           "sheets": "Google Sheets",
           "x": "X"
         },
@@ -50652,14 +50688,18 @@ export const resources = {
           "toggleFailed": "टूल अपडेट नहीं हो सका। फिर से प्रयास करें।"
         },
         "groups": {
+          "a2a": "एजेंट-से-एजेंट",
           "calendar": "Google कैलेंडर",
+          "credentials": "क्रेडेंशियल अनुरोध",
+          "customApis": "कस्टम API",
           "docs": "Google Docs",
           "drive": "Google Drive",
           "github": "GitHub",
           "gmail": "Gmail",
           "jobs": "नौकरी खोज",
+          "marketData": "बाज़ार डेटा",
           "other": "अन्य",
-          "payments": "भुगतान और वित्त",
+          "payments": "भुगतान",
           "sheets": "Google Sheets",
           "x": "X"
         },

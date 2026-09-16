@@ -10,7 +10,21 @@ import type { PlatformToolSummary } from "./api";
  * connection needed, or no in-app connect flow exists).
  */
 export interface ToolGroup {
-  key: "gmail" | "calendar" | "drive" | "docs" | "sheets" | "github" | "x" | "jobs" | "payments" | "other";
+  key:
+    | "gmail"
+    | "calendar"
+    | "drive"
+    | "docs"
+    | "sheets"
+    | "github"
+    | "x"
+    | "jobs"
+    | "payments"
+    | "marketData"
+    | "a2a"
+    | "credentials"
+    | "customApis"
+    | "other";
   /** i18n key under the agents namespace */
   labelKey: string;
   credentialProvider: "google" | "github" | "x" | null;
@@ -75,14 +89,45 @@ const GROUP_DEFS: Array<{
     key: "payments",
     labelKey: "toolsTab.groups.payments",
     credentialProvider: null,
-    matches: (tags) =>
-      tags.includes("payments") || tags.includes("payment") || tags.includes("finance"),
+    matches: (tags) => tags.includes("payments") || tags.includes("payment"),
+  },
+  {
+    // Read-only market/economic data (stock quotes, indicators, news) — no
+    // credential, nothing moves money. Kept apart from Stripe payments so
+    // the payments group stays honest about what it can do.
+    key: "marketData",
+    labelKey: "toolsTab.groups.marketData",
+    credentialProvider: null,
+    matches: (tags) => tags.includes("finance"),
+  },
+  {
+    key: "a2a",
+    labelKey: "toolsTab.groups.a2a",
+    credentialProvider: null,
+    matches: (tags) => tags.includes("a2a"),
+  },
+  {
+    key: "credentials",
+    labelKey: "toolsTab.groups.credentials",
+    credentialProvider: null,
+    matches: (tags) => tags.includes("credentials"),
+  },
+  {
+    // Write side of the profile's Custom APIs section — same feature, same
+    // label.
+    key: "customApis",
+    labelKey: "toolsTab.groups.customApis",
+    credentialProvider: null,
+    matches: (tags) => tags.includes("custom"),
   },
 ];
 
 /** Group the catalog's integration tools (scope "agent") by provider. Groups
  *  come back in GROUP_DEFS order, empty groups omitted, leftovers in
- *  "other". Global/platform tools are excluded — they're always available. */
+ *  "other". Every seeded tool today matches a named group, so "other" is a
+ *  safety net for future seeds whose tags nobody has mapped yet — when it
+ *  shows up, add a GROUP_DEFS entry rather than leaving tools there.
+ *  Global/platform tools are excluded — they're always available. */
 export function groupIntegrationTools(
   catalog: PlatformToolSummary[]
 ): ToolGroup[] {
