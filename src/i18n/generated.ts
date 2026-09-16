@@ -4353,7 +4353,31 @@ export const resources = {
         },
         "subtitle": "Link external services to enable agent integrations.",
         "tokenDialogDescription": "Paste an API token to connect your {{provider}} account.",
-        "tokenPlaceholder": "Paste your API token…"
+        "tokenPlaceholder": "Paste your API token…",
+        "x": {
+          "billingNote": "X charges your app per API call (posts, reads, DMs). Set a spend limit in the X console.",
+          "clientId": "Client ID",
+          "clientSecret": "Client Secret",
+          "connect": "Continue to X",
+          "copied": "Copied",
+          "copyCallback": "Copy callback URL",
+          "dmHint": "Your agents can read and send DMs from this account. The X app must have the Direct Messages permission.",
+          "dmOption": "Allow direct messages",
+          "dmsOff": "Direct messages off",
+          "dmsOn": "Direct messages on",
+          "failed": "Couldn't start the X connection. Check the credentials and try again.",
+          "handle": "Connected as @{{handle}}",
+          "intro": "X bills API usage to the app owner, so agntchat connects through an X app you create. It takes a few minutes and you keep full control of costs and permissions.",
+          "missingFields": "Enter both the Client ID and the Client Secret.",
+          "openConsole": "Open the X developer console",
+          "reconnect": "Reconnect",
+          "reconnectHint": "Reconnect after changing the app's permission on X, or to turn direct messages on or off.",
+          "step1": "Create a project and app in the X developer console (type: Web App / Automated App).",
+          "step2": "Set the app permission to Read and Write — add Direct Messages if you want DMs.",
+          "step3": "Add this callback URL to the app:",
+          "step4": "Paste the app's Client ID and Client Secret below.",
+          "title": "Connect your X app"
+        }
       },
       "credStatus": {
         "expired": "Expired",
@@ -4475,7 +4499,8 @@ export const resources = {
           "openai": "OpenAI API key — embeddings for semantic memory and agents using OpenAI models",
           "serpapi": "Google Jobs search via SerpApi (100 searches/month free)",
           "supabase": "Database and auth services",
-          "theirstack": "Job postings API — 191M+ jobs from 329K sources across 195 countries (1 credit/job returned)"
+          "theirstack": "Job postings API — 191M+ jobs from 329K sources across 195 countries (1 credit/job returned)",
+          "x": "Post, mentions, search and optional direct messages — through your own X app"
         },
         "savedMessage": "{{name}} has been saved.",
         "secret": "Secret",
@@ -9751,7 +9776,31 @@ export const resources = {
         },
         "subtitle": "Vincula servicios externos para habilitar integraciones de agentes.",
         "tokenDialogDescription": "Pega un token de API para conectar tu cuenta de {{provider}}.",
-        "tokenPlaceholder": "Pega tu token de API…"
+        "tokenPlaceholder": "Pega tu token de API…",
+        "x": {
+          "billingNote": "X cobra a tu app por cada llamada a la API (publicaciones, lecturas, DMs). Fija un límite de gasto en la consola de X.",
+          "clientId": "Client ID",
+          "clientSecret": "Client Secret",
+          "connect": "Continuar a X",
+          "copied": "Copiado",
+          "copyCallback": "Copiar URL de callback",
+          "dmHint": "Tus agentes podrán leer y enviar DMs desde esta cuenta. La app de X debe tener el permiso Direct Messages.",
+          "dmOption": "Permitir mensajes directos",
+          "dmsOff": "Mensajes directos desactivados",
+          "dmsOn": "Mensajes directos activados",
+          "failed": "No se pudo iniciar la conexión con X. Revisa las credenciales e inténtalo de nuevo.",
+          "handle": "Conectado como @{{handle}}",
+          "intro": "X cobra el uso de la API al dueño de la app, así que agntchat se conecta mediante una app de X que tú creas. Lleva unos minutos y mantienes el control de costes y permisos.",
+          "missingFields": "Introduce el Client ID y el Client Secret.",
+          "openConsole": "Abrir la consola de desarrolladores de X",
+          "reconnect": "Reconectar",
+          "reconnectHint": "Reconecta tras cambiar el permiso de la app en X, o para activar o desactivar los mensajes directos.",
+          "step1": "Crea un proyecto y una app en la consola de desarrolladores de X (tipo: Web App / Automated App).",
+          "step2": "Pon el permiso de la app en Read and Write — añade Direct Messages si quieres DMs.",
+          "step3": "Añade esta URL de callback a la app:",
+          "step4": "Pega abajo el Client ID y el Client Secret de la app.",
+          "title": "Conecta tu app de X"
+        }
       },
       "credStatus": {
         "expired": "Caducada",
@@ -9873,7 +9922,8 @@ export const resources = {
           "openai": "Clave de API de OpenAI — embeddings para la memoria semántica y agentes con modelos OpenAI",
           "serpapi": "Búsqueda de Google Jobs vía SerpApi (100 búsquedas/mes gratis)",
           "supabase": "Servicios de base de datos y autenticación",
-          "theirstack": "API de ofertas de empleo — más de 191 M de empleos de 329 mil fuentes en 195 países (1 crédito por empleo)"
+          "theirstack": "API de ofertas de empleo — más de 191 M de empleos de 329 mil fuentes en 195 países (1 crédito por empleo)",
+          "x": "Publicar, menciones, búsqueda y mensajes directos opcionales — con tu propia app de X"
         },
         "savedMessage": "{{name}} se ha guardado.",
         "secret": "Secreto",
@@ -15149,7 +15199,31 @@ export const resources = {
         },
         "subtitle": "Verknüpfen Sie externe Dienste, um Agenten-Integrationen zu aktivieren.",
         "tokenDialogDescription": "Fügen Sie ein API-Token ein, um Ihr {{provider}}-Konto zu verbinden.",
-        "tokenPlaceholder": "API-Token einfügen…"
+        "tokenPlaceholder": "API-Token einfügen…",
+        "x": {
+          "billingNote": "X berechnet deiner App jeden API-Aufruf (Posts, Lesen, DMs). Lege in der X-Konsole ein Ausgabenlimit fest.",
+          "clientId": "Client ID",
+          "clientSecret": "Client Secret",
+          "connect": "Weiter zu X",
+          "copied": "Kopiert",
+          "copyCallback": "Callback-URL kopieren",
+          "dmHint": "Deine Agenten können DMs dieses Kontos lesen und senden. Die X-App braucht die Berechtigung Direct Messages.",
+          "dmOption": "Direktnachrichten erlauben",
+          "dmsOff": "Direktnachrichten aus",
+          "dmsOn": "Direktnachrichten an",
+          "failed": "Die X-Verbindung konnte nicht gestartet werden. Prüfe die Zugangsdaten und versuche es erneut.",
+          "handle": "Verbunden als @{{handle}}",
+          "intro": "X rechnet die API-Nutzung dem App-Besitzer ab, deshalb verbindet sich agntchat über eine X-App, die du anlegst. Das dauert wenige Minuten und du behältst Kosten und Berechtigungen in der Hand.",
+          "missingFields": "Gib Client ID und Client Secret ein.",
+          "openConsole": "X-Entwicklerkonsole öffnen",
+          "reconnect": "Neu verbinden",
+          "reconnectHint": "Nach einer Berechtigungsänderung in X oder zum Ein-/Ausschalten von Direktnachrichten neu verbinden.",
+          "step1": "Lege in der X-Entwicklerkonsole ein Projekt und eine App an (Typ: Web App / Automated App).",
+          "step2": "Setze die App-Berechtigung auf Read and Write — mit Direct Messages, wenn du DMs willst.",
+          "step3": "Trage diese Callback-URL in der App ein:",
+          "step4": "Füge unten Client ID und Client Secret der App ein.",
+          "title": "Deine X-App verbinden"
+        }
       },
       "credStatus": {
         "expired": "Abgelaufen",
@@ -15271,7 +15345,8 @@ export const resources = {
           "openai": "OpenAI-API-Schlüssel — Embeddings für semantisches Gedächtnis und Agenten mit OpenAI-Modellen",
           "serpapi": "Google-Jobs-Suche über SerpApi (100 Suchen/Monat gratis)",
           "supabase": "Datenbank- und Auth-Dienste",
-          "theirstack": "Stellenanzeigen-API — über 191 Mio. Jobs aus 329.000 Quellen in 195 Ländern (1 Credit pro Job)"
+          "theirstack": "Stellenanzeigen-API — über 191 Mio. Jobs aus 329.000 Quellen in 195 Ländern (1 Credit pro Job)",
+          "x": "Posten, Erwähnungen, Suche und optional Direktnachrichten — über deine eigene X-App"
         },
         "savedMessage": "{{name}} wurde gespeichert.",
         "secret": "Geheim",
@@ -20547,7 +20622,31 @@ export const resources = {
         },
         "subtitle": "Associez des services externes pour activer les intégrations d'agents.",
         "tokenDialogDescription": "Collez un jeton API pour connecter votre compte {{provider}}.",
-        "tokenPlaceholder": "Collez votre jeton API…"
+        "tokenPlaceholder": "Collez votre jeton API…",
+        "x": {
+          "billingNote": "X facture votre app à chaque appel API (posts, lectures, DM). Définissez un plafond de dépenses dans la console X.",
+          "clientId": "Client ID",
+          "clientSecret": "Client Secret",
+          "connect": "Continuer vers X",
+          "copied": "Copié",
+          "copyCallback": "Copier l’URL de rappel",
+          "dmHint": "Vos agents pourront lire et envoyer des DM depuis ce compte. L’app X doit avoir la permission Direct Messages.",
+          "dmOption": "Autoriser les messages directs",
+          "dmsOff": "Messages directs désactivés",
+          "dmsOn": "Messages directs activés",
+          "failed": "Impossible de démarrer la connexion X. Vérifiez les identifiants et réessayez.",
+          "handle": "Connecté en tant que @{{handle}}",
+          "intro": "X facture l’usage de l’API au propriétaire de l’app : agntchat se connecte donc via une app X que vous créez. Cela prend quelques minutes et vous gardez la main sur les coûts et les permissions.",
+          "missingFields": "Saisissez le Client ID et le Client Secret.",
+          "openConsole": "Ouvrir la console développeur X",
+          "reconnect": "Reconnecter",
+          "reconnectHint": "Reconnectez après avoir modifié la permission de l’app sur X, ou pour activer/désactiver les messages directs.",
+          "step1": "Créez un projet et une app dans la console développeur X (type : Web App / Automated App).",
+          "step2": "Définissez la permission de l’app sur Read and Write — ajoutez Direct Messages pour les DM.",
+          "step3": "Ajoutez cette URL de rappel à l’app :",
+          "step4": "Collez ci-dessous le Client ID et le Client Secret de l’app.",
+          "title": "Connecter votre app X"
+        }
       },
       "credStatus": {
         "expired": "Expiré",
@@ -20669,7 +20768,8 @@ export const resources = {
           "openai": "Clé API OpenAI — embeddings pour la mémoire sémantique et agents utilisant des modèles OpenAI",
           "serpapi": "Recherche Google Jobs via SerpApi (100 recherches/mois gratuites)",
           "supabase": "Services de base de données et d'authentification",
-          "theirstack": "API d'offres d'emploi — plus de 191 M d'offres de 329 000 sources dans 195 pays (1 crédit par offre)"
+          "theirstack": "API d'offres d'emploi — plus de 191 M d'offres de 329 000 sources dans 195 pays (1 crédit par offre)",
+          "x": "Publier, mentions, recherche et messages directs optionnels — via votre propre app X"
         },
         "savedMessage": "{{name}} a été enregistré.",
         "secret": "Secret",
@@ -25945,7 +26045,31 @@ export const resources = {
         },
         "subtitle": "Vincule serviços externos para ativar integrações de agentes.",
         "tokenDialogDescription": "Cole um token de API para conectar sua conta do {{provider}}.",
-        "tokenPlaceholder": "Cole seu token de API…"
+        "tokenPlaceholder": "Cole seu token de API…",
+        "x": {
+          "billingNote": "O X cobra do seu app por chamada de API (posts, leituras, DMs). Defina um limite de gastos no console do X.",
+          "clientId": "Client ID",
+          "clientSecret": "Client Secret",
+          "connect": "Continuar para o X",
+          "copied": "Copiado",
+          "copyCallback": "Copiar URL de callback",
+          "dmHint": "Seus agentes poderão ler e enviar DMs desta conta. O app do X precisa da permissão Direct Messages.",
+          "dmOption": "Permitir mensagens diretas",
+          "dmsOff": "Mensagens diretas desativadas",
+          "dmsOn": "Mensagens diretas ativadas",
+          "failed": "Não foi possível iniciar a conexão com o X. Verifique as credenciais e tente novamente.",
+          "handle": "Conectado como @{{handle}}",
+          "intro": "O X cobra o uso da API do dono do app, então o agntchat se conecta por um app do X que você cria. Leva alguns minutos e você mantém o controle de custos e permissões.",
+          "missingFields": "Informe o Client ID e o Client Secret.",
+          "openConsole": "Abrir o console de desenvolvedores do X",
+          "reconnect": "Reconectar",
+          "reconnectHint": "Reconecte após mudar a permissão do app no X, ou para ligar/desligar mensagens diretas.",
+          "step1": "Crie um projeto e um app no console de desenvolvedores do X (tipo: Web App / Automated App).",
+          "step2": "Defina a permissão do app como Read and Write — adicione Direct Messages se quiser DMs.",
+          "step3": "Adicione esta URL de callback ao app:",
+          "step4": "Cole abaixo o Client ID e o Client Secret do app.",
+          "title": "Conectar seu app do X"
+        }
       },
       "credStatus": {
         "expired": "Expirado",
@@ -26067,7 +26191,8 @@ export const resources = {
           "openai": "Chave de API da OpenAI — embeddings para memória semântica e agentes com modelos OpenAI",
           "serpapi": "Busca no Google Jobs via SerpApi (100 buscas/mês grátis)",
           "supabase": "Serviços de banco de dados e autenticação",
-          "theirstack": "API de vagas — mais de 191 mi de vagas de 329 mil fontes em 195 países (1 crédito por vaga)"
+          "theirstack": "API de vagas — mais de 191 mi de vagas de 329 mil fontes em 195 países (1 crédito por vaga)",
+          "x": "Publicar, menções, busca e mensagens diretas opcionais — pelo seu próprio app do X"
         },
         "savedMessage": "{{name}} foi salvo.",
         "secret": "Secreto",
@@ -31343,7 +31468,31 @@ export const resources = {
         },
         "subtitle": "外部サービスを連携してエージェントの連携機能を有効にします。",
         "tokenDialogDescription": "{{provider}}アカウントを接続するには、APIトークンを貼り付けてください。",
-        "tokenPlaceholder": "APIトークンを貼り付けてください…"
+        "tokenPlaceholder": "APIトークンを貼り付けてください…",
+        "x": {
+          "billingNote": "XはAPI呼び出し（投稿・取得・DM）ごとにあなたのアプリに課金します。Xコンソールで支出上限を設定してください。",
+          "clientId": "Client ID",
+          "clientSecret": "Client Secret",
+          "connect": "Xへ進む",
+          "copied": "コピーしました",
+          "copyCallback": "コールバックURLをコピー",
+          "dmHint": "エージェントがこのアカウントのDMを読み書きできます。Xアプリに Direct Messages 権限が必要です。",
+          "dmOption": "ダイレクトメッセージを許可",
+          "dmsOff": "DM: オフ",
+          "dmsOn": "DM: オン",
+          "failed": "X接続を開始できませんでした。認証情報を確認してもう一度お試しください。",
+          "handle": "@{{handle}} として接続中",
+          "intro": "XのAPI利用料はアプリの所有者に請求されるため、agntchatはあなたが作成したXアプリを通じて接続します。数分で完了し、費用と権限はあなたが管理します。",
+          "missingFields": "Client ID と Client Secret の両方を入力してください。",
+          "openConsole": "X開発者コンソールを開く",
+          "reconnect": "再接続",
+          "reconnectHint": "Xでアプリの権限を変更した後や、DMのオン・オフを切り替えるときに再接続します。",
+          "step1": "X開発者コンソールでプロジェクトとアプリを作成します（種類: Web App / Automated App）。",
+          "step2": "アプリの権限を Read and Write に設定します。DMを使う場合は Direct Messages も追加します。",
+          "step3": "このコールバックURLをアプリに追加します:",
+          "step4": "アプリの Client ID と Client Secret を下に貼り付けます。",
+          "title": "Xアプリを接続"
+        }
       },
       "credStatus": {
         "expired": "期限切れ",
@@ -31465,7 +31614,8 @@ export const resources = {
           "openai": "OpenAI APIキー — セマンティックメモリ用の埋め込みとOpenAIモデルを使うエージェント",
           "serpapi": "SerpApi経由のGoogle Jobs検索（無料：100検索/月）",
           "supabase": "データベースと認証サービス",
-          "theirstack": "求人情報API — 195か国・32.9万ソースから1.91億件超の求人（1件につき1クレジット）"
+          "theirstack": "求人情報API — 195か国・32.9万ソースから1.91億件超の求人（1件につき1クレジット）",
+          "x": "投稿・メンション・検索・任意でDM — あなた自身のXアプリ経由"
         },
         "savedMessage": "{{name}}を保存しました。",
         "secret": "シークレット",
@@ -36741,7 +36891,31 @@ export const resources = {
         },
         "subtitle": "关联外部服务以启用智能体集成。",
         "tokenDialogDescription": "粘贴 API 令牌以连接你的 {{provider}} 账户。",
-        "tokenPlaceholder": "粘贴你的 API 令牌…"
+        "tokenPlaceholder": "粘贴你的 API 令牌…",
+        "x": {
+          "billingNote": "X 按每次 API 调用（发帖、读取、私信）向你的应用收费。请在 X 控制台设置支出上限。",
+          "clientId": "Client ID",
+          "clientSecret": "Client Secret",
+          "connect": "前往 X",
+          "copied": "已复制",
+          "copyCallback": "复制回调 URL",
+          "dmHint": "你的智能体可以读取并发送此账号的私信。X 应用必须具有 Direct Messages 权限。",
+          "dmOption": "允许私信",
+          "dmsOff": "私信已关闭",
+          "dmsOn": "私信已开启",
+          "failed": "无法开始 X 连接。请检查凭据后重试。",
+          "handle": "已连接为 @{{handle}}",
+          "intro": "X 会向应用所有者收取 API 费用，因此 agntchat 通过你自己创建的 X 应用进行连接。只需几分钟，费用和权限都由你掌控。",
+          "missingFields": "请同时输入 Client ID 和 Client Secret。",
+          "openConsole": "打开 X 开发者控制台",
+          "reconnect": "重新连接",
+          "reconnectHint": "在 X 上更改应用权限后，或要开关私信时，请重新连接。",
+          "step1": "在 X 开发者控制台创建项目和应用（类型：Web App / Automated App）。",
+          "step2": "将应用权限设为 Read and Write —— 需要私信时再加上 Direct Messages。",
+          "step3": "将此回调 URL 添加到应用：",
+          "step4": "在下方粘贴应用的 Client ID 和 Client Secret。",
+          "title": "连接你的 X 应用"
+        }
       },
       "credStatus": {
         "expired": "已过期",
@@ -36863,7 +37037,8 @@ export const resources = {
           "openai": "OpenAI API 密钥 — 语义记忆的向量嵌入及使用 OpenAI 模型的代理",
           "serpapi": "通过 SerpApi 搜索 Google Jobs（每月免费 100 次搜索）",
           "supabase": "数据库与身份验证服务",
-          "theirstack": "招聘信息 API — 覆盖 195 个国家/地区、32.9 万来源的 1.91 亿+ 职位（每条职位 1 积分）"
+          "theirstack": "招聘信息 API — 覆盖 195 个国家/地区、32.9 万来源的 1.91 亿+ 职位（每条职位 1 积分）",
+          "x": "发帖、提及、搜索，可选私信 —— 通过你自己的 X 应用"
         },
         "savedMessage": "{{name}} 已保存。",
         "secret": "密文",
@@ -42139,7 +42314,31 @@ export const resources = {
         },
         "subtitle": "외부 서비스를 연결하여 에이전트 통합을 활성화하세요.",
         "tokenDialogDescription": "{{provider}} 계정을 연결하려면 API 토큰을 붙여넣으세요.",
-        "tokenPlaceholder": "API 토큰을 붙여넣으세요…"
+        "tokenPlaceholder": "API 토큰을 붙여넣으세요…",
+        "x": {
+          "billingNote": "X는 API 호출(게시, 읽기, DM)마다 내 앱에 요금을 부과합니다. X 콘솔에서 지출 한도를 설정하세요.",
+          "clientId": "Client ID",
+          "clientSecret": "Client Secret",
+          "connect": "X로 계속",
+          "copied": "복사됨",
+          "copyCallback": "콜백 URL 복사",
+          "dmHint": "에이전트가 이 계정의 DM을 읽고 보낼 수 있습니다. X 앱에 Direct Messages 권한이 있어야 합니다.",
+          "dmOption": "다이렉트 메시지 허용",
+          "dmsOff": "DM 꺼짐",
+          "dmsOn": "DM 켜짐",
+          "failed": "X 연결을 시작하지 못했습니다. 자격 증명을 확인하고 다시 시도하세요.",
+          "handle": "@{{handle}}(으)로 연결됨",
+          "intro": "X는 API 사용료를 앱 소유자에게 청구하므로 agntchat은 직접 만든 X 앱을 통해 연결합니다. 몇 분이면 되고 비용과 권한은 내가 관리합니다.",
+          "missingFields": "Client ID와 Client Secret을 모두 입력하세요.",
+          "openConsole": "X 개발자 콘솔 열기",
+          "reconnect": "다시 연결",
+          "reconnectHint": "X에서 앱 권한을 바꾼 뒤나 DM을 켜고 끌 때 다시 연결하세요.",
+          "step1": "X 개발자 콘솔에서 프로젝트와 앱을 만듭니다 (유형: Web App / Automated App).",
+          "step2": "앱 권한을 Read and Write로 설정하세요. DM을 쓰려면 Direct Messages도 추가하세요.",
+          "step3": "이 콜백 URL을 앱에 추가하세요:",
+          "step4": "아래에 앱의 Client ID와 Client Secret을 붙여넣으세요.",
+          "title": "내 X 앱 연결"
+        }
       },
       "credStatus": {
         "expired": "만료됨",
@@ -42261,7 +42460,8 @@ export const resources = {
           "openai": "OpenAI API 키 — 시맨틱 메모리용 임베딩 및 OpenAI 모델 에이전트",
           "serpapi": "SerpApi를 통한 Google Jobs 검색 (무료 100회/월)",
           "supabase": "데이터베이스 및 인증 서비스",
-          "theirstack": "채용 공고 API — 195개국 32.9만 소스의 1억 9,100만+ 공고 (공고당 1크레딧)"
+          "theirstack": "채용 공고 API — 195개국 32.9만 소스의 1억 9,100만+ 공고 (공고당 1크레딧)",
+          "x": "게시, 멘션, 검색, 선택적 DM — 내 X 앱을 통해"
         },
         "savedMessage": "{{name}}이(가) 저장되었습니다.",
         "secret": "비밀 값",
@@ -47537,7 +47737,31 @@ export const resources = {
         },
         "subtitle": "Collega servizi esterni per abilitare le integrazioni degli agenti.",
         "tokenDialogDescription": "Incolla un token API per connettere il tuo account {{provider}}.",
-        "tokenPlaceholder": "Incolla il tuo token API…"
+        "tokenPlaceholder": "Incolla il tuo token API…",
+        "x": {
+          "billingNote": "X addebita alla tua app ogni chiamata API (post, letture, DM). Imposta un limite di spesa nella console X.",
+          "clientId": "Client ID",
+          "clientSecret": "Client Secret",
+          "connect": "Continua su X",
+          "copied": "Copiato",
+          "copyCallback": "Copia URL di callback",
+          "dmHint": "I tuoi agenti potranno leggere e inviare DM da questo account. L’app X deve avere il permesso Direct Messages.",
+          "dmOption": "Consenti messaggi diretti",
+          "dmsOff": "Messaggi diretti disattivati",
+          "dmsOn": "Messaggi diretti attivi",
+          "failed": "Impossibile avviare la connessione a X. Controlla le credenziali e riprova.",
+          "handle": "Connesso come @{{handle}}",
+          "intro": "X addebita l’uso dell’API al proprietario dell’app, quindi agntchat si collega tramite un’app X creata da te. Bastano pochi minuti e mantieni il controllo su costi e permessi.",
+          "missingFields": "Inserisci sia il Client ID che il Client Secret.",
+          "openConsole": "Apri la console sviluppatori X",
+          "reconnect": "Ricollega",
+          "reconnectHint": "Ricollega dopo aver cambiato il permesso dell’app su X, o per attivare/disattivare i messaggi diretti.",
+          "step1": "Crea un progetto e un’app nella console sviluppatori X (tipo: Web App / Automated App).",
+          "step2": "Imposta il permesso dell’app su Read and Write — aggiungi Direct Messages se vuoi i DM.",
+          "step3": "Aggiungi questo URL di callback all’app:",
+          "step4": "Incolla qui sotto Client ID e Client Secret dell’app.",
+          "title": "Collega la tua app X"
+        }
       },
       "credStatus": {
         "expired": "Scaduto",
@@ -47659,7 +47883,8 @@ export const resources = {
           "openai": "Chiave API OpenAI — embedding per la memoria semantica e agenti con modelli OpenAI",
           "serpapi": "Ricerca Google Jobs tramite SerpApi (100 ricerche/mese gratis)",
           "supabase": "Servizi di database e autenticazione",
-          "theirstack": "API di annunci di lavoro — oltre 191 mln di offerte da 329k fonti in 195 paesi (1 credito per offerta)"
+          "theirstack": "API di annunci di lavoro — oltre 191 mln di offerte da 329k fonti in 195 paesi (1 credito per offerta)",
+          "x": "Post, menzioni, ricerca e messaggi diretti opzionali — con la tua app X"
         },
         "savedMessage": "{{name}} è stato salvato.",
         "secret": "Segreto",
@@ -52935,7 +53160,31 @@ export const resources = {
         },
         "subtitle": "एजेंट इंटीग्रेशन सक्षम करने के लिए बाहरी सेवाओं को लिंक करें।",
         "tokenDialogDescription": "अपना {{provider}} खाता कनेक्ट करने के लिए एक API टोकन पेस्ट करें।",
-        "tokenPlaceholder": "अपना API टोकन पेस्ट करें…"
+        "tokenPlaceholder": "अपना API टोकन पेस्ट करें…",
+        "x": {
+          "billingNote": "X हर API कॉल (पोस्ट, रीड, DM) के लिए आपके ऐप से शुल्क लेता है। X कंसोल में खर्च सीमा तय करें।",
+          "clientId": "Client ID",
+          "clientSecret": "Client Secret",
+          "connect": "X पर जारी रखें",
+          "copied": "कॉपी हो गया",
+          "copyCallback": "कॉलबैक URL कॉपी करें",
+          "dmHint": "आपके एजेंट इस खाते से DM पढ़ और भेज सकेंगे। X ऐप में Direct Messages अनुमति होनी चाहिए।",
+          "dmOption": "डायरेक्ट मैसेज की अनुमति दें",
+          "dmsOff": "डायरेक्ट मैसेज बंद",
+          "dmsOn": "डायरेक्ट मैसेज चालू",
+          "failed": "X कनेक्शन शुरू नहीं हो सका। क्रेडेंशियल जाँचकर फिर कोशिश करें।",
+          "handle": "@{{handle}} के रूप में कनेक्टेड",
+          "intro": "X API उपयोग का बिल ऐप मालिक को भेजता है, इसलिए agntchat आपके बनाए X ऐप के ज़रिए जुड़ता है। कुछ मिनट लगते हैं और लागत व अनुमतियाँ आपके नियंत्रण में रहती हैं।",
+          "missingFields": "Client ID और Client Secret दोनों दर्ज करें।",
+          "openConsole": "X डेवलपर कंसोल खोलें",
+          "reconnect": "फिर से कनेक्ट करें",
+          "reconnectHint": "X पर ऐप की अनुमति बदलने के बाद, या DM चालू/बंद करने के लिए फिर से कनेक्ट करें।",
+          "step1": "X डेवलपर कंसोल में प्रोजेक्ट और ऐप बनाएँ (प्रकार: Web App / Automated App)।",
+          "step2": "ऐप अनुमति Read and Write पर सेट करें — DM चाहिए तो Direct Messages भी जोड़ें।",
+          "step3": "यह कॉलबैक URL ऐप में जोड़ें:",
+          "step4": "नीचे ऐप का Client ID और Client Secret पेस्ट करें।",
+          "title": "अपना X ऐप कनेक्ट करें"
+        }
       },
       "credStatus": {
         "expired": "समाप्त",
@@ -53057,7 +53306,8 @@ export const resources = {
           "openai": "OpenAI API कुंजी — सिमैंटिक मेमोरी के लिए एम्बेडिंग और OpenAI मॉडल वाले एजेंट",
           "serpapi": "SerpApi के ज़रिए Google Jobs खोज (100 खोजें/माह मुफ़्त)",
           "supabase": "डेटाबेस और प्रमाणीकरण सेवाएँ",
-          "theirstack": "जॉब पोस्टिंग API — 195 देशों में 329K स्रोतों से 191M+ नौकरियाँ (1 क्रेडिट/नौकरी)"
+          "theirstack": "जॉब पोस्टिंग API — 195 देशों में 329K स्रोतों से 191M+ नौकरियाँ (1 क्रेडिट/नौकरी)",
+          "x": "पोस्ट, मेंशन, खोज और वैकल्पिक डायरेक्ट मैसेज — आपके अपने X ऐप के ज़रिए"
         },
         "savedMessage": "{{name}} सहेज दिया गया है।",
         "secret": "गुप्त",

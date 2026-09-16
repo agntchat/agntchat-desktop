@@ -2304,12 +2304,25 @@ export type CredentialGrantScope = "family" | "agents";
 
 export type CustomAuthMode = "bearer" | "header" | "none";
 
+/** Bring-your-own-app OAuth providers (X): the user supplies their own app's
+ *  client credentials before the redirect. Present only on providers that
+ *  need it — the rest keep one-click Connect. */
+export interface ProviderSetup {
+  clientCredentials: boolean;
+  fields: { key: string; secret: boolean }[];
+  options: { key: string; default: boolean }[];
+  // Redirect URI the user must register on their app.
+  callbackUrl: string;
+  consoleUrl: string;
+}
+
 export interface ProviderInfo {
   name: string;
   type: "oauth2" | "api_token";
   displayName: string;
   description?: string;
   scopes?: string[];
+  setup?: ProviderSetup;
 }
 
 // --- Agent tool catalog (platform integrations are per-agent opt-in) ---
@@ -2376,8 +2389,39 @@ export async function listProviders(): Promise<{ providers: ProviderInfo[] }> {
   return request("/api/integrations/providers");
 }
 
-export async function authorizeProvider(provider: string): Promise<{ authorizeUrl: string }> {
-  return request(`/api/integrations/${provider}/authorize`);
+// `options` ride as query params (e.g. X's `dm_enabled`); a bring-your-own-app
+// provider with no stored client credentials answers 422 `setup_required`.
+export async function authorizeProvider(
+  provider: string,
+  options?: Record<string, string | boolean>
+): Promise<{ authorizeUrl: string }> {
+  const params = new URLSearchParams();
+  for (const [key, value] of Object.entries(options ?? {})) {
+    params.set(key, String(value));
+  }
+  const query = params.size > 0 ? `?${params.toString()}` : "";
+  return request(`/api/integrations/${provider}/authorize${query}`);
+}
+
+// First connection of a bring-your-own-app provider: the client credentials
+// live in the OAuth state until the callback succeeds, nothing is stored
+// before that. 422 `setup_required` when a field is blank.
+export async function setupIntegration(
+  provider: string,
+  setup: {
+    clientId: string;
+    clientSecret: string;
+    options?: Record<string, boolean>;
+  }
+): Promise<{ authorizeUrl: string }> {
+  return request(`/api/integrations/${provider}/setup`, {
+    method: "POST",
+    body: JSON.stringify({
+      clientId: setup.clientId,
+      clientSecret: setup.clientSecret,
+      options: setup.options ?? {},
+    }),
+  });
 }
 
 export async function storeProviderToken(

@@ -100,12 +100,39 @@ import { useLlmKeyStore, type LlmApiKey as LlmApiKeyEntry } from "../stores/llmK
 // Types & constants
 // ---------------------------------------------------------------------------
 
+/** X wordmark — lucide ships no X logo, so a minimal inline glyph sized
+ *  like the lucide icons (24-unit viewBox, currentColor). */
+function XLogoIcon({ className }: { className?: string }) {
+  return (
+    <svg
+      viewBox="0 0 24 24"
+      fill="currentColor"
+      aria-hidden="true"
+      className={className}
+    >
+      <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z" />
+    </svg>
+  );
+}
+
 const PROVIDER_ICONS: Record<string, React.ElementType> = {
   google: Globe,
   github: Github,
   flyio: Cloud,
   supabase: Database,
+  x: XLogoIcon,
 };
+
+/** Bring-your-own-app providers (X) collect the user's client credentials
+ *  before the OAuth redirect; the rest keep one-click Connect. */
+function needsClientSetup(provider: api.ProviderInfo): boolean {
+  return provider.setup?.clientCredentials === true;
+}
+
+/** Whether an X connection was granted the DM scopes. */
+function xDmsEnabled(credential: api.UserCredential): boolean {
+  return credential.scopes.includes("dm.write");
+}
 
 /** Google services derived from OAuth scopes. */
 const GOOGLE_SERVICES: { scope: string; label: string; icon: React.ElementType }[] = [
@@ -271,6 +298,22 @@ export function Profile({ onClose }: { onClose: () => void }) {
   const [tokenValue, setTokenValue] = useState("");
   const [savingToken, setSavingToken] = useState(false);
   const [tokenError, setTokenError] = useState<string | null>(null);
+
+  // ---- Bring-your-own-app setup (X) ----
+  const [setupProvider, setSetupProvider] = useState<api.ProviderInfo | null>(
+    null
+  );
+  const [setupClientId, setSetupClientId] = useState("");
+  const [setupClientSecret, setSetupClientSecret] = useState("");
+  const [setupDmEnabled, setSetupDmEnabled] = useState(false);
+  const [setupError, setSetupError] = useState<string | null>(null);
+  const [submittingSetup, setSubmittingSetup] = useState(false);
+  const [callbackCopied, setCallbackCopied] = useState(false);
+  // Reconnect with the stored app credentials (DM switch pre-set from the row).
+  const [reconnectProvider, setReconnectProvider] =
+    useState<api.ProviderInfo | null>(null);
+  const [reconnectDmEnabled, setReconnectDmEnabled] = useState(false);
+  const [submittingReconnect, setSubmittingReconnect] = useState(false);
 
   // ---- Disconnect confirmation dialog ----
   const [disconnectProvider, setDisconnectProvider] = useState<string | null>(
@@ -453,42 +496,178 @@ export function Profile({ onClose }: { onClose: () => void }) {
     }
   };
 
-  const handleConnectOAuth = async (providerName: string) => {
-    setConnectingProvider(providerName);
-    try {
-      const { authorizeUrl } = await api.authorizeProvider(providerName);
-      await openExternal(authorizeUrl);
-
-      pollCountRef.current = 0;
-      pollRef.current = setInterval(async () => {
-        pollCountRef.current += 1;
-        if (pollCountRef.current > 40) {
+  // Poll the credential list until the browser callback lands. A reconnect
+  // already has an active row, so the poll waits for that row to CHANGE
+  // (updatedAt) rather than merely exist.
+  const startOAuthPoll = (providerName: string) => {
+    const before = credentials.find((c) => c.provider === providerName)
+      ?.updatedAt;
+    if (pollRef.current) clearInterval(pollRef.current);
+    pollCountRef.current = 0;
+    pollRef.current = setInterval(async () => {
+      pollCountRef.current += 1;
+      if (pollCountRef.current > 40) {
+        if (pollRef.current) clearInterval(pollRef.current);
+        setConnectingProvider(null);
+        return;
+      }
+      try {
+        const { credentials: updated } = await api.listCredentials();
+        const found = updated.find(
+          (c) =>
+            c.provider === providerName &&
+            c.status === "active" &&
+            c.updatedAt !== before
+        );
+        if (found) {
+          setCredentials(updated);
+          if (providerName === "google") {
+            track(ANALYTICS_EVENTS.GOOGLE_ACCOUNT_CONNECTED);
+          }
           if (pollRef.current) clearInterval(pollRef.current);
           setConnectingProvider(null);
-          return;
         }
-        try {
-          const { credentials: updated } = await api.listCredentials();
-          const found = updated.find(
-            (c) => c.provider === providerName && c.status === "active"
-          );
-          if (found) {
-            setCredentials(updated);
-            if (providerName === "google") {
-              track(ANALYTICS_EVENTS.GOOGLE_ACCOUNT_CONNECTED);
-            }
-            if (pollRef.current) clearInterval(pollRef.current);
-            setConnectingProvider(null);
-          }
-        } catch {
-          // keep polling on transient errors
-        }
-      }, 3000);
+      } catch {
+        // keep polling on transient errors
+      }
+    }, 3000);
+  };
+
+  const openSetupDialog = (provider: api.ProviderInfo) => {
+    const dmDefault =
+      provider.setup?.options.find((o) => o.key === "dm_enabled")?.default ??
+      false;
+    setSetupProvider(provider);
+    setSetupClientId("");
+    setSetupClientSecret("");
+    setSetupDmEnabled(dmDefault);
+    setSetupError(null);
+    setCallbackCopied(false);
+  };
+
+  const closeSetupDialog = () => {
+    setSetupProvider(null);
+    setSetupClientId("");
+    setSetupClientSecret("");
+    setSetupError(null);
+    setCallbackCopied(false);
+  };
+
+  const handleConnectOAuth = async (
+    providerName: string,
+    options?: Record<string, string | boolean>
+  ) => {
+    const provider = providers.find((p) => p.name === providerName);
+    // No stored connection on a bring-your-own-app provider: collect the
+    // client credentials first (the authorize call would 422 anyway).
+    if (
+      provider &&
+      needsClientSetup(provider) &&
+      !credentials.some((c) => c.provider === providerName)
+    ) {
+      openSetupDialog(provider);
+      return;
+    }
+    setConnectingProvider(providerName);
+    try {
+      const { authorizeUrl } = await api.authorizeProvider(
+        providerName,
+        options
+      );
+      await openExternal(authorizeUrl);
+      startOAuthPoll(providerName);
     } catch (e) {
       setConnectingProvider(null);
+      if (
+        provider &&
+        needsClientSetup(provider) &&
+        (e as { code?: string }).code === "setup_required"
+      ) {
+        openSetupDialog(provider);
+        return;
+      }
       setIntegrationError(
         e instanceof Error ? e.message : t("connections.errors.authorizeFailed")
       );
+    }
+  };
+
+  const handleSubmitSetup = async () => {
+    if (!setupProvider) return;
+    const clientId = setupClientId.trim();
+    const clientSecret = setupClientSecret.trim();
+    if (!clientId || !clientSecret) {
+      setSetupError(t("connections.x.missingFields"));
+      return;
+    }
+    setSubmittingSetup(true);
+    setSetupError(null);
+    try {
+      const { authorizeUrl } = await api.setupIntegration(setupProvider.name, {
+        clientId,
+        clientSecret,
+        options: { dm_enabled: setupDmEnabled },
+      });
+      const providerName = setupProvider.name;
+      closeSetupDialog();
+      setConnectingProvider(providerName);
+      await openExternal(authorizeUrl);
+      startOAuthPoll(providerName);
+    } catch (e) {
+      setSetupError(
+        (e as { code?: string }).code === "setup_required"
+          ? t("connections.x.missingFields")
+          : t("connections.x.failed")
+      );
+    } finally {
+      setSubmittingSetup(false);
+    }
+  };
+
+  const handleCopyCallback = async () => {
+    const url = setupProvider?.setup?.callbackUrl;
+    if (!url) return;
+    try {
+      await navigator.clipboard.writeText(url);
+      setCallbackCopied(true);
+      setTimeout(() => setCallbackCopied(false), 2000);
+    } catch {
+      // Clipboard unavailable — the URL stays selectable in the box.
+    }
+  };
+
+  const openReconnectDialog = (
+    provider: api.ProviderInfo,
+    credential: api.UserCredential
+  ) => {
+    setReconnectProvider(provider);
+    setReconnectDmEnabled(xDmsEnabled(credential));
+  };
+
+  const handleSubmitReconnect = async () => {
+    if (!reconnectProvider) return;
+    const providerName = reconnectProvider.name;
+    setSubmittingReconnect(true);
+    try {
+      const { authorizeUrl } = await api.authorizeProvider(providerName, {
+        dm_enabled: reconnectDmEnabled,
+      });
+      setReconnectProvider(null);
+      setConnectingProvider(providerName);
+      await openExternal(authorizeUrl);
+      startOAuthPoll(providerName);
+    } catch (e) {
+      setReconnectProvider(null);
+      // The stored app credentials are gone: fall back to the setup form.
+      if ((e as { code?: string }).code === "setup_required") {
+        openSetupDialog(reconnectProvider);
+        return;
+      }
+      setIntegrationError(
+        e instanceof Error ? e.message : t("connections.errors.authorizeFailed")
+      );
+    } finally {
+      setSubmittingReconnect(false);
     }
   };
 
@@ -1198,6 +1377,13 @@ export function Profile({ onClose }: { onClose: () => void }) {
                         onEditAccess={() =>
                           credential && openAccessDialog(provider, credential)
                         }
+                        onReconnect={
+                          needsClientSetup(provider)
+                            ? () =>
+                                credential &&
+                                openReconnectDialog(provider, credential)
+                            : undefined
+                        }
                         onDisconnect={() =>
                           setDisconnectProvider(provider.name)
                         }
@@ -1398,6 +1584,204 @@ export function Profile({ onClose }: { onClose: () => void }) {
                 </>
               ) : (
                 t("common:save")
+              )}
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
+      {/* ================================================================= */}
+      {/* BRING-YOUR-OWN-APP SETUP DIALOG (X)                               */}
+      {/* ================================================================= */}
+      <Dialog
+        open={!!setupProvider}
+        onOpenChange={(open) => {
+          if (!open && !submittingSetup) closeSetupDialog();
+        }}
+      >
+        <DialogContent className="sm:max-w-md">
+          <DialogHeader>
+            <DialogTitle>{t("connections.x.title")}</DialogTitle>
+            <DialogDescription>{t("connections.x.intro")}</DialogDescription>
+          </DialogHeader>
+          <div className="space-y-4 py-2">
+            <ol className="list-decimal pl-5 space-y-1.5 text-xs text-muted-foreground">
+              <li>{t("connections.x.step1")}</li>
+              <li>{t("connections.x.step2")}</li>
+              <li>
+                <span>{t("connections.x.step3")}</span>
+                <div className="mt-1.5 flex items-center gap-1.5">
+                  <code className="flex-1 min-w-0 truncate rounded-md border border-border bg-muted/60 px-2 py-1 font-mono text-[11px] text-foreground select-all">
+                    {setupProvider?.setup?.callbackUrl ?? ""}
+                  </code>
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    type="button"
+                    onClick={handleCopyCallback}
+                    className="flex-shrink-0"
+                  >
+                    {callbackCopied ? (
+                      <>
+                        <Check className="w-3.5 h-3.5 text-success" />
+                        {t("connections.x.copied")}
+                      </>
+                    ) : (
+                      t("connections.x.copyCallback")
+                    )}
+                  </Button>
+                </div>
+              </li>
+              <li>{t("connections.x.step4")}</li>
+            </ol>
+
+            {setupProvider?.setup?.consoleUrl && (
+              <button
+                type="button"
+                onClick={() =>
+                  setupProvider.setup && openExternal(setupProvider.setup.consoleUrl)
+                }
+                className="flex items-center gap-1 text-xs text-primary hover:underline cursor-pointer"
+              >
+                <ExternalLink className="w-3.5 h-3.5" />
+                {t("connections.x.openConsole")}
+              </button>
+            )}
+
+            <div className="space-y-1.5">
+              <Label className="text-xs">{t("connections.x.clientId")}</Label>
+              <Input
+                value={setupClientId}
+                onChange={(e) => {
+                  setSetupClientId(e.target.value);
+                  setSetupError(null);
+                }}
+                autoFocus
+                autoComplete="off"
+                spellCheck={false}
+              />
+            </div>
+            <div className="space-y-1.5">
+              <Label className="text-xs">{t("connections.x.clientSecret")}</Label>
+              <Input
+                type="password"
+                value={setupClientSecret}
+                onChange={(e) => {
+                  setSetupClientSecret(e.target.value);
+                  setSetupError(null);
+                }}
+                onKeyDown={(e) => {
+                  if (e.key === "Enter") handleSubmitSetup();
+                }}
+                autoComplete="off"
+              />
+            </div>
+
+            <div className="flex items-start justify-between gap-3">
+              <div className="min-w-0">
+                <Label className="text-xs">{t("connections.x.dmOption")}</Label>
+                <p className="text-[11px] text-muted-foreground mt-0.5">
+                  {t("connections.x.dmHint")}
+                </p>
+              </div>
+              <Switch
+                checked={setupDmEnabled}
+                onCheckedChange={setSetupDmEnabled}
+                className="flex-shrink-0 mt-0.5"
+              />
+            </div>
+
+            <p className="text-[11px] text-muted-foreground">
+              {t("connections.x.billingNote")}
+            </p>
+
+            {setupError && (
+              <p className="text-xs text-destructive">{setupError}</p>
+            )}
+          </div>
+          <DialogFooter>
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={closeSetupDialog}
+              disabled={submittingSetup}
+            >
+              {t("common:cancel")}
+            </Button>
+            <Button
+              size="sm"
+              onClick={handleSubmitSetup}
+              disabled={submittingSetup}
+            >
+              {submittingSetup ? (
+                <>
+                  <Loader2 className="w-3.5 h-3.5 animate-spin" />
+                  {t("common:connecting")}
+                </>
+              ) : (
+                <>
+                  <ExternalLink className="w-3.5 h-3.5" />
+                  {t("connections.x.connect")}
+                </>
+              )}
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
+      {/* ================================================================= */}
+      {/* RECONNECT DIALOG (X — reuses the stored app credentials)          */}
+      {/* ================================================================= */}
+      <Dialog
+        open={!!reconnectProvider}
+        onOpenChange={(open) => {
+          if (!open && !submittingReconnect) setReconnectProvider(null);
+        }}
+      >
+        <DialogContent className="sm:max-w-sm">
+          <DialogHeader>
+            <DialogTitle>{t("connections.x.reconnect")}</DialogTitle>
+            <DialogDescription>
+              {t("connections.x.reconnectHint")}
+            </DialogDescription>
+          </DialogHeader>
+          <div className="flex items-start justify-between gap-3 py-2">
+            <div className="min-w-0">
+              <Label className="text-xs">{t("connections.x.dmOption")}</Label>
+              <p className="text-[11px] text-muted-foreground mt-0.5">
+                {t("connections.x.dmHint")}
+              </p>
+            </div>
+            <Switch
+              checked={reconnectDmEnabled}
+              onCheckedChange={setReconnectDmEnabled}
+              className="flex-shrink-0 mt-0.5"
+            />
+          </div>
+          <DialogFooter>
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={() => setReconnectProvider(null)}
+              disabled={submittingReconnect}
+            >
+              {t("common:cancel")}
+            </Button>
+            <Button
+              size="sm"
+              onClick={handleSubmitReconnect}
+              disabled={submittingReconnect}
+            >
+              {submittingReconnect ? (
+                <>
+                  <Loader2 className="w-3.5 h-3.5 animate-spin" />
+                  {t("common:connecting")}
+                </>
+              ) : (
+                <>
+                  <RefreshCw className="w-3.5 h-3.5" />
+                  {t("connections.x.reconnect")}
+                </>
               )}
             </Button>
           </DialogFooter>
@@ -3857,6 +4241,7 @@ function ProviderRow({
   onConnectOAuth,
   onConnectToken,
   onEditAccess,
+  onReconnect,
   onDisconnect,
 }: {
   provider: api.ProviderInfo;
@@ -3866,10 +4251,19 @@ function ProviderRow({
   onConnectOAuth: () => void;
   onConnectToken: () => void;
   onEditAccess: () => void;
+  // Bring-your-own-app providers (X): re-run OAuth with the stored app
+  // credentials, e.g. to toggle DMs. Absent on one-click providers.
+  onReconnect?: () => void;
   onDisconnect: () => void;
 }) {
   const { t } = useTranslation("settings");
   const isConnected = !!credential;
+  // X rows carry the handle in metadata; the provider uid is the numeric id.
+  const xHandle =
+    provider.name === "x" &&
+    typeof credential?.providerMetadata?.username === "string"
+      ? (credential.providerMetadata.username as string)
+      : null;
   const status = credential?.status;
   const statusConfig = status ? STATUS_CONFIG[status] : null;
   const accessSummary =
@@ -3918,11 +4312,18 @@ function ProviderRow({
               />
               <span className="truncate">
                 {t(statusConfig.labelKey)}
-                {credential?.providerUid && (
+                {xHandle ? (
                   <span className="text-muted-foreground">
                     {" · "}
-                    {credential.providerUid}
+                    {t("connections.x.handle", { handle: xHandle })}
                   </span>
+                ) : (
+                  credential?.providerUid && (
+                    <span className="text-muted-foreground">
+                      {" · "}
+                      {credential.providerUid}
+                    </span>
+                  )
                 )}
               </span>
             </p>
@@ -3954,6 +4355,18 @@ function ProviderRow({
                 <Users className="w-3.5 h-3.5" />
                 {t("integrations.access.button")}
               </Button>
+              {onReconnect && (
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  onClick={onReconnect}
+                  title={t("connections.x.reconnectHint")}
+                  className="text-muted-foreground hover:text-foreground"
+                >
+                  <RefreshCw className="w-3.5 h-3.5" />
+                  {t("connections.x.reconnect")}
+                </Button>
+              )}
               <Button
                 variant="ghost"
                 size="sm"
@@ -3985,8 +4398,27 @@ function ProviderRow({
         />
       )}
 
+      {/* X: DM pill from the granted scopes */}
+      {credential && provider.name === "x" && (
+        <div className="ml-11 mt-2 flex flex-wrap items-center gap-1.5">
+          <span
+            className={cn(
+              "inline-flex items-center gap-1.5 rounded-md px-2 py-0.5 text-[11px] border",
+              xDmsEnabled(credential)
+                ? "bg-muted/60 border-transparent text-foreground"
+                : "border-dashed border-border text-muted-foreground/60"
+            )}
+          >
+            <Send className="w-3 h-3" />
+            {xDmsEnabled(credential)
+              ? t("connections.x.dmsOn")
+              : t("connections.x.dmsOff")}
+          </span>
+        </div>
+      )}
+
       {/* Non-Google: compact scope summary */}
-      {credential && provider.name !== "google" && credential.scopes.length > 0 && (
+      {credential && provider.name !== "google" && provider.name !== "x" && credential.scopes.length > 0 && (
         <p className="ml-11 mt-1 text-[11px] text-muted-foreground truncate">
           Scopes: {shortScopes}
         </p>
