@@ -98,7 +98,7 @@ export function AgentTools({ agentId, onCount }: AgentToolsProps) {
   // Connection pills for credentialed providers — best-effort, refreshed on
   // mount only (a re-open re-checks; no polling here).
   useEffect(() => {
-    for (const provider of ["google", "github"] as const) {
+    for (const provider of ["google", "github", "x"] as const) {
       getProviderStatus(provider)
         .then((s) =>
           setConnections((prev) => ({ ...prev, [provider]: s.connected }))

@@ -30,6 +30,12 @@ const GROUP_DEFS: Array<{
     matches: (tags) => tags.includes("gmail"),
   },
   {
+    key: "x",
+    labelKey: "toolsTab.groups.x",
+    credentialProvider: "x",
+    matches: (tags) => tags.includes("x"),
+  },
+  {
     key: "calendar",
     labelKey: "toolsTab.groups.calendar",
     credentialProvider: "google",
@@ -58,12 +64,6 @@ const GROUP_DEFS: Array<{
     labelKey: "toolsTab.groups.github",
     credentialProvider: "github",
     matches: (tags) => tags.includes("github"),
-  },
-  {
-    key: "x",
-    labelKey: "toolsTab.groups.x",
-    credentialProvider: "x",
-    matches: (tags) => tags.includes("x"),
   },
   {
     key: "jobs",

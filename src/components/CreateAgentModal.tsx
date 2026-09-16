@@ -243,7 +243,7 @@ export function CreateAgentModal({ onClose }: { onClose: () => void }) {
     Record<string, boolean | undefined>
   >({});
   useEffect(() => {
-    for (const provider of ["google", "github"] as const) {
+    for (const provider of ["google", "github", "x"] as const) {
       getProviderStatus(provider)
         .then((s) => {
           setWizardConnections((prev) => ({ ...prev, [provider]: s.connected }));
