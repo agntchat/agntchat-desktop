@@ -5,12 +5,11 @@ import { wakeAgent } from "../../lib/api";
 import { useResizableWidth, useRightPaneWidth } from "../../hooks/useResizableWidth";
 import { ResizeHandle } from "../ResizeHandle";
 import { useChatStore } from "../../stores/chatStore";
-import { useAgentStore } from "../../stores/agentStore";
-import { useHasWorkspaceCoMembers } from "../../stores/workspaceStore";
 import { useAuthStore } from "../../stores/authStore";
 import { usePresenceStore } from "../../stores/presenceStore";
 import { useStreamingStore } from "../../stores/streamingStore";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { Button } from "@/components/ui/button";
 import { cn } from "../../lib/utils";
 import {
   isResolvedThread,
@@ -35,7 +34,9 @@ import { SessionConversationDialog } from "./SessionConversationDialog";
 import { sessionMeta } from "../../lib/api";
 import { invoke } from "@tauri-apps/api/core";
 import { OnboardingCards } from "../OnboardingCards";
+import { CreateAgentModal } from "../CreateAgentModal";
 import { useOnboardingState } from "../../hooks/useOnboardingState";
+import { useCanCompose } from "../../hooks/useCanCompose";
 import { ThreadsBar } from "./ThreadsBar";
 import { FilesBar } from "./FilesBar";
 import { ArtifactsBar } from "./ArtifactsBar";
@@ -65,11 +66,7 @@ export function MessagesView() {
   // No one to start a conversation with → hide the compose affordance until
   // the user has created their first agent (the onboarding cards guide them
   // there) or joined a workspace with another human in it.
-  const hasAgents = useAgentStore((s) =>
-    Object.values(s.agents).some((m) => m.agent.status !== "deactivated")
-  );
-  const hasCoMembers = useHasWorkspaceCoMembers();
-  const canCompose = hasAgents || hasCoMembers;
+  const { canCompose } = useCanCompose();
 
   // The artifact pane belongs to the conversation it was opened from —
   // switching conversations closes it rather than showing a stale artifact.
@@ -789,12 +786,46 @@ function DetailsPanelWrapper({
 function EmptyState() {
   const { t } = useTranslation("chat");
   const onboarding = useOnboardingState();
+  const conversationCount = useChatStore((s) => s.conversations.length);
+  const { canCompose, pending: agentsPending } = useCanCompose();
+  const [showCreate, setShowCreate] = useState(false);
 
   // First-run: guide the user to their first agent instead of telling them
   // to select a conversation they don't have yet. (`visible` also covers the
   // just-completed moment so the "sent you a message" card can show.)
   if (onboarding.visible) {
     return <OnboardingCards />;
+  }
+
+  // Agents still resolving (first load, or a workspace switch's wipe +
+  // refetch) — `canCompose` reads false before it reads true, so hold
+  // rather than flash the no-peers copy at a workspace that has agents.
+  if (agentsPending) {
+    return <div className="flex-1" />;
+  }
+
+  // Zero conversations: "pick one on the left" describes an empty list.
+  // Point at whatever actually unblocks the user instead — the pencil when
+  // they have someone to talk to, creating an agent when they don't. The
+  // onboarding cards don't cover this: they're suppressed inside a shared
+  // workspace, which is exactly where an established user lands with no
+  // agents and no co-members.
+  if (conversationCount === 0) {
+    return (
+      <div className="flex-1 flex flex-col items-center justify-center text-center px-8">
+        <MessageSquare className="w-12 h-12 text-muted-foreground/40 mb-3" />
+        <p className="text-sm font-medium text-foreground">{t("noConversations")}</p>
+        <p className="text-xs text-muted-foreground mt-1 max-w-xs">
+          {canCompose ? t("startOneHint") : t("noConversationsNoPeersHint")}
+        </p>
+        {!canCompose && (
+          <Button size="sm" className="mt-4" onClick={() => setShowCreate(true)}>
+            {t("noConversationsCreateAgent")}
+          </Button>
+        )}
+        {showCreate && <CreateAgentModal onClose={() => setShowCreate(false)} />}
+      </div>
+    );
   }
 
   return (

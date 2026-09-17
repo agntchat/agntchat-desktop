@@ -3060,9 +3060,7 @@ export const resources = {
         "noDesktopBody": "This agent runs on your computer, so the desktop app needs to be open and signed in before it can come online. Hosted (cloud) agents are coming soon.",
         "noDesktopTitle": "Desktop app needed"
       },
-      "waking": "Waking…",
-      "welcomeBody": "Conversations live here once you have an agent to chat with. Create your first agent to get started.",
-      "welcomeTitle": "Welcome to agntchat"
+      "waking": "Waking…"
     },
     "common": {
       "accept": "Accept",
@@ -8490,9 +8488,7 @@ export const resources = {
         "noDesktopBody": "Este agente se ejecuta en tu ordenador, así que la app de escritorio debe estar abierta y con la sesión iniciada antes de que pueda conectarse. Los agentes alojados (en la nube) llegarán pronto.",
         "noDesktopTitle": "Se necesita la app de escritorio"
       },
-      "waking": "Despertando…",
-      "welcomeBody": "Las conversaciones aparecerán aquí cuando tengas un agente con quien chatear. Crea tu primer agente para empezar.",
-      "welcomeTitle": "Bienvenido a agntchat"
+      "waking": "Despertando…"
     },
     "common": {
       "accept": "Aceptar",
@@ -13920,9 +13916,7 @@ export const resources = {
         "noDesktopBody": "Dieser Agent läuft auf deinem Computer — die Desktop-App muss geöffnet und angemeldet sein, bevor er online gehen kann. Gehostete (Cloud-)Agenten kommen bald.",
         "noDesktopTitle": "Desktop-App erforderlich"
       },
-      "waking": "Wird geweckt…",
-      "welcomeBody": "Hier erscheinen Ihre Unterhaltungen, sobald Sie einen Agenten zum Chatten haben. Erstellen Sie Ihren ersten Agenten, um loszulegen.",
-      "welcomeTitle": "Willkommen bei agntchat"
+      "waking": "Wird geweckt…"
     },
     "common": {
       "accept": "Akzeptieren",
@@ -19350,9 +19344,7 @@ export const resources = {
         "noDesktopBody": "Cet agent s'exécute sur votre ordinateur : l'application de bureau doit être ouverte et connectée avant qu'il puisse passer en ligne. Les agents hébergés (dans le cloud) arrivent bientôt.",
         "noDesktopTitle": "Application de bureau requise"
       },
-      "waking": "Réveil en cours…",
-      "welcomeBody": "Les conversations apparaissent ici dès que vous avez un agent avec qui discuter. Créez votre premier agent pour commencer.",
-      "welcomeTitle": "Bienvenue sur agntchat"
+      "waking": "Réveil en cours…"
     },
     "common": {
       "accept": "Accepter",
@@ -24780,9 +24772,7 @@ export const resources = {
         "noDesktopBody": "Este agente roda no seu computador, então o app de desktop precisa estar aberto e conectado antes que ele possa ficar online. Agentes hospedados (na nuvem) chegam em breve.",
         "noDesktopTitle": "App de desktop necessário"
       },
-      "waking": "Acordando…",
-      "welcomeBody": "As conversas aparecem aqui assim que você tiver um agente para conversar. Crie seu primeiro agente para começar.",
-      "welcomeTitle": "Bem-vindo ao agntchat"
+      "waking": "Acordando…"
     },
     "common": {
       "accept": "Aceitar",
@@ -30210,9 +30200,7 @@ export const resources = {
         "noDesktopBody": "このエージェントはあなたのパソコンで動くため、オンラインにするにはデスクトップアプリを開いてサインインしておく必要があります。ホスト型（クラウド）エージェントは近日提供予定です。",
         "noDesktopTitle": "デスクトップアプリが必要です"
       },
-      "waking": "起動中…",
-      "welcomeBody": "エージェントとチャットできるようになると、ここに会話が表示されます。最初のエージェントを作成して始めましょう。",
-      "welcomeTitle": "agntchatへようこそ"
+      "waking": "起動中…"
     },
     "common": {
       "accept": "承認",
@@ -35640,9 +35628,7 @@ export const resources = {
         "noDesktopBody": "该智能体在你的电脑上运行，因此需要先打开桌面应用并保持登录，才能让它上线。托管（云端）智能体即将推出。",
         "noDesktopTitle": "需要桌面应用"
       },
-      "waking": "唤醒中…",
-      "welcomeBody": "当你有可对话的智能体时，对话会显示在这里。创建你的第一个智能体开始使用。",
-      "welcomeTitle": "欢迎使用 agntchat"
+      "waking": "唤醒中…"
     },
     "common": {
       "accept": "接受",
@@ -41070,9 +41056,7 @@ export const resources = {
         "noDesktopBody": "이 에이전트는 사용자의 컴퓨터에서 실행되므로, 온라인으로 전환하려면 먼저 데스크톱 앱이 열려 있고 로그인되어 있어야 합니다. 호스팅(클라우드) 에이전트가 곧 제공될 예정입니다.",
         "noDesktopTitle": "데스크톱 앱 필요"
       },
-      "waking": "깨우는 중…",
-      "welcomeBody": "채팅할 에이전트가 있으면 대화가 이곳에 표시됩니다. 첫 에이전트를 만들어 시작해 보세요.",
-      "welcomeTitle": "agntchat에 오신 것을 환영합니다"
+      "waking": "깨우는 중…"
     },
     "common": {
       "accept": "수락",
@@ -46500,9 +46484,7 @@ export const resources = {
         "noDesktopBody": "Questo agente gira sul tuo computer, quindi l'app desktop deve essere aperta e con l'accesso effettuato prima che possa andare online. Gli agenti ospitati (nel cloud) arriveranno presto.",
         "noDesktopTitle": "Serve l'app desktop"
       },
-      "waking": "Risveglio in corso…",
-      "welcomeBody": "Le conversazioni vivono qui una volta che hai un agente con cui chattare. Crea il tuo primo agente per iniziare.",
-      "welcomeTitle": "Benvenuto in agntchat"
+      "waking": "Risveglio in corso…"
     },
     "common": {
       "accept": "Accetta",
@@ -51930,9 +51912,7 @@ export const resources = {
         "noDesktopBody": "यह एजेंट आपके कंप्यूटर पर चलता है, इसलिए इसे ऑनलाइन लाने से पहले डेस्कटॉप ऐप खुला और साइन-इन होना ज़रूरी है। होस्टेड (क्लाउड) एजेंट जल्द आ रहे हैं।",
         "noDesktopTitle": "डेस्कटॉप ऐप ज़रूरी है"
       },
-      "waking": "जगाया जा रहा है…",
-      "welcomeBody": "जब आपके पास चैट करने के लिए कोई एजेंट होगा, तो बातचीत यहाँ दिखाई देंगी। शुरू करने के लिए अपना पहला एजेंट बनाएँ।",
-      "welcomeTitle": "agntchat में आपका स्वागत है"
+      "waking": "जगाया जा रहा है…"
     },
     "common": {
       "accept": "स्वीकार करें",

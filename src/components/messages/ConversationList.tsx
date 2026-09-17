@@ -1,8 +1,6 @@
 import { memo } from "react";
 import { useTranslation } from "react-i18next";
 import { useChatStore } from "../../stores/chatStore";
-import { useAgentStore } from "../../stores/agentStore";
-import { useHasWorkspaceCoMembers } from "../../stores/workspaceStore";
 import { useAuthStore } from "../../stores/authStore";
 import { usePresenceStore } from "../../stores/presenceStore";
 import { ExternalAgentBadge, externalToolOf, isExternalAgent } from "../ExternalAgentBadge";
@@ -24,6 +22,7 @@ import {
   MessageSquare,
 } from "lucide-react";
 import { GroupAvatar } from "./GroupAvatar";
+import { useCanCompose } from "../../hooks/useCanCompose";
 import { AgentActivityIndicator } from "../AgentActivityIndicator";
 import { PhaseOrb } from "../PhaseOrb";
 import { useStreamingStore } from "../../stores/streamingStore";
@@ -54,13 +53,13 @@ export function ConversationList() {
   // is hidden until the user has an agent or a workspace co-member. Without
   // either, guide them to create an agent instead of pointing at a button
   // that isn't there.
-  const hasAgents = useAgentStore((s) =>
-    Object.values(s.agents).some((m) => m.agent.status !== "deactivated")
-  );
-  const hasCoMembers = useHasWorkspaceCoMembers();
-  const canCompose = hasAgents || hasCoMembers;
+  const { canCompose, pending: agentsPending } = useCanCompose();
 
-  if (loading && conversations.length === 0) {
+  // Agents still in flight (a workspace switch wipes and refetches them)
+  // means `canCompose` reads false before it reads true — hold the spinner
+  // rather than flash the "nobody here yet" copy at a workspace that has
+  // agents.
+  if ((loading || agentsPending) && conversations.length === 0) {
     return (
       <div className="flex items-center justify-center py-16">
         <Loader2 className="w-5 h-5 animate-spin text-muted-foreground" />
@@ -75,8 +74,12 @@ export function ConversationList() {
         <p className="text-sm text-muted-foreground">
           {t("noConversations")}
         </p>
+        {/* No peers → the header pencil is hidden, so don't point at it.
+            The Create-an-agent CTA lives in the conversation pane next
+            door, which has the room for it — one call to action, not two
+            competing ones on the same screen. */}
         <p className="text-xs text-muted-foreground mt-1">
-          {canCompose ? t("startOneHint") : t("welcomeBody")}
+          {canCompose ? t("startOneHint") : t("noConversationsNoPeersHint")}
         </p>
       </div>
     );
