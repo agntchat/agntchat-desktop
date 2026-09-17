@@ -67,25 +67,83 @@ function writeClearedAtStorage(data: Record<string, string[]>) {
  * `firstUnreadIds` map (unchanged reference when there's nothing to update).
  * Shared by setActiveConversation (main pane) and openThread (side pane).
  */
-function captureFirstUnread(
-  firstUnreadIds: Record<string, string | undefined>,
-  messages: Record<string, Message[]>,
-  unreadCounts: Record<string, number>,
+function msgTime(m: { insertedAt?: string }): number {
+  return m.insertedAt ? new Date(m.insertedAt).getTime() : 0;
+}
+
+// --- Reopen catch-up ---------------------------------------------------------
+// Messages stay cached per conversation, but the channel is left when the
+// conversation is closed, so the cached tail goes stale the moment an agent
+// posts while the user is elsewhere. The row's `lastMessage` — kept current by
+// the user channel's `conversation_updated` — is the signal: a last message
+// newer than everything cached means the cache is behind. The backend emits
+// `conversation_updated` and `new_message` for the same messages, so a fresh
+// cache always contains the row's last message.
+type OpenStateSource = {
+  messages: Record<string, Message[]>;
+  conversations: Conversation[];
+  agentConversations: Conversation[];
+  unreadCounts: Record<string, number>;
+  firstUnreadIds: Record<string, string | undefined>;
+  historyLoaded: Record<string, boolean>;
+};
+
+function cacheIsBehind(
+  s: Pick<OpenStateSource, "messages" | "conversations" | "agentConversations">,
+  conversationId: string
+): boolean {
+  const cached = s.messages[conversationId];
+  if (!cached || cached.length === 0) return false;
+  const last =
+    s.conversations.find((c) => c.id === conversationId)?.lastMessage ??
+    s.agentConversations.find((c) => c.id === conversationId)?.lastMessage;
+  if (!last?.id) return false;
+  if (cached.some((m) => m.id === last.id)) return false;
+  return !last.insertedAt || msgTime(last) > msgTime(cached[cached.length - 1]!);
+}
+
+// Unread count captured at open when the cache was behind: the "New
+// messages" divider is anchored once the catch-up window lands
+// (applyLatestWindow) instead of on the stale tail.
+const pendingFirstUnread: Record<string, number> = {};
+
+// One initial (no `before`) history load in flight per conversation; a
+// second caller shares the first's promise.
+const inflightInitialLoads: Record<string, Promise<void>> = {};
+
+/** Open-time bookkeeping for setActiveConversation / openThread: the
+ *  first-unread capture for the one-shot "New messages" divider, and the
+ *  history gate. A cache that is behind the row's `lastMessage` is NOT
+ *  painted — `historyLoaded` is cleared so ChatThread treats it as a cold
+ *  open (blank, then one paint when the window lands; its fetch effect keys
+ *  on the gate) instead of painting the stale tail and then swapping; the
+ *  divider is deferred with it. */
+function captureOpenState(
+  s: OpenStateSource,
   id: string | null
-): Record<string, string | undefined> {
-  if (!id) return firstUnreadIds;
-  const existing = messages[id] ?? [];
-  const unread = unreadCounts[id] ?? 0;
-  if (unread > 0 && existing.length >= unread) {
-    return { ...firstUnreadIds, [id]: existing[existing.length - unread]?.id };
-  }
+): { firstUnreadIds: Record<string, string | undefined>; historyLoaded: Record<string, boolean> } {
+  if (!id) return { firstUnreadIds: s.firstUnreadIds, historyLoaded: s.historyLoaded };
+  const existing = s.messages[id] ?? [];
+  const unread = s.unreadCounts[id] ?? 0;
+  let firstUnreadIds = s.firstUnreadIds;
   // Clear any stale divider from a prior open.
   if (firstUnreadIds[id] !== undefined) {
     const copy = { ...firstUnreadIds };
     delete copy[id];
-    return copy;
+    firstUnreadIds = copy;
   }
-  return firstUnreadIds;
+  if (cacheIsBehind(s, id)) {
+    if (unread > 0) pendingFirstUnread[id] = unread;
+    else delete pendingFirstUnread[id];
+    return { firstUnreadIds, historyLoaded: { ...s.historyLoaded, [id]: false } };
+  }
+  delete pendingFirstUnread[id];
+  // Only possible when the cached tail is at least as long as the unread
+  // count (messages are stored oldest-first).
+  if (unread > 0 && existing.length >= unread) {
+    firstUnreadIds = { ...firstUnreadIds, [id]: existing[existing.length - unread]?.id };
+  }
+  return { firstUnreadIds, historyLoaded: s.historyLoaded };
 }
 
 /** Mark a conversation read over WS, falling back to REST if not joined. */
@@ -189,9 +247,12 @@ interface ChatState {
   // Messages (per conversation)
   messages: Record<string, Message[]>;
   messagesLoading: Record<string, boolean>;
-  /** Per-conversation: the initial history load has settled — a REST
-   *  `fetchMessages` (no `before`) returned, or a WS `recent_messages` push
-   *  landed. Distinct from `messagesLoading`, which is false both before the
+  /** Per-conversation: the cached tail is trustworthy to paint — the latest
+   *  window landed (a REST `fetchMessages` without `before`, or a WS
+   *  `recent_messages` push) since the conversation was opened. Cleared again
+   *  by `captureOpenState` when the cache is behind the row's `lastMessage`,
+   *  so a stale tail is never painted and then swapped (ChatThread refetches
+   *  whenever this is false). Distinct from `messagesLoading`, which is false both before the
    *  fetch is kicked off and after it finishes. `ChatThread` gates its
    *  timeline on this: inline thread cards and artifacts come from stores
    *  that are already warm, so building the thread against an empty message
@@ -271,7 +332,13 @@ interface ChatState {
     kind: "added" | "removed"
   ) => void;
   addMessage: (conversationId: string, message: Message) => void;
-  setRecentMessages: (conversationId: string, messages: Message[]) => void;
+  /** Apply the server's latest-messages window (REST initial load or WS
+   *  `recent_messages`). Contiguous with the cache → merged (cached messages
+   *  inside the window that the server omitted were deleted and are dropped);
+   *  a cache entirely older than the window is a stale tail from before the
+   *  user went away and is replaced, so the timeline never shows a hole.
+   *  Both paths land here on open; whichever is second is a no-op. */
+  applyLatestWindow: (conversationId: string, messages: Message[]) => void;
   setDraft: (conversationId: string, text: string) => void;
 
   // Reply-to
@@ -621,39 +688,61 @@ export const useChatStore = create<ChatState>((set, get) => ({
   },
 
   fetchMessages: async (conversationId, before) => {
-    set((s) => ({
-      messagesLoading: { ...s.messagesLoading, [conversationId]: true },
-    }));
-    try {
-      const data = await api.fetchMessages(conversationId, before);
-      set((s) => {
-        const existing = s.messages[conversationId] ?? [];
-        const merged = dedup([...data.messages, ...existing]);
-        const { [conversationId]: _cleared, ...historyError } = s.historyError;
-        return {
-          messages: { ...s.messages, [conversationId]: sortMessages(merged) },
-          hasMore: { ...s.hasMore, [conversationId]: data.messages.length >= 30 },
+    if (!before) {
+      const inflight = inflightInitialLoads[conversationId];
+      if (inflight) return inflight;
+    }
+
+    const load = async () => {
+      set((s) => ({
+        messagesLoading: { ...s.messagesLoading, [conversationId]: true },
+      }));
+      try {
+        const data = await api.fetchMessages(conversationId, before);
+
+        if (!before) {
+          // The latest window shares one merge with the WS `recent_messages`
+          // push, so the two open-time loads converge on the same list.
+          get().applyLatestWindow(conversationId, data.messages);
+          set((s) => ({
+            hasMore: { ...s.hasMore, [conversationId]: data.messages.length >= 30 },
+            messagesLoading: { ...s.messagesLoading, [conversationId]: false },
+          }));
+          return;
+        }
+
+        // Scroll-back page: pure merge. Says nothing about whether the
+        // initial load landed.
+        set((s) => {
+          const existing = s.messages[conversationId] ?? [];
+          const merged = dedup([...data.messages, ...existing]);
+          return {
+            messages: { ...s.messages, [conversationId]: sortMessages(merged) },
+            hasMore: { ...s.hasMore, [conversationId]: data.messages.length >= 30 },
+            messagesLoading: { ...s.messagesLoading, [conversationId]: false },
+          };
+        });
+      } catch (e) {
+        console.warn(`[chat] fetchMessages(${conversationId}) failed`, e);
+        set((s) => ({
           messagesLoading: { ...s.messagesLoading, [conversationId]: false },
-          historyError,
-          // Scroll-back pages say nothing about whether the initial load landed.
+          // Failure is NOT "loaded": flipping historyLoaded here let the inline
+          // thread/artifact cards render alone, as the whole conversation, until
+          // the WS push landed. The pane reads historyError and offers a retry,
+          // which is also what keeps it from spinning forever.
           ...(before
             ? {}
-            : { historyLoaded: { ...s.historyLoaded, [conversationId]: true } }),
-        };
-      });
-    } catch (e) {
-      console.warn(`[chat] fetchMessages(${conversationId}) failed`, e);
-      set((s) => ({
-        messagesLoading: { ...s.messagesLoading, [conversationId]: false },
-        // Failure is NOT "loaded": flipping historyLoaded here let the inline
-        // thread/artifact cards render alone, as the whole conversation, until
-        // the WS push landed. The pane reads historyError and offers a retry,
-        // which is also what keeps it from spinning forever.
-        ...(before
-          ? {}
-          : { historyError: { ...s.historyError, [conversationId]: true } }),
-      }));
-    }
+            : { historyError: { ...s.historyError, [conversationId]: true } }),
+        }));
+      }
+    };
+
+    if (before) return load();
+    const promise = load().finally(() => {
+      delete inflightInitialLoads[conversationId];
+    });
+    inflightInitialLoads[conversationId] = promise;
+    return promise;
   },
 
   sendMessage: async (conversationId, content, options) => {
@@ -885,32 +974,70 @@ export const useChatStore = create<ChatState>((set, get) => ({
     });
   },
 
-  setRecentMessages: (conversationId, messages) => {
+  applyLatestWindow: (conversationId, messages) => {
     set((s) => {
+      const incoming = sortMessages(dedup(messages ?? []));
       const existing = s.messages[conversationId] ?? [];
-      let sorted: Message[];
-      if (existing.length === 0) {
-        sorted = sortMessages(messages);
-      } else {
-        // Keep local messages newer than the server snapshot (new_message
-        // events that arrived before recent_messages). Drop locally cached
-        // messages the server omitted (deleted since last fetch).
-        const incomingIds = new Set(messages.map((m) => m.id));
-        const newestIncoming =
-          messages.length > 0
-            ? Math.max(...messages.map((m) => new Date(m.insertedAt).getTime()))
-            : 0;
-        const extras = existing.filter(
-          (m) =>
-            !incomingIds.has(m.id) &&
-            new Date(m.insertedAt).getTime() > newestIncoming
-        );
-        sorted = sortMessages(dedup([...messages, ...extras]));
+
+      let next = existing;
+      if (incoming.length > 0) {
+        const incomingIds = new Set(incoming.map((m) => m.id));
+        const oldestIncoming = msgTime(incoming[0]!);
+        const newestIncoming = msgTime(incoming[incoming.length - 1]!);
+        const newestCached = existing.length > 0 ? msgTime(existing[existing.length - 1]!) : 0;
+        // Contiguous when the cache overlaps the window (shares an id, or its
+        // newest message falls inside the window's span). Otherwise everything
+        // cached predates the window with unknown history in between — a
+        // stale tail from before the user went away — and it is dropped rather
+        // than shown with a hole; scrolling up pages the gap back in.
+        const contiguous =
+          existing.length === 0 ||
+          newestCached >= oldestIncoming ||
+          existing.some((m) => incomingIds.has(m.id));
+        const kept = existing.filter((m) => {
+          if (incomingIds.has(m.id)) return false; // replaced by the fresh copy
+          if (m.pending) return true; // optimistic send still awaiting its echo
+          const t = msgTime(m);
+          if (t > newestIncoming) return true; // new_message that beat the snapshot
+          if (!contiguous) return false;
+          // Inside the window's span but absent from it: deleted since cached.
+          return t < oldestIncoming;
+        });
+        next = sortMessages([...kept, ...incoming]);
       }
-      const { [conversationId]: _cleared, ...historyError } = s.historyError;
+
+      // A divider deferred at open (cache was behind) is anchored now that
+      // the tail is trustworthy.
+      let firstUnreadIds = s.firstUnreadIds;
+      const pendingUnread = pendingFirstUnread[conversationId];
+      if (pendingUnread !== undefined) {
+        delete pendingFirstUnread[conversationId];
+        if (next.length >= pendingUnread) {
+          firstUnreadIds = {
+            ...firstUnreadIds,
+            [conversationId]: next[next.length - pendingUnread]?.id,
+          };
+        }
+      }
+
+      let historyError = s.historyError;
+      if (historyError[conversationId]) {
+        const { [conversationId]: _cleared, ...rest } = historyError;
+        historyError = rest;
+      }
+
+      // REST and WS both land here on open; whichever is second must not
+      // re-render the list. Compare ids in order, not counts: a same-count
+      // delta (one message removed + one added) still applies.
+      const unchanged =
+        next.length === existing.length && next.every((m, i) => m.id === existing[i]!.id);
       return {
-        messages: { ...s.messages, [conversationId]: sorted },
-        historyLoaded: { ...s.historyLoaded, [conversationId]: true },
+        ...(unchanged ? {} : { messages: { ...s.messages, [conversationId]: next } }),
+        firstUnreadIds,
+        // Either path is a full history landing.
+        historyLoaded: s.historyLoaded[conversationId]
+          ? s.historyLoaded
+          : { ...s.historyLoaded, [conversationId]: true },
         historyError,
       };
     });
@@ -950,7 +1077,9 @@ export const useChatStore = create<ChatState>((set, get) => ({
       activeThreadId: null,
       unreadCounts: id ? { ...s.unreadCounts, [id]: 0 } : s.unreadCounts,
       unreadTurnGroups: id ? { ...s.unreadTurnGroups, [id]: {} } : s.unreadTurnGroups,
-      firstUnreadIds: captureFirstUnread(s.firstUnreadIds, s.messages, s.unreadCounts, id),
+      // First-unread divider + history gate (a behind cache opens cold —
+      // ChatThread refetches whenever `historyLoaded` is false).
+      ...captureOpenState(s, id),
       scrollTargetMessageId: opts?.scrollToMessageId ?? null,
     }));
     if (id) {
@@ -979,7 +1108,7 @@ export const useChatStore = create<ChatState>((set, get) => ({
       activeThreadId: threadId,
       unreadCounts: { ...s.unreadCounts, [threadId]: 0 },
       unreadTurnGroups: { ...s.unreadTurnGroups, [threadId]: {} },
-      firstUnreadIds: captureFirstUnread(s.firstUnreadIds, s.messages, s.unreadCounts, threadId),
+      ...captureOpenState(s, threadId),
     }));
 
     ws.joinConversation(threadId);
@@ -1153,7 +1282,7 @@ export const useChatStore = create<ChatState>((set, get) => ({
       ws.on("conv:recent_messages", (payload) => {
         const convId = payload._conversationId as string;
         const messages = payload.messages as Message[];
-        get().setRecentMessages(convId, messages);
+        get().applyLatestWindow(convId, messages);
       })
     );
 

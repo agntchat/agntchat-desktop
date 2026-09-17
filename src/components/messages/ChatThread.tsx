@@ -744,7 +744,11 @@ export function ChatThread({ conversationId }: { conversationId: string }) {
     const state = useChatStore.getState();
     const hasTarget = state.scrollTargetMessageId !== null;
     const hasUnreadAnchor = !!state.firstUnreadIds[conversationId];
-    unreadAnchorPendingRef.current = !hasTarget && hasUnreadAnchor;
+    // A behind cache opens cold: the store defers the divider until the
+    // catch-up window lands (`historyLoaded` is false meanwhile). Keep the
+    // anchor armed so the effect below can still honour it then.
+    const deferredAnchor = !hasUnreadAnchor && !state.historyLoaded[conversationId];
+    unreadAnchorPendingRef.current = !hasTarget && (hasUnreadAnchor || deferredAnchor);
     const pinned = !hasTarget && !hasUnreadAnchor;
     pinnedRef.current = pinned;
     setNearBottom(pinned);
@@ -762,6 +766,8 @@ export function ChatThread({ conversationId }: { conversationId: string }) {
   // Retries on threadItems changes until it exists, then consumes the flag.
   useLayoutEffect(() => {
     if (!unreadAnchorPendingRef.current) return;
+    // Deferred divider (cache was behind at open): wait for the window.
+    if (!historyLoaded) return;
     if (!firstUnreadId) {
       unreadAnchorPendingRef.current = false;
       return;
@@ -769,8 +775,12 @@ export function ChatThread({ conversationId }: { conversationId: string }) {
     const node = scrollRef.current?.querySelector("[data-unread-divider]");
     if (!node) return;
     unreadAnchorPendingRef.current = false;
+    // Anchoring at the divider means the reader is not at the bottom —
+    // release the pin so the arrival snaps don't undo the anchor.
+    pinnedRef.current = false;
+    setNearBottom(false);
     node.scrollIntoView({ block: "start" });
-  }, [firstUnreadId, threadItems.length, conversationId]);
+  }, [firstUnreadId, threadItems.length, conversationId, historyLoaded]);
 
   // Autoscroll — mimics mobile's inverted list: every thread opens at the
   // latest message and stays pinned there as content arrives, until the user
