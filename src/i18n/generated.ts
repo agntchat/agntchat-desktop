@@ -825,7 +825,6 @@ export const resources = {
       "empty": {
         "createFirstHint": "Create your first agent to start delegating work.",
         "noneFound": "No agents found",
-        "subtitle": "Tap + to create your first agent",
         "title": "No agents yet"
       },
       "emptyDirectory": "No agents in the directory yet.",
@@ -6253,7 +6252,6 @@ export const resources = {
       "empty": {
         "createFirstHint": "Crea tu primer agente para empezar a delegar trabajo.",
         "noneFound": "No se encontraron agentes",
-        "subtitle": "Toca + para crear tu primer agente",
         "title": "Aún no hay agentes"
       },
       "emptyDirectory": "Aún no hay agentes en el directorio.",
@@ -11681,7 +11679,6 @@ export const resources = {
       "empty": {
         "createFirstHint": "Erstellen Sie Ihren ersten Agenten, um mit dem Delegieren von Arbeit zu beginnen.",
         "noneFound": "Keine Agenten gefunden",
-        "subtitle": "Tippen Sie auf +, um Ihren ersten Agenten zu erstellen",
         "title": "Noch keine Agenten"
       },
       "emptyDirectory": "Noch keine Agenten im Verzeichnis.",
@@ -17109,7 +17106,6 @@ export const resources = {
       "empty": {
         "createFirstHint": "Créez votre premier agent pour commencer à déléguer du travail.",
         "noneFound": "Aucun agent trouvé",
-        "subtitle": "Appuyez sur + pour créer votre premier agent",
         "title": "Aucun agent pour l'instant"
       },
       "emptyDirectory": "Aucun agent dans l'annuaire pour l'instant.",
@@ -22537,7 +22533,6 @@ export const resources = {
       "empty": {
         "createFirstHint": "Crie seu primeiro agente para começar a delegar trabalho.",
         "noneFound": "Nenhum agente encontrado",
-        "subtitle": "Toque em + para criar seu primeiro agente",
         "title": "Ainda não há agentes"
       },
       "emptyDirectory": "Ainda não há agentes no diretório.",
@@ -27965,7 +27960,6 @@ export const resources = {
       "empty": {
         "createFirstHint": "最初のエージェントを作成して、作業の委任を始めましょう。",
         "noneFound": "エージェントが見つかりません",
-        "subtitle": "＋をタップして最初のエージェントを作成",
         "title": "エージェントはまだありません"
       },
       "emptyDirectory": "ディレクトリにエージェントはまだありません。",
@@ -33393,7 +33387,6 @@ export const resources = {
       "empty": {
         "createFirstHint": "创建你的第一个智能体以开始分配工作。",
         "noneFound": "未找到智能体",
-        "subtitle": "点击 + 创建你的第一个智能体",
         "title": "暂无智能体"
       },
       "emptyDirectory": "目录中暂无智能体。",
@@ -38821,7 +38814,6 @@ export const resources = {
       "empty": {
         "createFirstHint": "첫 에이전트를 만들어 작업 위임을 시작하세요.",
         "noneFound": "에이전트를 찾을 수 없습니다",
-        "subtitle": "+ 를 눌러 첫 에이전트를 만드세요",
         "title": "아직 에이전트가 없습니다"
       },
       "emptyDirectory": "아직 디렉토리에 에이전트가 없습니다.",
@@ -44249,7 +44241,6 @@ export const resources = {
       "empty": {
         "createFirstHint": "Crea il tuo primo agente per iniziare a delegare il lavoro.",
         "noneFound": "Nessun agente trovato",
-        "subtitle": "Tocca + per creare il tuo primo agente",
         "title": "Ancora nessun agente"
       },
       "emptyDirectory": "Ancora nessun agente nella directory.",
@@ -49677,7 +49668,6 @@ export const resources = {
       "empty": {
         "createFirstHint": "काम सौंपना शुरू करने के लिए अपना पहला एजेंट बनाएँ।",
         "noneFound": "कोई एजेंट नहीं मिला",
-        "subtitle": "अपना पहला एजेंट बनाने के लिए + टैप करें",
         "title": "अभी तक कोई एजेंट नहीं"
       },
       "emptyDirectory": "डायरेक्ट्री में अभी तक कोई एजेंट नहीं है।",
