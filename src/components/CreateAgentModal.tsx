@@ -822,25 +822,42 @@ export function CreateAgentModal({ onClose }: { onClose: () => void }) {
   // don't score; only things the user actively adds do. The nudge names the
   // single highest-value item still missing.
   const completeness = useMemo(() => {
-    const items: { key: string; points: number; done: boolean }[] = [
-      { key: "name", points: 15, done: displayName.trim().length > 0 },
-      { key: "photo", points: 10, done: !!avatarUrl },
-      { key: "brief", points: 10, done: brief.trim().length > 0 },
-      { key: "tone", points: 10, done: !!tone || !!customTone?.trim() },
+    type Cat = "identity" | "personality" | "details" | "integrations";
+    const items: { key: string; cat: Cat; points: number; done: boolean }[] = [
+      { key: "name", cat: "identity", points: 15, done: displayName.trim().length > 0 },
+      { key: "photo", cat: "identity", points: 10, done: !!avatarUrl },
+      { key: "brief", cat: "identity", points: 10, done: brief.trim().length > 0 },
+      { key: "tone", cat: "personality", points: 10, done: !!tone || !!customTone?.trim() },
       {
         key: "specialties",
+        cat: "personality",
         points: 15,
         done: specialties.length + customSpecialties.length > 0,
       },
-      { key: "description", points: 10, done: description.trim().length > 0 },
-      { key: "instructions", points: 15, done: customInstructions.trim().length > 0 },
-      { key: "integrations", points: 15, done: selectedTools.length > 0 },
+      { key: "description", cat: "personality", points: 10, done: description.trim().length > 0 },
+      { key: "instructions", cat: "details", points: 15, done: customInstructions.trim().length > 0 },
+      { key: "integrations", cat: "integrations", points: 15, done: selectedTools.length > 0 },
     ];
     const percent = items.reduce((sum, i) => sum + (i.done ? i.points : 0), 0);
     const next = items
       .filter((i) => !i.done)
       .sort((a, b) => b.points - a.points)[0];
-    return { percent, next };
+    // Page order: identity, personality (page 1) → details, integrations
+    // (page 2). `weight` is the category's share of the 100 points; `percent`
+    // is how much of that share is earned.
+    const categories = (["identity", "personality", "details", "integrations"] as Cat[]).map(
+      (cat) => {
+        const own = items.filter((i) => i.cat === cat);
+        const weight = own.reduce((sum, i) => sum + i.points, 0);
+        const earned = own.reduce((sum, i) => sum + (i.done ? i.points : 0), 0);
+        return { cat, weight, percent: Math.round((earned / weight) * 100) };
+      }
+    );
+    const byCat = Object.fromEntries(categories.map((c) => [c.cat, c.percent])) as Record<
+      Cat,
+      number
+    >;
+    return { percent, next, categories, byCat };
   }, [
     displayName,
     avatarUrl,
@@ -990,20 +1007,29 @@ export function CreateAgentModal({ onClose }: { onClose: () => void }) {
                 aria-valuenow={completeness.percent}
                 aria-label={t("create.completeness.label", { percent: completeness.percent })}
               >
-                <div className="relative h-1.5 w-40 overflow-hidden rounded-full bg-border">
-                  <div
-                    className={cn(
-                      "relative h-full overflow-hidden rounded-full transition-all duration-500 ease-out",
-                      completeness.percent === 100 ? "bg-warning" : "bg-primary"
-                    )}
-                    style={{ width: `${completeness.percent}%` }}
-                  >
-                    {/* Idle glint: a slow periodic sheen so the bar keeps
-                        catching the eye while there's still room to fill. */}
-                    {completeness.percent > 0 && completeness.percent < 100 && (
-                      <span className="meter-glint absolute inset-y-0 left-0 w-1/3 bg-gradient-to-r from-transparent via-white/70 to-transparent" />
-                    )}
-                  </div>
+                {/* One segment per category, sized by its share of the
+                    points and filled by how much of that share is earned. */}
+                <div className="relative flex h-1.5 w-48 gap-0.5 overflow-hidden rounded-full">
+                  {completeness.categories.map((c) => (
+                    <div
+                      key={c.cat}
+                      className="h-full overflow-hidden rounded-full bg-border"
+                      style={{ flex: c.weight }}
+                    >
+                      <div
+                        className={cn(
+                          "h-full rounded-full transition-all duration-500 ease-out",
+                          completeness.percent === 100 ? "bg-warning" : "bg-primary"
+                        )}
+                        style={{ width: `${c.percent}%` }}
+                      />
+                    </div>
+                  ))}
+                  {/* Idle glint: a slow periodic sheen so the bar keeps
+                      catching the eye while there's still room to fill. */}
+                  {completeness.percent > 0 && completeness.percent < 100 && (
+                    <span className="meter-glint pointer-events-none absolute inset-y-0 left-0 w-1/3 bg-gradient-to-r from-transparent via-white/70 to-transparent" />
+                  )}
                   {burst && (
                     <span
                       key={burst.id}
@@ -1049,7 +1075,7 @@ export function CreateAgentModal({ onClose }: { onClose: () => void }) {
             {page === 1 && (
             <div className="grid grid-cols-2 gap-x-6">
               <div className="space-y-5">
-                <Category>{t("create.sections.identity")}</Category>
+                <Category progress={completeness.byCat.identity}>{t("create.sections.identity")}</Category>
                 {/* Identity: avatar + name + template */}
                 <div className="flex items-start gap-4">
                   <button
@@ -1208,7 +1234,7 @@ export function CreateAgentModal({ onClose }: { onClose: () => void }) {
 
               </div>
               <div className="space-y-5 border-l border-border pl-6">
-                <Category>{t("create.sections.personality")}</Category>
+                <Category progress={completeness.byCat.personality}>{t("create.sections.personality")}</Category>
                 {/* Role + Tone */}
                 <div className="grid grid-cols-2 gap-3">
                   <Field label={t("create.stepLabels.role")}>
@@ -1463,7 +1489,7 @@ export function CreateAgentModal({ onClose }: { onClose: () => void }) {
             {page === 2 && (
             <div className="grid grid-cols-2 gap-x-6">
               <div className="space-y-5">
-                <Category>{t("create.stepLabels.details")}</Category>
+                <Category progress={completeness.byCat.details}>{t("create.stepLabels.details")}</Category>
                 <Field
                   label={t("create.customInstructionsOptional")}
                   htmlFor="agent-instructions"
@@ -1529,7 +1555,8 @@ export function CreateAgentModal({ onClose }: { onClose: () => void }) {
               </div>
               <div className="space-y-5 border-l border-border pl-6">
                 {/* Integrations */}
-                <Field label={t("create.review.toolsLabel")} hint={t("create.toolsHint")}>
+                <Category progress={completeness.byCat.integrations}>{t("create.review.toolsLabel")}</Category>
+                <div className="space-y-1.5">
                   <TooltipProvider delay={300}>
                   <div className="space-y-2">
                     {groupIntegrationTools(toolCatalog).length === 0 ? (
@@ -1679,7 +1706,8 @@ export function CreateAgentModal({ onClose }: { onClose: () => void }) {
                     )}
                   </div>
                   </TooltipProvider>
-                </Field>
+                  <p className="text-[11px] text-text-muted">{t("create.toolsHint")}</p>
+                </div>
 
                 {/* Local-brain knobs — hosted agents use the host's shared seat. */}
                 {hosting === "local" && (
@@ -1923,11 +1951,42 @@ export function CreateAgentModal({ onClose }: { onClose: () => void }) {
 }
 
 /** Small uppercase header that names a group of fields. */
-function Category({ children }: { children: ReactNode }) {
+function Category({
+  children,
+  progress,
+}: {
+  children: ReactNode;
+  /** 0–100: this category's share of the completeness score that's earned.
+   *  Omit for groups that don't score (runtime, brain). */
+  progress?: number;
+}) {
   return (
-    <p className="text-[11px] font-semibold uppercase tracking-wide text-text-muted">
-      {children}
-    </p>
+    <div className="flex items-center justify-between gap-3">
+      <p className="text-[11px] font-semibold uppercase tracking-wide text-text-muted">
+        {children}
+      </p>
+      {progress !== undefined && (
+        <div className="flex items-center gap-1.5">
+          <div className="h-1 w-14 overflow-hidden rounded-full bg-border">
+            <div
+              className={cn(
+                "h-full rounded-full transition-all duration-500 ease-out",
+                progress === 100 ? "bg-warning" : "bg-primary"
+              )}
+              style={{ width: `${progress}%` }}
+            />
+          </div>
+          <span
+            className={cn(
+              "text-[10px] font-medium tabular-nums",
+              progress === 100 ? "text-warning" : "text-text-muted"
+            )}
+          >
+            {progress}%
+          </span>
+        </div>
+      )}
+    </div>
   );
 }
 
