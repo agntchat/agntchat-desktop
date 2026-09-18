@@ -267,6 +267,18 @@ interface AgentState {
   loadedAt: number;
   healthLoadedAt: number;
   error: string | null;
+
+  /** The owner's WHOLE agent family regardless of workspace pin
+   *  (`GET /api/agents?scope=all`). `agents` is scoped to the ACTIVE
+   *  workspace, so it can't answer "which of my agents are not in this
+   *  workspace yet" — the add-from-other-workspaces picker needs this
+   *  unscoped list. Plain `Agent[]`, not ManagedAgent: these are rows the
+   *  user may not be able to see here yet, so they have no local process,
+   *  key or config of their own. */
+  familyAgents: api.Agent[];
+  familyLoading: boolean;
+  /** Last successful family fetch. `0` = never loaded. */
+  familyLoadedAt: number;
   /** Per-agent error from the last model_config sync to the backend, keyed by
    *  agentId. The connection/model lives in two places that must agree — the
    *  local config drives the spawn env, the backend-persisted config drives the
@@ -284,6 +296,13 @@ interface AgentState {
   /** Serve the cached roster unless it's gone stale — `agent_status_changed`
    *  keeps it live in between. */
   fetchAgentsIfStale: () => Promise<void>;
+  /** Load the unscoped family roster unless it's still fresh. */
+  fetchFamilyIfStale: () => Promise<void>;
+  /** Pin an owned agent that lives in OTHER workspaces into `workspaceId`,
+   *  by appending to its existing pin set rather than replacing it — the
+   *  agent stays where it already was. Refresh the roster afterwards with
+   *  `fetchAgents` so the newly visible agent gets a full ManagedAgent. */
+  addAgentToWorkspace: (agentId: string, workspaceId: string) => Promise<void>;
   /** Ask Rust to recheck whether pyobjc + Pillow are importable in the
    *  bridge venv, then refresh local state. Cheap (~50ms). */
   refreshComputerUseDepsStatus: () => Promise<void>;
@@ -487,6 +506,9 @@ export const useAgentStore = create<AgentState>((set, get) => ({
   loadedAt: 0,
   healthLoadedAt: 0,
   error: null,
+  familyAgents: [],
+  familyLoading: false,
+  familyLoadedAt: 0,
   _agentsInflight: null,
   configSyncError: {},
   computerUseDeps: { state: "unknown" },
@@ -596,6 +618,41 @@ export const useAgentStore = create<AgentState>((set, get) => ({
       .finally(() => set({ _agentsInflight: null }));
     set({ _agentsInflight: p });
     return p;
+  },
+
+  fetchFamilyIfStale: async () => {
+    const { familyLoading, familyLoadedAt } = get();
+    if (familyLoading) return;
+    if (isFresh(familyLoadedAt)) return;
+    set({ familyLoading: true });
+    try {
+      const result = await api.listAllAgents();
+      set({ familyAgents: result.agents, familyLoadedAt: Date.now() });
+    } catch (e) {
+      console.error("fetchFamilyIfStale failed:", e);
+    } finally {
+      set({ familyLoading: false });
+    }
+  },
+
+  addAgentToWorkspace: async (agentId: string, workspaceId: string) => {
+    // Read the CURRENT pin set from the family roster — the agent is by
+    // definition absent from `agents` (that's why it's a candidate), and
+    // sending a bare [workspaceId] would silently unpin it everywhere else.
+    const current = get().familyAgents.find((a) => a.id === agentId);
+    const nextOrgIds = [...(current?.organizationIds ?? []), workspaceId];
+
+    await api.updateAgent(agentId, { organizationIds: nextOrgIds });
+
+    // Keep the picker's own list honest right away; the caller refreshes
+    // `agents` once for the batch, which is what materialises the newly
+    // visible agent as a full ManagedAgent (local key, config, process
+    // status) — something this store can't synthesise from the PATCH alone.
+    set((s) => ({
+      familyAgents: s.familyAgents.map((a) =>
+        a.id === agentId ? { ...a, organizationIds: nextOrgIds } : a
+      ),
+    }));
   },
 
   fetchHealthIfStale: async () => {

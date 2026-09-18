@@ -521,6 +521,14 @@ export async function listAgents(): Promise<{ agents: Agent[] }> {
   return request("/api/agents");
 }
 
+/** The owner's WHOLE agent family, ignoring the active-workspace filter.
+ *  `listAgents` returns only what is visible in the active workspace, so it
+ *  cannot answer "which of my agents are not in this workspace yet" — the
+ *  add-from-other-workspaces picker needs this unscoped list. */
+export async function listAllAgents(): Promise<{ agents: Agent[] }> {
+  return request("/api/agents?scope=all");
+}
+
 export async function getAgent(id: string): Promise<Agent> {
   return request(`/api/agents/${id}`);
 }

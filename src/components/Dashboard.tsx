@@ -5,6 +5,7 @@ import { useDirectoryStore } from "../stores/directoryStore";
 import { AgentRow } from "./AgentRow";
 import { AgentConfig } from "./AgentConfig";
 import { CreateAgentModal } from "./CreateAgentModal";
+import { AddFromFamilyDialog } from "./AddFromFamilyDialog";
 import { cn } from "../lib/utils";
 import {
   Bot,
@@ -19,6 +20,7 @@ import {
   Unlink,
   Loader2,
   Compass,
+  UserPlus,
 } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
@@ -26,6 +28,10 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { usePresenceStore } from "../stores/presenceStore";
 import { useAuthStore } from "../stores/authStore";
+import {
+  useActiveWorkspace,
+  useWorkspacesEnabled,
+} from "../stores/workspaceStore";
 import { isAgentOnline } from "../lib/agentOnline";
 import { useModelCatalog } from "../stores/modelCatalogStore";
 import { restartHostedAgents } from "../lib/api";
@@ -390,6 +396,14 @@ export function Dashboard() {
     stopAgent,
   } = useAgentStore();
   const [showCreate, setShowCreate] = useState(false);
+  // "Add agents from other workspaces" — pulls an owned agent pinned
+  // elsewhere into the workspace the user is currently in. Offered only in a
+  // shared workspace: in Personal every owned agent is already visible.
+  const [showAddFromFamily, setShowAddFromFamily] = useState(false);
+  const activeWorkspace = useActiveWorkspace();
+  const workspacesEnabled = useWorkspacesEnabled();
+  const isWorkspaceMode =
+    workspacesEnabled && activeWorkspace !== null && !activeWorkspace.isPersonal;
   const [search, setSearch] = useState("");
   // The Directory tab was dropped from the header (7beadbb); the state stays
   // pinned to "agents" until the directory rendering paths are removed too.
@@ -913,6 +927,26 @@ export function Dashboard() {
           </div>
           {activeTab === "agents" && (
             <>
+              {/* Pull in one of the owner's agents that lives in another
+                  workspace. Only in a shared workspace — in Personal every
+                  owned agent is already visible, so there is nothing to add.
+                  Sits on the toolbar rather than above the list so it is
+                  still reachable when the roster is empty. */}
+              {isWorkspaceMode && activeWorkspace && (
+                <Button
+                  size="sm"
+                  variant="outline"
+                  onClick={() => setShowAddFromFamily(true)}
+                  title={t("addFromFamily.action")}
+                  aria-label={t("addFromFamily.action")}
+                  className="shrink-0 min-w-0"
+                >
+                  <UserPlus className="w-3.5 h-3.5" />
+                  <span className="hidden @min-[420px]:inline truncate">
+                    {t("addFromFamily.action")}
+                  </span>
+                </Button>
+              )}
               {(stoppedWithKeys.length > 0 || offlineHosted.length > 0) && (
                 <Button
                   size="sm"
@@ -1136,6 +1170,13 @@ export function Dashboard() {
 
       {showCreate && (
         <CreateAgentModal onClose={() => setShowCreate(false)} />
+      )}
+
+      {showAddFromFamily && isWorkspaceMode && activeWorkspace && (
+        <AddFromFamilyDialog
+          workspaceId={activeWorkspace.id}
+          onClose={() => setShowAddFromFamily(false)}
+        />
       )}
     </div>
   );
