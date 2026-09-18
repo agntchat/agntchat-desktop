@@ -977,9 +977,9 @@ export function CreateAgentModal({ onClose }: { onClose: () => void }) {
               <DialogTitle className="text-base font-semibold text-foreground">
                 {t("create.dialogTitle")}
               </DialogTitle>
-              <p className="text-xs text-text-muted">
-                {page === 1 ? t("create.dialogHint") : t("create.moreOptionsHint")}
-              </p>
+              {page === 2 && (
+                <p className="text-xs text-text-muted">{t("create.moreOptionsHint")}</p>
+              )}
             </div>
             <div className="ml-auto flex shrink-0 flex-col items-end gap-1 pr-8">
               <div
