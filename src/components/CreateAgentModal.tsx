@@ -15,6 +15,8 @@ import {
   Eye,
   EyeOff,
   Monitor,
+  ArrowLeft,
+  ArrowRight,
 } from "lucide-react";
 import { useAgentStore } from "../stores/agentStore";
 import { useAuthStore } from "../stores/authStore";
@@ -178,7 +180,10 @@ export function CreateAgentModal({ onClose }: { onClose: () => void }) {
   const [requiresLocation, setRequiresLocation] = useState(false);
 
   // ---- More options ----
-  const [moreOpen, setMoreOpen] = useState(false);
+  // Page 1: the essentials. Page 2: advanced settings, always visited on
+  // the way to Create so nothing is missed.
+  const [page, setPage] = useState<1 | 2>(1);
+  const formRef = useRef<HTMLFormElement | null>(null);
 
   // ---- Integrations — tools (scope "agent") to assign after creation.
   // Pre-seeded by templates/drafts; the picker fetches the catalog on mount.
@@ -572,7 +577,7 @@ export function CreateAgentModal({ onClose }: { onClose: () => void }) {
     // Hosted agents use the host's shared brain — no API key to enter.
     if (hosting === "local" && showApiKeyInput && !apiKey.trim()) {
       setError(t("create.errors.apiKeyRequired"));
-      setMoreOpen(true);
+      setPage(2);
       return;
     }
     setCreating(true);
@@ -797,15 +802,16 @@ export function CreateAgentModal({ onClose }: { onClose: () => void }) {
   const specialtyLabel = (s: string) =>
     t(`create.specialtyOptions.${specialtySlug(s)}`, { defaultValue: s });
   const toneSelectValue = tone ?? (customTone !== null ? CUSTOM_TONE : "");
-  const moreSummary = [
-    selectedTools.length > 0
-      ? t("create.review.toolsCount", { count: selectedTools.length })
-      : null,
-    requiresLocation ? t("nav:location") : null,
-    computerUseEnabled ? t("create.computerUse") : null,
-  ]
-    .filter(Boolean)
-    .join(" · ");
+  const goToPage = (next: 1 | 2) => {
+    if (next === 2 && !displayName.trim()) {
+      setError(t("create.errors.nameRequired"));
+      nameInputRef.current?.focus();
+      return;
+    }
+    setError(null);
+    setPage(next);
+    formRef.current?.scrollTo({ top: 0 });
+  };
 
   const canCreate =
     displayName.trim().length > 0 && !creating && PROVIDERS.length > 0;
@@ -919,19 +925,40 @@ export function CreateAgentModal({ onClose }: { onClose: () => void }) {
               <DialogTitle className="text-base font-semibold text-foreground">
                 {t("create.dialogTitle")}
               </DialogTitle>
-              <p className="text-xs text-text-muted">{t("create.dialogHint")}</p>
+              <p className="text-xs text-text-muted">
+                {page === 1 ? t("create.dialogHint") : t("create.moreOptionsHint")}
+              </p>
+            </div>
+            <div className="ml-auto flex shrink-0 items-center gap-2 pr-8">
+              <span className="text-[11px] text-text-muted">
+                {t("create.stepOf", { current: page, total: 2 })}
+              </span>
+              <div className="flex items-center gap-1">
+                {[1, 2].map((p) => (
+                  <span
+                    key={p}
+                    className={cn(
+                      "h-1.5 rounded-full transition-all duration-300",
+                      p === page ? "w-5 bg-primary" : "w-1.5 bg-border"
+                    )}
+                  />
+                ))}
+              </div>
             </div>
           </div>
 
           {/* Body */}
           <form
+            ref={formRef}
             onSubmit={(e) => {
               e.preventDefault();
-              void handleCreate();
+              if (page === 1) goToPage(2);
+              else void handleCreate();
             }}
-            className="relative min-h-0 flex-1 space-y-5 overflow-y-auto px-6 pb-5"
+            className="relative min-h-0 flex-1 overflow-y-auto px-6 pb-5"
           >
-            {/* Two columns: who they are (left), how they work (right). */}
+            {/* Page 1 — two columns: who they are (left), how they work (right). */}
+            {page === 1 && (
             <div className="grid grid-cols-2 gap-x-6">
               <div className="space-y-5">
                 <Category>{t("create.sections.identity")}</Category>
@@ -1344,14 +1371,13 @@ export function CreateAgentModal({ onClose }: { onClose: () => void }) {
               </div>
             </div>
 
-            {/* More options */}
-            <Section
-              title={t("create.moreOptions")}
-              summary={moreSummary || undefined}
-              open={moreOpen}
-              onOpenChange={setMoreOpen}
-            >
-              <div className="space-y-4">
+            )}
+
+            {/* Page 2 — advanced settings. */}
+            {page === 2 && (
+            <div className="grid grid-cols-2 gap-x-6">
+              <div className="space-y-5">
+                <Category>{t("create.stepLabels.details")}</Category>
                 <Field
                   label={t("create.customInstructionsOptional")}
                   htmlFor="agent-instructions"
@@ -1368,6 +1394,52 @@ export function CreateAgentModal({ onClose }: { onClose: () => void }) {
                   />
                 </Field>
 
+                {/* Switch rows */}
+                <div className="divide-y divide-border rounded-lg border border-border">
+                  <SwitchRow
+                    icon={MapPin}
+                    label={t("create.locationAccess")}
+                    description={t("create.locationAccessDescription")}
+                    checked={requiresLocation}
+                    onCheckedChange={setRequiresLocation}
+                  />
+                  {/* Skip-permissions is a CLI-backend feature
+                      (Claude Code: --dangerously-skip-permissions,
+                      Codex: --dangerously-bypass-approvals-and-sandbox).
+                      The plain Anthropic/OpenAI APIs have no permission
+                      prompts to skip. */}
+                  {hosting === "local" &&
+                    (backend === "claude_cli" || backend === "codex_cli") && (
+                      <SwitchRow
+                        icon={ShieldOff}
+                        label={t("create.skipPermissions")}
+                        description={t("create.skipPermissionsDescription")}
+                        checked={skipPermissions}
+                        onCheckedChange={setSkipPermissions}
+                      />
+                    )}
+                  {/* Computer use is a claude_cli-only capability today.
+                      Hosted (Anthropic API), OpenAI, and Codex backends
+                      don't run through our local MCP server. */}
+                  {hosting === "local" && backend === "claude_cli" && (
+                    <SwitchRow
+                      icon={Monitor}
+                      label={t("create.computerUse")}
+                      description={t("create.computerUseDescription")}
+                      checked={computerUseEnabled}
+                      onCheckedChange={setComputerUseEnabled}
+                    />
+                  )}
+                </div>
+
+                {workspacesEnabled && (
+                  <VisibilityChoice
+                    value={visibilityOrgIds}
+                    onChange={setVisibilityOrgIds}
+                  />
+                )}
+              </div>
+              <div className="space-y-5 border-l border-border pl-6">
                 {/* Integrations */}
                 <Field label={t("create.review.toolsLabel")} hint={t("create.toolsHint")}>
                   <TooltipProvider delay={300}>
@@ -1524,6 +1596,7 @@ export function CreateAgentModal({ onClose }: { onClose: () => void }) {
                 {/* Local-brain knobs — hosted agents use the host's shared seat. */}
                 {hosting === "local" && (
                   <>
+                    <Category>{t("create.stepLabels.brain")}</Category>
                     <div
                       className={cn(
                         "grid gap-3",
@@ -1669,52 +1742,9 @@ export function CreateAgentModal({ onClose }: { onClose: () => void }) {
                   </>
                 )}
 
-                {/* Switch rows */}
-                <div className="divide-y divide-border rounded-lg border border-border">
-                  <SwitchRow
-                    icon={MapPin}
-                    label={t("create.locationAccess")}
-                    description={t("create.locationAccessDescription")}
-                    checked={requiresLocation}
-                    onCheckedChange={setRequiresLocation}
-                  />
-                  {/* Skip-permissions is a CLI-backend feature
-                      (Claude Code: --dangerously-skip-permissions,
-                      Codex: --dangerously-bypass-approvals-and-sandbox).
-                      The plain Anthropic/OpenAI APIs have no permission
-                      prompts to skip. */}
-                  {hosting === "local" &&
-                    (backend === "claude_cli" || backend === "codex_cli") && (
-                      <SwitchRow
-                        icon={ShieldOff}
-                        label={t("create.skipPermissions")}
-                        description={t("create.skipPermissionsDescription")}
-                        checked={skipPermissions}
-                        onCheckedChange={setSkipPermissions}
-                      />
-                    )}
-                  {/* Computer use is a claude_cli-only capability today.
-                      Hosted (Anthropic API), OpenAI, and Codex backends
-                      don't run through our local MCP server. */}
-                  {hosting === "local" && backend === "claude_cli" && (
-                    <SwitchRow
-                      icon={Monitor}
-                      label={t("create.computerUse")}
-                      description={t("create.computerUseDescription")}
-                      checked={computerUseEnabled}
-                      onCheckedChange={setComputerUseEnabled}
-                    />
-                  )}
-                </div>
-
-                {workspacesEnabled && (
-                  <VisibilityChoice
-                    value={visibilityOrgIds}
-                    onChange={setVisibilityOrgIds}
-                  />
-                )}
               </div>
-            </Section>
+            </div>
+            )}
           </form>
 
           {/* Footer */}
@@ -1727,22 +1757,46 @@ export function CreateAgentModal({ onClose }: { onClose: () => void }) {
               )}
             </div>
             <div className="flex shrink-0 items-center gap-2">
-              <Button
-                type="button"
-                variant="ghost"
-                onClick={onClose}
-                disabled={creating}
-              >
-                {t("common:cancel")}
-              </Button>
-              <Button
-                type="button"
-                onClick={() => void handleCreate()}
-                disabled={!canCreate}
-              >
-                {creating && <Loader2 className="mr-1.5 h-3 w-3 animate-spin" />}
-                {creating ? t("create.creatingLabel") : t("create.createAgent")}
-              </Button>
+              {page === 1 ? (
+                <>
+                  <Button
+                    type="button"
+                    variant="ghost"
+                    onClick={onClose}
+                    disabled={creating}
+                  >
+                    {t("common:cancel")}
+                  </Button>
+                  <Button
+                    type="button"
+                    onClick={() => goToPage(2)}
+                    disabled={displayName.trim().length === 0 || drafting}
+                  >
+                    {t("common:continue")}
+                    <ArrowRight className="ml-1 h-3.5 w-3.5" />
+                  </Button>
+                </>
+              ) : (
+                <>
+                  <Button
+                    type="button"
+                    variant="ghost"
+                    onClick={() => goToPage(1)}
+                    disabled={creating}
+                  >
+                    <ArrowLeft className="mr-1 h-3.5 w-3.5" />
+                    {t("common:back")}
+                  </Button>
+                  <Button
+                    type="button"
+                    onClick={() => void handleCreate()}
+                    disabled={!canCreate}
+                  >
+                    {creating && <Loader2 className="mr-1.5 h-3 w-3 animate-spin" />}
+                    {creating ? t("create.creatingLabel") : t("create.createAgent")}
+                  </Button>
+                </>
+              )}
             </div>
           </div>
         </div>
@@ -1831,59 +1885,6 @@ function SwitchRow({
       </div>
       <Switch checked={checked} onCheckedChange={onCheckedChange} />
     </label>
-  );
-}
-
-/**
- * A titled block of the form. With `open`/`onOpenChange` it collapses: the
- * header becomes a toggle and `summary` shows the current choice next to the
- * title so a closed section still tells the user what they're getting.
- */
-function Section({
-  title,
-  summary,
-  open,
-  onOpenChange,
-  children,
-}: {
-  title: string;
-  summary?: string;
-  open?: boolean;
-  onOpenChange?: (open: boolean) => void;
-  children: ReactNode;
-}) {
-  const collapsible = onOpenChange !== undefined;
-  const expanded = collapsible ? !!open : true;
-  const header = (
-    <div className="flex items-center gap-2">
-      {collapsible &&
-        (expanded ? (
-          <ChevronDown className="h-3.5 w-3.5 shrink-0 text-text-muted" />
-        ) : (
-          <ChevronRight className="h-3.5 w-3.5 shrink-0 text-text-muted" />
-        ))}
-      <span className="text-sm font-semibold text-foreground">{title}</span>
-      {summary && !expanded && (
-        <span className="min-w-0 truncate text-xs text-primary">{summary}</span>
-      )}
-    </div>
-  );
-  return (
-    <section className="space-y-3">
-      {collapsible ? (
-        <button
-          type="button"
-          onClick={() => onOpenChange(!open)}
-          aria-expanded={expanded}
-          className="flex w-full items-center text-left"
-        >
-          {header}
-        </button>
-      ) : (
-        header
-      )}
-      {expanded && children}
-    </section>
   );
 }
 

@@ -604,6 +604,7 @@ export const resources = {
         "model": "Model",
         "modelDefault": "Provider default",
         "moreOptions": "More options",
+        "moreOptionsHint": "Optional settings — the defaults work for most agents.",
         "nameHint": "Pick something memorable — you can always change it later.",
         "namePlaceholder": "e.g. Atlas, Scout, Luna...",
         "nameTitle": "What should we call your agent?",
@@ -751,6 +752,7 @@ export const resources = {
           "tone": "Tone",
           "tools": "Tools"
         },
+        "stepOf": "Step {{current}} of {{total}}",
         "summary": {
           "noTools": "No integrations"
         },
@@ -6143,6 +6145,7 @@ export const resources = {
         "model": "Modelo",
         "modelDefault": "Predeterminado del proveedor",
         "moreOptions": "Más opciones",
+        "moreOptionsHint": "Ajustes opcionales: los valores predeterminados sirven para la mayoría de los agentes.",
         "nameHint": "Elige algo memorable — siempre puedes cambiarlo más tarde.",
         "namePlaceholder": "p. ej. Atlas, Scout, Luna...",
         "nameTitle": "¿Cómo llamamos a tu agente?",
@@ -6290,6 +6293,7 @@ export const resources = {
           "tone": "Tono",
           "tools": "Herramientas"
         },
+        "stepOf": "Paso {{current}} de {{total}}",
         "summary": {
           "noTools": "Sin integraciones"
         },
@@ -11682,6 +11686,7 @@ export const resources = {
         "model": "Modell",
         "modelDefault": "Anbieter-Standard",
         "moreOptions": "Weitere Optionen",
+        "moreOptionsHint": "Optionale Einstellungen – die Standardwerte passen für die meisten Agenten.",
         "nameHint": "Wählen Sie etwas Einprägsames — Sie können es später jederzeit ändern.",
         "namePlaceholder": "z. B. Atlas, Scout, Luna...",
         "nameTitle": "Wie sollen wir Ihren Agenten nennen?",
@@ -11829,6 +11834,7 @@ export const resources = {
           "tone": "Ton",
           "tools": "Tools"
         },
+        "stepOf": "Schritt {{current}} von {{total}}",
         "summary": {
           "noTools": "Keine Integrationen"
         },
@@ -17221,6 +17227,7 @@ export const resources = {
         "model": "Modèle",
         "modelDefault": "Modèle par défaut du fournisseur",
         "moreOptions": "Plus d'options",
+        "moreOptionsHint": "Réglages facultatifs — les valeurs par défaut conviennent à la plupart des agents.",
         "nameHint": "Choisissez quelque chose de mémorable — vous pourrez toujours le changer plus tard.",
         "namePlaceholder": "ex. Atlas, Scout, Luna...",
         "nameTitle": "Comment devons-nous appeler votre agent ?",
@@ -17368,6 +17375,7 @@ export const resources = {
           "tone": "Ton",
           "tools": "Outils"
         },
+        "stepOf": "Étape {{current}} sur {{total}}",
         "summary": {
           "noTools": "Aucune intégration"
         },
@@ -22760,6 +22768,7 @@ export const resources = {
         "model": "Modelo",
         "modelDefault": "Padrão do provedor",
         "moreOptions": "Mais opções",
+        "moreOptionsHint": "Configurações opcionais — os padrões funcionam para a maioria dos agentes.",
         "nameHint": "Escolha algo memorável — você sempre pode mudar depois.",
         "namePlaceholder": "ex.: Atlas, Scout, Luna...",
         "nameTitle": "Como devemos chamar seu agente?",
@@ -22907,6 +22916,7 @@ export const resources = {
           "tone": "Tom",
           "tools": "Ferramentas"
         },
+        "stepOf": "Etapa {{current}} de {{total}}",
         "summary": {
           "noTools": "Sem integrações"
         },
@@ -28299,6 +28309,7 @@ export const resources = {
         "model": "モデル",
         "modelDefault": "プロバイダーの既定値",
         "moreOptions": "その他のオプション",
+        "moreOptionsHint": "任意の設定です。ほとんどのエージェントはデフォルトのままで動作します。",
         "nameHint": "覚えやすいものを選びましょう — 後でいつでも変更できます。",
         "namePlaceholder": "例：アトラス、スカウト、ルナ…",
         "nameTitle": "エージェントの名前は？",
@@ -28446,6 +28457,7 @@ export const resources = {
           "tone": "口調",
           "tools": "ツール"
         },
+        "stepOf": "ステップ {{current}} / {{total}}",
         "summary": {
           "noTools": "連携なし"
         },
@@ -33838,6 +33850,7 @@ export const resources = {
         "model": "模型",
         "modelDefault": "提供商默认值",
         "moreOptions": "更多选项",
+        "moreOptionsHint": "可选设置——默认值适用于大多数智能体。",
         "nameHint": "选择一个容易记住的名字 — 之后随时可以更改。",
         "namePlaceholder": "例如：阿特拉斯、斯凯、露娜……",
         "nameTitle": "我们该如何称呼您的智能体？",
@@ -33985,6 +33998,7 @@ export const resources = {
           "tone": "语气",
           "tools": "工具"
         },
+        "stepOf": "第 {{current}} 步，共 {{total}} 步",
         "summary": {
           "noTools": "无集成"
         },
@@ -39377,6 +39391,7 @@ export const resources = {
         "model": "모델",
         "modelDefault": "제공업체 기본값",
         "moreOptions": "추가 옵션",
+        "moreOptionsHint": "선택 설정입니다. 대부분의 에이전트는 기본값으로 충분합니다.",
         "nameHint": "기억하기 쉬운 이름을 선택하세요 — 나중에 언제든 변경할 수 있습니다.",
         "namePlaceholder": "예: 아틀라스, 스카우트, 루나…",
         "nameTitle": "에이전트를 뭐라고 부를까요?",
@@ -39524,6 +39539,7 @@ export const resources = {
           "tone": "말투",
           "tools": "도구"
         },
+        "stepOf": "{{total}}단계 중 {{current}}단계",
         "summary": {
           "noTools": "연동 없음"
         },
@@ -44916,6 +44932,7 @@ export const resources = {
         "model": "Modello",
         "modelDefault": "Predefinito del provider",
         "moreOptions": "Altre opzioni",
+        "moreOptionsHint": "Impostazioni facoltative: i valori predefiniti vanno bene per la maggior parte degli agenti.",
         "nameHint": "Scegli qualcosa di memorabile — puoi sempre cambiarlo più tardi.",
         "namePlaceholder": "es. Atlas, Scout, Luna...",
         "nameTitle": "Come dovremmo chiamare il tuo agente?",
@@ -45063,6 +45080,7 @@ export const resources = {
           "tone": "Tono",
           "tools": "Strumenti"
         },
+        "stepOf": "Passaggio {{current}} di {{total}}",
         "summary": {
           "noTools": "Nessuna integrazione"
         },
@@ -50455,6 +50473,7 @@ export const resources = {
         "model": "मॉडल",
         "modelDefault": "प्रोवाइडर डिफ़ॉल्ट",
         "moreOptions": "और विकल्प",
+        "moreOptionsHint": "वैकल्पिक सेटिंग्स — ज़्यादातर एजेंट्स के लिए डिफ़ॉल्ट ही काफ़ी हैं।",
         "nameHint": "कुछ यादगार चुनें — आप इसे बाद में कभी भी बदल सकते हैं।",
         "namePlaceholder": "जैसे, एटलस, स्काउट, लूना…",
         "nameTitle": "हम आपके एजेंट को क्या कहें?",
@@ -50602,6 +50621,7 @@ export const resources = {
           "tone": "लहजा",
           "tools": "टूल"
         },
+        "stepOf": "चरण {{current}} / {{total}}",
         "summary": {
           "noTools": "कोई इंटीग्रेशन नहीं"
         },
