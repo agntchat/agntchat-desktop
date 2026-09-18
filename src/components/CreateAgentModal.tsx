@@ -1094,7 +1094,7 @@ export function CreateAgentModal({ onClose }: { onClose: () => void }) {
                     className="relative group shrink-0"
                     title={t("create.chooseAvatar")}
                   >
-                    <Avatar className="h-[76px] w-[76px] rounded-2xl border-2 border-dashed border-border group-hover:border-primary transition-colors">
+                    <Avatar className="h-[76px] w-[76px] rounded-2xl border-2 border-dashed border-border group-hover:border-primary transition-colors after:hidden">
                       {avatarUrl && (
                         <AvatarImage
                           src={avatarUrl}
