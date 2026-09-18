@@ -696,10 +696,12 @@ export async function createAgent(data: {
   return { agent: agentFields as Agent, apiKey };
 }
 
+// PATCH /api/agents/:id responds with a BARE agent object (the controller
+// calls `json(conn, Serializer.agent(agent))`), not a wrapped `{ agent }`.
 export async function updateAgent(
   id: string,
   data: Record<string, unknown>
-): Promise<{ agent: Agent }> {
+): Promise<Agent> {
   return request(`/api/agents/${id}`, {
     method: "PATCH",
     body: JSON.stringify(data),
