@@ -2067,6 +2067,27 @@ export const resources = {
       "handleAvailable": "Handle is available.",
       "handleChecking": "Checking…",
       "handleFormatHint": "1–15 characters: lowercase letters, numbers, or underscores.",
+      "invite": {
+        "accepted": "Invite code {{code}} accepted. Finish creating your account.",
+        "change": "Use a different code",
+        "checking": "Checking…",
+        "codeLabel": "Invite code",
+        "continue": "Continue",
+        "emailLocked": "This invite was issued to {{email}}.",
+        "errors": {
+          "checkFailed": "Couldn't check the invite code. Try again.",
+          "email_mismatch": "That invite code was issued to a different email address.",
+          "expired": "That invite code has expired.",
+          "invalid": "That invite code isn't valid.",
+          "required": "Enter your invite code.",
+          "used": "That invite code has already been used."
+        },
+        "joinWaitlist": "Join the waitlist",
+        "noCode": "Don't have a code?",
+        "placeholder": "XXXX-XXXX-XXXX",
+        "subtitle": "agntchat is invite-only right now. Enter the code from your invitation to create an account.",
+        "title": "Enter your invite code"
+      },
       "inviteEmailLocked": "This invitation was sent to {{email}}. To use a different address, ask your admin to send a new invitation.",
       "inviteSignInDescription": "Once you sign in, you'll be added to the team.",
       "inviteSignupDescription": "Create your agntchat account to join the team.",
@@ -3856,6 +3877,8 @@ export const resources = {
         "deallocationFailed": "Deallocation failed",
         "deleteHost": "Could not delete host",
         "deleteHostFailed": "Could not delete host",
+        "inviteFailed": "Invite failed",
+        "issueFailed": "Could not issue a code",
         "loadAgents": "Failed to load agents",
         "loadCatalog": "Could not load catalog",
         "loadFlags": "Failed to load feature flags",
@@ -3866,6 +3889,7 @@ export const resources = {
         "loadStats": "Failed to load stats",
         "loadUsers": "Failed to load users",
         "loadVms": "Failed to load Hostinger VMs",
+        "loadWaitlist": "Failed to load the waitlist",
         "localRuntimeReset": "This agent runs on the owner's own device — reset it from there.",
         "moveFailed": "Move failed",
         "nameHostRequired": "Name and SSH host are required.",
@@ -3881,6 +3905,7 @@ export const resources = {
         "renameHost": "Could not rename host",
         "resetFailed": "Reset failed",
         "resetUnavailable": "Reset unavailable: {{reason}}",
+        "revokeFailed": "Could not revoke the code",
         "saveFailed": "Could not save",
         "setPlanFailed": "Could not set plan",
         "storeTokenFailed": "Could not store token",
@@ -4233,7 +4258,8 @@ export const resources = {
         "features": "Features",
         "hosts": "Hosts",
         "overview": "Overview",
-        "users": "Users"
+        "users": "Users",
+        "waitlist": "Waitlist"
       },
       "tokenStored": "Token stored. A `set_token` op was sent to each bootstrapped host; new bridge runs use it automatically.",
       "total": "Total",
@@ -4252,6 +4278,71 @@ export const resources = {
       "vmInventoryError": "Couldn't load the Hostinger VM inventory: {{error}}",
       "vmState": "VM: {{state}}",
       "vmStateHint": "Hostinger power state",
+      "waitlist": {
+        "adHoc": {
+          "email": "Email (optional)",
+          "hint": "For someone who never joined the waitlist. Give an email to pin the code to that address and send it; leave it empty for a code you'll hand over yourself.",
+          "issue": "Issue code",
+          "note": "Note (optional)",
+          "title": "Issue a code",
+          "ttl": "Valid for (days)"
+        },
+        "codeState": {
+          "expired": "Expired",
+          "live": "Live",
+          "redeemed": "Used",
+          "revoked": "Revoked"
+        },
+        "codes": {
+          "empty": "No codes issued yet.",
+          "floating": "Anyone",
+          "redeemedBy": "Used by {{name}}",
+          "revoke": "Revoke",
+          "title": "Issued codes"
+        },
+        "columns": {
+          "code": "Invite code",
+          "follows": "Follows",
+          "status": "Status",
+          "tier": "Tier",
+          "who": "Who"
+        },
+        "copied": "Copied",
+        "copyCode": "Copy code",
+        "copyMessage": "Copy message",
+        "counts": "{{waiting}} waiting · {{invited}} invited · {{joined}} joined",
+        "dmHint": "This entry joined with X, so there is no address to email. Copy the message and send it to @{{username}} on X.",
+        "dmText": "Your spot on agntchat is open! Your invite code is {{code}}. Download the app at agntchat.com/download (or sign up at app.agntchat.com/web/signup) and enter the code when you create your account. It expires in {{days}} days.",
+        "dmTitle": "Send this code by DM",
+        "done": "Done",
+        "emailSendFailed": "The email could not be sent — send the code by hand.",
+        "emailSent": "Invite emailed to {{email}}.",
+        "empty": "Nobody on the waitlist yet.",
+        "existingCode": "A live code was already issued; nothing new was sent.",
+        "expires": "Expires {{date}}",
+        "follows": {
+          "na": "—",
+          "no": "Not following",
+          "unknown": "Unknown",
+          "yes": "Follows"
+        },
+        "intro": "Everyone waiting to get in, in queue order. Inviting someone issues a single-use invite code: an email entry gets it by email, an X entry needs you to send it by DM.",
+        "invite": "Invite",
+        "inviting": "Inviting…",
+        "openX": "Open @{{username}} on X",
+        "reinvite": "Issue new code",
+        "showCode": "Show code",
+        "status": {
+          "invited": "Invited",
+          "joined": "Joined",
+          "waiting": "Waiting"
+        },
+        "tier": {
+          "boosted": "Boosted",
+          "email": "Email",
+          "x": "X account"
+        }
+      },
       "working": "Working…",
       "workspace": {
         "refreshFailed": "Refresh failed",
@@ -7494,6 +7585,27 @@ export const resources = {
       "handleAvailable": "El handle está disponible.",
       "handleChecking": "Comprobando…",
       "handleFormatHint": "De 1 a 15 caracteres: letras minúsculas, números o guiones bajos.",
+      "invite": {
+        "accepted": "Código de invitación {{code}} aceptado. Termina de crear tu cuenta.",
+        "change": "Usar otro código",
+        "checking": "Comprobando…",
+        "codeLabel": "Código de invitación",
+        "continue": "Continuar",
+        "emailLocked": "Esta invitación se emitió para {{email}}.",
+        "errors": {
+          "checkFailed": "No se pudo comprobar el código de invitación. Inténtalo de nuevo.",
+          "email_mismatch": "Ese código de invitación se emitió para otra dirección de correo.",
+          "expired": "Ese código de invitación ha caducado.",
+          "invalid": "Ese código de invitación no es válido.",
+          "required": "Introduce tu código de invitación.",
+          "used": "Ese código de invitación ya se ha usado."
+        },
+        "joinWaitlist": "Únete a la lista de espera",
+        "noCode": "¿No tienes código?",
+        "placeholder": "XXXX-XXXX-XXXX",
+        "subtitle": "agntchat solo está disponible por invitación por ahora. Introduce el código de tu invitación para crear una cuenta.",
+        "title": "Introduce tu código de invitación"
+      },
       "inviteEmailLocked": "Esta invitación se envió a {{email}}. Para usar otra dirección, pide a tu administrador que envíe una nueva invitación.",
       "inviteSignInDescription": "En cuanto inicies sesión, se te añadirá al equipo.",
       "inviteSignupDescription": "Crea tu cuenta de agntchat para unirte al equipo.",
@@ -9283,6 +9395,8 @@ export const resources = {
         "deallocationFailed": "La desasignación falló",
         "deleteHost": "No se pudo eliminar el host",
         "deleteHostFailed": "No se pudo eliminar el host",
+        "inviteFailed": "La invitación falló",
+        "issueFailed": "No se pudo emitir un código",
         "loadAgents": "No se pudieron cargar los agentes",
         "loadCatalog": "No se pudo cargar el catálogo",
         "loadFlags": "No se pudieron cargar los flags de funciones",
@@ -9293,6 +9407,7 @@ export const resources = {
         "loadStats": "No se pudieron cargar las estadísticas",
         "loadUsers": "No se pudieron cargar los usuarios",
         "loadVms": "No se pudieron cargar las VMs de Hostinger",
+        "loadWaitlist": "No se pudo cargar la lista de espera",
         "localRuntimeReset": "Este agente se ejecuta en el dispositivo del propietario — restablécelo desde allí.",
         "moveFailed": "El movimiento falló",
         "nameHostRequired": "El nombre y el host SSH son obligatorios.",
@@ -9308,6 +9423,7 @@ export const resources = {
         "renameHost": "No se pudo renombrar el host",
         "resetFailed": "El restablecimiento falló",
         "resetUnavailable": "Restablecimiento no disponible: {{reason}}",
+        "revokeFailed": "No se pudo revocar el código",
         "saveFailed": "No se pudo guardar",
         "setPlanFailed": "No se pudo establecer el plan",
         "storeTokenFailed": "No se pudo guardar el token",
@@ -9660,7 +9776,8 @@ export const resources = {
         "features": "Funciones",
         "hosts": "Hosts",
         "overview": "Resumen",
-        "users": "Usuarios"
+        "users": "Usuarios",
+        "waitlist": "Lista de espera"
       },
       "tokenStored": "Token guardado. Se envió una operación `set_token` a cada host inicializado; las nuevas ejecuciones del puente lo usan automáticamente.",
       "total": "Total",
@@ -9679,6 +9796,71 @@ export const resources = {
       "vmInventoryError": "No se pudo cargar el inventario de VMs de Hostinger: {{error}}",
       "vmState": "VM: {{state}}",
       "vmStateHint": "Estado de energía en Hostinger",
+      "waitlist": {
+        "adHoc": {
+          "email": "Correo (opcional)",
+          "hint": "Para alguien que nunca se apuntó a la lista de espera. Indica un correo para vincular el código a esa dirección y enviarlo; déjalo vacío para un código que entregarás tú.",
+          "issue": "Emitir código",
+          "note": "Nota (opcional)",
+          "title": "Emitir un código",
+          "ttl": "Válido durante (días)"
+        },
+        "codeState": {
+          "expired": "Caducado",
+          "live": "Activo",
+          "redeemed": "Usado",
+          "revoked": "Revocado"
+        },
+        "codes": {
+          "empty": "Aún no se han emitido códigos.",
+          "floating": "Cualquiera",
+          "redeemedBy": "Usado por {{name}}",
+          "revoke": "Revocar",
+          "title": "Códigos emitidos"
+        },
+        "columns": {
+          "code": "Código",
+          "follows": "Sigue",
+          "status": "Estado",
+          "tier": "Nivel",
+          "who": "Quién"
+        },
+        "copied": "Copiado",
+        "copyCode": "Copiar código",
+        "copyMessage": "Copiar mensaje",
+        "counts": "{{waiting}} en espera · {{invited}} invitados · {{joined}} dentro",
+        "dmHint": "Esta entrada se unió con X, así que no hay correo al que escribir. Copia el mensaje y envíaselo a @{{username}} en X.",
+        "dmText": "¡Tu plaza en agntchat está lista! Tu código de invitación es {{code}}. Descarga la app en agntchat.com/download (o regístrate en app.agntchat.com/web/signup) e introduce el código al crear tu cuenta. Caduca en {{days}} días.",
+        "dmTitle": "Envía este código por MD",
+        "done": "Listo",
+        "emailSendFailed": "No se pudo enviar el correo: envía el código a mano.",
+        "emailSent": "Invitación enviada por correo a {{email}}.",
+        "empty": "Todavía no hay nadie en la lista de espera.",
+        "existingCode": "Ya había un código activo; no se envió nada nuevo.",
+        "expires": "Caduca el {{date}}",
+        "follows": {
+          "na": "—",
+          "no": "No sigue",
+          "unknown": "Desconocido",
+          "yes": "Sigue"
+        },
+        "intro": "Todos los que esperan entrar, en orden de cola. Invitar a alguien emite un código de invitación de un solo uso: las entradas por email lo reciben por correo; las de X requieren que lo envíes por MD.",
+        "invite": "Invitar",
+        "inviting": "Invitando…",
+        "openX": "Abrir @{{username}} en X",
+        "reinvite": "Emitir nuevo código",
+        "showCode": "Ver código",
+        "status": {
+          "invited": "Invitado",
+          "joined": "Dentro",
+          "waiting": "En espera"
+        },
+        "tier": {
+          "boosted": "Impulsado",
+          "email": "Email",
+          "x": "Cuenta de X"
+        }
+      },
       "working": "Procesando…",
       "workspace": {
         "refreshFailed": "No se pudo actualizar",
@@ -12921,6 +13103,27 @@ export const resources = {
       "handleAvailable": "Der Benutzername ist verfügbar.",
       "handleChecking": "Wird geprüft…",
       "handleFormatHint": "1–15 Zeichen: Kleinbuchstaben, Zahlen oder Unterstriche.",
+      "invite": {
+        "accepted": "Einladungscode {{code}} akzeptiert. Schließe die Kontoerstellung ab.",
+        "change": "Anderen Code verwenden",
+        "checking": "Wird geprüft…",
+        "codeLabel": "Einladungscode",
+        "continue": "Weiter",
+        "emailLocked": "Diese Einladung wurde an {{email}} ausgestellt.",
+        "errors": {
+          "checkFailed": "Der Einladungscode konnte nicht geprüft werden. Versuch es erneut.",
+          "email_mismatch": "Dieser Einladungscode wurde für eine andere E-Mail-Adresse ausgestellt.",
+          "expired": "Dieser Einladungscode ist abgelaufen.",
+          "invalid": "Dieser Einladungscode ist ungültig.",
+          "required": "Gib deinen Einladungscode ein.",
+          "used": "Dieser Einladungscode wurde bereits verwendet."
+        },
+        "joinWaitlist": "Auf die Warteliste",
+        "noCode": "Kein Code?",
+        "placeholder": "XXXX-XXXX-XXXX",
+        "subtitle": "agntchat ist derzeit nur auf Einladung zugänglich. Gib den Code aus deiner Einladung ein, um ein Konto zu erstellen.",
+        "title": "Einladungscode eingeben"
+      },
       "inviteEmailLocked": "Diese Einladung wurde an {{email}} gesendet. Um eine andere Adresse zu verwenden, bitten Sie Ihren Admin, eine neue Einladung zu senden.",
       "inviteSignInDescription": "Sobald Sie sich anmelden, werden Sie dem Team hinzugefügt.",
       "inviteSignupDescription": "Erstellen Sie Ihr agntchat-Konto, um dem Team beizutreten.",
@@ -14710,6 +14913,8 @@ export const resources = {
         "deallocationFailed": "Aufhebung der Zuweisung fehlgeschlagen",
         "deleteHost": "Host konnte nicht gelöscht werden",
         "deleteHostFailed": "Host konnte nicht gelöscht werden",
+        "inviteFailed": "Einladung fehlgeschlagen",
+        "issueFailed": "Code konnte nicht ausgestellt werden",
         "loadAgents": "Agenten konnten nicht geladen werden",
         "loadCatalog": "Katalog konnte nicht geladen werden",
         "loadFlags": "Feature-Flags konnten nicht geladen werden",
@@ -14720,6 +14925,7 @@ export const resources = {
         "loadStats": "Statistiken konnten nicht geladen werden",
         "loadUsers": "Nutzer konnten nicht geladen werden",
         "loadVms": "Hostinger-VMs konnten nicht geladen werden",
+        "loadWaitlist": "Warteliste konnte nicht geladen werden",
         "localRuntimeReset": "Dieser Agent läuft auf dem eigenen Gerät des Eigentümers — setzen Sie ihn von dort aus zurück.",
         "moveFailed": "Verschieben fehlgeschlagen",
         "nameHostRequired": "Name und SSH-Host sind erforderlich.",
@@ -14735,6 +14941,7 @@ export const resources = {
         "renameHost": "Host konnte nicht umbenannt werden",
         "resetFailed": "Reset fehlgeschlagen",
         "resetUnavailable": "Reset nicht verfügbar: {{reason}}",
+        "revokeFailed": "Code konnte nicht widerrufen werden",
         "saveFailed": "Speichern nicht möglich",
         "setPlanFailed": "Plan konnte nicht festgelegt werden",
         "storeTokenFailed": "Token konnte nicht gespeichert werden",
@@ -15087,7 +15294,8 @@ export const resources = {
         "features": "Features",
         "hosts": "Hosts",
         "overview": "Übersicht",
-        "users": "Nutzer"
+        "users": "Nutzer",
+        "waitlist": "Warteliste"
       },
       "tokenStored": "Token gespeichert. Ein `set_token`-Vorgang wurde an jeden bootstrappten Host gesendet; neue Bridge-Läufe verwenden es automatisch.",
       "total": "Gesamt",
@@ -15106,6 +15314,71 @@ export const resources = {
       "vmInventoryError": "Hostinger-VM-Inventar konnte nicht geladen werden: {{error}}",
       "vmState": "VM: {{state}}",
       "vmStateHint": "Hostinger-Betriebsstatus",
+      "waitlist": {
+        "adHoc": {
+          "email": "E-Mail (optional)",
+          "hint": "Für jemanden, der nie auf der Warteliste war. Mit E-Mail-Adresse wird der Code daran gebunden und verschickt; ohne bekommst du einen Code, den du selbst weitergibst.",
+          "issue": "Code ausstellen",
+          "note": "Notiz (optional)",
+          "title": "Code ausstellen",
+          "ttl": "Gültig für (Tage)"
+        },
+        "codeState": {
+          "expired": "Abgelaufen",
+          "live": "Aktiv",
+          "redeemed": "Verwendet",
+          "revoked": "Widerrufen"
+        },
+        "codes": {
+          "empty": "Noch keine Codes ausgestellt.",
+          "floating": "Beliebig",
+          "redeemedBy": "Verwendet von {{name}}",
+          "revoke": "Widerrufen",
+          "title": "Ausgestellte Codes"
+        },
+        "columns": {
+          "code": "Einladungscode",
+          "follows": "Folgt",
+          "status": "Status",
+          "tier": "Stufe",
+          "who": "Wer"
+        },
+        "copied": "Kopiert",
+        "copyCode": "Code kopieren",
+        "copyMessage": "Nachricht kopieren",
+        "counts": "{{waiting}} wartend · {{invited}} eingeladen · {{joined}} beigetreten",
+        "dmHint": "Dieser Eintrag ist über X beigetreten, es gibt also keine E-Mail-Adresse. Kopiere die Nachricht und sende sie auf X an @{{username}}.",
+        "dmText": "Dein Platz bei agntchat ist frei! Dein Einladungscode lautet {{code}}. Lade die App unter agntchat.com/download herunter (oder registriere dich unter app.agntchat.com/web/signup) und gib den Code beim Erstellen deines Kontos ein. Er läuft in {{days}} Tagen ab.",
+        "dmTitle": "Diesen Code per DM senden",
+        "done": "Fertig",
+        "emailSendFailed": "Die E-Mail konnte nicht gesendet werden – schicke den Code manuell.",
+        "emailSent": "Einladung an {{email}} gesendet.",
+        "empty": "Noch niemand auf der Warteliste.",
+        "existingCode": "Es gibt bereits einen aktiven Code; nichts Neues wurde gesendet.",
+        "expires": "Läuft ab am {{date}}",
+        "follows": {
+          "na": "—",
+          "no": "Folgt nicht",
+          "unknown": "Unbekannt",
+          "yes": "Folgt"
+        },
+        "intro": "Alle, die auf Einlass warten, in Warteschlangenreihenfolge. Eine Einladung erzeugt einen einmalig nutzbaren Einladungscode: E-Mail-Einträge erhalten ihn per E-Mail, X-Einträge musst du per DM verschicken.",
+        "invite": "Einladen",
+        "inviting": "Wird eingeladen…",
+        "openX": "@{{username}} auf X öffnen",
+        "reinvite": "Neuen Code ausstellen",
+        "showCode": "Code anzeigen",
+        "status": {
+          "invited": "Eingeladen",
+          "joined": "Beigetreten",
+          "waiting": "Wartend"
+        },
+        "tier": {
+          "boosted": "Geboostet",
+          "email": "E-Mail",
+          "x": "X-Konto"
+        }
+      },
       "working": "Wird bearbeitet…",
       "workspace": {
         "refreshFailed": "Aktualisierung fehlgeschlagen",
@@ -18348,6 +18621,27 @@ export const resources = {
       "handleAvailable": "Cet identifiant est disponible.",
       "handleChecking": "Vérification…",
       "handleFormatHint": "1 à 15 caractères : lettres minuscules, chiffres ou underscores.",
+      "invite": {
+        "accepted": "Code d'invitation {{code}} accepté. Termine la création de ton compte.",
+        "change": "Utiliser un autre code",
+        "checking": "Vérification…",
+        "codeLabel": "Code d'invitation",
+        "continue": "Continuer",
+        "emailLocked": "Cette invitation a été émise pour {{email}}.",
+        "errors": {
+          "checkFailed": "Impossible de vérifier le code d'invitation. Réessaie.",
+          "email_mismatch": "Ce code d'invitation a été émis pour une autre adresse e-mail.",
+          "expired": "Ce code d'invitation a expiré.",
+          "invalid": "Ce code d'invitation n'est pas valide.",
+          "required": "Saisis ton code d'invitation.",
+          "used": "Ce code d'invitation a déjà été utilisé."
+        },
+        "joinWaitlist": "Rejoindre la liste d'attente",
+        "noCode": "Pas de code ?",
+        "placeholder": "XXXX-XXXX-XXXX",
+        "subtitle": "agntchat est pour l'instant accessible sur invitation. Saisis le code de ton invitation pour créer un compte.",
+        "title": "Saisis ton code d'invitation"
+      },
       "inviteEmailLocked": "Cette invitation a été envoyée à {{email}}. Pour utiliser une autre adresse, demandez à votre administrateur d'envoyer une nouvelle invitation.",
       "inviteSignInDescription": "Une fois connecté, vous serez ajouté à l'équipe.",
       "inviteSignupDescription": "Créez votre compte agntchat pour rejoindre l'équipe.",
@@ -20137,6 +20431,8 @@ export const resources = {
         "deallocationFailed": "Échec de la désallocation",
         "deleteHost": "Impossible de supprimer l'hôte",
         "deleteHostFailed": "Impossible de supprimer l'hôte",
+        "inviteFailed": "L'invitation a échoué",
+        "issueFailed": "Impossible d'émettre un code",
         "loadAgents": "Échec du chargement des agents",
         "loadCatalog": "Impossible de charger le catalogue",
         "loadFlags": "Échec du chargement des indicateurs de fonctionnalités",
@@ -20147,6 +20443,7 @@ export const resources = {
         "loadStats": "Échec du chargement des statistiques",
         "loadUsers": "Échec du chargement des utilisateurs",
         "loadVms": "Échec du chargement des VM Hostinger",
+        "loadWaitlist": "Impossible de charger la liste d'attente",
         "localRuntimeReset": "Cet agent fonctionne sur l'appareil du propriétaire — réinitialisez-le depuis cet appareil.",
         "moveFailed": "Échec du déplacement",
         "nameHostRequired": "Le nom et l'hôte SSH sont requis.",
@@ -20162,6 +20459,7 @@ export const resources = {
         "renameHost": "Impossible de renommer l'hôte",
         "resetFailed": "Échec de la réinitialisation",
         "resetUnavailable": "Réinitialisation indisponible : {{reason}}",
+        "revokeFailed": "Impossible de révoquer le code",
         "saveFailed": "Impossible d'enregistrer",
         "setPlanFailed": "Impossible de définir le plan",
         "storeTokenFailed": "Impossible d'enregistrer le jeton",
@@ -20514,7 +20812,8 @@ export const resources = {
         "features": "Fonctionnalités",
         "hosts": "Hôtes",
         "overview": "Aperçu",
-        "users": "Utilisateurs"
+        "users": "Utilisateurs",
+        "waitlist": "Liste d'attente"
       },
       "tokenStored": "Jeton enregistré. Une opération `set_token` a été envoyée à chaque hôte bootstrapé ; les nouvelles exécutions du bridge l'utilisent automatiquement.",
       "total": "Total",
@@ -20533,6 +20832,71 @@ export const resources = {
       "vmInventoryError": "Impossible de charger l'inventaire des VM Hostinger : {{error}}",
       "vmState": "VM : {{state}}",
       "vmStateHint": "État d'alimentation Hostinger",
+      "waitlist": {
+        "adHoc": {
+          "email": "E-mail (facultatif)",
+          "hint": "Pour quelqu'un qui n'a jamais rejoint la liste d'attente. Indique un e-mail pour lier le code à cette adresse et l'envoyer ; laisse vide pour un code que tu transmettras toi-même.",
+          "issue": "Émettre le code",
+          "note": "Note (facultatif)",
+          "title": "Émettre un code",
+          "ttl": "Valable (jours)"
+        },
+        "codeState": {
+          "expired": "Expiré",
+          "live": "Actif",
+          "redeemed": "Utilisé",
+          "revoked": "Révoqué"
+        },
+        "codes": {
+          "empty": "Aucun code émis pour l'instant.",
+          "floating": "N'importe qui",
+          "redeemedBy": "Utilisé par {{name}}",
+          "revoke": "Révoquer",
+          "title": "Codes émis"
+        },
+        "columns": {
+          "code": "Code",
+          "follows": "Suit",
+          "status": "Statut",
+          "tier": "Niveau",
+          "who": "Qui"
+        },
+        "copied": "Copié",
+        "copyCode": "Copier le code",
+        "copyMessage": "Copier le message",
+        "counts": "{{waiting}} en attente · {{invited}} invités · {{joined}} inscrits",
+        "dmHint": "Cette entrée a rejoint via X, il n'y a donc pas d'adresse e-mail. Copie le message et envoie-le à @{{username}} sur X.",
+        "dmText": "Ta place sur agntchat est ouverte ! Ton code d'invitation est {{code}}. Télécharge l'app sur agntchat.com/download (ou inscris-toi sur app.agntchat.com/web/signup) et saisis le code à la création de ton compte. Il expire dans {{days}} jours.",
+        "dmTitle": "Envoyer ce code par DM",
+        "done": "Terminé",
+        "emailSendFailed": "L'e-mail n'a pas pu être envoyé : transmets le code toi-même.",
+        "emailSent": "Invitation envoyée par e-mail à {{email}}.",
+        "empty": "Personne sur la liste d'attente pour l'instant.",
+        "existingCode": "Un code actif existait déjà ; rien de nouveau n'a été envoyé.",
+        "expires": "Expire le {{date}}",
+        "follows": {
+          "na": "—",
+          "no": "Ne suit pas",
+          "unknown": "Inconnu",
+          "yes": "Suit"
+        },
+        "intro": "Toutes les personnes en attente, dans l'ordre de la file. Inviter quelqu'un émet un code d'invitation à usage unique : une entrée e-mail le reçoit par e-mail, une entrée X doit le recevoir par DM de ta part.",
+        "invite": "Inviter",
+        "inviting": "Invitation…",
+        "openX": "Ouvrir @{{username}} sur X",
+        "reinvite": "Émettre un nouveau code",
+        "showCode": "Voir le code",
+        "status": {
+          "invited": "Invité",
+          "joined": "Inscrit",
+          "waiting": "En attente"
+        },
+        "tier": {
+          "boosted": "Boosté",
+          "email": "E-mail",
+          "x": "Compte X"
+        }
+      },
       "working": "Traitement…",
       "workspace": {
         "refreshFailed": "Échec de l'actualisation",
@@ -23775,6 +24139,27 @@ export const resources = {
       "handleAvailable": "Nome de usuário disponível.",
       "handleChecking": "Verificando…",
       "handleFormatHint": "1–15 caracteres: letras minúsculas, números ou sublinhados.",
+      "invite": {
+        "accepted": "Código de convite {{code}} aceite. Conclua a criação da sua conta.",
+        "change": "Usar outro código",
+        "checking": "A verificar…",
+        "codeLabel": "Código de convite",
+        "continue": "Continuar",
+        "emailLocked": "Este convite foi emitido para {{email}}.",
+        "errors": {
+          "checkFailed": "Não foi possível verificar o código de convite. Tente novamente.",
+          "email_mismatch": "Esse código de convite foi emitido para outro endereço de e-mail.",
+          "expired": "Esse código de convite expirou.",
+          "invalid": "Esse código de convite não é válido.",
+          "required": "Insira o seu código de convite.",
+          "used": "Esse código de convite já foi usado."
+        },
+        "joinWaitlist": "Entrar na lista de espera",
+        "noCode": "Não tem código?",
+        "placeholder": "XXXX-XXXX-XXXX",
+        "subtitle": "Por enquanto o agntchat é só por convite. Insira o código do seu convite para criar uma conta.",
+        "title": "Insira o seu código de convite"
+      },
       "inviteEmailLocked": "Este convite foi enviado para {{email}}. Para usar um endereço diferente, peça ao administrador para enviar um novo convite.",
       "inviteSignInDescription": "Assim que você entrar, será adicionado à equipe.",
       "inviteSignupDescription": "Crie sua conta agntchat para entrar na equipe.",
@@ -25564,6 +25949,8 @@ export const resources = {
         "deallocationFailed": "Falha na desalocação",
         "deleteHost": "Não foi possível excluir o host",
         "deleteHostFailed": "Não foi possível excluir o host",
+        "inviteFailed": "O convite falhou",
+        "issueFailed": "Não foi possível emitir um código",
         "loadAgents": "Falha ao carregar agentes",
         "loadCatalog": "Não foi possível carregar o catálogo",
         "loadFlags": "Falha ao carregar as feature flags",
@@ -25574,6 +25961,7 @@ export const resources = {
         "loadStats": "Falha ao carregar estatísticas",
         "loadUsers": "Falha ao carregar usuários",
         "loadVms": "Falha ao carregar as VMs da Hostinger",
+        "loadWaitlist": "Não foi possível carregar a lista de espera",
         "localRuntimeReset": "Este agente roda no próprio dispositivo do proprietário — reinicie-o por lá.",
         "moveFailed": "Falha ao mover",
         "nameHostRequired": "Nome e host SSH são obrigatórios.",
@@ -25589,6 +25977,7 @@ export const resources = {
         "renameHost": "Não foi possível renomear o host",
         "resetFailed": "Falha ao reiniciar",
         "resetUnavailable": "Reinicialização indisponível: {{reason}}",
+        "revokeFailed": "Não foi possível revogar o código",
         "saveFailed": "Não foi possível salvar",
         "setPlanFailed": "Não foi possível definir o plano",
         "storeTokenFailed": "Não foi possível armazenar o token",
@@ -25941,7 +26330,8 @@ export const resources = {
         "features": "Recursos",
         "hosts": "Hosts",
         "overview": "Visão geral",
-        "users": "Usuários"
+        "users": "Usuários",
+        "waitlist": "Lista de espera"
       },
       "tokenStored": "Token armazenado. Uma operação `set_token` foi enviada para cada host com bootstrap; novas execuções do bridge a utilizam automaticamente.",
       "total": "Total",
@@ -25960,6 +26350,71 @@ export const resources = {
       "vmInventoryError": "Não foi possível carregar o inventário de VMs da Hostinger: {{error}}",
       "vmState": "VM: {{state}}",
       "vmStateHint": "Estado de energia na Hostinger",
+      "waitlist": {
+        "adHoc": {
+          "email": "E-mail (opcional)",
+          "hint": "Para alguém que nunca entrou na lista de espera. Indique um e-mail para associar o código a esse endereço e enviá-lo; deixe vazio para um código que entregará pessoalmente.",
+          "issue": "Emitir código",
+          "note": "Nota (opcional)",
+          "title": "Emitir um código",
+          "ttl": "Válido por (dias)"
+        },
+        "codeState": {
+          "expired": "Expirado",
+          "live": "Ativo",
+          "redeemed": "Usado",
+          "revoked": "Revogado"
+        },
+        "codes": {
+          "empty": "Ainda não foram emitidos códigos.",
+          "floating": "Qualquer pessoa",
+          "redeemedBy": "Usado por {{name}}",
+          "revoke": "Revogar",
+          "title": "Códigos emitidos"
+        },
+        "columns": {
+          "code": "Código",
+          "follows": "Segue",
+          "status": "Estado",
+          "tier": "Nível",
+          "who": "Quem"
+        },
+        "copied": "Copiado",
+        "copyCode": "Copiar código",
+        "copyMessage": "Copiar mensagem",
+        "counts": "{{waiting}} em espera · {{invited}} convidados · {{joined}} inscritos",
+        "dmHint": "Esta entrada aderiu com o X, por isso não há e-mail. Copie a mensagem e envie-a a @{{username}} no X.",
+        "dmText": "A sua vaga no agntchat está aberta! O seu código de convite é {{code}}. Descarregue a app em agntchat.com/download (ou registe-se em app.agntchat.com/web/signup) e insira o código ao criar a conta. Expira em {{days}} dias.",
+        "dmTitle": "Enviar este código por DM",
+        "done": "Concluído",
+        "emailSendFailed": "Não foi possível enviar o e-mail — envie o código manualmente.",
+        "emailSent": "Convite enviado por e-mail para {{email}}.",
+        "empty": "Ainda ninguém na lista de espera.",
+        "existingCode": "Já havia um código ativo; nada de novo foi enviado.",
+        "expires": "Expira a {{date}}",
+        "follows": {
+          "na": "—",
+          "no": "Não segue",
+          "unknown": "Desconhecido",
+          "yes": "Segue"
+        },
+        "intro": "Todos os que esperam para entrar, por ordem de fila. Convidar alguém emite um código de convite de uso único: uma entrada por e-mail recebe-o por e-mail; uma entrada do X precisa que o envie por DM.",
+        "invite": "Convidar",
+        "inviting": "A convidar…",
+        "openX": "Abrir @{{username}} no X",
+        "reinvite": "Emitir novo código",
+        "showCode": "Ver código",
+        "status": {
+          "invited": "Convidado",
+          "joined": "Inscrito",
+          "waiting": "Em espera"
+        },
+        "tier": {
+          "boosted": "Impulsionado",
+          "email": "E-mail",
+          "x": "Conta X"
+        }
+      },
       "working": "Processando…",
       "workspace": {
         "refreshFailed": "Falha ao atualizar",
@@ -29202,6 +29657,27 @@ export const resources = {
       "handleAvailable": "このハンドルは使用可能です。",
       "handleChecking": "確認中…",
       "handleFormatHint": "1〜15文字：小文字のアルファベット、数字、アンダースコアが使用できます。",
+      "invite": {
+        "accepted": "招待コード {{code}} が承認されました。アカウント作成を完了してください。",
+        "change": "別のコードを使う",
+        "checking": "確認中…",
+        "codeLabel": "招待コード",
+        "continue": "続ける",
+        "emailLocked": "この招待は {{email}} 宛てに発行されています。",
+        "errors": {
+          "checkFailed": "招待コードを確認できませんでした。もう一度お試しください。",
+          "email_mismatch": "その招待コードは別のメールアドレス宛てに発行されています。",
+          "expired": "その招待コードは期限切れです。",
+          "invalid": "その招待コードは無効です。",
+          "required": "招待コードを入力してください。",
+          "used": "その招待コードはすでに使用されています。"
+        },
+        "joinWaitlist": "ウェイトリストに登録",
+        "noCode": "コードをお持ちでない場合",
+        "placeholder": "XXXX-XXXX-XXXX",
+        "subtitle": "agntchat は現在招待制です。アカウントを作成するには招待コードを入力してください。",
+        "title": "招待コードを入力"
+      },
       "inviteEmailLocked": "この招待は{{email}}宛に送信されました。別のアドレスを使用するには、管理者に新しい招待の送信を依頼してください。",
       "inviteSignInDescription": "ログインすると、チームに追加されます。",
       "inviteSignupDescription": "チームに参加するには、agntchatアカウントを作成してください。",
@@ -30991,6 +31467,8 @@ export const resources = {
         "deallocationFailed": "割り当て解除に失敗しました",
         "deleteHost": "ホストを削除できませんでした",
         "deleteHostFailed": "ホストを削除できませんでした",
+        "inviteFailed": "招待に失敗しました",
+        "issueFailed": "コードを発行できませんでした",
         "loadAgents": "エージェントの読み込みに失敗しました",
         "loadCatalog": "カタログを読み込めませんでした",
         "loadFlags": "機能フラグの読み込みに失敗しました",
@@ -31001,6 +31479,7 @@ export const resources = {
         "loadStats": "統計情報の読み込みに失敗しました",
         "loadUsers": "ユーザーの読み込みに失敗しました",
         "loadVms": "Hostinger VMの読み込みに失敗しました",
+        "loadWaitlist": "ウェイトリストを読み込めませんでした",
         "localRuntimeReset": "このエージェントは所有者自身のデバイス上で動作しています — そちらからリセットしてください。",
         "moveFailed": "移動に失敗しました",
         "nameHostRequired": "名前とSSHホストは必須です。",
@@ -31016,6 +31495,7 @@ export const resources = {
         "renameHost": "ホストの名前を変更できませんでした",
         "resetFailed": "リセットに失敗しました",
         "resetUnavailable": "リセットを利用できません：{{reason}}",
+        "revokeFailed": "コードを取り消せませんでした",
         "saveFailed": "保存できませんでした",
         "setPlanFailed": "プランを設定できませんでした",
         "storeTokenFailed": "トークンを保存できませんでした",
@@ -31368,7 +31848,8 @@ export const resources = {
         "features": "機能",
         "hosts": "ホスト",
         "overview": "概要",
-        "users": "ユーザー"
+        "users": "ユーザー",
+        "waitlist": "ウェイトリスト"
       },
       "tokenStored": "トークンを保存しました。各ブートストラップ済みホストに`set_token`操作が送信されました。新しいブリッジの実行では自動的に使用されます。",
       "total": "合計",
@@ -31387,6 +31868,71 @@ export const resources = {
       "vmInventoryError": "Hostinger VMインベントリを読み込めませんでした：{{error}}",
       "vmState": "VM：{{state}}",
       "vmStateHint": "Hostingerの電源状態",
+      "waitlist": {
+        "adHoc": {
+          "email": "メール（任意）",
+          "hint": "ウェイトリストに登録していない人向け。メールアドレスを入れるとそのアドレスに紐付けて送信します。空欄なら自分で渡すコードになります。",
+          "issue": "コードを発行",
+          "note": "メモ（任意）",
+          "title": "コードを発行",
+          "ttl": "有効期間（日）"
+        },
+        "codeState": {
+          "expired": "期限切れ",
+          "live": "有効",
+          "redeemed": "使用済み",
+          "revoked": "取り消し済み"
+        },
+        "codes": {
+          "empty": "まだコードは発行されていません。",
+          "floating": "誰でも",
+          "redeemedBy": "{{name}} が使用",
+          "revoke": "取り消す",
+          "title": "発行済みコード"
+        },
+        "columns": {
+          "code": "招待コード",
+          "follows": "フォロー",
+          "status": "状態",
+          "tier": "区分",
+          "who": "対象"
+        },
+        "copied": "コピーしました",
+        "copyCode": "コードをコピー",
+        "copyMessage": "メッセージをコピー",
+        "counts": "待機 {{waiting}} · 招待済み {{invited}} · 参加済み {{joined}}",
+        "dmHint": "この登録者は X で参加したため、メールアドレスがありません。メッセージをコピーして X の @{{username}} に送ってください。",
+        "dmText": "agntchat の順番が来ました！招待コードは {{code}} です。agntchat.com/download からアプリをダウンロード（または app.agntchat.com/web/signup で登録）して、アカウント作成時にコードを入力してください。有効期限は {{days}} 日です。",
+        "dmTitle": "このコードを DM で送る",
+        "done": "完了",
+        "emailSendFailed": "メールを送信できませんでした。コードを手動で送ってください。",
+        "emailSent": "{{email}} に招待メールを送信しました。",
+        "empty": "ウェイトリストにはまだ誰もいません。",
+        "existingCode": "有効なコードがすでに発行済みのため、新たに送信していません。",
+        "expires": "{{date}} に期限切れ",
+        "follows": {
+          "na": "—",
+          "no": "未フォロー",
+          "unknown": "不明",
+          "yes": "フォロー中"
+        },
+        "intro": "参加待ちの全員をキュー順に表示します。招待すると一回限りの招待コードが発行されます。メール登録者にはメールで届き、X 登録者には DM で送る必要があります。",
+        "invite": "招待",
+        "inviting": "招待中…",
+        "openX": "X で @{{username}} を開く",
+        "reinvite": "新しいコードを発行",
+        "showCode": "コードを表示",
+        "status": {
+          "invited": "招待済み",
+          "joined": "参加済み",
+          "waiting": "待機中"
+        },
+        "tier": {
+          "boosted": "ブースト",
+          "email": "メール",
+          "x": "X アカウント"
+        }
+      },
       "working": "処理中…",
       "workspace": {
         "refreshFailed": "更新に失敗しました",
@@ -34629,6 +35175,27 @@ export const resources = {
       "handleAvailable": "该用户名可用。",
       "handleChecking": "检查中……",
       "handleFormatHint": "1–15 个字符：小写字母、数字或下划线。",
+      "invite": {
+        "accepted": "邀请码 {{code}} 已接受。请完成账户创建。",
+        "change": "使用其他邀请码",
+        "checking": "正在检查…",
+        "codeLabel": "邀请码",
+        "continue": "继续",
+        "emailLocked": "此邀请已发放给 {{email}}。",
+        "errors": {
+          "checkFailed": "无法检查邀请码。请重试。",
+          "email_mismatch": "该邀请码发放给了其他电子邮件地址。",
+          "expired": "该邀请码已过期。",
+          "invalid": "该邀请码无效。",
+          "required": "请输入邀请码。",
+          "used": "该邀请码已被使用。"
+        },
+        "joinWaitlist": "加入候补名单",
+        "noCode": "没有邀请码？",
+        "placeholder": "XXXX-XXXX-XXXX",
+        "subtitle": "agntchat 目前仅限邀请。输入邀请码以创建账户。",
+        "title": "输入邀请码"
+      },
       "inviteEmailLocked": "此邀请已发送至 {{email}}。如需使用其他邮箱，请让管理员重新发送邀请。",
       "inviteSignInDescription": "登录后，你将被添加到团队中。",
       "inviteSignupDescription": "创建你的 agntchat 账号以加入团队。",
@@ -36418,6 +36985,8 @@ export const resources = {
         "deallocationFailed": "取消分配失败",
         "deleteHost": "无法删除主机",
         "deleteHostFailed": "无法删除主机",
+        "inviteFailed": "邀请失败",
+        "issueFailed": "无法签发邀请码",
         "loadAgents": "加载智能体失败",
         "loadCatalog": "无法加载目录",
         "loadFlags": "加载功能标志失败",
@@ -36428,6 +36997,7 @@ export const resources = {
         "loadStats": "加载统计信息失败",
         "loadUsers": "加载用户失败",
         "loadVms": "无法加载 Hostinger VM",
+        "loadWaitlist": "无法加载候补名单",
         "localRuntimeReset": "该智能体运行在所有者自己的设备上——请在那里重置它。",
         "moveFailed": "移动失败",
         "nameHostRequired": "名称和 SSH 主机为必填项。",
@@ -36443,6 +37013,7 @@ export const resources = {
         "renameHost": "无法重命名主机",
         "resetFailed": "重置失败",
         "resetUnavailable": "无法重置：{{reason}}",
+        "revokeFailed": "无法撤销邀请码",
         "saveFailed": "无法保存",
         "setPlanFailed": "无法设置套餐",
         "storeTokenFailed": "无法存储令牌",
@@ -36795,7 +37366,8 @@ export const resources = {
         "features": "功能",
         "hosts": "主机",
         "overview": "概览",
-        "users": "用户"
+        "users": "用户",
+        "waitlist": "候补名单"
       },
       "tokenStored": "令牌已存储。已向每台已引导的主机发送 `set_token` 操作；新的桥接运行将自动使用它。",
       "total": "总计",
@@ -36814,6 +37386,71 @@ export const resources = {
       "vmInventoryError": "无法加载 Hostinger VM 清单：{{error}}",
       "vmState": "VM：{{state}}",
       "vmStateHint": "Hostinger 电源状态",
+      "waitlist": {
+        "adHoc": {
+          "email": "邮箱（可选）",
+          "hint": "适用于从未加入候补名单的人。填写邮箱可将邀请码绑定到该地址并发送；留空则生成由你自行交付的邀请码。",
+          "issue": "签发邀请码",
+          "note": "备注（可选）",
+          "title": "签发邀请码",
+          "ttl": "有效期（天）"
+        },
+        "codeState": {
+          "expired": "已过期",
+          "live": "有效",
+          "redeemed": "已使用",
+          "revoked": "已撤销"
+        },
+        "codes": {
+          "empty": "尚未签发邀请码。",
+          "floating": "任何人",
+          "redeemedBy": "由 {{name}} 使用",
+          "revoke": "撤销",
+          "title": "已签发的邀请码"
+        },
+        "columns": {
+          "code": "邀请码",
+          "follows": "关注",
+          "status": "状态",
+          "tier": "层级",
+          "who": "对象"
+        },
+        "copied": "已复制",
+        "copyCode": "复制邀请码",
+        "copyMessage": "复制消息",
+        "counts": "{{waiting}} 等待中 · {{invited}} 已邀请 · {{joined}} 已加入",
+        "dmHint": "该条目通过 X 加入，没有邮箱地址。请复制消息并在 X 上发送给 @{{username}}。",
+        "dmText": "你在 agntchat 的名额已开放！你的邀请码是 {{code}}。请在 agntchat.com/download 下载应用（或在 app.agntchat.com/web/signup 注册），创建账户时输入该邀请码。{{days}} 天后过期。",
+        "dmTitle": "通过私信发送此邀请码",
+        "done": "完成",
+        "emailSendFailed": "邮件发送失败——请手动发送邀请码。",
+        "emailSent": "邀请已通过邮件发送至 {{email}}。",
+        "empty": "候补名单上还没有人。",
+        "existingCode": "已有有效邀请码，未发送新内容。",
+        "expires": "{{date}} 过期",
+        "follows": {
+          "na": "—",
+          "no": "未关注",
+          "unknown": "未知",
+          "yes": "已关注"
+        },
+        "intro": "所有等待进入的人，按排队顺序显示。邀请某人会签发一次性邀请码：邮箱条目通过邮件收到，X 条目需要你通过私信发送。",
+        "invite": "邀请",
+        "inviting": "正在邀请…",
+        "openX": "在 X 上打开 @{{username}}",
+        "reinvite": "签发新邀请码",
+        "showCode": "查看邀请码",
+        "status": {
+          "invited": "已邀请",
+          "joined": "已加入",
+          "waiting": "等待中"
+        },
+        "tier": {
+          "boosted": "已加速",
+          "email": "邮箱",
+          "x": "X 账号"
+        }
+      },
       "working": "处理中……",
       "workspace": {
         "refreshFailed": "刷新失败",
@@ -40056,6 +40693,27 @@ export const resources = {
       "handleAvailable": "사용 가능한 핸들입니다.",
       "handleChecking": "확인 중…",
       "handleFormatHint": "1~15자: 소문자, 숫자, 밑줄(_)만 사용 가능합니다.",
+      "invite": {
+        "accepted": "초대 코드 {{code}}이(가) 확인되었습니다. 계정 만들기를 완료하세요.",
+        "change": "다른 코드 사용",
+        "checking": "확인 중…",
+        "codeLabel": "초대 코드",
+        "continue": "계속",
+        "emailLocked": "이 초대는 {{email}} 앞으로 발급되었습니다.",
+        "errors": {
+          "checkFailed": "초대 코드를 확인할 수 없습니다. 다시 시도하세요.",
+          "email_mismatch": "다른 이메일 주소로 발급된 초대 코드입니다.",
+          "expired": "만료된 초대 코드입니다.",
+          "invalid": "유효하지 않은 초대 코드입니다.",
+          "required": "초대 코드를 입력하세요.",
+          "used": "이미 사용된 초대 코드입니다."
+        },
+        "joinWaitlist": "대기자 명단에 등록",
+        "noCode": "코드가 없으신가요?",
+        "placeholder": "XXXX-XXXX-XXXX",
+        "subtitle": "agntchat은 현재 초대 전용입니다. 계정을 만들려면 초대 코드를 입력하세요.",
+        "title": "초대 코드를 입력하세요"
+      },
       "inviteEmailLocked": "이 초대는 {{email}}로 발송되었습니다. 다른 주소를 사용하려면 관리자에게 새 초대를 요청하세요.",
       "inviteSignInDescription": "로그인하면 팀에 추가됩니다.",
       "inviteSignupDescription": "팀에 합류하려면 agntchat 계정을 만드세요.",
@@ -41845,6 +42503,8 @@ export const resources = {
         "deallocationFailed": "할당 해제 실패",
         "deleteHost": "호스트를 삭제할 수 없음",
         "deleteHostFailed": "호스트를 삭제할 수 없음",
+        "inviteFailed": "초대 실패",
+        "issueFailed": "코드를 발급할 수 없습니다",
         "loadAgents": "에이전트 로드 실패",
         "loadCatalog": "카탈로그를 불러올 수 없음",
         "loadFlags": "기능 플래그 로드 실패",
@@ -41855,6 +42515,7 @@ export const resources = {
         "loadStats": "통계 로드 실패",
         "loadUsers": "사용자 로드 실패",
         "loadVms": "Hostinger VM 로드 실패",
+        "loadWaitlist": "대기자 명단을 불러오지 못했습니다",
         "localRuntimeReset": "이 에이전트는 소유자의 기기에서 실행됩니다 — 해당 기기에서 재설정하세요.",
         "moveFailed": "이동 실패",
         "nameHostRequired": "이름과 SSH 호스트는 필수입니다.",
@@ -41870,6 +42531,7 @@ export const resources = {
         "renameHost": "호스트 이름을 변경할 수 없음",
         "resetFailed": "재설정 실패",
         "resetUnavailable": "재설정 불가: {{reason}}",
+        "revokeFailed": "코드를 취소할 수 없습니다",
         "saveFailed": "저장할 수 없음",
         "setPlanFailed": "플랜을 설정할 수 없음",
         "storeTokenFailed": "토큰을 저장할 수 없음",
@@ -42222,7 +42884,8 @@ export const resources = {
         "features": "기능",
         "hosts": "호스트",
         "overview": "개요",
-        "users": "사용자"
+        "users": "사용자",
+        "waitlist": "대기자 명단"
       },
       "tokenStored": "토큰이 저장되었습니다. 부트스트랩된 각 호스트에 `set_token` 작업이 전송되었으며, 새 브리지 실행 시 자동으로 사용됩니다.",
       "total": "합계",
@@ -42241,6 +42904,71 @@ export const resources = {
       "vmInventoryError": "Hostinger VM 인벤토리를 불러올 수 없습니다: {{error}}",
       "vmState": "VM: {{state}}",
       "vmStateHint": "Hostinger 전원 상태",
+      "waitlist": {
+        "adHoc": {
+          "email": "이메일 (선택)",
+          "hint": "대기자 명단에 없는 사람을 위한 코드입니다. 이메일을 입력하면 해당 주소에 고정해 발송하고, 비워 두면 직접 전달할 코드가 됩니다.",
+          "issue": "코드 발급",
+          "note": "메모 (선택)",
+          "title": "코드 발급",
+          "ttl": "유효 기간(일)"
+        },
+        "codeState": {
+          "expired": "만료됨",
+          "live": "유효",
+          "redeemed": "사용됨",
+          "revoked": "취소됨"
+        },
+        "codes": {
+          "empty": "아직 발급된 코드가 없습니다.",
+          "floating": "누구나",
+          "redeemedBy": "{{name}} 사용",
+          "revoke": "취소",
+          "title": "발급된 코드"
+        },
+        "columns": {
+          "code": "초대 코드",
+          "follows": "팔로우",
+          "status": "상태",
+          "tier": "등급",
+          "who": "대상"
+        },
+        "copied": "복사됨",
+        "copyCode": "코드 복사",
+        "copyMessage": "메시지 복사",
+        "counts": "대기 {{waiting}} · 초대됨 {{invited}} · 가입 {{joined}}",
+        "dmHint": "이 등록자는 X로 가입해 이메일 주소가 없습니다. 메시지를 복사해 X에서 @{{username}}에게 보내세요.",
+        "dmText": "agntchat 자리가 열렸습니다! 초대 코드는 {{code}}입니다. agntchat.com/download에서 앱을 다운로드하거나 app.agntchat.com/web/signup에서 가입할 때 코드를 입력하세요. {{days}}일 후 만료됩니다.",
+        "dmTitle": "이 코드를 DM으로 보내기",
+        "done": "완료",
+        "emailSendFailed": "이메일을 보낼 수 없습니다. 코드를 직접 보내세요.",
+        "emailSent": "{{email}}(으)로 초대 이메일을 보냈습니다.",
+        "empty": "아직 대기자가 없습니다.",
+        "existingCode": "이미 유효한 코드가 발급되어 있어 새로 보내지 않았습니다.",
+        "expires": "{{date}} 만료",
+        "follows": {
+          "na": "—",
+          "no": "미팔로우",
+          "unknown": "알 수 없음",
+          "yes": "팔로우 중"
+        },
+        "intro": "입장을 기다리는 모든 사람을 대기 순서대로 표시합니다. 초대하면 일회용 초대 코드가 발급됩니다. 이메일 등록자는 이메일로 받고, X 등록자에게는 DM으로 직접 보내야 합니다.",
+        "invite": "초대",
+        "inviting": "초대 중…",
+        "openX": "X에서 @{{username}} 열기",
+        "reinvite": "새 코드 발급",
+        "showCode": "코드 보기",
+        "status": {
+          "invited": "초대됨",
+          "joined": "가입함",
+          "waiting": "대기 중"
+        },
+        "tier": {
+          "boosted": "부스트",
+          "email": "이메일",
+          "x": "X 계정"
+        }
+      },
       "working": "작업 중…",
       "workspace": {
         "refreshFailed": "새로고침 실패",
@@ -45483,6 +46211,27 @@ export const resources = {
       "handleAvailable": "L'handle è disponibile.",
       "handleChecking": "Verifica in corso…",
       "handleFormatHint": "1–15 caratteri: lettere minuscole, numeri o underscore.",
+      "invite": {
+        "accepted": "Codice di invito {{code}} accettato. Completa la creazione dell'account.",
+        "change": "Usa un altro codice",
+        "checking": "Verifica in corso…",
+        "codeLabel": "Codice di invito",
+        "continue": "Continua",
+        "emailLocked": "Questo invito è stato emesso per {{email}}.",
+        "errors": {
+          "checkFailed": "Impossibile verificare il codice di invito. Riprova.",
+          "email_mismatch": "Questo codice di invito è stato emesso per un altro indirizzo email.",
+          "expired": "Questo codice di invito è scaduto.",
+          "invalid": "Questo codice di invito non è valido.",
+          "required": "Inserisci il tuo codice di invito.",
+          "used": "Questo codice di invito è già stato usato."
+        },
+        "joinWaitlist": "Iscriviti alla lista d'attesa",
+        "noCode": "Non hai un codice?",
+        "placeholder": "XXXX-XXXX-XXXX",
+        "subtitle": "Al momento agntchat è solo su invito. Inserisci il codice del tuo invito per creare un account.",
+        "title": "Inserisci il tuo codice di invito"
+      },
       "inviteEmailLocked": "Questo invito è stato inviato a {{email}}. Per usare un indirizzo diverso, chiedi al tuo amministratore di inviare un nuovo invito.",
       "inviteSignInDescription": "Una volta effettuato l'accesso, verrai aggiunto al team.",
       "inviteSignupDescription": "Crea il tuo account agntchat per unirti al team.",
@@ -47272,6 +48021,8 @@ export const resources = {
         "deallocationFailed": "Deallocazione non riuscita",
         "deleteHost": "Impossibile eliminare l'host",
         "deleteHostFailed": "Impossibile eliminare l'host",
+        "inviteFailed": "Invito non riuscito",
+        "issueFailed": "Impossibile emettere un codice",
         "loadAgents": "Impossibile caricare gli agenti",
         "loadCatalog": "Impossibile caricare il catalogo",
         "loadFlags": "Impossibile caricare i feature flag",
@@ -47282,6 +48033,7 @@ export const resources = {
         "loadStats": "Impossibile caricare le statistiche",
         "loadUsers": "Impossibile caricare gli utenti",
         "loadVms": "Impossibile caricare le VM Hostinger",
+        "loadWaitlist": "Impossibile caricare la lista d'attesa",
         "localRuntimeReset": "Questo agente funziona sul dispositivo del proprietario — reimpostalo da lì.",
         "moveFailed": "Spostamento non riuscito",
         "nameHostRequired": "Nome e host SSH sono obbligatori.",
@@ -47297,6 +48049,7 @@ export const resources = {
         "renameHost": "Impossibile rinominare l'host",
         "resetFailed": "Reimpostazione non riuscita",
         "resetUnavailable": "Reimpostazione non disponibile: {{reason}}",
+        "revokeFailed": "Impossibile revocare il codice",
         "saveFailed": "Impossibile salvare",
         "setPlanFailed": "Impossibile impostare il piano",
         "storeTokenFailed": "Impossibile memorizzare il token",
@@ -47649,7 +48402,8 @@ export const resources = {
         "features": "Funzionalità",
         "hosts": "Host",
         "overview": "Panoramica",
-        "users": "Utenti"
+        "users": "Utenti",
+        "waitlist": "Lista d'attesa"
       },
       "tokenStored": "Token memorizzato. Un'operazione `set_token` è stata inviata a ogni host con bootstrap eseguito; le nuove esecuzioni del bridge lo utilizzano automaticamente.",
       "total": "Totale",
@@ -47668,6 +48422,71 @@ export const resources = {
       "vmInventoryError": "Impossibile caricare l'inventario delle VM Hostinger: {{error}}",
       "vmState": "VM: {{state}}",
       "vmStateHint": "Stato di alimentazione Hostinger",
+      "waitlist": {
+        "adHoc": {
+          "email": "Email (facoltativa)",
+          "hint": "Per qualcuno che non si è mai iscritto alla lista d'attesa. Indica un'email per vincolare il codice a quell'indirizzo e inviarlo; lascia vuoto per un codice che consegnerai tu.",
+          "issue": "Emetti codice",
+          "note": "Nota (facoltativa)",
+          "title": "Emetti un codice",
+          "ttl": "Valido per (giorni)"
+        },
+        "codeState": {
+          "expired": "Scaduto",
+          "live": "Attivo",
+          "redeemed": "Usato",
+          "revoked": "Revocato"
+        },
+        "codes": {
+          "empty": "Nessun codice emesso finora.",
+          "floating": "Chiunque",
+          "redeemedBy": "Usato da {{name}}",
+          "revoke": "Revoca",
+          "title": "Codici emessi"
+        },
+        "columns": {
+          "code": "Codice",
+          "follows": "Segue",
+          "status": "Stato",
+          "tier": "Livello",
+          "who": "Chi"
+        },
+        "copied": "Copiato",
+        "copyCode": "Copia codice",
+        "copyMessage": "Copia messaggio",
+        "counts": "{{waiting}} in attesa · {{invited}} invitati · {{joined}} entrati",
+        "dmHint": "Questa voce si è iscritta con X, quindi non c'è un indirizzo email. Copia il messaggio e invialo a @{{username}} su X.",
+        "dmText": "Il tuo posto su agntchat è pronto! Il tuo codice di invito è {{code}}. Scarica l'app da agntchat.com/download (o registrati su app.agntchat.com/web/signup) e inserisci il codice quando crei l'account. Scade tra {{days}} giorni.",
+        "dmTitle": "Invia questo codice in DM",
+        "done": "Fatto",
+        "emailSendFailed": "L'email non è stata inviata: invia il codice manualmente.",
+        "emailSent": "Invito inviato via email a {{email}}.",
+        "empty": "Nessuno in lista d'attesa per ora.",
+        "existingCode": "Un codice attivo era già stato emesso; non è stato inviato nulla di nuovo.",
+        "expires": "Scade il {{date}}",
+        "follows": {
+          "na": "—",
+          "no": "Non segue",
+          "unknown": "Sconosciuto",
+          "yes": "Segue"
+        },
+        "intro": "Tutti quelli in attesa di entrare, in ordine di coda. Invitare qualcuno emette un codice di invito monouso: una voce email lo riceve via email, una voce X richiede che tu lo invii in DM.",
+        "invite": "Invita",
+        "inviting": "Invito in corso…",
+        "openX": "Apri @{{username}} su X",
+        "reinvite": "Emetti nuovo codice",
+        "showCode": "Mostra codice",
+        "status": {
+          "invited": "Invitato",
+          "joined": "Entrato",
+          "waiting": "In attesa"
+        },
+        "tier": {
+          "boosted": "Potenziato",
+          "email": "Email",
+          "x": "Account X"
+        }
+      },
       "working": "In corso…",
       "workspace": {
         "refreshFailed": "Aggiornamento non riuscito",
@@ -50910,6 +51729,27 @@ export const resources = {
       "handleAvailable": "हैंडल उपलब्ध है।",
       "handleChecking": "जांच हो रही है…",
       "handleFormatHint": "1–15 वर्ण: लोअरकेस अक्षर, अंक, या अंडरस्कोर।",
+      "invite": {
+        "accepted": "आमंत्रण कोड {{code}} स्वीकार हुआ। अपना खाता बनाना पूरा करें।",
+        "change": "दूसरा कोड इस्तेमाल करें",
+        "checking": "जाँच हो रही है…",
+        "codeLabel": "आमंत्रण कोड",
+        "continue": "जारी रखें",
+        "emailLocked": "यह आमंत्रण {{email}} के लिए जारी किया गया था।",
+        "errors": {
+          "checkFailed": "आमंत्रण कोड की जाँच नहीं हो सकी। फिर से कोशिश करें।",
+          "email_mismatch": "यह आमंत्रण कोड किसी अन्य ईमेल पते के लिए जारी किया गया था।",
+          "expired": "यह आमंत्रण कोड समाप्त हो गया है।",
+          "invalid": "यह आमंत्रण कोड मान्य नहीं है।",
+          "required": "अपना आमंत्रण कोड दर्ज करें।",
+          "used": "यह आमंत्रण कोड पहले ही उपयोग हो चुका है।"
+        },
+        "joinWaitlist": "प्रतीक्षा सूची में शामिल हों",
+        "noCode": "कोड नहीं है?",
+        "placeholder": "XXXX-XXXX-XXXX",
+        "subtitle": "agntchat अभी केवल आमंत्रण से उपलब्ध है। खाता बनाने के लिए अपने आमंत्रण का कोड दर्ज करें।",
+        "title": "अपना आमंत्रण कोड दर्ज करें"
+      },
       "inviteEmailLocked": "यह आमंत्रण {{email}} पर भेजा गया था। किसी अलग पते का उपयोग करने के लिए, अपने एडमिन से नया आमंत्रण भेजने को कहें।",
       "inviteSignInDescription": "साइन इन करते ही आपको टीम में जोड़ दिया जाएगा।",
       "inviteSignupDescription": "टीम में शामिल होने के लिए अपना agntchat खाता बनाएं।",
@@ -52699,6 +53539,8 @@ export const resources = {
         "deallocationFailed": "अनावंटन विफल",
         "deleteHost": "होस्ट हटा नहीं सके",
         "deleteHostFailed": "होस्ट हटा नहीं सके",
+        "inviteFailed": "आमंत्रण विफल",
+        "issueFailed": "कोड जारी नहीं हो सका",
         "loadAgents": "एजेंट लोड करने में विफल",
         "loadCatalog": "कैटलॉग लोड नहीं कर सके",
         "loadFlags": "फ़ीचर फ़्लैग लोड करने में विफल",
@@ -52709,6 +53551,7 @@ export const resources = {
         "loadStats": "आँकड़े लोड करने में विफल",
         "loadUsers": "उपयोगकर्ता लोड करने में विफल",
         "loadVms": "Hostinger VMs लोड करने में विफल",
+        "loadWaitlist": "प्रतीक्षा सूची लोड नहीं हो सकी",
         "localRuntimeReset": "यह एजेंट मालिक के अपने डिवाइस पर चलता है — इसे वहीं से रीसेट करें।",
         "moveFailed": "स्थानांतरण विफल",
         "nameHostRequired": "नाम और SSH होस्ट आवश्यक हैं।",
@@ -52724,6 +53567,7 @@ export const resources = {
         "renameHost": "होस्ट का नाम नहीं बदल सके",
         "resetFailed": "रीसेट विफल",
         "resetUnavailable": "रीसेट अनुपलब्ध: {{reason}}",
+        "revokeFailed": "कोड रद्द नहीं हो सका",
         "saveFailed": "सहेज नहीं सके",
         "setPlanFailed": "प्लान सेट नहीं कर सके",
         "storeTokenFailed": "टोकन संग्रहीत नहीं कर सके",
@@ -53076,7 +53920,8 @@ export const resources = {
         "features": "फ़ीचर",
         "hosts": "होस्ट",
         "overview": "अवलोकन",
-        "users": "उपयोगकर्ता"
+        "users": "उपयोगकर्ता",
+        "waitlist": "प्रतीक्षा सूची"
       },
       "tokenStored": "टोकन संग्रहीत। प्रत्येक बूटस्ट्रैप किए गए होस्ट को एक `set_token` ऑपरेशन भेजा गया; नए ब्रिज रन इसे स्वतः उपयोग करते हैं।",
       "total": "कुल",
@@ -53095,6 +53940,71 @@ export const resources = {
       "vmInventoryError": "Hostinger VM इन्वेंट्री लोड नहीं कर सके: {{error}}",
       "vmState": "VM: {{state}}",
       "vmStateHint": "Hostinger पावर स्थिति",
+      "waitlist": {
+        "adHoc": {
+          "email": "ईमेल (वैकल्पिक)",
+          "hint": "किसी ऐसे व्यक्ति के लिए जो कभी प्रतीक्षा सूची में नहीं था। कोड को उस पते से जोड़ने और भेजने के लिए ईमेल दें; खुद सौंपने के लिए खाली छोड़ें।",
+          "issue": "कोड जारी करें",
+          "note": "टिप्पणी (वैकल्पिक)",
+          "title": "कोड जारी करें",
+          "ttl": "मान्य (दिन)"
+        },
+        "codeState": {
+          "expired": "समाप्त",
+          "live": "सक्रिय",
+          "redeemed": "उपयोग हुआ",
+          "revoked": "रद्द"
+        },
+        "codes": {
+          "empty": "अभी तक कोई कोड जारी नहीं हुआ।",
+          "floating": "कोई भी",
+          "redeemedBy": "{{name}} द्वारा उपयोग",
+          "revoke": "रद्द करें",
+          "title": "जारी किए गए कोड"
+        },
+        "columns": {
+          "code": "आमंत्रण कोड",
+          "follows": "फ़ॉलो",
+          "status": "स्थिति",
+          "tier": "स्तर",
+          "who": "कौन"
+        },
+        "copied": "कॉपी हो गया",
+        "copyCode": "कोड कॉपी करें",
+        "copyMessage": "संदेश कॉपी करें",
+        "counts": "{{waiting}} प्रतीक्षारत · {{invited}} आमंत्रित · {{joined}} शामिल",
+        "dmHint": "यह प्रविष्टि X से जुड़ी थी, इसलिए ईमेल पता नहीं है। संदेश कॉपी करें और X पर @{{username}} को भेजें।",
+        "dmText": "agntchat पर आपकी जगह तैयार है! आपका आमंत्रण कोड {{code}} है। agntchat.com/download से ऐप डाउनलोड करें (या app.agntchat.com/web/signup पर साइन अप करें) और खाता बनाते समय कोड दर्ज करें। यह {{days}} दिनों में समाप्त हो जाएगा।",
+        "dmTitle": "यह कोड DM से भेजें",
+        "done": "हो गया",
+        "emailSendFailed": "ईमेल नहीं भेजा जा सका — कोड स्वयं भेजें।",
+        "emailSent": "आमंत्रण {{email}} को ईमेल किया गया।",
+        "empty": "प्रतीक्षा सूची में अभी कोई नहीं है।",
+        "existingCode": "एक सक्रिय कोड पहले से जारी था; कुछ नया नहीं भेजा गया।",
+        "expires": "{{date}} को समाप्त",
+        "follows": {
+          "na": "—",
+          "no": "फ़ॉलो नहीं करता",
+          "unknown": "अज्ञात",
+          "yes": "फ़ॉलो करता है"
+        },
+        "intro": "प्रवेश की प्रतीक्षा कर रहे सभी लोग, कतार के क्रम में। किसी को आमंत्रित करने पर एक बार उपयोग होने वाला आमंत्रण कोड जारी होता है: ईमेल प्रविष्टि को यह ईमेल से मिलता है, X प्रविष्टि को आपको DM से भेजना होगा।",
+        "invite": "आमंत्रित करें",
+        "inviting": "आमंत्रित किया जा रहा है…",
+        "openX": "X पर @{{username}} खोलें",
+        "reinvite": "नया कोड जारी करें",
+        "showCode": "कोड दिखाएँ",
+        "status": {
+          "invited": "आमंत्रित",
+          "joined": "शामिल",
+          "waiting": "प्रतीक्षारत"
+        },
+        "tier": {
+          "boosted": "बूस्टेड",
+          "email": "ईमेल",
+          "x": "X खाता"
+        }
+      },
       "working": "काम हो रहा है…",
       "workspace": {
         "refreshFailed": "रीफ़्रेश विफल",

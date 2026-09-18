@@ -263,6 +263,9 @@ export async function signup(
     birthDate: string;
     marketingOptIn?: boolean;
     analyticsOptIn?: boolean;
+    /** Waitlist invite code. Required while signup is invite-only
+     *  (`signupPolicy()`); the backend 422s `invite_code_*` without one. */
+    inviteCode?: string;
   }
 ): Promise<SignupResult> {
   return request("/api/auth/signup", {
@@ -271,12 +274,32 @@ export async function signup(
       email,
       password,
       displayName,
+      inviteCode: opts.inviteCode,
       acceptedTerms: opts.acceptedTerms,
       birthDate: opts.birthDate,
       marketingOptIn: opts.marketingOptIn,
       analyticsOptIn: opts.analyticsOptIn,
     }),
   });
+}
+
+/** Whether the signup form must ask for an invite code first (the
+ *  `signup_requires_invite` runtime flag, read by the backend). */
+export async function signupPolicy(): Promise<{ inviteRequired: boolean }> {
+  return request("/api/auth/signup-policy");
+}
+
+/** What the backend says about a typed invite code, without spending it.
+ *  Always 200: `valid: false` carries the reason. */
+export interface InviteCodeCheck {
+  valid: boolean;
+  code?: string;
+  email?: string | null;
+  reason?: "invalid" | "used" | "expired" | "email_mismatch";
+}
+
+export async function checkInviteCode(code: string): Promise<InviteCodeCheck> {
+  return request(`/api/auth/invite-code/${encodeURIComponent(code.trim())}`);
 }
 
 // GDPR / account data controls (human self-service). All operate on the
@@ -1398,6 +1421,83 @@ export interface AdminHostDetail {
 export async function getAdminStats(): Promise<PlatformStats> {
   const res = await request<{ stats: PlatformStats }>("/api/admin/stats");
   return res.stats;
+}
+
+// --- Waitlist + invite codes (platform-admin) ---
+
+export interface SignupInvite {
+  id: string;
+  code: string;
+  email: string | null;
+  note: string | null;
+  state: "live" | "redeemed" | "expired" | "revoked";
+  expiresAt: string;
+  redeemedAt: string | null;
+  revokedAt: string | null;
+  waitlistEntryId: string | null;
+  issuedBy: { id: string; displayName: string; handle?: string | null } | null;
+  redeemedBy: { id: string; displayName: string; handle?: string | null } | null;
+  insertedAt: string;
+}
+
+export interface WaitlistEntry {
+  id: string;
+  position: number;
+  /** Place in line among those still waiting; null once invited/joined. */
+  rank: number | null;
+  tier: "boosted" | "x" | "email";
+  xUserId: string | null;
+  xUsername: string | null;
+  xName: string | null;
+  xAvatarUrl: string | null;
+  xFollowersCount: number | null;
+  xFollowing: boolean | null;
+  email: string | null;
+  status: "waiting" | "invited" | "joined";
+  invitedAt: string | null;
+  participant: { id: string; displayName: string; handle?: string | null } | null;
+  /** The most recent code issued for this entry, if any. */
+  invite: SignupInvite | null;
+  insertedAt: string;
+}
+
+export interface WaitlistCounts {
+  waiting: number;
+  invited: number;
+  joined: number;
+}
+
+/** `delivery`: how the code reached the person — `email` (sent), `manual`
+ *  (operator hands it over, e.g. an X DM), `existing` (a live code was
+ *  already out; nothing new issued or sent). */
+export interface InviteResult {
+  invite: SignupInvite;
+  delivery: "email" | "manual" | "existing";
+}
+
+export async function listWaitlist(): Promise<{ entries: WaitlistEntry[]; counts: WaitlistCounts }> {
+  return request("/api/admin/waitlist");
+}
+
+export async function inviteWaitlistEntry(entryId: string): Promise<InviteResult & { entry: WaitlistEntry }> {
+  return request(`/api/admin/waitlist/${entryId}/invite`, { method: "POST" });
+}
+
+export async function listSignupInvites(): Promise<SignupInvite[]> {
+  const res = await request<{ invites: SignupInvite[] }>("/api/admin/signup-invites");
+  return res.invites;
+}
+
+export async function createSignupInvite(attrs: {
+  email?: string;
+  note?: string;
+  ttlDays?: number;
+}): Promise<InviteResult> {
+  return request("/api/admin/signup-invites", { method: "POST", body: JSON.stringify(attrs) });
+}
+
+export async function revokeSignupInvite(inviteId: string): Promise<{ invite: SignupInvite }> {
+  return request(`/api/admin/signup-invites/${inviteId}`, { method: "DELETE" });
 }
 
 // --- Feature flags (platform-admin) ---

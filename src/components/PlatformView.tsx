@@ -71,6 +71,7 @@ export function PlatformView() {
           <TabsTrigger value="overview">{t("tabs.overview")}</TabsTrigger>
           {orgHostsEnabled && <TabsTrigger value="hosts">{t("tabs.hosts")}</TabsTrigger>}
           <TabsTrigger value="users">{t("tabs.users")}</TabsTrigger>
+          <TabsTrigger value="waitlist">{t("tabs.waitlist")}</TabsTrigger>
           <TabsTrigger value="features">{t("tabs.features")}</TabsTrigger>
         </TabsList>
 
@@ -90,6 +91,9 @@ export function PlatformView() {
           )}
           <TabsContent value="users">
             <UsersTab />
+          </TabsContent>
+          <TabsContent value="waitlist">
+            <WaitlistTab />
           </TabsContent>
           <TabsContent value="features">
             <FeatureFlagsTab />
@@ -1141,6 +1145,483 @@ function UsersTab() {
  * up for a select few. Backed by `/api/admin/feature-flags`; the backend
  * enforces each gated route regardless of what the UI shows.
  */
+/* -------------------------------------------------------------------------- */
+/* Waitlist tab — the queue behind agntchat.com/waitlist, and the invite      */
+/* codes that let people in (docs/reference/waitlist.md).                     */
+/* -------------------------------------------------------------------------- */
+
+function daysLeft(iso: string): number {
+  return Math.max(1, Math.ceil((new Date(iso).getTime() - Date.now()) / 86_400_000));
+}
+
+function WaitlistTab() {
+  const { t, i18n } = useTranslation("platform");
+  const [entries, setEntries] = useState<api.WaitlistEntry[]>([]);
+  const [counts, setCounts] = useState<api.WaitlistCounts>({ waiting: 0, invited: 0, joined: 0 });
+  const [invites, setInvites] = useState<api.SignupInvite[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+  const [notice, setNotice] = useState<string | null>(null);
+  const [busyId, setBusyId] = useState<string | null>(null);
+  // A code the operator has to hand over themselves: shown with a ready-to-
+  // paste message. `username` is the X handle to DM when the entry has one.
+  const [showing, setShowing] = useState<{ invite: api.SignupInvite; username?: string | null } | null>(
+    null
+  );
+  const [issueOpen, setIssueOpen] = useState(false);
+
+  const refresh = useCallback(async () => {
+    try {
+      const [list, codes] = await Promise.all([api.listWaitlist(), api.listSignupInvites()]);
+      setEntries(list.entries);
+      setCounts(list.counts);
+      setInvites(codes);
+      setError(null);
+    } catch (e) {
+      setError(e instanceof Error ? e.message : t("errors.loadWaitlist"));
+    } finally {
+      setLoading(false);
+    }
+  }, [t]);
+
+  useEffect(() => {
+    void refresh();
+  }, [refresh]);
+
+  const invite = useCallback(
+    async (entry: api.WaitlistEntry) => {
+      setBusyId(entry.id);
+      setNotice(null);
+      try {
+        const res = await api.inviteWaitlistEntry(entry.id);
+        if (res.delivery === "email" && res.invite.email) {
+          setNotice(t("waitlist.emailSent", { email: res.invite.email }));
+        } else if (res.delivery === "existing") {
+          if (entry.xUsername) setShowing({ invite: res.invite, username: entry.xUsername });
+          else setNotice(t("waitlist.existingCode"));
+        } else if (entry.xUsername) {
+          setShowing({ invite: res.invite, username: entry.xUsername });
+        } else {
+          // An email entry whose send failed: the code exists, hand it over.
+          setNotice(t("waitlist.emailSendFailed"));
+          setShowing({ invite: res.invite });
+        }
+        await refresh();
+      } catch (e) {
+        setError(e instanceof Error ? e.message : t("errors.inviteFailed"));
+      } finally {
+        setBusyId(null);
+      }
+    },
+    [refresh, t]
+  );
+
+  const revoke = useCallback(
+    async (inviteId: string) => {
+      setBusyId(inviteId);
+      try {
+        await api.revokeSignupInvite(inviteId);
+        await refresh();
+      } catch (e) {
+        setError(e instanceof Error ? e.message : t("errors.revokeFailed"));
+      } finally {
+        setBusyId(null);
+      }
+    },
+    [refresh, t]
+  );
+
+  const fmtDate = (iso: string) => new Date(iso).toLocaleDateString(i18n.language);
+
+  if (loading) {
+    return (
+      <div className="flex items-center gap-2 py-8 text-sm text-muted-foreground">
+        <Loader2 className="h-4 w-4 animate-spin" /> {t("common:loading")}
+      </div>
+    );
+  }
+
+  return (
+    <div className="space-y-8">
+      {error && <ErrorBox message={error} />}
+      {notice && (
+        <div className="rounded-md bg-success/10 px-3 py-2 text-sm text-success">{notice}</div>
+      )}
+
+      <section>
+        <div className="mb-4 flex flex-wrap items-start justify-between gap-3">
+          <div className="max-w-2xl">
+            <p className="text-sm text-muted-foreground">{t("waitlist.intro")}</p>
+            <p className="mt-1 text-xs text-muted-foreground tabular-nums">
+              {t("waitlist.counts", { ...counts })}
+            </p>
+          </div>
+          <Button size="sm" variant="outline" onClick={() => setIssueOpen(true)}>
+            <Plus className="h-4 w-4" /> {t("waitlist.adHoc.title")}
+          </Button>
+        </div>
+
+        <div className="overflow-x-auto rounded-lg border border-border">
+          <table className="w-full text-sm">
+            <thead className="bg-muted/40 text-left text-xs text-muted-foreground">
+              <tr>
+                <th className="px-4 py-2 font-medium">#</th>
+                <th className="px-4 py-2 font-medium">{t("waitlist.columns.who")}</th>
+                <th className="px-4 py-2 font-medium">{t("waitlist.columns.tier")}</th>
+                <th className="px-4 py-2 font-medium">{t("waitlist.columns.follows")}</th>
+                <th className="px-4 py-2 font-medium">{t("waitlist.columns.status")}</th>
+                <th className="px-4 py-2 font-medium">{t("waitlist.columns.code")}</th>
+                <th className="px-4 py-2" />
+              </tr>
+            </thead>
+            <tbody className="divide-y divide-border">
+              {entries.map((entry) => {
+                const live = entry.invite?.state === "live";
+                const busy = busyId === entry.id;
+                return (
+                  <tr key={entry.id}>
+                    <td className="px-4 py-2 tabular-nums text-muted-foreground">
+                      {entry.rank ?? "—"}
+                    </td>
+                    <td className="px-4 py-2">
+                      <div className="flex items-center gap-2">
+                        <Avatar className="h-7 w-7">
+                          <AvatarImage src={entry.xAvatarUrl ?? undefined} />
+                          <AvatarFallback>{initials(entry.xName ?? entry.xUsername, entry.email)}</AvatarFallback>
+                        </Avatar>
+                        <div className="min-w-0">
+                          <div className="truncate font-medium">
+                            {entry.xName ?? entry.xUsername ?? entry.email}
+                          </div>
+                          <div className="truncate text-xs text-muted-foreground">
+                            {entry.xUsername ? `@${entry.xUsername}` : entry.email}
+                            {entry.participant && (
+                              <>
+                                {" · "}
+                                {entry.participant.handle
+                                  ? `@${entry.participant.handle}`
+                                  : entry.participant.displayName}
+                              </>
+                            )}
+                          </div>
+                        </div>
+                      </div>
+                    </td>
+                    <td className="px-4 py-2">
+                      <Badge variant="secondary">{t(`waitlist.tier.${entry.tier}`)}</Badge>
+                    </td>
+                    <td className="px-4 py-2 text-muted-foreground">
+                      {entry.xUserId
+                        ? entry.xFollowing === true
+                          ? t("waitlist.follows.yes")
+                          : entry.xFollowing === false
+                            ? t("waitlist.follows.no")
+                            : t("waitlist.follows.unknown")
+                        : t("waitlist.follows.na")}
+                    </td>
+                    <td className="px-4 py-2">
+                      <Badge variant={entry.status === "joined" ? "default" : "outline"}>
+                        {t(`waitlist.status.${entry.status}`)}
+                      </Badge>
+                    </td>
+                    <td className="px-4 py-2">
+                      {entry.invite ? (
+                        <div>
+                          <code className="font-mono text-xs">{entry.invite.code}</code>
+                          <div className="text-xs text-muted-foreground">
+                            {t(`waitlist.codeState.${entry.invite.state}`)}
+                            {live && ` · ${t("waitlist.expires", { date: fmtDate(entry.invite.expiresAt) })}`}
+                          </div>
+                        </div>
+                      ) : (
+                        <span className="text-muted-foreground">—</span>
+                      )}
+                    </td>
+                    <td className="px-4 py-2 text-right">
+                      {entry.status === "waiting" && (
+                        <Button size="sm" disabled={busy} onClick={() => void invite(entry)}>
+                          {busy && <Loader2 className="h-3.5 w-3.5 animate-spin" />}
+                          {busy ? t("waitlist.inviting") : t("waitlist.invite")}
+                        </Button>
+                      )}
+                      {entry.status === "invited" && entry.invite && live && (
+                        <Button
+                          size="sm"
+                          variant="outline"
+                          onClick={() =>
+                            setShowing({ invite: entry.invite!, username: entry.xUsername })
+                          }
+                        >
+                          {t("waitlist.showCode")}
+                        </Button>
+                      )}
+                      {entry.status === "invited" && !live && (
+                        <Button
+                          size="sm"
+                          variant="outline"
+                          disabled={busy}
+                          onClick={() => void invite(entry)}
+                        >
+                          {busy && <Loader2 className="h-3.5 w-3.5 animate-spin" />}
+                          {t("waitlist.reinvite")}
+                        </Button>
+                      )}
+                    </td>
+                  </tr>
+                );
+              })}
+              {entries.length === 0 && (
+                <tr>
+                  <td colSpan={7} className="px-4 py-8 text-center text-sm text-muted-foreground">
+                    {t("waitlist.empty")}
+                  </td>
+                </tr>
+              )}
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <section>
+        <h3 className="mb-3 text-sm font-semibold">{t("waitlist.codes.title")}</h3>
+        <div className="overflow-x-auto rounded-lg border border-border">
+          <table className="w-full text-sm">
+            <tbody className="divide-y divide-border">
+              {invites.map((inv) => (
+                <tr key={inv.id}>
+                  <td className="px-4 py-2">
+                    <code className="font-mono text-xs">{inv.code}</code>
+                  </td>
+                  <td className="px-4 py-2">
+                    <Badge variant={inv.state === "live" ? "default" : "outline"}>
+                      {t(`waitlist.codeState.${inv.state}`)}
+                    </Badge>
+                  </td>
+                  <td className="px-4 py-2 text-muted-foreground">
+                    {inv.email ?? t("waitlist.codes.floating")}
+                    {inv.note && <span className="text-xs"> · {inv.note}</span>}
+                  </td>
+                  <td className="px-4 py-2 text-xs text-muted-foreground">
+                    {inv.redeemedBy
+                      ? t("waitlist.codes.redeemedBy", {
+                          name: inv.redeemedBy.handle
+                            ? `@${inv.redeemedBy.handle}`
+                            : inv.redeemedBy.displayName,
+                        })
+                      : inv.state === "live"
+                        ? t("waitlist.expires", { date: fmtDate(inv.expiresAt) })
+                        : null}
+                  </td>
+                  <td className="px-4 py-2 text-right">
+                    {inv.state === "live" && (
+                      <div className="flex justify-end gap-2">
+                        <Button
+                          size="sm"
+                          variant="ghost"
+                          onClick={() => setShowing({ invite: inv })}
+                        >
+                          {t("waitlist.showCode")}
+                        </Button>
+                        <Button
+                          size="sm"
+                          variant="ghost"
+                          disabled={busyId === inv.id}
+                          onClick={() => void revoke(inv.id)}
+                        >
+                          {t("waitlist.codes.revoke")}
+                        </Button>
+                      </div>
+                    )}
+                  </td>
+                </tr>
+              ))}
+              {invites.length === 0 && (
+                <tr>
+                  <td className="px-4 py-6 text-center text-sm text-muted-foreground">
+                    {t("waitlist.codes.empty")}
+                  </td>
+                </tr>
+              )}
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      {showing && (
+        <ShowCodeDialog
+          invite={showing.invite}
+          username={showing.username ?? null}
+          onClose={() => setShowing(null)}
+        />
+      )}
+      {issueOpen && (
+        <IssueCodeDialog
+          onClose={() => setIssueOpen(false)}
+          onIssued={(res) => {
+            setIssueOpen(false);
+            if (res.delivery === "email" && res.invite.email) {
+              setNotice(t("waitlist.emailSent", { email: res.invite.email }));
+            } else {
+              setShowing({ invite: res.invite });
+            }
+            void refresh();
+          }}
+          setError={setError}
+        />
+      )}
+    </div>
+  );
+}
+
+function ShowCodeDialog({
+  invite,
+  username,
+  onClose,
+}: {
+  invite: api.SignupInvite;
+  username: string | null;
+  onClose: () => void;
+}) {
+  const { t } = useTranslation("platform");
+  const [copied, setCopied] = useState<"message" | "code" | null>(null);
+  const message = t("waitlist.dmText", { code: invite.code, days: daysLeft(invite.expiresAt) });
+
+  const copy = (what: "message" | "code") => {
+    void navigator.clipboard.writeText(what === "message" ? message : invite.code).then(() => {
+      setCopied(what);
+      setTimeout(() => setCopied(null), 1500);
+    });
+  };
+
+  return (
+    <Dialog open onOpenChange={(o) => !o && onClose()}>
+      <DialogContent className="max-w-md">
+        <DialogHeader>
+          <DialogTitle>{t("waitlist.dmTitle")}</DialogTitle>
+          <DialogDescription>
+            {username ? t("waitlist.dmHint", { username }) : t("waitlist.adHoc.hint")}
+          </DialogDescription>
+        </DialogHeader>
+        <div className="space-y-4">
+          <div className="rounded-md border border-border bg-muted/40 px-4 py-3 text-center font-mono text-xl tracking-widest">
+            {invite.code}
+          </div>
+          <textarea
+            readOnly
+            value={message}
+            rows={5}
+            className="w-full resize-none rounded-md border border-border bg-background px-3 py-2 text-sm"
+          />
+          <div className="flex flex-wrap gap-2">
+            <Button size="sm" onClick={() => copy("message")}>
+              {copied === "message" ? t("waitlist.copied") : t("waitlist.copyMessage")}
+            </Button>
+            <Button size="sm" variant="outline" onClick={() => copy("code")}>
+              {copied === "code" ? t("waitlist.copied") : t("waitlist.copyCode")}
+            </Button>
+            {username && (
+              <a
+                href={`https://x.com/${encodeURIComponent(username)}`}
+                target="_blank"
+                rel="noreferrer"
+                className="inline-flex items-center rounded-md border border-border px-3 text-sm hover:bg-muted"
+              >
+                {t("waitlist.openX", { username })}
+              </a>
+            )}
+          </div>
+        </div>
+        <DialogFooter>
+          <Button variant="ghost" onClick={onClose}>
+            {t("waitlist.done")}
+          </Button>
+        </DialogFooter>
+      </DialogContent>
+    </Dialog>
+  );
+}
+
+function IssueCodeDialog({
+  onClose,
+  onIssued,
+  setError,
+}: {
+  onClose: () => void;
+  onIssued: (res: api.InviteResult) => void;
+  setError: (message: string | null) => void;
+}) {
+  const { t } = useTranslation("platform");
+  const [email, setEmail] = useState("");
+  const [note, setNote] = useState("");
+  const [ttlDays, setTtlDays] = useState("14");
+  const [busy, setBusy] = useState(false);
+
+  const submit = async () => {
+    setBusy(true);
+    try {
+      const res = await api.createSignupInvite({
+        email: email.trim() || undefined,
+        note: note.trim() || undefined,
+        ttlDays: Number(ttlDays) > 0 ? Number(ttlDays) : undefined,
+      });
+      onIssued(res);
+    } catch (e) {
+      setError(e instanceof Error ? e.message : t("errors.issueFailed"));
+      onClose();
+    } finally {
+      setBusy(false);
+    }
+  };
+
+  return (
+    <Dialog open onOpenChange={(o) => !o && onClose()}>
+      <DialogContent className="max-w-md">
+        <DialogHeader>
+          <DialogTitle>{t("waitlist.adHoc.title")}</DialogTitle>
+          <DialogDescription>{t("waitlist.adHoc.hint")}</DialogDescription>
+        </DialogHeader>
+        <div className="space-y-3">
+          <div className="space-y-1.5">
+            <Label htmlFor="issue-email">{t("waitlist.adHoc.email")}</Label>
+            <Input
+              id="issue-email"
+              type="email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              disabled={busy}
+            />
+          </div>
+          <div className="space-y-1.5">
+            <Label htmlFor="issue-note">{t("waitlist.adHoc.note")}</Label>
+            <Input id="issue-note" value={note} onChange={(e) => setNote(e.target.value)} disabled={busy} />
+          </div>
+          <div className="space-y-1.5">
+            <Label htmlFor="issue-ttl">{t("waitlist.adHoc.ttl")}</Label>
+            <Input
+              id="issue-ttl"
+              type="number"
+              min={1}
+              value={ttlDays}
+              onChange={(e) => setTtlDays(e.target.value)}
+              disabled={busy}
+              className="w-28"
+            />
+          </div>
+        </div>
+        <DialogFooter>
+          <Button variant="ghost" onClick={onClose} disabled={busy}>
+            {t("common:cancel")}
+          </Button>
+          <Button onClick={() => void submit()} disabled={busy}>
+            {busy && <Loader2 className="h-4 w-4 animate-spin" />}
+            {t("waitlist.adHoc.issue")}
+          </Button>
+        </DialogFooter>
+      </DialogContent>
+    </Dialog>
+  );
+}
+
 function FeatureFlagsTab() {
   const { t } = useTranslation("platform");
   const [flags, setFlags] = useState<api.FeatureFlag[]>([]);

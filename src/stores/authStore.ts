@@ -51,6 +51,9 @@ interface AuthState {
   participant: api.Participant | null;
   loading: boolean;
   error: string | null;
+  /** Machine-readable code of the last structured error (e.g.
+   *  `invite_code_used`), for UIs that branch on it; null otherwise. */
+  errorCode: string | null;
   /** Non-null after a signup that requires email confirmation (backend
    *  returned 200 with no token). Holds the server's message ("" when the
    *  server sent none — the UI falls back to a localized default). */
@@ -66,6 +69,7 @@ interface AuthState {
       birthDate: string;
       marketingOptIn?: boolean;
       analyticsOptIn?: boolean;
+      inviteCode?: string;
     }
   ) => Promise<void>;
   logout: () => void;
@@ -78,6 +82,7 @@ export const useAuthStore = create<AuthState>((set) => ({
   participant: null,
   loading: false,
   error: null,
+  errorCode: null,
   confirmationMessage: null,
 
   login: async (email, password) => {
@@ -104,7 +109,7 @@ export const useAuthStore = create<AuthState>((set) => ({
   },
 
   signup: async (email, password, displayName, opts) => {
-    set({ loading: true, error: null, confirmationMessage: null });
+    set({ loading: true, error: null, errorCode: null, confirmationMessage: null });
     try {
       const result = await api.signup(email, password, displayName, opts);
       if ("status" in result) {
@@ -128,6 +133,7 @@ export const useAuthStore = create<AuthState>((set) => ({
       set({
         loading: false,
         error: e instanceof Error ? e.message : "Signup failed",
+        errorCode: (e as { code?: string }).code ?? null,
       });
     }
   },

@@ -1,7 +1,9 @@
-import { useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useAuthStore } from "../stores/authStore";
-import { Bot } from "lucide-react";
+import * as api from "../lib/api";
+import { WAITLIST_URL } from "../lib/marketingSite";
+import { Bot, KeyRound } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
@@ -15,6 +17,21 @@ function openExternal(url: string) {
   tauriOpen(url).catch(() => {
     window.open(url, "_blank");
   });
+}
+
+// Backend `invite_code_<reason>` error codes → catalog keys, so the gate
+// says the same thing whether a code fails at the check or at submit.
+const INVITE_ERROR_KEYS = {
+  required: "auth:invite.errors.required",
+  invalid: "auth:invite.errors.invalid",
+  used: "auth:invite.errors.used",
+  expired: "auth:invite.errors.expired",
+  email_mismatch: "auth:invite.errors.email_mismatch",
+} as const;
+
+function inviteErrorKey(reason: string | undefined): string | null {
+  if (!reason) return null;
+  return (INVITE_ERROR_KEYS as Record<string, string>)[reason] ?? null;
 }
 
 /** True when the ISO "YYYY-MM-DD" birth date is at least 16 years ago. */
@@ -42,8 +59,81 @@ export function LoginScreen() {
     "birthDateRequired" | "ageTooYoung" | null
   >(null);
 
+  // Invite-only signup: the backend says whether a code is needed
+  // (`signup_requires_invite` flag), so the gate vanishes the moment the
+  // operator turns it off. Until a code is accepted, the signup form is
+  // the code field alone.
+  const [inviteRequired, setInviteRequired] = useState<boolean | null>(null);
+  const [codeInput, setCodeInput] = useState("");
+  const [checkingCode, setCheckingCode] = useState(false);
+  const [codeError, setCodeError] = useState("");
+  const [acceptedInvite, setAcceptedInvite] = useState<{ code: string; email: string | null } | null>(
+    null
+  );
+
+  useEffect(() => {
+    if (!isSignup || inviteRequired !== null) return;
+    let cancelled = false;
+    api
+      .signupPolicy()
+      .then((policy) => {
+        if (!cancelled) setInviteRequired(policy.inviteRequired);
+      })
+      .catch(() => {
+        if (!cancelled) setInviteRequired(true);
+      });
+    return () => {
+      cancelled = true;
+    };
+  }, [isSignup, inviteRequired]);
+
+  const checkCode = useCallback(async () => {
+    const code = codeInput.trim();
+    if (!code) {
+      setCodeError(t("invite.errors.required"));
+      return;
+    }
+    setCheckingCode(true);
+    setCodeError("");
+    try {
+      const res = await api.checkInviteCode(code);
+      if (res.valid && res.code) {
+        setAcceptedInvite({ code: res.code, email: res.email ?? null });
+        if (res.email) setEmail(res.email);
+      } else {
+        const key = inviteErrorKey(res.reason);
+        setCodeError(key ? t(key) : t("invite.errors.invalid"));
+      }
+    } catch {
+      setCodeError(t("invite.errors.checkFailed"));
+    } finally {
+      setCheckingCode(false);
+    }
+  }, [codeInput, t]);
+
+  // A code that died between the check and the submit (spent elsewhere,
+  // expired) sends the person back to the gate with the reason.
+  useEffect(() => {
+    if (!error) return;
+    const code = useAuthStore.getState().errorCode ?? "";
+    const reason = code.startsWith("invite_code_") ? code.slice("invite_code_".length) : "";
+    const key = inviteErrorKey(reason);
+    if (key) {
+      setAcceptedInvite(null);
+      setCodeError(t(key));
+      useAuthStore.setState({ error: null, errorCode: null });
+    }
+  }, [error, t]);
+
+  const gateOpen = isSignup && inviteRequired === true && !acceptedInvite;
+  const emailLocked = isSignup && !!acceptedInvite?.email;
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    if (gateOpen) {
+      await checkCode();
+      return;
+    }
     if (isSignup) {
       if (!birthDate) {
         setBirthDateError("birthDateRequired");
@@ -62,6 +152,7 @@ export function LoginScreen() {
         birthDate,
         marketingOptIn,
         analyticsOptIn,
+        inviteCode: acceptedInvite?.code,
       });
     } else {
       await login(email, password);
@@ -78,10 +169,64 @@ export function LoginScreen() {
           <h1 className="text-xl font-semibold text-text">agntchat</h1>
           <BetaBadge />
         </div>
-        <p className="text-text-secondary text-sm mb-8">{t("tagline")}</p>
+        <p className="text-text-secondary text-sm mb-8">
+          {gateOpen ? t("invite.subtitle") : t("tagline")}
+        </p>
 
         <form onSubmit={handleSubmit} className="space-y-4">
-          {isSignup && (
+          {gateOpen && (
+            <div className="space-y-1.5">
+              <Label htmlFor="inviteCode" className="flex items-center gap-1.5">
+                <KeyRound className="w-3.5 h-3.5" /> {t("invite.codeLabel")}
+              </Label>
+              <Input
+                id="inviteCode"
+                type="text"
+                value={codeInput}
+                onChange={(e) => setCodeInput(e.target.value)}
+                placeholder={t("invite.placeholder")}
+                autoComplete="off"
+                autoCapitalize="characters"
+                spellCheck={false}
+                className="font-mono uppercase tracking-widest"
+                disabled={checkingCode}
+                autoFocus
+              />
+              {codeError && (
+                <div className="text-sm text-danger bg-danger-light px-3 py-2 rounded-md">
+                  {codeError}
+                </div>
+              )}
+              <p className="text-sm text-text-secondary pt-1">
+                {t("invite.noCode")}{" "}
+                <button
+                  type="button"
+                  onClick={() => openExternal(WAITLIST_URL)}
+                  className="text-accent hover:text-accent-hover underline"
+                >
+                  {t("invite.joinWaitlist")}
+                </button>
+              </p>
+            </div>
+          )}
+
+          {isSignup && !gateOpen && acceptedInvite && (
+            <div className="flex items-start justify-between gap-3 text-sm text-success bg-success/10 px-3 py-2 rounded-md">
+              <span>{t("invite.accepted", { code: acceptedInvite.code })}</span>
+              <button
+                type="button"
+                className="shrink-0 text-xs text-text-secondary hover:underline"
+                onClick={() => {
+                  setAcceptedInvite(null);
+                  setCodeError("");
+                }}
+              >
+                {t("invite.change")}
+              </button>
+            </div>
+          )}
+
+          {isSignup && !gateOpen && (
             <div className="space-y-1.5">
               <Label htmlFor="displayName">{t("displayName")}</Label>
               <Input
@@ -94,31 +239,40 @@ export function LoginScreen() {
             </div>
           )}
 
-          <div className="space-y-1.5">
-            <Label htmlFor="email">{t("email")}</Label>
-            <Input
-              id="email"
-              type="email"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              placeholder="you@example.com"
-              required
-            />
-          </div>
+          {!gateOpen && (
+            <div className="space-y-1.5">
+              <Label htmlFor="email">{t("email")}</Label>
+              <Input
+                id="email"
+                type="email"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                placeholder={t("placeholders.email")}
+                required
+                readOnly={emailLocked}
+                disabled={emailLocked}
+              />
+              {emailLocked && (
+                <p className="text-xs text-text-secondary">{t("invite.emailLocked", { email })}</p>
+              )}
+            </div>
+          )}
 
-          <div className="space-y-1.5">
-            <Label htmlFor="password">{t("password")}</Label>
-            <Input
-              id="password"
-              type="password"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              placeholder={t("password")}
-              required
-            />
-          </div>
+          {!gateOpen && (
+            <div className="space-y-1.5">
+              <Label htmlFor="password">{t("password")}</Label>
+              <Input
+                id="password"
+                type="password"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                placeholder={t("password")}
+                required
+              />
+            </div>
+          )}
 
-          {isSignup && (
+          {isSignup && !gateOpen && (
             <div className="space-y-1.5">
               <Label htmlFor="birthDate">{t("birthDate")}</Label>
               <Input
@@ -138,7 +292,7 @@ export function LoginScreen() {
             </div>
           )}
 
-          {isSignup && (
+          {isSignup && !gateOpen && (
             <div className="space-y-2.5">
               <label className="flex items-start gap-2.5 cursor-pointer group">
                 <input
@@ -219,12 +373,16 @@ export function LoginScreen() {
             </div>
           )}
 
-          <Button type="submit" disabled={loading} className="w-full">
-            {loading
-              ? t("signingIn")
-              : isSignup
-                ? t("createAccount")
-                : t("signIn")}
+          <Button type="submit" disabled={loading || checkingCode} className="w-full">
+            {gateOpen
+              ? checkingCode
+                ? t("invite.checking")
+                : t("invite.continue")
+              : loading
+                ? t("signingIn")
+                : isSignup
+                  ? t("createAccount")
+                  : t("signIn")}
           </Button>
         </form>
 
@@ -235,7 +393,8 @@ export function LoginScreen() {
             setIsSignup(!isSignup);
             setConsentError(false);
             setBirthDateError(null);
-            useAuthStore.setState({ error: null, confirmationMessage: null });
+            setCodeError("");
+            useAuthStore.setState({ error: null, errorCode: null, confirmationMessage: null });
           }}
         >
           {isSignup
