@@ -3089,6 +3089,9 @@ export interface FileAttachment {
   contentType?: string;
   sizeBytes?: number;
   downloadUrl?: string;
+  /** Display-size variant of an image attachment (MediaPolicy.attachment_preview).
+   *  Render this; `downloadUrl` stays the original, for opening the file. */
+  previewUrl?: string;
 }
 
 /** Aggregated emoji reaction on a message — one entry per emoji, in

@@ -363,6 +363,12 @@ export function FileMessage({ message }: { message: Message }) {
   const size = file.sizeBytes ?? attachment?.sizeBytes;
   const { url, loading } = useDownloadUrl(attachmentId, attachment?.downloadUrl);
 
+  // Images render from a display-size variant the backend signs alongside the
+  // original (MediaPolicy.attachment_preview): a phone photo is ~1.5MB and
+  // decodes to ~73MB of bitmap for a frame 240px tall. `url` stays the
+  // original, so clicking through still opens the full-resolution file.
+  const previewSrc = attachment?.previewUrl ?? url;
+
   // WebKit — the engine behind the desktop app — does not re-resolve a
   // shrink-to-fit ancestor when a LARGE image finishes decoding: the bubble
   // keeps whatever width it happened to have while the image was still
@@ -414,7 +420,7 @@ export function FileMessage({ message }: { message: Message }) {
                 // onLoad covers the fetch-then-decode case.
                 ref={measureImage}
                 onLoad={(e) => measureImage(e.currentTarget)}
-                src={url}
+                src={previewSrc ?? undefined}
                 alt={filename}
                 className="h-full max-w-full rounded-lg object-contain object-left"
                 onError={(e) => {
