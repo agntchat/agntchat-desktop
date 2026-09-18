@@ -307,6 +307,15 @@ export function CreateAgentModal({ onClose }: { onClose: () => void }) {
   const [hosting, setHosting] = useState<"hosted" | "local">(
     canHost ? "hosted" : "local"
   );
+  const hosted = hosting === "hosted" && canHost;
+  // A hosted agent runs on its host's seat and carries no per-agent LLM key,
+  // so key-requiring providers can't start there. Narrow the model picker to
+  // what the host can actually run rather than hiding it — which model runs
+  // still matters when hosted.
+  const availableProviders = useMemo(
+    () => (hosted ? PROVIDERS.filter((p) => !p.requiresLlmKey) : PROVIDERS),
+    [PROVIDERS, hosted]
+  );
 
   const [creating, setCreating] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -328,18 +337,18 @@ export function CreateAgentModal({ onClose }: { onClose: () => void }) {
   // the current backend isn't actually available. Keeps the initial
   // "claude_cli" guess if it IS in the catalog.
   useEffect(() => {
-    if (PROVIDERS.length === 0) return;
-    if (PROVIDERS.some((p) => p.id === backend)) {
+    if (availableProviders.length === 0) return;
+    if (availableProviders.some((p) => p.id === backend)) {
       if (!model) {
         setModel(defaultModelFor(backend));
       }
       return;
     }
-    const first = PROVIDERS[0];
+    const first = availableProviders[0];
     if (!first) return;
     setBackend(first.id);
     setModel(defaultModelFor(first.id));
-  }, [PROVIDERS, backend, model, catalog, defaultModelFor]);
+  }, [availableProviders, backend, model, catalog, defaultModelFor]);
 
   const models = useMemo(
     () => (backend ? catalog.modelsFor(backend) : []),
@@ -591,19 +600,8 @@ export function CreateAgentModal({ onClose }: { onClose: () => void }) {
       // pin sensible defaults (claude_cli) and skip per-agent key handling.
       // canHost guard: users without the hosted runtime can never create
       // hosted (the dropdown disables it, this backstops it).
-      const hosted = hosting === "hosted" && canHost;
-      const effBackend = hosted ? "claude_cli" : backend;
-      // Hosted model: honor the chosen model (a template default like Sonnet
-      // 4.6, or whatever the user picked) when it's a valid claude_cli model;
-      // otherwise fall back to Opus 4.8 (the scratch default), then the
-      // catalog's first hosted entry.
-      const hostedModels = catalog.modelsFor("claude_cli");
-      const effModel = hosted
-        ? hostedModels.find((m) => m.id === model)?.id ??
-          hostedModels.find((m) => m.id === "claude-opus-4-8")?.id ??
-          hostedModels[0]?.id ??
-          model
-        : model;
+      const effBackend = backend;
+      const effModel = model;
       const effExecutionMode = hosted ? "tool_use" : executionMode;
 
       // Resolve the key choice:
@@ -783,6 +781,7 @@ export function CreateAgentModal({ onClose }: { onClose: () => void }) {
     selectAgent,
     onClose,
     hosting,
+    hosted,
     hostedHostId,
     participant,
     catalog,
@@ -1455,37 +1454,34 @@ export function CreateAgentModal({ onClose }: { onClose: () => void }) {
                       </SelectContent>
                     </Select>
                   </Field>
-                  <Field label={t("common:model")}>
-                    {hosting === "hosted" ? (
-                      <div className="flex h-8 items-center rounded-lg border border-dashed border-border px-2.5 text-xs text-text-muted">
-                        {t("create.hostedBrain")}
-                      </div>
-                    ) : (
-                      <Select value={brainValue(backend, model)} onValueChange={handleBrainChange}>
-                        <SelectTrigger className="w-full">
-                          <SelectValue>
-                            {() => {
-                              const m = models.find((x) => x.id === model);
-                              return [providerLabel, m?.label ?? model]
-                                .filter(Boolean)
-                                .join(" · ");
-                            }}
-                          </SelectValue>
-                        </SelectTrigger>
-                        <SelectContent>
-                          {PROVIDERS.map((p) => (
-                            <SelectGroup key={p.id}>
-                              <SelectLabel>{p.label}</SelectLabel>
-                              {catalog.modelsFor(p.id).map((m) => (
-                                <SelectItem key={m.id} value={brainValue(p.id, m.id)}>
-                                  {m.label}
-                                </SelectItem>
-                              ))}
-                            </SelectGroup>
-                          ))}
-                        </SelectContent>
-                      </Select>
-                    )}
+                  <Field
+                    label={t("common:model")}
+                    hint={hosted ? t("create.hostedInfo") : undefined}
+                  >
+                    <Select value={brainValue(backend, model)} onValueChange={handleBrainChange}>
+                      <SelectTrigger className="w-full">
+                        <SelectValue>
+                          {() => {
+                            const m = models.find((x) => x.id === model);
+                            return [providerLabel, m?.label ?? model]
+                              .filter(Boolean)
+                              .join(" · ");
+                          }}
+                        </SelectValue>
+                      </SelectTrigger>
+                      <SelectContent>
+                        {availableProviders.map((p) => (
+                          <SelectGroup key={p.id}>
+                            <SelectLabel>{p.label}</SelectLabel>
+                            {catalog.modelsFor(p.id).map((m) => (
+                              <SelectItem key={m.id} value={brainValue(p.id, m.id)}>
+                                {m.label}
+                              </SelectItem>
+                            ))}
+                          </SelectGroup>
+                        ))}
+                      </SelectContent>
+                    </Select>
                   </Field>
                 </div>
 

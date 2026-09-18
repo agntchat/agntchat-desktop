@@ -566,7 +566,6 @@ export const resources = {
           "uploadFailed": "Upload failed"
         },
         "executionMode": "Execution Mode",
-        "hostedBrain": "Shared Claude brain — nothing to set up",
         "hostedComingSoon": "Coming soon",
         "hostedDescription": "Runs in the cloud — no setup needed",
         "hostedInfo": "Hosted agents run on managed infrastructure with a shared Claude brain — no API key or local process needed.",
@@ -6125,7 +6124,6 @@ export const resources = {
           "uploadFailed": "Error al subir el archivo"
         },
         "executionMode": "Modo de ejecución",
-        "hostedBrain": "Cerebro Claude compartido: nada que configurar",
         "hostedComingSoon": "Próximamente",
         "hostedDescription": "Se ejecuta en la nube — sin configuración",
         "hostedInfo": "Los agentes alojados se ejecutan en infraestructura gestionada con un cerebro Claude compartido — no necesitan clave de API ni proceso local.",
@@ -11684,7 +11682,6 @@ export const resources = {
           "uploadFailed": "Upload fehlgeschlagen"
         },
         "executionMode": "Ausführungsmodus",
-        "hostedBrain": "Gemeinsames Claude-Gehirn – nichts einzurichten",
         "hostedComingSoon": "Bald verfügbar",
         "hostedDescription": "Läuft in der Cloud — keine Einrichtung nötig",
         "hostedInfo": "Gehostete Agenten laufen auf verwalteter Infrastruktur mit einem gemeinsamen Claude-Gehirn — kein API-Schlüssel oder lokaler Prozess nötig.",
@@ -17243,7 +17240,6 @@ export const resources = {
           "uploadFailed": "Échec du téléversement"
         },
         "executionMode": "Mode d'exécution",
-        "hostedBrain": "Cerveau Claude partagé — rien à configurer",
         "hostedComingSoon": "Bientôt disponible",
         "hostedDescription": "S'exécute dans le cloud — aucune configuration nécessaire",
         "hostedInfo": "Les agents hébergés s'exécutent sur une infrastructure gérée avec un cerveau Claude partagé — pas besoin de clé API ni de processus local.",
@@ -22802,7 +22798,6 @@ export const resources = {
           "uploadFailed": "Falha no envio"
         },
         "executionMode": "Modo de Execução",
-        "hostedBrain": "Cérebro Claude compartilhado — nada a configurar",
         "hostedComingSoon": "Em breve",
         "hostedDescription": "Executa na nuvem — sem necessidade de configuração",
         "hostedInfo": "Agentes hospedados executam em infraestrutura gerenciada com um cérebro Claude compartilhado — sem necessidade de chave de API ou processo local.",
@@ -28361,7 +28356,6 @@ export const resources = {
           "uploadFailed": "アップロードに失敗しました"
         },
         "executionMode": "実行モード",
-        "hostedBrain": "共有の Claude ブレイン — 設定不要",
         "hostedComingSoon": "近日公開",
         "hostedDescription": "クラウドで実行 — セットアップ不要",
         "hostedInfo": "ホスト型エージェントは、共有のClaude頭脳を使った管理インフラ上で動作します — APIキーもローカルプロセスも不要です。",
@@ -33920,7 +33914,6 @@ export const resources = {
           "uploadFailed": "上传失败"
         },
         "executionMode": "执行模式",
-        "hostedBrain": "共享 Claude 大脑——无需设置",
         "hostedComingSoon": "即将推出",
         "hostedDescription": "在云端运行 — 无需设置",
         "hostedInfo": "托管智能体运行在受管理的基础设施上，使用共享的 Claude 大脑 — 无需 API 密钥或本地进程。",
@@ -39479,7 +39472,6 @@ export const resources = {
           "uploadFailed": "업로드 실패"
         },
         "executionMode": "실행 모드",
-        "hostedBrain": "공유 Claude 브레인 — 설정할 것 없음",
         "hostedComingSoon": "곧 제공",
         "hostedDescription": "클라우드에서 실행됨 — 별도 설정 불필요",
         "hostedInfo": "호스팅 에이전트는 공유 Claude 브레인을 사용해 관리형 인프라에서 실행됩니다 — API 키나 로컬 프로세스가 필요 없습니다.",
@@ -45038,7 +45030,6 @@ export const resources = {
           "uploadFailed": "Caricamento non riuscito"
         },
         "executionMode": "Modalità di esecuzione",
-        "hostedBrain": "Cervello Claude condiviso: niente da configurare",
         "hostedComingSoon": "In arrivo",
         "hostedDescription": "Esegue nel cloud — nessuna configurazione necessaria",
         "hostedInfo": "Gli agenti hosted vengono eseguiti su infrastruttura gestita con un cervello Claude condiviso — non servono chiave API o processo locale.",
@@ -50597,7 +50588,6 @@ export const resources = {
           "uploadFailed": "अपलोड विफल"
         },
         "executionMode": "एग्ज़ीक्यूशन मोड",
-        "hostedBrain": "साझा Claude ब्रेन — कुछ सेट करने की ज़रूरत नहीं",
         "hostedComingSoon": "जल्द आ रहा है",
         "hostedDescription": "क्लाउड में चलता है — किसी सेटअप की आवश्यकता नहीं",
         "hostedInfo": "होस्टेड एजेंट प्रबंधित इन्फ्रास्ट्रक्चर पर साझा Claude ब्रेन के साथ चलते हैं — किसी API कुंजी या लोकल प्रोसेस की आवश्यकता नहीं।",
