@@ -1109,7 +1109,7 @@ export function CreateAgentModal({ onClose }: { onClose: () => void }) {
                     }}
                   />
                   <div className="min-w-0 flex-1 space-y-3">
-                    <Field label={t("common:name")} htmlFor="agent-name" counter={`${displayName.length}/${limits.agent.displayName}`}>
+                    <Field label={`${t("common:name")} ${t("common:requiredHint")}`} htmlFor="agent-name" counter={`${displayName.length}/${limits.agent.displayName}`}>
                       <Input
                         id="agent-name"
                         ref={nameInputRef}
@@ -1174,47 +1174,45 @@ export function CreateAgentModal({ onClose }: { onClose: () => void }) {
                   htmlFor="agent-brief"
                   hint={t("create.brief.hint")}
                 >
-                  <div className="relative">
-                    <Textarea
-                      id="agent-brief"
-                      value={brief}
-                      onChange={(e) => setBrief(e.target.value)}
-                      placeholder={t("create.brief.placeholder")}
-                      rows={6}
-                      maxLength={limits.agent.creationBrief}
-                      disabled={drafting}
-                      className="min-h-[150px] resize-none pb-10"
-                      onKeyDown={(e) => {
-                        if (e.key === "Enter" && (e.metaKey || e.ctrlKey)) {
-                          e.preventDefault();
-                          void handleDraft();
-                        }
-                      }}
-                    />
-                    <div className="absolute bottom-1.5 left-1.5 right-1.5 flex items-center justify-between gap-2">
-                      <Button
-                        type="button"
-                        size="sm"
-                        variant={drafted ? "outline" : "default"}
-                        onClick={() => void handleDraft()}
-                        disabled={drafting || brief.trim().length === 0}
-                      >
-                        {drafting ? (
-                          <>
-                            <Loader2 className="mr-1.5 h-3.5 w-3.5 animate-spin" />
-                            {t("create.brief.drafting")}
-                          </>
-                        ) : (
-                          <>
-                            <Wand2 className="mr-1.5 h-3.5 w-3.5" />
-                            {t("create.brief.draftButton")}
-                          </>
-                        )}
-                      </Button>
-                      <span className="text-[10px] text-text-muted tabular-nums">
-                        {brief.length}/{limits.agent.creationBrief}
-                      </span>
-                    </div>
+                  <Textarea
+                    id="agent-brief"
+                    value={brief}
+                    onChange={(e) => setBrief(e.target.value)}
+                    placeholder={t("create.brief.placeholder")}
+                    rows={5}
+                    maxLength={limits.agent.creationBrief}
+                    disabled={drafting}
+                    className="min-h-[120px] resize-none"
+                    onKeyDown={(e) => {
+                      if (e.key === "Enter" && (e.metaKey || e.ctrlKey)) {
+                        e.preventDefault();
+                        void handleDraft();
+                      }
+                    }}
+                  />
+                  <div className="flex items-center justify-end gap-3">
+                    <span className="text-[10px] text-text-muted tabular-nums">
+                      {brief.length}/{limits.agent.creationBrief}
+                    </span>
+                    <Button
+                      type="button"
+                      size="sm"
+                      variant={drafted ? "outline" : "default"}
+                      onClick={() => void handleDraft()}
+                      disabled={drafting || brief.trim().length === 0}
+                    >
+                      {drafting ? (
+                        <>
+                          <Loader2 className="mr-1.5 h-3.5 w-3.5 animate-spin" />
+                          {t("create.brief.drafting")}
+                        </>
+                      ) : (
+                        <>
+                          <Wand2 className="mr-1.5 h-3.5 w-3.5" />
+                          {t("create.brief.draftButton")}
+                        </>
+                      )}
+                    </Button>
                   </div>
                   {draftError && (
                     <p className="text-xs text-destructive" role="alert">
@@ -1859,9 +1857,15 @@ export function CreateAgentModal({ onClose }: { onClose: () => void }) {
           </form>
 
           {/* Footer */}
-          <div className="relative flex items-center justify-between gap-3 border-t border-border bg-background/80 px-6 py-3 backdrop-blur-sm">
-            <div className="flex min-w-0 flex-1 items-center gap-3">
-              <div className="flex shrink-0 items-center gap-2">
+          <div className="relative grid grid-cols-[1fr_auto_1fr] items-center gap-3 border-t border-border bg-background/80 px-6 py-3 backdrop-blur-sm">
+            <div className="min-w-0">
+              {error && (
+                <p className="truncate text-xs text-destructive" role="alert">
+                  {error}
+                </p>
+              )}
+            </div>
+            <div className="flex items-center gap-2">
                 <span className="text-[11px] text-text-muted">
                   {t("create.stepOf", { current: page, total: 2 })}
                 </span>
@@ -1876,14 +1880,8 @@ export function CreateAgentModal({ onClose }: { onClose: () => void }) {
                     />
                   ))}
                 </div>
-              </div>
-              {error && (
-                <p className="truncate text-xs text-destructive" role="alert">
-                  {error}
-                </p>
-              )}
             </div>
-            <div className="flex shrink-0 items-center gap-2">
+            <div className="flex items-center justify-end gap-2">
               {page === 1 ? (
                 <>
                   <Button
