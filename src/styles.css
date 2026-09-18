@@ -309,3 +309,48 @@
 .scrollbar-autohide::-webkit-scrollbar-thumb:hover {
   background: var(--muted-foreground);
 }
+
+/* ---------------------------------------------------------------------------
+ * Create Agent completeness meter. A slow idle glint keeps the bar noticed;
+ * a score increase fires a brighter sweep, a "+N%" float, and a sparkle so
+ * the user connects the action to the number going up. Reduced motion keeps
+ * only a plain fade on the "+N%" chip.
+ * ------------------------------------------------------------------------- */
+@keyframes meter-glint {
+  0%   { transform: translateX(-120%); opacity: 0; }
+  4%   { opacity: 1; }
+  18%  { transform: translateX(320%); opacity: 0; }
+  100% { transform: translateX(320%); opacity: 0; }
+}
+@keyframes meter-sweep {
+  from { transform: translateX(-120%); opacity: 1; }
+  to   { transform: translateX(320%); opacity: 0; }
+}
+@keyframes meter-pop {
+  0%   { opacity: 0; transform: translateY(6px) scale(0.85); }
+  20%  { opacity: 1; transform: translateY(0) scale(1.08); }
+  65%  { opacity: 1; transform: translateY(-2px) scale(1); }
+  100% { opacity: 0; transform: translateY(-12px) scale(0.95); }
+}
+@keyframes meter-sparkle {
+  0%   { opacity: 0; transform: scale(0.3) rotate(-25deg); }
+  35%  { opacity: 1; transform: scale(1.2) rotate(8deg); }
+  100% { opacity: 0; transform: scale(0.5) rotate(35deg); }
+}
+@keyframes meter-bump {
+  0%, 100% { transform: scale(1); }
+  35%      { transform: scale(1.16); }
+}
+@keyframes meter-fade {
+  0%, 70% { opacity: 1; }
+  100%    { opacity: 0; }
+}
+.meter-glint   { animation: meter-glint 7s ease-in-out 2s infinite; }
+.meter-sweep   { animation: meter-sweep 700ms ease-out both; }
+.meter-pop     { animation: meter-pop 1400ms ease-out both; }
+.meter-sparkle { animation: meter-sparkle 900ms ease-out both; }
+.meter-bump    { animation: meter-bump 500ms ease-out both; }
+@media (prefers-reduced-motion: reduce) {
+  .meter-glint, .meter-sweep, .meter-sparkle, .meter-bump { animation: none; }
+  .meter-pop { animation: meter-fade 1400ms linear both; }
+}

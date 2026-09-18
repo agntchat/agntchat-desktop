@@ -15,6 +15,7 @@ import {
   Eye,
   EyeOff,
   Monitor,
+  Sparkles,
   ArrowLeft,
   ArrowRight,
 } from "lucide-react";
@@ -854,6 +855,19 @@ export function CreateAgentModal({ onClose }: { onClose: () => void }) {
     selectedTools,
   ]);
 
+  // A score increase fires a one-shot burst (sweep + "+N%" + sparkle),
+  // keyed so back-to-back gains restart the animation. Decreases are quiet.
+  const [burst, setBurst] = useState<{ id: number; delta: number } | null>(null);
+  const prevPercentRef = useRef(completeness.percent);
+  useEffect(() => {
+    const prev = prevPercentRef.current;
+    prevPercentRef.current = completeness.percent;
+    if (completeness.percent <= prev) return;
+    setBurst({ id: Date.now(), delta: completeness.percent - prev });
+    const timer = setTimeout(() => setBurst(null), 1500);
+    return () => clearTimeout(timer);
+  }, [completeness.percent]);
+
   // Launch the Google OAuth in the system browser and poll for the
   // credential landing (the callback is handled server-side; there's no
   // in-app completion event).
@@ -976,22 +990,54 @@ export function CreateAgentModal({ onClose }: { onClose: () => void }) {
                 aria-valuenow={completeness.percent}
                 aria-label={t("create.completeness.label", { percent: completeness.percent })}
               >
-                <div className="h-1.5 w-40 overflow-hidden rounded-full bg-border">
+                <div className="relative h-1.5 w-40 overflow-hidden rounded-full bg-border">
                   <div
                     className={cn(
-                      "h-full rounded-full transition-all duration-500",
+                      "relative h-full overflow-hidden rounded-full transition-all duration-500 ease-out",
                       completeness.percent === 100 ? "bg-success" : "bg-primary"
                     )}
                     style={{ width: `${completeness.percent}%` }}
-                  />
-                </div>
-                <span
-                  className={cn(
-                    "text-xs font-semibold tabular-nums",
-                    completeness.percent === 100 ? "text-success" : "text-foreground"
+                  >
+                    {/* Idle glint: a slow periodic sheen so the bar keeps
+                        catching the eye while there's still room to fill. */}
+                    {completeness.percent > 0 && completeness.percent < 100 && (
+                      <span className="meter-glint absolute inset-y-0 left-0 w-1/3 bg-gradient-to-r from-transparent via-white/70 to-transparent" />
+                    )}
+                  </div>
+                  {burst && (
+                    <span
+                      key={burst.id}
+                      className="meter-sweep absolute inset-y-0 left-0 w-1/3 bg-gradient-to-r from-transparent via-white/90 to-transparent"
+                    />
                   )}
-                >
-                  {t("create.completeness.label", { percent: completeness.percent })}
+                </div>
+                <span className="relative inline-flex items-center">
+                  <span
+                    key={burst?.id ?? "steady"}
+                    className={cn(
+                      "text-xs font-semibold tabular-nums",
+                      burst && "meter-bump",
+                      completeness.percent === 100 ? "text-success" : "text-foreground"
+                    )}
+                  >
+                    {t("create.completeness.label", { percent: completeness.percent })}
+                  </span>
+                  {burst && (
+                    <span
+                      key={`pop-${burst.id}`}
+                      aria-hidden
+                      className="meter-pop pointer-events-none absolute -top-4 right-0 text-[11px] font-semibold text-primary"
+                    >
+                      +{burst.delta}%
+                    </span>
+                  )}
+                  {burst && (
+                    <Sparkles
+                      key={`spark-${burst.id}`}
+                      aria-hidden
+                      className="meter-sparkle pointer-events-none absolute -left-4 -top-1 h-3.5 w-3.5 text-primary"
+                    />
+                  )}
                 </span>
               </div>
               <span
