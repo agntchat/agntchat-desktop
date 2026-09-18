@@ -34,6 +34,15 @@ interface FileContent {
   durationMs?: number;
 }
 
+/** Height of the image-attachment frame — the `h-60` class below, mirrored
+ *  as a number because the frame's WIDTH is derived from it. */
+const IMAGE_FRAME_HEIGHT = 240;
+
+/** Frame width before the image's own dimensions are known. Keeps the
+ *  loading, loaded and error states on one footprint instead of snapping
+ *  from a sliver to the real aspect once the photo decodes. */
+const IMAGE_FRAME_FALLBACK_WIDTH = 320;
+
 function safeParseJson<T>(str: string, fallback: T): T {
   try {
     return JSON.parse(str) as T;
@@ -354,6 +363,23 @@ export function FileMessage({ message }: { message: Message }) {
   const size = file.sizeBytes ?? attachment?.sizeBytes;
   const { url, loading } = useDownloadUrl(attachmentId, attachment?.downloadUrl);
 
+  // WebKit — the engine behind the desktop app — does not re-resolve a
+  // shrink-to-fit ancestor when a LARGE image finishes decoding: the bubble
+  // keeps whatever width it happened to have while the image was still
+  // sizeless, so a phone photo (5712x3213) lands in an arbitrarily narrow
+  // card and only comes out right when the conversation is reopened from
+  // cache. Small images decode in time and never showed it. Measuring the
+  // image ourselves and giving the frame a definite width takes the bubble
+  // off that invalidation path: the style write dirties layout with a width
+  // that no longer depends on the image's intrinsic contribution.
+  const [frameWidth, setFrameWidth] = useState(IMAGE_FRAME_FALLBACK_WIDTH);
+  const measureImage = useCallback((img: HTMLImageElement | null) => {
+    if (!img?.naturalWidth || !img.naturalHeight) return;
+    setFrameWidth(
+      Math.round((IMAGE_FRAME_HEIGHT * img.naturalWidth) / img.naturalHeight)
+    );
+  }, []);
+
   if (isAudio(contentType)) {
     return (
       <AudioMessage
@@ -374,7 +400,9 @@ export function FileMessage({ message }: { message: Message }) {
     // whole conversation under the reader.
     return (
       <div className="space-y-1">
-        <div className="h-60 max-w-full">
+        {/* max-w-full still clamps a panorama to the bubble's cap; the img
+            below is object-contain, so it letterboxes rather than overflow. */}
+        <div className="h-60 max-w-full" style={{ width: frameWidth }}>
           {loading ? (
             <div className="flex h-full w-full items-center justify-center rounded-lg bg-muted/30">
               <Loader2 className="h-5 w-5 animate-spin text-muted-foreground" />
@@ -382,6 +410,10 @@ export function FileMessage({ message }: { message: Message }) {
           ) : url ? (
             <a href={url} target="_blank" rel="noopener noreferrer" className="block h-full">
               <img
+                // ref fires on mount (a cached image is already `complete`),
+                // onLoad covers the fetch-then-decode case.
+                ref={measureImage}
+                onLoad={(e) => measureImage(e.currentTarget)}
                 src={url}
                 alt={filename}
                 className="h-full max-w-full rounded-lg object-contain object-left"
