@@ -224,6 +224,18 @@ export function AgentRow({
 
   const isRunning = managed.processStatus === "running";
 
+  // Dim the whole row when the agent is offline, so "who is off" reads from
+  // across the list instead of from a 10px dot — the same cue the mobile
+  // card uses (AgentCard `cardOffline`) and the web agents list. The
+  // online test is the SAME one PresenceDot applies (local process first,
+  // then live presence), so the dot and the dim can never disagree. Two
+  // exceptions stay at full strength: a row that needs attention (crashed,
+  // or a bad key) — it is offline, but dimming buries the thing to fix —
+  // and a row mid-bring-online, whose switch is already showing green+busy.
+  const needsAttention =
+    managed.processStatus === "crashed" || hasKeyProblem(managed);
+  const dimOffline = !isRunning && !liveOnline && !waking && !needsAttention;
+
   // Where the agent's bridge is actually alive, when that's NOT this
   // machine — null if there's nothing to take over (offline, hosted,
   // already running here). "" means online elsewhere but the bridge
@@ -411,7 +423,10 @@ export function AgentRow({
           icon button. Full status/health lives in the detail pane; the list
           stays scannable. */}
       <div
-        className="flex items-center gap-2.5 py-2.5 pl-3 pr-3"
+        className={cn(
+          "flex items-center gap-2.5 py-2.5 pl-3 pr-3",
+          dimOffline && "opacity-60"
+        )}
         style={depth > 0 ? { paddingLeft: 12 + depth * TREE_INDENT } : undefined}
       >
         {/* Chevron column — only reserved for rows that can expand or are
