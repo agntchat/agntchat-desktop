@@ -189,6 +189,9 @@ export function CreateAgentModal({ onClose }: { onClose: () => void }) {
   // ---- Integrations — tools (scope "agent") to assign after creation.
   // Pre-seeded by templates/drafts; the picker fetches the catalog on mount.
   const [selectedTools, setSelectedTools] = useState<string[]>([]);
+  // Explicit "none needed" — counts the Integrations section as decided so
+  // an agent without tools can still reach 100%.
+  const [noIntegrations, setNoIntegrations] = useState(false);
   const [toolCatalog, setToolCatalog] = useState<PlatformToolSummary[]>([]);
   // Provider groups start collapsed; the header switch toggles the whole
   // group, the chevron reveals individual tools.
@@ -836,7 +839,12 @@ export function CreateAgentModal({ onClose }: { onClose: () => void }) {
       },
       { key: "description", cat: "personality", points: 10, done: description.trim().length > 0 },
       { key: "instructions", cat: "details", points: 15, done: customInstructions.trim().length > 0 },
-      { key: "integrations", cat: "integrations", points: 15, done: selectedTools.length > 0 },
+      {
+        key: "integrations",
+        cat: "integrations",
+        points: 15,
+        done: selectedTools.length > 0 || noIntegrations,
+      },
     ];
     const percent = items.reduce((sum, i) => sum + (i.done ? i.points : 0), 0);
     const next = items
@@ -869,6 +877,7 @@ export function CreateAgentModal({ onClose }: { onClose: () => void }) {
     description,
     customInstructions,
     selectedTools,
+    noIntegrations,
   ]);
 
   // A score increase fires a one-shot flash (a sweep across the bar and a
@@ -1063,6 +1072,7 @@ export function CreateAgentModal({ onClose }: { onClose: () => void }) {
 
           {/* Body */}
           <form
+            id="create-agent-form"
             ref={formRef}
             onSubmit={(e) => {
               e.preventDefault();
@@ -1557,6 +1567,17 @@ export function CreateAgentModal({ onClose }: { onClose: () => void }) {
                 {/* Integrations */}
                 <Category progress={completeness.byCat.integrations}>{t("create.review.toolsLabel")}</Category>
                 <div className="space-y-1.5">
+                  {selectedTools.length === 0 && (
+                    <div className="rounded-lg border border-border">
+                      <SwitchRow
+                        icon={Check}
+                        label={t("create.noIntegrations.label")}
+                        description={t("create.noIntegrations.description")}
+                        checked={noIntegrations}
+                        onCheckedChange={setNoIntegrations}
+                      />
+                    </div>
+                  )}
                   <TooltipProvider delay={300}>
                   <div className="space-y-2">
                     {groupIntegrationTools(toolCatalog).length === 0 ? (
@@ -1900,8 +1921,8 @@ export function CreateAgentModal({ onClose }: { onClose: () => void }) {
                     {t("common:cancel")}
                   </Button>
                   <Button
-                    type="button"
-                    onClick={() => goToPage(2)}
+                    type="submit"
+                    form="create-agent-form"
                     disabled={displayName.trim().length === 0 || drafting}
                   >
                     {t("common:next")}
@@ -1920,8 +1941,8 @@ export function CreateAgentModal({ onClose }: { onClose: () => void }) {
                     {t("common:back")}
                   </Button>
                   <Button
-                    type="button"
-                    onClick={() => void handleCreate()}
+                    type="submit"
+                    form="create-agent-form"
                     disabled={!canCreate}
                   >
                     {creating && <Loader2 className="mr-1.5 h-3 w-3 animate-spin" />}

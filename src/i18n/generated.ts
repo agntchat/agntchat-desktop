@@ -480,7 +480,7 @@ export const resources = {
             "brief": "Describe your agent",
             "description": "Write a description",
             "instructions": "Add custom instructions",
-            "integrations": "Turn on an integration",
+            "integrations": "Decide on integrations",
             "name": "Give them a name",
             "photo": "Add a photo",
             "specialties": "Add specialties",
@@ -623,6 +623,10 @@ export const resources = {
         "nameTitle": "What should we call your agent?",
         "needsLocation": "Needs Location",
         "newKeyThisAgent": "New API Key (this agent only)",
+        "noIntegrations": {
+          "description": "Marks this section done. You can add tools later in the agent's Tools tab.",
+          "label": "No integrations needed"
+        },
         "photoHint": "A photo makes your agent easy to recognize at a glance.",
         "photoTitle": "Give your agent a face",
         "photoTitleNamed": "Give {{name}} a face",
@@ -6035,7 +6039,7 @@ export const resources = {
             "brief": "Describe a tu agente",
             "description": "Escribe una descripción",
             "instructions": "Añade instrucciones personalizadas",
-            "integrations": "Activa una integración",
+            "integrations": "Decide las integraciones",
             "name": "Ponle un nombre",
             "photo": "Añade una foto",
             "specialties": "Añade especialidades",
@@ -6178,6 +6182,10 @@ export const resources = {
         "nameTitle": "¿Cómo llamamos a tu agente?",
         "needsLocation": "Necesita ubicación",
         "newKeyThisAgent": "Nueva clave de API (solo este agente)",
+        "noIntegrations": {
+          "description": "Marca esta sección como completa. Puedes añadir herramientas después en la pestaña Herramientas del agente.",
+          "label": "No necesita integraciones"
+        },
         "photoHint": "Una foto hace que tu agente sea fácil de reconocer de un vistazo.",
         "photoTitle": "Dale una cara a tu agente",
         "photoTitleNamed": "Dale una cara a {{name}}",
@@ -11590,7 +11598,7 @@ export const resources = {
             "brief": "Agenten beschreiben",
             "description": "Eine Beschreibung schreiben",
             "instructions": "Eigene Anweisungen hinzufügen",
-            "integrations": "Eine Integration aktivieren",
+            "integrations": "Integrationen festlegen",
             "name": "Einen Namen vergeben",
             "photo": "Ein Foto hinzufügen",
             "specialties": "Spezialgebiete hinzufügen",
@@ -11733,6 +11741,10 @@ export const resources = {
         "nameTitle": "Wie sollen wir Ihren Agenten nennen?",
         "needsLocation": "Benötigt Standort",
         "newKeyThisAgent": "Neuer API-Schlüssel (nur dieser Agent)",
+        "noIntegrations": {
+          "description": "Markiert diesen Abschnitt als erledigt. Tools lassen sich später im Tools-Tab des Agenten hinzufügen.",
+          "label": "Keine Integrationen nötig"
+        },
         "photoHint": "Ein Foto macht Ihren Agenten auf einen Blick leicht erkennbar.",
         "photoTitle": "Geben Sie Ihrem Agenten ein Gesicht",
         "photoTitleNamed": "Geben Sie {{name}} ein Gesicht",
@@ -17145,7 +17157,7 @@ export const resources = {
             "brief": "Décrivez votre agent",
             "description": "Rédigez une description",
             "instructions": "Ajoutez des instructions",
-            "integrations": "Activez une intégration",
+            "integrations": "Décidez des intégrations",
             "name": "Donnez-lui un nom",
             "photo": "Ajoutez une photo",
             "specialties": "Ajoutez des spécialités",
@@ -17288,6 +17300,10 @@ export const resources = {
         "nameTitle": "Comment devons-nous appeler votre agent ?",
         "needsLocation": "Nécessite la localisation",
         "newKeyThisAgent": "Nouvelle clé API (pour cet agent uniquement)",
+        "noIntegrations": {
+          "description": "Marque cette section comme terminée. Vous pourrez ajouter des outils plus tard dans l'onglet Outils de l'agent.",
+          "label": "Aucune intégration nécessaire"
+        },
         "photoHint": "Une photo permet de reconnaître votre agent facilement en un coup d'œil.",
         "photoTitle": "Donnez un visage à votre agent",
         "photoTitleNamed": "Donnez un visage à {{name}}",
@@ -22700,7 +22716,7 @@ export const resources = {
             "brief": "Descreva seu agente",
             "description": "Escreva uma descrição",
             "instructions": "Adicione instruções personalizadas",
-            "integrations": "Ative uma integração",
+            "integrations": "Decida as integrações",
             "name": "Dê um nome",
             "photo": "Adicione uma foto",
             "specialties": "Adicione especialidades",
@@ -22843,6 +22859,10 @@ export const resources = {
         "nameTitle": "Como devemos chamar seu agente?",
         "needsLocation": "Precisa de Localização",
         "newKeyThisAgent": "Nova Chave de API (somente este agente)",
+        "noIntegrations": {
+          "description": "Marca esta seção como concluída. Você pode adicionar ferramentas depois na aba Ferramentas do agente.",
+          "label": "Não precisa de integrações"
+        },
         "photoHint": "Uma foto torna seu agente fácil de reconhecer rapidamente.",
         "photoTitle": "Dê um rosto ao seu agente",
         "photoTitleNamed": "Dê um rosto a {{name}}",
@@ -28255,7 +28275,7 @@ export const resources = {
             "brief": "エージェントを説明",
             "description": "説明を書く",
             "instructions": "カスタム指示を追加",
-            "integrations": "連携をオンにする",
+            "integrations": "連携を決める",
             "name": "名前を付ける",
             "photo": "写真を追加",
             "specialties": "専門分野を追加",
@@ -28398,6 +28418,10 @@ export const resources = {
         "nameTitle": "エージェントの名前は？",
         "needsLocation": "位置情報が必要",
         "newKeyThisAgent": "新しいAPIキー（このエージェントのみ）",
+        "noIntegrations": {
+          "description": "このセクションを完了にします。ツールはあとからエージェントの「ツール」タブで追加できます。",
+          "label": "連携は不要"
+        },
         "photoHint": "写真があると、エージェントを一目で識別しやすくなります。",
         "photoTitle": "エージェントに顔を与える",
         "photoTitleNamed": "{{name}}に顔を与える",
@@ -33810,7 +33834,7 @@ export const resources = {
             "brief": "描述你的智能体",
             "description": "写一段简介",
             "instructions": "添加自定义指令",
-            "integrations": "开启一个集成",
+            "integrations": "决定集成",
             "name": "起个名字",
             "photo": "添加照片",
             "specialties": "添加专长",
@@ -33953,6 +33977,10 @@ export const resources = {
         "nameTitle": "我们该如何称呼您的智能体？",
         "needsLocation": "需要位置信息",
         "newKeyThisAgent": "新 API 密钥（仅此智能体）",
+        "noIntegrations": {
+          "description": "将此部分标记为完成。之后可在智能体的“工具”标签页中添加工具。",
+          "label": "不需要集成"
+        },
         "photoHint": "照片能让您的智能体一眼就能被认出。",
         "photoTitle": "为您的智能体添加头像",
         "photoTitleNamed": "为 {{name}} 添加头像",
@@ -39365,7 +39393,7 @@ export const resources = {
             "brief": "에이전트 설명하기",
             "description": "설명 작성하기",
             "instructions": "맞춤 지침 추가",
-            "integrations": "연동 켜기",
+            "integrations": "연동 여부 정하기",
             "name": "이름 정하기",
             "photo": "사진 추가",
             "specialties": "전문 분야 추가",
@@ -39508,6 +39536,10 @@ export const resources = {
         "nameTitle": "에이전트를 뭐라고 부를까요?",
         "needsLocation": "위치 필요",
         "newKeyThisAgent": "새 API 키(이 에이전트 전용)",
+        "noIntegrations": {
+          "description": "이 섹션을 완료로 표시합니다. 나중에 에이전트의 도구 탭에서 도구를 추가할 수 있어요.",
+          "label": "연동 필요 없음"
+        },
         "photoHint": "사진이 있으면 에이전트를 한눈에 알아보기 쉽습니다.",
         "photoTitle": "에이전트에게 얼굴을 부여하세요",
         "photoTitleNamed": "{{name}}에게 얼굴을 부여하세요",
@@ -44920,7 +44952,7 @@ export const resources = {
             "brief": "Descrivi il tuo agente",
             "description": "Scrivi una descrizione",
             "instructions": "Aggiungi istruzioni personalizzate",
-            "integrations": "Attiva un'integrazione",
+            "integrations": "Decidi le integrazioni",
             "name": "Dagli un nome",
             "photo": "Aggiungi una foto",
             "specialties": "Aggiungi specialità",
@@ -45063,6 +45095,10 @@ export const resources = {
         "nameTitle": "Come dovremmo chiamare il tuo agente?",
         "needsLocation": "Richiede posizione",
         "newKeyThisAgent": "Nuova Chiave API (solo questo agente)",
+        "noIntegrations": {
+          "description": "Segna questa sezione come completata. Potrai aggiungere strumenti in seguito nella scheda Strumenti dell'agente.",
+          "label": "Nessuna integrazione necessaria"
+        },
         "photoHint": "Una foto rende il tuo agente facilmente riconoscibile a colpo d'occhio.",
         "photoTitle": "Dai un volto al tuo agente",
         "photoTitleNamed": "Dai un volto a {{name}}",
@@ -50475,7 +50511,7 @@ export const resources = {
             "brief": "अपने एजेंट का वर्णन करें",
             "description": "विवरण लिखें",
             "instructions": "कस्टम निर्देश जोड़ें",
-            "integrations": "एक इंटीग्रेशन चालू करें",
+            "integrations": "इंटीग्रेशन तय करें",
             "name": "एक नाम दें",
             "photo": "फ़ोटो जोड़ें",
             "specialties": "विशेषज्ञताएँ जोड़ें",
@@ -50618,6 +50654,10 @@ export const resources = {
         "nameTitle": "हम आपके एजेंट को क्या कहें?",
         "needsLocation": "स्थान आवश्यक",
         "newKeyThisAgent": "नई API कुंजी (केवल इस एजेंट के लिए)",
+        "noIntegrations": {
+          "description": "इस सेक्शन को पूरा मानता है। आप बाद में एजेंट के टूल्स टैब से टूल जोड़ सकते हैं।",
+          "label": "इंटीग्रेशन की ज़रूरत नहीं"
+        },
         "photoHint": "एक फ़ोटो आपके एजेंट को एक नज़र में पहचानना आसान बनाता है।",
         "photoTitle": "अपने एजेंट को एक चेहरा दें",
         "photoTitleNamed": "{{name}} को एक चेहरा दें",
