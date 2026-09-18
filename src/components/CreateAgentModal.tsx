@@ -968,22 +968,6 @@ export function CreateAgentModal({ onClose }: { onClose: () => void }) {
               </p>
             </div>
             <div className="ml-auto flex shrink-0 flex-col items-end gap-1 pr-8">
-              <div className="flex items-center gap-2">
-                <span className="text-[11px] text-text-muted">
-                  {t("create.stepOf", { current: page, total: 2 })}
-                </span>
-                <div className="flex items-center gap-1">
-                  {[1, 2].map((p) => (
-                    <span
-                      key={p}
-                      className={cn(
-                        "h-1.5 rounded-full transition-all duration-300",
-                        p === page ? "w-5 bg-primary" : "w-1.5 bg-border"
-                      )}
-                    />
-                  ))}
-                </div>
-              </div>
               <div
                 className="flex items-center gap-2"
                 role="progressbar"
@@ -1830,7 +1814,23 @@ export function CreateAgentModal({ onClose }: { onClose: () => void }) {
 
           {/* Footer */}
           <div className="relative flex items-center justify-between gap-3 border-t border-border bg-background/80 px-6 py-3 backdrop-blur-sm">
-            <div className="min-w-0 flex-1">
+            <div className="flex min-w-0 flex-1 items-center gap-3">
+              <div className="flex shrink-0 items-center gap-2">
+                <span className="text-[11px] text-text-muted">
+                  {t("create.stepOf", { current: page, total: 2 })}
+                </span>
+                <div className="flex items-center gap-1">
+                  {[1, 2].map((p) => (
+                    <span
+                      key={p}
+                      className={cn(
+                        "h-1.5 rounded-full transition-all duration-300",
+                        p === page ? "w-5 bg-primary" : "w-1.5 bg-border"
+                      )}
+                    />
+                  ))}
+                </div>
+              </div>
               {error && (
                 <p className="truncate text-xs text-destructive" role="alert">
                   {error}
