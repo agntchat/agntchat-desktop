@@ -1184,11 +1184,10 @@ export function CreateAgentModal({ onClose }: { onClose: () => void }) {
                 </div>
 
                 {/* Brief → draft */}
-                <Field
-                  label={t("create.brief.title")}
-                  htmlFor="agent-brief"
-                  hint={t("create.brief.hint")}
-                >
+                <Field label={t("create.brief.title")} htmlFor="agent-brief">
+                  <p className="-mt-1 text-[11px] text-text-muted">
+                    {t("create.brief.hint")}
+                  </p>
                   <Textarea
                     id="agent-brief"
                     value={brief}
