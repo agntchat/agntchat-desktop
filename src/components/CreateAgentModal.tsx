@@ -20,7 +20,7 @@ import {
 } from "lucide-react";
 import { useAgentStore } from "../stores/agentStore";
 import { useAuthStore } from "../stores/authStore";
-import { useActiveWorkspace, useWorkspaces, useWorkspacesEnabled } from "../stores/workspaceStore";
+import { useActiveWorkspace, useWorkspacesEnabled } from "../stores/workspaceStore";
 import {
   updateAgentRuntime,
   authorizeProvider,
@@ -69,6 +69,7 @@ import {
 } from "@/components/ui/tooltip";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { AvatarCropDialog } from "./AvatarCropDialog";
+import { VisibilityField } from "./VisibilityField";
 import { BotMascot } from "./onboarding/BotMascot";
 import { AmbientParticles } from "./onboarding/AmbientParticles";
 
@@ -1433,10 +1434,12 @@ export function CreateAgentModal({ onClose }: { onClose: () => void }) {
                 </div>
 
                 {workspacesEnabled && (
-                  <VisibilityChoice
-                    value={visibilityOrgIds}
-                    onChange={setVisibilityOrgIds}
-                  />
+                  <Field label={t("visibility.label")}>
+                    <VisibilityField
+                      value={visibilityOrgIds}
+                      onChange={setVisibilityOrgIds}
+                    />
+                  </Field>
                 )}
               </div>
               <div className="space-y-5 border-l border-border pl-6">
@@ -1772,7 +1775,7 @@ export function CreateAgentModal({ onClose }: { onClose: () => void }) {
                     onClick={() => goToPage(2)}
                     disabled={displayName.trim().length === 0 || drafting}
                   >
-                    {t("common:continue")}
+                    {t("common:next")}
                     <ArrowRight className="ml-1 h-3.5 w-3.5" />
                   </Button>
                 </>
@@ -1885,78 +1888,5 @@ function SwitchRow({
       </div>
       <Switch checked={checked} onCheckedChange={onCheckedChange} />
     </label>
-  );
-}
-
-/**
- * Workspace visibility: All workspaces (organizationIds omitted — the agent
- * follows the owner everywhere, the default) or a selected SET of
- * workspaces. Mirrors the VisibilityField on the agent config Profile tab.
- */
-function VisibilityChoice({
-  value,
-  onChange,
-}: {
-  value: string[] | null;
-  onChange: (v: string[] | null) => void;
-}) {
-  const { t } = useTranslation("agents");
-  const allWorkspaces = useWorkspaces();
-  const personal = allWorkspaces.find((w) => w.isPersonal);
-  const active = useActiveWorkspace();
-  // Turning "All workspaces" off seeds the pin set with the workspace
-  // the user is currently in (fallback: Personal) — see VisibilityField
-  // on the agent config Profile tab.
-  const seed = active ?? personal;
-
-  const toggle = (id: string) => {
-    const current = value ?? [];
-    const next = current.includes(id)
-      ? current.filter((x) => x !== id)
-      : [...current, id];
-    onChange(next.length === 0 ? null : next);
-  };
-
-  return (
-    <Field
-      label={t("visibility.label")}
-      hint={value === null ? t("visibility.allHint") : t("visibility.selectedHint")}
-    >
-      <div className="space-y-1.5 rounded-lg border border-border p-2.5">
-        <label className="flex cursor-pointer items-center gap-2 text-xs font-medium">
-          <input
-            type="checkbox"
-            checked={value === null}
-            onChange={() =>
-              value === null
-                ? onChange(seed ? [seed.id] : [])
-                : onChange(null)
-            }
-            className="h-3.5 w-3.5 accent-primary"
-          />
-          {t("visibility.all")}
-        </label>
-        <div className="ml-5 space-y-1 border-l border-border pl-3">
-          {allWorkspaces.map((w) => (
-            <label
-              key={w.id}
-              className={cn(
-                "flex items-center gap-2 text-xs",
-                value === null ? "cursor-not-allowed opacity-50" : "cursor-pointer"
-              )}
-            >
-              <input
-                type="checkbox"
-                disabled={value === null}
-                checked={value !== null && value.includes(w.id)}
-                onChange={() => toggle(w.id)}
-                className="h-3.5 w-3.5 accent-primary"
-              />
-              {w.name}
-            </label>
-          ))}
-        </div>
-      </div>
-    </Field>
   );
 }
