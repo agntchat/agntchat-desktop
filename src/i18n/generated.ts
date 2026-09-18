@@ -476,6 +476,7 @@ export const resources = {
         "clickToChange": "Click to change the photo",
         "clickToChoosePhoto": "Click to choose a photo (optional)",
         "computerUse": "Computer use",
+        "computerUseDescription": "Lets this agent control this computer — screenshots, clicks, typing. The allowed-app list is set after creation.",
         "connect": {
           "body": "Connect Google so {{name}} can work with your email and calendar. You can also do this later in Profile → Connected Accounts.",
           "connected": "Google connected",
@@ -533,6 +534,8 @@ export const resources = {
         "desktopOnlyTitle": "Runs from the desktop app",
         "detailsHint": "Custom instructions and preferences.",
         "detailsTitle": "Any extra details?",
+        "dialogHint": "Only a name is required — everything else can be changed later.",
+        "dialogTitle": "Create an agent",
         "discardAction": "Discard",
         "discardMessage": "Your setup so far will be lost.",
         "discardTitle": "Discard this agent?",
@@ -666,6 +669,9 @@ export const resources = {
         "roleHint": "Pick the role that matches how they'll operate.",
         "roleTitle": "How should they work?",
         "roleTitleNamed": "How should {{name}} work?",
+        "sections": {
+          "personality": "Personality"
+        },
         "setupConnection": "Set up connection",
         "skipPermissions": "Skip permission prompts",
         "skipPermissionsDescription": "Tools run without asking for confirmation. Faster, but the agent can act unattended.",
@@ -738,6 +744,9 @@ export const resources = {
           "specialties": "Specialties",
           "tone": "Tone",
           "tools": "Tools"
+        },
+        "summary": {
+          "noTools": "No integrations"
         },
         "swipeToExplore": "Swipe to explore",
         "taskTimeout": "Task Timeout (seconds)",
@@ -5994,6 +6003,7 @@ export const resources = {
         "clickToChange": "Haz clic para cambiar la foto",
         "clickToChoosePhoto": "Haz clic para elegir una foto (opcional)",
         "computerUse": "Uso del ordenador",
+        "computerUseDescription": "Permite que este agente controle este equipo: capturas de pantalla, clics, escritura. La lista de apps permitidas se define después de crearlo.",
         "connect": {
           "body": "Conecta Google para que {{name}} pueda trabajar con tu correo y tu calendario. También puedes hacerlo más tarde en Perfil → Cuentas conectadas.",
           "connected": "Google conectado",
@@ -6051,6 +6061,8 @@ export const resources = {
         "desktopOnlyTitle": "Se ejecuta desde la app de escritorio",
         "detailsHint": "Instrucciones y preferencias personalizadas.",
         "detailsTitle": "¿Algún detalle más?",
+        "dialogHint": "Solo se necesita un nombre; todo lo demás se puede cambiar después.",
+        "dialogTitle": "Crear un agente",
         "discardAction": "Descartar",
         "discardMessage": "Se perderá la configuración realizada hasta ahora.",
         "discardTitle": "¿Descartar este agente?",
@@ -6184,6 +6196,9 @@ export const resources = {
         "roleHint": "Elige el rol que encaje con su forma de trabajar.",
         "roleTitle": "¿Cómo debería trabajar?",
         "roleTitleNamed": "¿Cómo debería trabajar {{name}}?",
+        "sections": {
+          "personality": "Personalidad"
+        },
         "setupConnection": "Configurar conexión",
         "skipPermissions": "Omitir confirmaciones de permisos",
         "skipPermissionsDescription": "Las herramientas se ejecutan sin pedir confirmación. Es más rápido, pero el agente puede actuar sin supervisión.",
@@ -6256,6 +6271,9 @@ export const resources = {
           "specialties": "Especialidades",
           "tone": "Tono",
           "tools": "Herramientas"
+        },
+        "summary": {
+          "noTools": "Sin integraciones"
         },
         "swipeToExplore": "Desliza para explorar",
         "taskTimeout": "Tiempo de espera de tarea (segundos)",
@@ -11512,6 +11530,7 @@ export const resources = {
         "clickToChange": "Klicken, um das Foto zu ändern",
         "clickToChoosePhoto": "Klicken, um ein Foto auszuwählen (optional)",
         "computerUse": "Computernutzung",
+        "computerUseDescription": "Erlaubt diesem Agenten, diesen Computer zu steuern – Screenshots, Klicks, Tastatureingaben. Die Liste erlaubter Apps wird nach dem Erstellen festgelegt.",
         "connect": {
           "body": "Verbinden Sie Google, damit {{name}} mit Ihren E-Mails und Ihrem Kalender arbeiten kann. Sie können das auch später unter Profil → Verbundene Konten erledigen.",
           "connected": "Google verbunden",
@@ -11569,6 +11588,8 @@ export const resources = {
         "desktopOnlyTitle": "Läuft über die Desktop-App",
         "detailsHint": "Benutzerdefinierte Anweisungen und Präferenzen.",
         "detailsTitle": "Noch weitere Details?",
+        "dialogHint": "Nur ein Name ist nötig – alles andere lässt sich später ändern.",
+        "dialogTitle": "Agent erstellen",
         "discardAction": "Verwerfen",
         "discardMessage": "Ihre bisherigen Eingaben gehen verloren.",
         "discardTitle": "Diesen Agenten verwerfen?",
@@ -11702,6 +11723,9 @@ export const resources = {
         "roleHint": "Wählen Sie die Rolle, die zur Arbeitsweise passt.",
         "roleTitle": "Wie sollen sie arbeiten?",
         "roleTitleNamed": "Wie soll {{name}} arbeiten?",
+        "sections": {
+          "personality": "Persönlichkeit"
+        },
         "setupConnection": "Verbindung einrichten",
         "skipPermissions": "Berechtigungsabfragen überspringen",
         "skipPermissionsDescription": "Tools laufen ohne Bestätigungsabfrage. Schneller, aber der Agent kann unbeaufsichtigt handeln.",
@@ -11774,6 +11798,9 @@ export const resources = {
           "specialties": "Schwerpunkte",
           "tone": "Ton",
           "tools": "Tools"
+        },
+        "summary": {
+          "noTools": "Keine Integrationen"
         },
         "swipeToExplore": "Zum Erkunden wischen",
         "taskTimeout": "Aufgaben-Timeout (Sekunden)",
@@ -17030,6 +17057,7 @@ export const resources = {
         "clickToChange": "Cliquez pour changer la photo",
         "clickToChoosePhoto": "Cliquez pour choisir une photo (facultatif)",
         "computerUse": "Utilisation de l'ordinateur",
+        "computerUseDescription": "Permet à cet agent de contrôler cet ordinateur — captures d'écran, clics, saisie. La liste des apps autorisées se définit après la création.",
         "connect": {
           "body": "Connectez Google pour que {{name}} puisse travailler avec vos e-mails et votre calendrier. Vous pouvez aussi le faire plus tard dans Profil → Comptes connectés.",
           "connected": "Google connecté",
@@ -17087,6 +17115,8 @@ export const resources = {
         "desktopOnlyTitle": "S'exécute depuis l'application de bureau",
         "detailsHint": "Instructions personnalisées et préférences.",
         "detailsTitle": "Des détails supplémentaires ?",
+        "dialogHint": "Seul un nom est requis — tout le reste peut être modifié plus tard.",
+        "dialogTitle": "Créer un agent",
         "discardAction": "Abandonner",
         "discardMessage": "La configuration effectuée jusqu'ici sera perdue.",
         "discardTitle": "Abandonner cet agent ?",
@@ -17220,6 +17250,9 @@ export const resources = {
         "roleHint": "Choisissez le rôle qui correspond à sa façon de travailler.",
         "roleTitle": "Comment doivent-ils travailler ?",
         "roleTitleNamed": "Comment {{name}} doit-il travailler ?",
+        "sections": {
+          "personality": "Personnalité"
+        },
         "setupConnection": "Configurer la connexion",
         "skipPermissions": "Ignorer les demandes de permission",
         "skipPermissionsDescription": "Les outils s'exécutent sans demander de confirmation. Plus rapide, mais l'agent peut agir sans surveillance.",
@@ -17292,6 +17325,9 @@ export const resources = {
           "specialties": "Spécialités",
           "tone": "Ton",
           "tools": "Outils"
+        },
+        "summary": {
+          "noTools": "Aucune intégration"
         },
         "swipeToExplore": "Balayez pour explorer",
         "taskTimeout": "Délai d'expiration des tâches (secondes)",
@@ -22548,6 +22584,7 @@ export const resources = {
         "clickToChange": "Clique para trocar a foto",
         "clickToChoosePhoto": "Clique para escolher uma foto (opcional)",
         "computerUse": "Uso do computador",
+        "computerUseDescription": "Permite que este agente controle este computador — capturas de tela, cliques, digitação. A lista de apps permitidos é definida após a criação.",
         "connect": {
           "body": "Conecte o Google para que {{name}} possa trabalhar com seu e-mail e sua agenda. Você também pode fazer isso depois em Perfil → Contas conectadas.",
           "connected": "Google conectado",
@@ -22605,6 +22642,8 @@ export const resources = {
         "desktopOnlyTitle": "Executa a partir do app desktop",
         "detailsHint": "Instruções personalizadas e preferências.",
         "detailsTitle": "Algum detalhe extra?",
+        "dialogHint": "Só o nome é obrigatório — todo o resto pode ser alterado depois.",
+        "dialogTitle": "Criar um agente",
         "discardAction": "Descartar",
         "discardMessage": "A configuração feita até agora será perdida.",
         "discardTitle": "Descartar este agente?",
@@ -22738,6 +22777,9 @@ export const resources = {
         "roleHint": "Escolha o papel que combina com o jeito de trabalhar.",
         "roleTitle": "Como eles devem trabalhar?",
         "roleTitleNamed": "Como {{name}} deve trabalhar?",
+        "sections": {
+          "personality": "Personalidade"
+        },
         "setupConnection": "Configurar conexão",
         "skipPermissions": "Pular avisos de permissão",
         "skipPermissionsDescription": "As ferramentas executam sem pedir confirmação. Mais rápido, mas o agente pode agir sem supervisão.",
@@ -22810,6 +22852,9 @@ export const resources = {
           "specialties": "Especialidades",
           "tone": "Tom",
           "tools": "Ferramentas"
+        },
+        "summary": {
+          "noTools": "Sem integrações"
         },
         "swipeToExplore": "Deslize para explorar",
         "taskTimeout": "Tempo Limite de Tarefa (segundos)",
@@ -28066,6 +28111,7 @@ export const resources = {
         "clickToChange": "クリックして写真を変更",
         "clickToChoosePhoto": "クリックして写真を選択（任意）",
         "computerUse": "コンピュータ操作",
+        "computerUseDescription": "このエージェントにこのコンピューターの操作（スクリーンショット、クリック、入力）を許可します。許可するアプリの一覧は作成後に設定します。",
         "connect": {
           "body": "Googleを連携すると、{{name}}がメールとカレンダーを扱えるようになります。後からプロフィール → 連携アカウントでも設定できます。",
           "connected": "Google連携済み",
@@ -28123,6 +28169,8 @@ export const resources = {
         "desktopOnlyTitle": "デスクトップアプリから実行",
         "detailsHint": "カスタム指示と設定。",
         "detailsTitle": "他に詳細はありますか？",
+        "dialogHint": "必要なのは名前だけです。他はあとから変更できます。",
+        "dialogTitle": "エージェントを作成",
         "discardAction": "破棄",
         "discardMessage": "ここまでの設定内容は失われます。",
         "discardTitle": "このエージェントを破棄しますか？",
@@ -28256,6 +28304,9 @@ export const resources = {
         "roleHint": "働き方に合ったロールを選びましょう。",
         "roleTitle": "どのように働きますか？",
         "roleTitleNamed": "{{name}}はどのように働きますか？",
+        "sections": {
+          "personality": "性格"
+        },
         "setupConnection": "接続をセットアップ",
         "skipPermissions": "許可プロンプトをスキップ",
         "skipPermissionsDescription": "ツールは確認なしで実行されます。速くなりますが、エージェントが無人で操作できるようになります。",
@@ -28328,6 +28379,9 @@ export const resources = {
           "specialties": "得意分野",
           "tone": "口調",
           "tools": "ツール"
+        },
+        "summary": {
+          "noTools": "連携なし"
         },
         "swipeToExplore": "スワイプして見る",
         "taskTimeout": "タスクタイムアウト（秒）",
@@ -33584,6 +33638,7 @@ export const resources = {
         "clickToChange": "点击更换照片",
         "clickToChoosePhoto": "点击选择照片（可选）",
         "computerUse": "计算机使用",
+        "computerUseDescription": "允许此智能体控制这台电脑——截图、点击、输入。允许的应用列表在创建后设置。",
         "connect": {
           "body": "连接 Google，让{{name}}可以处理你的邮件和日历。你也可以稍后在个人资料 → 已连接账户中完成。",
           "connected": "Google 已连接",
@@ -33641,6 +33696,8 @@ export const resources = {
         "desktopOnlyTitle": "从桌面应用运行",
         "detailsHint": "自定义说明和偏好设置。",
         "detailsTitle": "还有其他细节吗？",
+        "dialogHint": "只需填写名称，其他内容以后都可以更改。",
+        "dialogTitle": "创建智能体",
         "discardAction": "放弃",
         "discardMessage": "目前的设置内容将丢失。",
         "discardTitle": "放弃此智能体？",
@@ -33774,6 +33831,9 @@ export const resources = {
         "roleHint": "选择与其工作方式相符的角色。",
         "roleTitle": "他们应该如何工作？",
         "roleTitleNamed": "{{name}} 应该如何工作？",
+        "sections": {
+          "personality": "个性"
+        },
         "setupConnection": "设置连接",
         "skipPermissions": "跳过权限提示",
         "skipPermissionsDescription": "工具运行时无需请求确认。速度更快，但智能体可以在无人看管的情况下执行操作。",
@@ -33846,6 +33906,9 @@ export const resources = {
           "specialties": "专长",
           "tone": "语气",
           "tools": "工具"
+        },
+        "summary": {
+          "noTools": "无集成"
         },
         "swipeToExplore": "滑动以探索",
         "taskTimeout": "任务超时时间（秒）",
@@ -39102,6 +39165,7 @@ export const resources = {
         "clickToChange": "클릭하여 사진 변경",
         "clickToChoosePhoto": "클릭하여 사진 선택(선택 사항)",
         "computerUse": "컴퓨터 사용",
+        "computerUseDescription": "이 에이전트가 이 컴퓨터를 제어할 수 있게 합니다 — 스크린샷, 클릭, 입력. 허용 앱 목록은 생성 후에 설정합니다.",
         "connect": {
           "body": "Google을 연결하면 {{name}}이(가) 이메일과 캘린더를 다룰 수 있습니다. 나중에 프로필 → 연결된 계정에서도 할 수 있습니다.",
           "connected": "Google 연결됨",
@@ -39159,6 +39223,8 @@ export const resources = {
         "desktopOnlyTitle": "데스크톱 앱에서 실행됩니다",
         "detailsHint": "사용자 지정 지침 및 환경 설정.",
         "detailsTitle": "추가로 알려줄 세부정보가 있나요?",
+        "dialogHint": "이름만 있으면 됩니다. 나머지는 나중에 바꿀 수 있어요.",
+        "dialogTitle": "에이전트 만들기",
         "discardAction": "취소하기",
         "discardMessage": "지금까지 설정한 내용이 사라집니다.",
         "discardTitle": "이 에이전트를 취소할까요?",
@@ -39292,6 +39358,9 @@ export const resources = {
         "roleHint": "작업 방식에 맞는 역할을 선택하세요.",
         "roleTitle": "어떻게 일해야 할까요?",
         "roleTitleNamed": "{{name}}은(는) 어떻게 일해야 할까요?",
+        "sections": {
+          "personality": "성격"
+        },
         "setupConnection": "연결 설정",
         "skipPermissions": "권한 확인 건너뛰기",
         "skipPermissionsDescription": "도구가 확인 없이 실행됩니다. 더 빠르지만 에이전트가 감독 없이 동작할 수 있습니다.",
@@ -39364,6 +39433,9 @@ export const resources = {
           "specialties": "전문 분야",
           "tone": "말투",
           "tools": "도구"
+        },
+        "summary": {
+          "noTools": "연동 없음"
         },
         "swipeToExplore": "스와이프하여 둘러보기",
         "taskTimeout": "작업 타임아웃(초)",
@@ -44620,6 +44692,7 @@ export const resources = {
         "clickToChange": "Clicca per cambiare la foto",
         "clickToChoosePhoto": "Clicca per scegliere una foto (opzionale)",
         "computerUse": "Uso del computer",
+        "computerUseDescription": "Consente a questo agente di controllare questo computer: screenshot, clic, digitazione. L'elenco delle app consentite si imposta dopo la creazione.",
         "connect": {
           "body": "Collega Google così {{name}} potrà lavorare con la tua email e il tuo calendario. Puoi farlo anche più tardi in Profilo → Account collegati.",
           "connected": "Google collegato",
@@ -44677,6 +44750,8 @@ export const resources = {
         "desktopOnlyTitle": "Si avvia dall'app desktop",
         "detailsHint": "Istruzioni personalizzate e preferenze.",
         "detailsTitle": "Altri dettagli?",
+        "dialogHint": "Serve solo un nome: tutto il resto si può cambiare in seguito.",
+        "dialogTitle": "Crea un agente",
         "discardAction": "Scarta",
         "discardMessage": "La configurazione effettuata finora andrà persa.",
         "discardTitle": "Scartare questo agente?",
@@ -44810,6 +44885,9 @@ export const resources = {
         "roleHint": "Scegli il ruolo che corrisponde al suo modo di lavorare.",
         "roleTitle": "Come dovrebbero lavorare?",
         "roleTitleNamed": "Come dovrebbe lavorare {{name}}?",
+        "sections": {
+          "personality": "Personalità"
+        },
         "setupConnection": "Configura connessione",
         "skipPermissions": "Salta le richieste di permesso",
         "skipPermissionsDescription": "Gli strumenti vengono eseguiti senza chiedere conferma. Più veloce, ma l'agente può agire senza supervisione.",
@@ -44882,6 +44960,9 @@ export const resources = {
           "specialties": "Specialità",
           "tone": "Tono",
           "tools": "Strumenti"
+        },
+        "summary": {
+          "noTools": "Nessuna integrazione"
         },
         "swipeToExplore": "Scorri per esplorare",
         "taskTimeout": "Timeout attività (secondi)",
@@ -50138,6 +50219,7 @@ export const resources = {
         "clickToChange": "फ़ोटो बदलने के लिए क्लिक करें",
         "clickToChoosePhoto": "फ़ोटो चुनने के लिए क्लिक करें (वैकल्पिक)",
         "computerUse": "कंप्यूटर उपयोग",
+        "computerUseDescription": "इस एजेंट को इस कंप्यूटर को नियंत्रित करने देता है — स्क्रीनशॉट, क्लिक, टाइपिंग। अनुमत ऐप्स की सूची बनाने के बाद सेट होती है।",
         "connect": {
           "body": "Google कनेक्ट करें ताकि {{name}} आपके ईमेल और कैलेंडर के साथ काम कर सके। आप इसे बाद में प्रोफ़ाइल → कनेक्टेड खाते में भी कर सकते हैं।",
           "connected": "Google कनेक्ट हो गया",
@@ -50195,6 +50277,8 @@ export const resources = {
         "desktopOnlyTitle": "डेस्कटॉप ऐप से चलता है",
         "detailsHint": "कस्टम निर्देश और प्राथमिकताएँ।",
         "detailsTitle": "कोई अतिरिक्त विवरण?",
+        "dialogHint": "सिर्फ़ नाम ज़रूरी है — बाकी सब बाद में बदला जा सकता है।",
+        "dialogTitle": "एजेंट बनाएँ",
         "discardAction": "छोड़ें",
         "discardMessage": "अब तक की गई आपकी सेटअप जानकारी खो जाएगी।",
         "discardTitle": "इस एजेंट को छोड़ दें?",
@@ -50328,6 +50412,9 @@ export const resources = {
         "roleHint": "उनके काम करने के तरीक़े से मेल खाती भूमिका चुनें।",
         "roleTitle": "उन्हें कैसे काम करना चाहिए?",
         "roleTitleNamed": "{{name}} को कैसे काम करना चाहिए?",
+        "sections": {
+          "personality": "व्यक्तित्व"
+        },
         "setupConnection": "कनेक्शन सेट अप करें",
         "skipPermissions": "अनुमति संकेत छोड़ें",
         "skipPermissionsDescription": "टूल पुष्टि माँगे बिना चलते हैं। तेज़, लेकिन एजेंट बिना निगरानी के कार्य कर सकता है।",
@@ -50400,6 +50487,9 @@ export const resources = {
           "specialties": "विशेषज्ञताएँ",
           "tone": "लहजा",
           "tools": "टूल"
+        },
+        "summary": {
+          "noTools": "कोई इंटीग्रेशन नहीं"
         },
         "swipeToExplore": "एक्सप्लोर करने के लिए स्वाइप करें",
         "taskTimeout": "कार्य टाइमआउट (सेकंड)",

@@ -1,10 +1,8 @@
-import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState, type ReactNode } from "react";
 import { useNavStore } from "../stores/navStore";
-import { Trans, useTranslation } from "react-i18next";
+import { useTranslation } from "react-i18next";
 import {
   X,
-  ArrowLeft,
-  ArrowRight,
   Bot,
   Workflow,
   ClipboardCheck,
@@ -19,7 +17,6 @@ import {
   Mail,
   CalendarDays,
   Telescope,
-  PenLine,
   Check,
   ChevronDown,
   ChevronRight,
@@ -75,12 +72,10 @@ import {
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { AvatarCropDialog } from "./AvatarCropDialog";
 import { BotMascot } from "./onboarding/BotMascot";
-import { LetterReveal } from "./onboarding/LetterReveal";
 import { AmbientParticles } from "./onboarding/AmbientParticles";
 
-// Per-step icon for the role picker. Catalog data (id/label/description)
-// comes from the backend via useAgentTypes(); only the icon stays in
-// the UI layer.
+// Icons for the role picker. Catalog data (id/label/description) comes from
+// the backend via useAgentTypes(); only the icon stays in the UI layer.
 const TYPE_ICONS: Record<string, typeof Bot> = {
   worker: Bot,
   orchestrator: Workflow,
@@ -88,32 +83,13 @@ const TYPE_ICONS: Record<string, typeof Bot> = {
   observer: Eye,
 };
 
-// Step 0 is the fork: a free-text brief the server drafts a whole agent from
-// (quick path), preset chips (template path), or "build it step by step"
-// (the advanced walk through every step below).
-const STEPS = [
-  "brief",
-  "name",
-  "photo",
-  "role",
-  "tone",
-  "specialties",
-  "details",
-  "tools",
-  "brain",
-  "review",
-] as const;
-type WizardStep = (typeof STEPS)[number];
-
-// Steps the review screen offers "jump to" edit chips for — everything
-// between the fork and the review itself.
-const EDITABLE_STEPS = STEPS.filter(
-  (s): s is Exclude<WizardStep, "brief" | "review"> => s !== "brief" && s !== "review"
-);
-
+// How the fields got filled — sent along as analytics. "quick" = the server
+// drafted them from a brief, "preset" = a template chip seeded them,
+// "advanced" = typed by hand. Whichever happened LAST wins; edits after a
+// draft or preset don't demote it.
 type CreationPath = "quick" | "preset" | "advanced";
 
-// Display names for credentialed providers on the tools step's Connect
+// Display names for credentialed providers on the tools section's Connect
 // buttons (provider ids are lowercase machine keys).
 const PROVIDER_LABELS: Record<"google" | "github" | "x", string> = {
   google: "Google",
@@ -121,7 +97,7 @@ const PROVIDER_LABELS: Record<"google" | "github" | "x", string> = {
   x: "X",
 };
 
-// Icons for the preset picker stay UI-side, like TYPE_ICONS below.
+// Icons for the preset chips stay UI-side, like TYPE_ICONS above.
 const PRESET_ICONS: Record<AgentPreset["id"], typeof Bot> = {
   assistant: Sparkles,
   email: Mail,
@@ -129,21 +105,19 @@ const PRESET_ICONS: Record<AgentPreset["id"], typeof Bot> = {
   research: Telescope,
 };
 
-// Step subtitles (agents namespace) — resolved with t() at render so
-// language switches take effect live.
-const STEP_SUBTITLE_KEYS: Record<WizardStep, string> = {
-  brief: "create.brief.hint",
-  name: "create.nameHint",
-  photo: "create.photoHint",
-  role: "create.roleHint",
-  tone: "create.toneHint",
-  specialties: "create.specialtiesHint",
-  details: "create.detailsHint",
-  tools: "create.toolsHint",
-  brain: "create.brainHint",
-  review: "create.reviewHint",
-};
+const INSTRUCTIONS_MAX = 2000;
 
+/**
+ * Create Agent — one form, one screen.
+ *
+ * Everything the agent needs is on a single scrollable dialog: identity
+ * (avatar, name, role), an optional brief the server drafts the rest from,
+ * personality, integrations, brain, and visibility. Tools and Brain start
+ * collapsed with their current choice summarized on the header, so the
+ * defaults (hosted when available, otherwise Claude Code + Opus) are visible
+ * without opening them. Only the name is required; Create is one click away
+ * from the moment the dialog opens.
+ */
 export function CreateAgentModal({ onClose }: { onClose: () => void }) {
   const { t, i18n } = useTranslation("agents");
   const { createAgent, selectAgent } = useAgentStore();
@@ -166,33 +140,24 @@ export function CreateAgentModal({ onClose }: { onClose: () => void }) {
   const agentPresets = useAgentPresets();
   const { tones, specialtiesByRole } = usePersonaVocab();
 
-  // ---- Step state ----
-  const [stepIndex, setStepIndex] = useState(0);
-  const step: WizardStep = STEPS[stepIndex] ?? "name";
-
-  // preset — a chosen starting point pre-seeds role/tone/specialties/
-  // description/instructions; everything stays editable in later steps.
+  // ---- Fill source ----
+  // preset — the chip that last seeded the fields (drives the post-create
+  // Google connect pane via requiresGoogle and the name placeholder).
   const [preset, setPreset] = useState<AgentPreset | null>(null);
-  // brief — the quick path's free-text prompt. Sent to POST /api/agents/draft;
-  // the proposal seeds every later step and lands on review. Also stored on
-  // the agent (metadata.creation_brief) so its first greeting can play the
-  // brief back and invite corrections.
+  // brief — free text sent to POST /api/agents/draft; the proposal fills the
+  // fields below. Also stored on the agent (metadata.creation_brief) so its
+  // first greeting can play the brief back and invite corrections.
   const [brief, setBrief] = useState("");
   const [drafting, setDrafting] = useState(false);
+  const [drafted, setDrafted] = useState(false);
   const [draftError, setDraftError] = useState<string | null>(null);
-  // Which fork the user took — analytics + whether review shows the
-  // "here's the draft" subtitle. null until they choose.
-  const [creationPath, setCreationPath] = useState<CreationPath | null>(null);
-  // Set when review sent the user into a single step to adjust it (or the
-  // preset chip sent them to name): Next/Back return straight to review
-  // instead of walking the remaining steps.
-  const [editingFromReview, setEditingFromReview] = useState(false);
-  // Owner's Google connection, prefetched when a Google-backed preset is
-  // picked so the create path doesn't await it. null = unknown.
+  const [creationPath, setCreationPath] = useState<CreationPath>("advanced");
+  // Owner's Google connection, prefetched so the create path doesn't await
+  // it. null = unknown.
   const googleConnectedRef = useRef<boolean | null>(null);
-  // After creating a Google-backed preset without a connection, the modal
+  // After creating a Google-backed agent without a connection, the modal
   // flips to a connect pane instead of closing.
-  const [phase, setPhase] = useState<"wizard" | "connect">("wizard");
+  const [phase, setPhase] = useState<"form" | "connect">("form");
   const [connectStatus, setConnectStatus] = useState<
     "idle" | "waiting" | "connected"
   >("idle");
@@ -204,33 +169,33 @@ export function CreateAgentModal({ onClose }: { onClose: () => void }) {
     []
   );
 
-  // name
+  // ---- Identity ----
   const [displayName, setDisplayName] = useState("");
-  // photo
+  const nameInputRef = useRef<HTMLInputElement | null>(null);
   const [avatarUrl, setAvatarUrl] = useState<string | null>(null);
   const [uploadingAvatar, setUploadingAvatar] = useState(false);
   const [cropImageSrc, setCropImageSrc] = useState<string | null>(null);
   const fileInputRef = useRef<HTMLInputElement | null>(null);
-  // role
   const [agentRole, setAgentRole] = useState<AgentType>("worker");
-  // tone + description
+
+  // ---- Personality ----
   const [tone, setTone] = useState<string | null>(null);
   const [customTone, setCustomTone] = useState<string | null>(null);
   const [customToneInput, setCustomToneInput] = useState("");
   const [toneAddOpen, setToneAddOpen] = useState(false);
   const [description, setDescription] = useState("");
-  // specialties
   const [specialties, setSpecialties] = useState<string[]>([]);
   const [customSpecialties, setCustomSpecialties] = useState<string[]>([]);
   const [customSpecialtyInput, setCustomSpecialtyInput] = useState("");
   const [specialtyAddOpen, setSpecialtyAddOpen] = useState(false);
-  // details
   const [customInstructions, setCustomInstructions] = useState("");
   const [requiresLocation, setRequiresLocation] = useState(false);
-  // tools — integration tools (scope "agent") to assign after creation.
-  // Pre-seeded by presets; the picker fetches the catalog on first render.
+
+  // ---- Tools — integration tools (scope "agent") to assign after creation.
+  // Pre-seeded by presets/drafts; the picker fetches the catalog on mount.
   const [selectedTools, setSelectedTools] = useState<string[]>([]);
   const [toolCatalog, setToolCatalog] = useState<PlatformToolSummary[]>([]);
+  const [toolsOpen, setToolsOpen] = useState(false);
   // Provider groups start collapsed; the header switch toggles the whole
   // group, the chevron reveals individual tools.
   const [expandedToolGroups, setExpandedToolGroups] = useState<Set<string>>(
@@ -305,12 +270,14 @@ export function CreateAgentModal({ onClose }: { onClose: () => void }) {
         // picker shows an empty state; preset assignment still works by name
       });
   }, []);
-  // Visibility pin set: null = all workspaces (organizationIds omitted,
-  // the default), otherwise the workspace ids to pin the new agent to —
-  // any workspaces the owner belongs to, Personal included.
+
+  // ---- Visibility: null = all workspaces (organizationIds omitted, the
+  // default), otherwise the workspace ids to pin the new agent to.
   const [visibilityOrgIds, setVisibilityOrgIds] = useState<string[] | null>(null);
   const activeWorkspace = useActiveWorkspace();
-  // brain — backend / model / execution mode / effort / key / safety
+
+  // ---- Brain — backend / model / execution mode / effort / key / safety
+  const [brainOpen, setBrainOpen] = useState(false);
   const [backend, setBackend] = useState("claude_cli");
   const [model, setModel] = useState("");
   const [executionMode, setExecutionMode] = useState("tool_use");
@@ -348,9 +315,6 @@ export function CreateAgentModal({ onClose }: { onClose: () => void }) {
   const [creating, setCreating] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  // Once the catalog resolves, default backend/model to the first
-  // option if the current backend isn't actually available. Keeps the
-  // initial "claude_cli" guess if it IS in the catalog.
   // Default model for a provider: Opus 4.8 when the catalog has it (the
   // scratch default), else the catalog's first entry. Presets override this
   // with their own model in applyPreset.
@@ -364,6 +328,9 @@ export function CreateAgentModal({ onClose }: { onClose: () => void }) {
     [catalog]
   );
 
+  // Once the catalog resolves, default backend/model to the first option if
+  // the current backend isn't actually available. Keeps the initial
+  // "claude_cli" guess if it IS in the catalog.
   useEffect(() => {
     if (PROVIDERS.length === 0) return;
     if (PROVIDERS.some((p) => p.id === backend)) {
@@ -418,15 +385,9 @@ export function CreateAgentModal({ onClose }: { onClose: () => void }) {
   };
 
   const specialtyOptions = specialtiesByRole[agentRole] ?? [];
-  const allSpecialties = useMemo(
-    () => [...specialties, ...customSpecialties],
-    [specialties, customSpecialties]
-  );
 
   // Only some specialties have a tailored placeholder in the catalog, so the
   // first one that does wins and the rest fall back to the role's "default".
-  // Specialties are picked after this step, so they're only set here when a
-  // preset seeded them.
   const descPlaceholder = useMemo(() => {
     const match = specialties.find((s) =>
       i18n.exists(`agents:create.descPlaceholders.${agentRole}.${specialtySlug(s)}`)
@@ -436,21 +397,31 @@ export function CreateAgentModal({ onClose }: { onClose: () => void }) {
   }, [agentRole, specialties, t, i18n]);
 
   // Split a mixed specialty list into the role's catalog options and the
-  // custom remainder — the two are separate state so the specialties step
-  // renders them differently.
+  // custom remainder — the two are separate state so the chips render them
+  // differently.
   const seedSpecialties = (role: AgentType, list: string[]) => {
     const options = specialtiesByRole[role] ?? [];
     setSpecialties(list.filter((s) => options.includes(s)));
     setCustomSpecialties(list.filter((s) => !options.includes(s)));
   };
 
-  // Quick path: seed every step from the server's proposal and land on
-  // review. The name comes from the draft (the brief step has no name
-  // field); the user edits it there if they want.
+  const prefetchGoogle = () => {
+    if (googleConnectedRef.current !== null) return;
+    void getProviderStatus("google")
+      .then((s) => {
+        googleConnectedRef.current = s.connected;
+      })
+      .catch(() => {
+        // stays null — re-checked at create time
+      });
+  };
+
+  // Draft: fill every field from the server's proposal. A name the user
+  // already typed is sent along and comes back unchanged.
   const applyDraft = (d: AgentDraft) => {
     setPreset(null);
     setCreationPath("quick");
-    setDisplayName(d.displayName);
+    if (d.displayName) setDisplayName(d.displayName);
     const role = (agentTypes.some((x) => x.id === d.agentType)
       ? d.agentType
       : "worker") as AgentType;
@@ -463,17 +434,8 @@ export function CreateAgentModal({ onClose }: { onClose: () => void }) {
     setCustomInstructions(d.instructions);
     setSelectedTools(d.tools);
     setRequiresLocation(d.requiresLocation);
-    if (d.requiresGoogle && googleConnectedRef.current === null) {
-      void getProviderStatus("google")
-        .then((s) => {
-          googleConnectedRef.current = s.connected;
-        })
-        .catch(() => {
-          // stays null — re-checked at create time
-        });
-    }
-    setEditingFromReview(false);
-    setStepIndex(STEPS.indexOf("review"));
+    if (d.requiresGoogle) prefetchGoogle();
+    setDrafted(true);
   };
 
   const handleDraft = async () => {
@@ -481,8 +443,9 @@ export function CreateAgentModal({ onClose }: { onClose: () => void }) {
     if (!text || drafting) return;
     setDrafting(true);
     setDraftError(null);
+    setDrafted(false);
     try {
-      applyDraft(await draftAgent(text));
+      applyDraft(await draftAgent(text, displayName.trim() || undefined));
     } catch (e) {
       const status = (e as { status?: number } | null)?.status;
       setDraftError(
@@ -493,106 +456,35 @@ export function CreateAgentModal({ onClose }: { onClose: () => void }) {
     }
   };
 
-  // Apply a starting point (or "scratch" = null). Sets role FIRST and then
-  // specialties in the same handler — the role step's own click handler
-  // resets specialties on change, but this path bypasses it deliberately.
-  //
-  // A preset needs exactly one thing from the user — a name — so it goes to
-  // the name step with Next wired straight to review. Scratch walks every
-  // step, carrying anything typed in the brief box into the description so
-  // nothing is lost.
-  const applyPreset = (p: AgentPreset | null) => {
+  // Template chip: seed role/tone/specialties/description/instructions/
+  // tools. The name is left alone (the placeholder hints at one). Sets role
+  // FIRST and then specialties in the same handler — the role picker's own
+  // click handler resets specialties on change, but this path bypasses it
+  // deliberately.
+  const applyPreset = (p: AgentPreset) => {
     setPreset(p);
     setDraftError(null);
-    if (p) {
-      setCreationPath("preset");
-      setAgentRole(p.role);
-      seedSpecialties(p.role, p.specialties);
-      setTone(p.tone);
-      setCustomTone(null);
-      // Prefill in the user's language — the server preset carries English
-      // canonical text as the fallback. Both fields stay fully editable, so
-      // whatever the user keeps (or rewrites) is what lands on the agent.
-      setDescription(
-        t(`create.presets.${p.id}.description`, { defaultValue: p.description })
-      );
-      setCustomInstructions(
-        t(`create.presets.${p.id}.instructions`, { defaultValue: p.instructions })
-      );
-      setSelectedTools(p.tools ?? []);
-      // Preset default model (only meaningful on the claude_cli backend the
-      // wizard starts on; a later provider switch re-defaults it anyway).
-      if (p.model && backend === "claude_cli") setModel(p.model);
-      if (p.requiresGoogle && googleConnectedRef.current === null) {
-        void getProviderStatus("google")
-          .then((s) => {
-            googleConnectedRef.current = s.connected;
-          })
-          .catch(() => {
-            // stays null — re-checked at create time
-          });
-      }
-      setEditingFromReview(true);
-    } else {
-      // Scratch: return the seeded fields to pristine so switching from a
-      // preset back to scratch doesn't silently keep its seed.
-      setCreationPath("advanced");
-      setAgentRole("worker");
-      setSpecialties([]);
-      setCustomSpecialties([]);
-      setTone(null);
-      setCustomTone(null);
-      setDescription(brief.trim());
-      setCustomInstructions("");
-      setSelectedTools([]);
-      setRequiresLocation(false);
-      if (backend === "claude_cli") setModel(defaultModelFor(backend));
-      setEditingFromReview(false);
-    }
-    setStepIndex(STEPS.indexOf("name"));
-  };
-
-  // Review → a single step to adjust it; Next/Back come straight back.
-  const editStep = (s: WizardStep) => {
-    setEditingFromReview(true);
-    setStepIndex(STEPS.indexOf(s));
-  };
-
-  const canNext = useMemo(() => {
-    // The brief step advances by drafting or picking a chip, not Next.
-    if (step === "brief") return false;
-    if (step === "name") return displayName.trim().length > 0;
-    return true;
-  }, [step, displayName]);
-
-  const isLast = step === "review";
-  const isFirst = step === "brief";
-
-  const handleBack = () => {
-    if (isFirst) {
-      onClose();
-      return;
-    }
-    if (editingFromReview) {
-      setEditingFromReview(false);
-      setStepIndex(STEPS.indexOf("review"));
-      return;
-    }
-    setStepIndex((i) => Math.max(0, i - 1));
-  };
-
-  const handleNext = () => {
-    if (!canNext) return;
-    if (isLast) {
-      void handleCreate();
-      return;
-    }
-    if (editingFromReview) {
-      setEditingFromReview(false);
-      setStepIndex(STEPS.indexOf("review"));
-      return;
-    }
-    setStepIndex((i) => Math.min(STEPS.length - 1, i + 1));
+    setDrafted(false);
+    setCreationPath("preset");
+    setAgentRole(p.role);
+    seedSpecialties(p.role, p.specialties);
+    setTone(p.tone);
+    setCustomTone(null);
+    // Prefill in the user's language — the server preset carries English
+    // canonical text as the fallback. Both fields stay fully editable, so
+    // whatever the user keeps (or rewrites) is what lands on the agent.
+    setDescription(
+      t(`create.presets.${p.id}.description`, { defaultValue: p.description })
+    );
+    setCustomInstructions(
+      t(`create.presets.${p.id}.instructions`, { defaultValue: p.instructions })
+    );
+    setSelectedTools(p.tools ?? []);
+    // Preset default model (only meaningful on the claude_cli backend the
+    // form starts on; a later provider switch re-defaults it anyway).
+    if (p.model && backend === "claude_cli") setModel(p.model);
+    if (p.requiresGoogle) prefetchGoogle();
+    if (!displayName.trim()) nameInputRef.current?.focus();
   };
 
   const handleAvatarPick = () => fileInputRef.current?.click();
@@ -675,13 +567,13 @@ export function CreateAgentModal({ onClose }: { onClose: () => void }) {
   const handleCreate = useCallback(async () => {
     if (!displayName.trim()) {
       setError(t("create.errors.nameRequired"));
-      setEditingFromReview(true);
-      setStepIndex(STEPS.indexOf("name"));
+      nameInputRef.current?.focus();
       return;
     }
     // Hosted agents use the host's shared brain — no API key to enter.
     if (hosting === "local" && showApiKeyInput && !apiKey.trim()) {
       setError(t("create.errors.apiKeyRequired"));
+      setBrainOpen(true);
       return;
     }
     setCreating(true);
@@ -693,9 +585,9 @@ export function CreateAgentModal({ onClose }: { onClose: () => void }) {
       // hosted (the picker disables it, this backstops it).
       const hosted = hosting === "hosted" && canHost;
       const effBackend = hosted ? "claude_cli" : backend;
-      // Hosted model: honor the wizard's chosen model (a preset default like
-      // Sonnet 4.6, or whatever the user picked) when it's a valid claude_cli
-      // model; otherwise fall back to Opus 4.8 (the scratch default), then the
+      // Hosted model: honor the chosen model (a preset default like Sonnet
+      // 4.6, or whatever the user picked) when it's a valid claude_cli model;
+      // otherwise fall back to Opus 4.8 (the scratch default), then the
       // catalog's first hosted entry.
       const hostedModels = catalog.modelsFor("claude_cli");
       const effModel = hosted
@@ -760,7 +652,7 @@ export function CreateAgentModal({ onClose }: { onClose: () => void }) {
       const newId = await createAgent({
         displayName: displayName.trim(),
         agentType: agentRole,
-        ...(creationPath ? { creationPath } : {}),
+        creationPath,
         // Local choice must be explicit — without it the backend auto-places
         // every new agent on the owner's org host when one exists.
         ...(!hosted ? { runtime: "local" as const } : {}),
@@ -777,8 +669,8 @@ export function CreateAgentModal({ onClose }: { onClose: () => void }) {
         ...(Object.keys(metadata).length > 0 ? { metadata } : {}),
         ...(llmApiKeyIdPin ? { llmApiKeyId: llmApiKeyIdPin } : {}),
         // Visibility: omit organizationIds (= all-workspaces default)
-        // unless the user picked a pin set on the review step — any
-        // workspaces they belong to, Personal included.
+        // unless the user picked a pin set — any workspaces they belong
+        // to, Personal included.
         ...(visibilityOrgIds && visibilityOrgIds.length > 0
           ? { organizationIds: visibilityOrgIds }
           : {}),
@@ -827,7 +719,7 @@ export function CreateAgentModal({ onClose }: { onClose: () => void }) {
       // Google-backed selection: if the owner hasn't connected Google, keep
       // the modal open on a connect pane instead of closing — the agent
       // exists either way, but its tools only work once connected. Covers
-      // presets AND scratch agents that picked Google tools.
+      // presets AND hand-built agents that picked Google tools.
       const wantsGoogle =
         preset?.requiresGoogle || anyGoogleTool(toolCatalog, selectedTools);
 
@@ -890,6 +782,7 @@ export function CreateAgentModal({ onClose }: { onClose: () => void }) {
     visibilityOrgIds,
     creationPath,
     brief,
+    canHost,
     t,
   ]);
 
@@ -902,39 +795,19 @@ export function CreateAgentModal({ onClose }: { onClose: () => void }) {
     .toUpperCase();
 
   const providerLabel = PROVIDERS.find((p) => p.id === backend)?.label;
+  const modelLabel = models.find((m) => m.id === model)?.label ?? model;
+  const brainSummary =
+    hosting === "hosted"
+      ? `${t("hosting.hosted")} · ${t("create.hostedDescription")}`
+      : [providerLabel, modelLabel].filter(Boolean).join(" · ");
+  const toolsSummary =
+    selectedTools.length > 0
+      ? t("create.review.toolsCount", { count: selectedTools.length })
+      : t("create.summary.noTools");
+  const selectedRole = agentTypes.find((x) => x.id === agentRole);
 
-  // Step titles personalize once a name exists, and the specialties title
-  // varies by the chosen role — so titles resolve here rather than via a
-  // static key map.
-  const stepTitle = (s: WizardStep): string => {
-    const name = displayName.trim();
-    switch (s) {
-      case "brief":
-        return t("create.brief.title");
-      case "name":
-        return t("create.nameTitle");
-      case "photo":
-        return name
-          ? t("create.photoTitleNamed", { name })
-          : t("create.photoTitle");
-      case "role":
-        return name
-          ? t("create.roleTitleNamed", { name })
-          : t("create.roleTitle");
-      case "tone":
-        return t("create.toneTitle");
-      case "specialties":
-        return t(`create.specialtiesTitleByRole.${agentRole}`);
-      case "details":
-        return t("create.detailsTitle");
-      case "tools":
-        return t("create.toolsTitle");
-      case "brain":
-        return t("create.brainTitle");
-      case "review":
-        return t("create.reviewTitle");
-    }
-  };
+  const canCreate =
+    displayName.trim().length > 0 && !creating && PROVIDERS.length > 0;
 
   // Launch the Google OAuth in the system browser and poll for the
   // credential landing (the callback is handled server-side; there's no
@@ -1034,90 +907,169 @@ export function CreateAgentModal({ onClose }: { onClose: () => void }) {
   return (
     <>
     <Dialog open onOpenChange={(open) => !open && onClose()}>
-      <DialogContent className="sm:max-w-[480px] p-0 gap-0 overflow-hidden">
-        <div className="relative">
-          <AmbientParticles count={14} />
+      <DialogContent className="sm:max-w-[640px] p-0 gap-0 overflow-hidden">
+        <div className="relative flex max-h-[88vh] flex-col">
+          <AmbientParticles count={10} />
 
           {/* Header */}
-          <div className="relative px-6 pt-7 pb-3 flex flex-col items-center text-center gap-3">
-            <BotMascot size={64} />
-            <div className="space-y-1">
-              <DialogTitle className="text-lg font-semibold text-foreground">
-                <LetterReveal
-                  key={step}
-                  text={stepTitle(step)}
-                  delayPerChar={28}
-                />
+          <div className="relative flex items-center gap-3 px-6 pt-5 pb-3">
+            <BotMascot size={44} />
+            <div className="min-w-0 space-y-0.5">
+              <DialogTitle className="text-base font-semibold text-foreground">
+                {t("create.dialogTitle")}
               </DialogTitle>
-              <p className="text-sm text-text-muted min-h-[2.5em]">
-                {step === "review" && creationPath === "quick"
-                  ? t("create.brief.draftedHint")
-                  : t(STEP_SUBTITLE_KEYS[step])}
-              </p>
-            </div>
-
-            {/* Step pips */}
-            <div className="flex items-center gap-1.5">
-              {STEPS.map((s, i) => (
-                <span
-                  key={s}
-                  className={cn(
-                    "h-1.5 rounded-full transition-all duration-300",
-                    i === stepIndex
-                      ? "w-6 bg-accent"
-                      : i < stepIndex
-                        ? "w-1.5 bg-accent/60"
-                        : "w-1.5 bg-border"
-                  )}
-                />
-              ))}
+              <p className="text-xs text-text-muted">{t("create.dialogHint")}</p>
             </div>
           </div>
 
-          {/* Step body */}
-          <div className="relative px-6 pb-3 max-h-[55vh] overflow-y-auto">
-            <form
-              key={step}
-              onSubmit={(e) => {
-                e.preventDefault();
-                handleNext();
-              }}
-              className="space-y-4 pt-2 animate-in fade-in-0 slide-in-from-bottom-1 duration-300"
-            >
-              {step === "brief" && (
-                <div className="space-y-3">
-                  <div className="space-y-1.5">
-                    <div className="flex items-baseline justify-end">
-                      <span className="text-xs text-text-muted tabular-nums">
-                        {brief.length}/{limits.agent.creationBrief}
-                      </span>
-                    </div>
-                    <Textarea
-                      id="agent-brief"
-                      aria-label={t("create.brief.title")}
-                      value={brief}
-                      onChange={(e) => setBrief(e.target.value)}
-                      placeholder={t("create.brief.placeholder")}
-                      rows={4}
-                      maxLength={limits.agent.creationBrief}
-                      disabled={drafting}
-                      autoFocus
-                      onKeyDown={(e) => {
-                        if (e.key === "Enter" && (e.metaKey || e.ctrlKey)) {
-                          e.preventDefault();
-                          void handleDraft();
-                        }
-                      }}
+          {/* Body */}
+          <form
+            onSubmit={(e) => {
+              e.preventDefault();
+              void handleCreate();
+            }}
+            className="relative min-h-0 flex-1 space-y-5 overflow-y-auto px-6 pb-5"
+          >
+            {/* Identity: avatar + name + role */}
+            <div className="flex items-start gap-4">
+              <button
+                type="button"
+                onClick={handleAvatarPick}
+                className="relative group shrink-0"
+                title={t("create.chooseAvatar")}
+              >
+                <Avatar className="h-[72px] w-[72px] rounded-2xl border-2 border-dashed border-border group-hover:border-primary transition-colors">
+                  {avatarUrl && (
+                    <AvatarImage
+                      src={avatarUrl}
+                      className="rounded-2xl object-cover"
                     />
+                  )}
+                  <AvatarFallback className="rounded-2xl bg-primary/5 text-lg font-semibold text-text-muted">
+                    {initials || <Camera className="h-5 w-5" />}
+                  </AvatarFallback>
+                </Avatar>
+                {uploadingAvatar && (
+                  <div className="absolute inset-0 flex items-center justify-center rounded-2xl bg-background/70">
+                    <Loader2 className="h-5 w-5 animate-spin text-primary" />
                   </div>
-                  {draftError && (
-                    <p className="text-xs text-destructive" role="alert">
-                      {draftError}
+                )}
+              </button>
+              <input
+                ref={fileInputRef}
+                type="file"
+                accept="image/jpeg,image/png,image/webp"
+                className="hidden"
+                onChange={(e) => {
+                  handleAvatarFile(e.target.files?.[0]);
+                  // Clear the value so picking the same file again after
+                  // cancelling the crop still fires onChange.
+                  e.target.value = "";
+                }}
+              />
+              <div className="min-w-0 flex-1 space-y-3">
+                <div className="space-y-1.5">
+                  <div className="flex items-baseline justify-between">
+                    <Label htmlFor="agent-name">{t("common:name")}</Label>
+                    <span className="text-xs text-text-muted tabular-nums">
+                      {displayName.length}/{limits.agent.displayName}
+                    </span>
+                  </div>
+                  <Input
+                    id="agent-name"
+                    ref={nameInputRef}
+                    type="text"
+                    value={displayName}
+                    onChange={(e) => {
+                      setDisplayName(e.target.value);
+                      if (error) setError(null);
+                    }}
+                    placeholder={
+                      preset
+                        ? t(preset.namePlaceholderKey)
+                        : t("create.namePlaceholder")
+                    }
+                    autoFocus
+                    maxLength={limits.agent.displayName}
+                  />
+                </div>
+                <div className="space-y-1.5">
+                  <Label>{t("create.stepLabels.role")}</Label>
+                  <div className="grid grid-cols-4 gap-1.5">
+                    {agentTypes.map((type) => {
+                      const Icon = TYPE_ICONS[type.id] ?? Bot;
+                      const selected = agentRole === type.id;
+                      return (
+                        <button
+                          key={type.id}
+                          type="button"
+                          onClick={() => {
+                            if (agentRole === type.id) return;
+                            setAgentRole(type.id as AgentType);
+                            setSpecialties([]);
+                            setCustomSpecialties([]);
+                          }}
+                          className={cn(
+                            "flex flex-col items-center gap-1 rounded-lg border px-2 py-2 text-center transition-colors",
+                            selected
+                              ? "border-primary bg-primary/5"
+                              : "border-border hover:bg-accent"
+                          )}
+                        >
+                          <Icon
+                            className={cn(
+                              "h-4 w-4",
+                              selected ? "text-primary" : "text-text-muted"
+                            )}
+                          />
+                          <span className="text-[11px] font-medium leading-tight">
+                            {t(`roles.${type.id}.label`, { defaultValue: type.label })}
+                          </span>
+                        </button>
+                      );
+                    })}
+                  </div>
+                  {selectedRole && (
+                    <p className="text-[11px] text-text-muted">
+                      {t(`roles.${selectedRole.id}.desc`, {
+                        defaultValue: selectedRole.description,
+                      })}
                     </p>
                   )}
+                </div>
+              </div>
+            </div>
+
+            {/* Brief → draft, or a template chip */}
+            <Section title={t("create.brief.title")} hint={t("create.brief.hint")}>
+              <div className="space-y-2">
+                <div className="relative">
+                  <Textarea
+                    id="agent-brief"
+                    aria-label={t("create.brief.title")}
+                    value={brief}
+                    onChange={(e) => setBrief(e.target.value)}
+                    placeholder={t("create.brief.placeholder")}
+                    rows={3}
+                    maxLength={limits.agent.creationBrief}
+                    disabled={drafting}
+                    className="resize-none"
+                    onKeyDown={(e) => {
+                      if (e.key === "Enter" && (e.metaKey || e.ctrlKey)) {
+                        e.preventDefault();
+                        void handleDraft();
+                      }
+                    }}
+                  />
+                  <span className="pointer-events-none absolute bottom-1.5 right-2 text-[10px] text-text-muted tabular-nums">
+                    {brief.length}/{limits.agent.creationBrief}
+                  </span>
+                </div>
+                <div className="flex flex-wrap items-center gap-2">
                   <Button
                     type="button"
-                    className="w-full"
+                    size="sm"
+                    variant={drafted ? "outline" : "default"}
                     onClick={() => void handleDraft()}
                     disabled={drafting || brief.trim().length === 0}
                   >
@@ -1133,248 +1085,136 @@ export function CreateAgentModal({ onClose }: { onClose: () => void }) {
                       </>
                     )}
                   </Button>
-                  {agentPresets.length > 0 && (
-                    <div className="space-y-1.5">
-                      <p className="text-[11px] text-text-muted">
-                        {t("create.brief.orPreset")}
-                      </p>
-                      <div className="flex flex-wrap gap-1.5">
-                        {agentPresets.map((p) => {
-                          const Icon = PRESET_ICONS[p.id];
-                          return (
-                            <button
-                              key={p.id}
-                              type="button"
-                              onClick={() => applyPreset(p)}
-                              disabled={drafting}
-                              title={t(p.taglineKey)}
-                              className="inline-flex items-center gap-1.5 rounded-full border border-border px-2.5 py-1 text-xs transition-colors hover:bg-accent disabled:opacity-50"
-                            >
-                              <Icon className="h-3.5 w-3.5 text-text-muted" />
-                              {t(p.labelKey)}
-                              {p.requiresGoogle && (
-                                <span className="rounded-full bg-muted px-1.5 py-px text-[9px] uppercase tracking-wide text-muted-foreground">
-                                  {t("create.presets.googleBadge")}
-                                </span>
-                              )}
-                            </button>
-                          );
-                        })}
-                      </div>
-                    </div>
+                  {draftError && (
+                    <p className="text-xs text-destructive" role="alert">
+                      {draftError}
+                    </p>
                   )}
-                  <button
-                    type="button"
-                    onClick={() => applyPreset(null)}
-                    disabled={drafting}
-                    className="flex w-full items-center justify-center gap-1.5 py-1 text-xs text-text-muted transition-colors hover:text-foreground disabled:opacity-50"
-                  >
-                    <PenLine className="h-3.5 w-3.5" />
-                    {t("create.brief.stepByStep")}
-                  </button>
+                  {drafted && !draftError && (
+                    <p className="flex items-center gap-1 text-xs text-success">
+                      <Check className="h-3.5 w-3.5" />
+                      {t("create.brief.draftedHint")}
+                    </p>
+                  )}
                 </div>
-              )}
-
-              {step === "name" && (
-                <div className="space-y-1.5">
-                  <div className="flex items-baseline justify-between">
-                    <Label htmlFor="agent-name">{t("common:name")}</Label>
-                    <span className="text-xs text-text-muted tabular-nums">
-                      {displayName.length}/{limits.agent.displayName}
+                {agentPresets.length > 0 && (
+                  <div className="flex flex-wrap items-center gap-1.5">
+                    <span className="text-[11px] text-text-muted">
+                      {t("create.brief.orPreset")}
                     </span>
-                  </div>
-                  <Input
-                    id="agent-name"
-                    type="text"
-                    value={displayName}
-                    onChange={(e) => setDisplayName(e.target.value)}
-                    placeholder={
-                      preset
-                        ? t(preset.namePlaceholderKey)
-                        : t("create.namePlaceholder")
-                    }
-                    autoFocus
-                    maxLength={limits.agent.displayName}
-                  />
-                </div>
-              )}
-
-              {step === "photo" && (
-                <div className="flex flex-col items-center gap-3 py-2">
-                  <button
-                    type="button"
-                    onClick={handleAvatarPick}
-                    className="relative group"
-                    title={t("create.chooseAvatar")}
-                  >
-                    <Avatar className="h-32 w-32 rounded-2xl border-2 border-dashed border-border group-hover:border-primary transition-colors">
-                      {avatarUrl && (
-                        <AvatarImage
-                          src={avatarUrl}
-                          className="rounded-2xl object-cover"
-                        />
-                      )}
-                      <AvatarFallback className="rounded-2xl bg-primary/5 text-2xl font-semibold text-text-muted">
-                        {initials || <Camera className="h-7 w-7" />}
-                      </AvatarFallback>
-                    </Avatar>
-                    {uploadingAvatar && (
-                      <div className="absolute inset-0 flex items-center justify-center rounded-2xl bg-background/70">
-                        <Loader2 className="h-5 w-5 animate-spin text-primary" />
-                      </div>
-                    )}
-                  </button>
-                  <p className="text-xs text-text-muted">
-                    {avatarUrl ? t("create.clickToChange") : t("create.clickToChoosePhoto")}
-                  </p>
-                  <input
-                    ref={fileInputRef}
-                    type="file"
-                    accept="image/jpeg,image/png,image/webp"
-                    className="hidden"
-                    onChange={(e) => {
-                      handleAvatarFile(e.target.files?.[0]);
-                      // Clear the value so picking the same file again after
-                      // cancelling the crop still fires onChange.
-                      e.target.value = "";
-                    }}
-                  />
-                </div>
-              )}
-
-              {step === "role" && (
-                <div className="grid grid-cols-2 gap-2">
-                  {agentTypes.map((type) => {
-                    const Icon = TYPE_ICONS[type.id] ?? Bot;
-                    const selected = agentRole === type.id;
-                    return (
-                      <button
-                        key={type.id}
-                        type="button"
-                        onClick={() => {
-                          setAgentRole(type.id as AgentType);
-                          setSpecialties([]);
-                          setCustomSpecialties([]);
-                        }}
-                        className={cn(
-                          "flex flex-col items-center gap-1.5 rounded-lg border p-3 text-center transition-colors",
-                          selected
-                            ? "border-primary bg-primary/5"
-                            : "border-border hover:bg-accent"
-                        )}
-                      >
-                        <Icon
+                    {agentPresets.map((p) => {
+                      const Icon = PRESET_ICONS[p.id];
+                      const active = preset?.id === p.id;
+                      return (
+                        <button
+                          key={p.id}
+                          type="button"
+                          onClick={() => applyPreset(p)}
+                          disabled={drafting}
+                          title={t(p.taglineKey)}
                           className={cn(
-                            "h-5 w-5",
-                            selected ? "text-primary" : "text-text-muted"
+                            "inline-flex items-center gap-1.5 rounded-full border px-2.5 py-1 text-xs transition-colors disabled:opacity-50",
+                            active
+                              ? "border-primary bg-primary/5 text-foreground"
+                              : "border-border hover:bg-accent"
                           )}
-                        />
-                        <span className="text-xs font-medium">
-                          {t(`roles.${type.id}.label`, { defaultValue: type.label })}
-                        </span>
-                        <span className="text-[10px] leading-tight text-text-muted">
-                          {t(`roles.${type.id}.desc`, { defaultValue: type.description })}
-                        </span>
-                      </button>
-                    );
-                  })}
-                </div>
-              )}
-
-              {step === "tone" && (
-                <div className="space-y-4">
-                  <div className="space-y-2">
-                    <div className="flex flex-wrap gap-1.5">
-                      {tones.map((toneKey) => {
-                        const selected = tone === toneKey;
-                        return (
-                          <button
-                            key={toneKey}
-                            type="button"
-                            onClick={() => {
-                              setTone(toneKey);
-                              setCustomTone(null);
-                            }}
+                        >
+                          <Icon
                             className={cn(
-                              "rounded-full border px-3 py-1 text-xs transition-colors",
-                              selected
-                                ? "border-primary bg-primary text-primary-foreground"
-                                : "border-border hover:bg-accent"
+                              "h-3.5 w-3.5",
+                              active ? "text-primary" : "text-text-muted"
                             )}
-                          >
-                            {t(`tones.${toneKey}`)}
-                          </button>
-                        );
-                      })}
-                      {customTone && (
-                        <span className="inline-flex items-center gap-1 rounded-full border border-primary bg-primary px-3 py-1 text-xs text-primary-foreground">
-                          {customTone}
-                          <button
-                            type="button"
-                            onClick={() => setCustomTone(null)}
-                            aria-label={t("create.removeCustomTone")}
-                          >
-                            <X className="h-3 w-3" />
-                          </button>
-                        </span>
-                      )}
-                      {!toneAddOpen && (
+                          />
+                          {t(p.labelKey)}
+                          {p.requiresGoogle && (
+                            <span className="rounded-full bg-muted px-1.5 py-px text-[9px] uppercase tracking-wide text-muted-foreground">
+                              {t("create.presets.googleBadge")}
+                            </span>
+                          )}
+                        </button>
+                      );
+                    })}
+                  </div>
+                )}
+              </div>
+            </Section>
+
+            {/* Personality */}
+            <Section title={t("create.sections.personality")}>
+              <div className="space-y-4">
+                {/* Tone */}
+                <div className="space-y-1.5">
+                  <Label>{t("create.stepLabels.tone")}</Label>
+                  <div className="flex flex-wrap gap-1.5">
+                    {tones.map((toneKey) => {
+                      const selected = tone === toneKey;
+                      return (
+                        <button
+                          key={toneKey}
+                          type="button"
+                          onClick={() => {
+                            setTone(toneKey);
+                            setCustomTone(null);
+                          }}
+                          className={cn(
+                            "rounded-full border px-3 py-1 text-xs transition-colors",
+                            selected
+                              ? "border-primary bg-primary text-primary-foreground"
+                              : "border-border hover:bg-accent"
+                          )}
+                        >
+                          {t(`tones.${toneKey}`)}
+                        </button>
+                      );
+                    })}
+                    {customTone && (
+                      <span className="inline-flex items-center gap-1 rounded-full border border-primary bg-primary px-3 py-1 text-xs text-primary-foreground">
+                        {customTone}
                         <button
                           type="button"
-                          onClick={() => setToneAddOpen(true)}
-                          className="inline-flex items-center gap-1 rounded-full border border-dashed border-border px-3 py-1 text-xs text-text-muted hover:bg-accent"
+                          onClick={() => setCustomTone(null)}
+                          aria-label={t("create.removeCustomTone")}
                         >
-                          <Plus className="h-3 w-3" /> {t("common:custom")}
+                          <X className="h-3 w-3" />
                         </button>
-                      )}
-                    </div>
-                    {toneAddOpen && (
-                      <Input
-                        autoFocus
-                        value={customToneInput}
-                        onChange={(e) => setCustomToneInput(e.target.value)}
-                        placeholder={t("create.customTonePlaceholder")}
-                        maxLength={30}
-                        onKeyDown={(e) => {
-                          if (e.key === "Enter") {
-                            e.preventDefault();
-                            commitCustomTone();
-                          }
-                          if (e.key === "Escape") {
-                            setCustomToneInput("");
-                            commitCustomTone();
-                          }
-                        }}
-                        onBlur={commitCustomTone}
-                        className="h-8 text-xs"
-                      />
+                      </span>
+                    )}
+                    {!toneAddOpen && (
+                      <button
+                        type="button"
+                        onClick={() => setToneAddOpen(true)}
+                        className="inline-flex items-center gap-1 rounded-full border border-dashed border-border px-3 py-1 text-xs text-text-muted hover:bg-accent"
+                      >
+                        <Plus className="h-3 w-3" /> {t("common:custom")}
+                      </button>
                     )}
                   </div>
-                  <div className="space-y-1.5">
-                    <div className="flex items-baseline justify-between">
-                      <Label htmlFor="agent-desc">{t("common:descriptionOptional")}</Label>
-                      <span className="text-xs text-text-muted tabular-nums">
-                        {description.length}/{limits.agent.description}
-                      </span>
-                    </div>
-                    <Textarea
-                      id="agent-desc"
-                      value={description}
-                      onChange={(e) => setDescription(e.target.value)}
-                      placeholder={descPlaceholder}
-                      rows={3}
-                      maxLength={limits.agent.description}
-                      className="resize-none"
+                  {toneAddOpen && (
+                    <Input
+                      autoFocus
+                      value={customToneInput}
+                      onChange={(e) => setCustomToneInput(e.target.value)}
+                      placeholder={t("create.customTonePlaceholder")}
+                      maxLength={30}
+                      onKeyDown={(e) => {
+                        if (e.key === "Enter") {
+                          e.preventDefault();
+                          commitCustomTone();
+                        }
+                        if (e.key === "Escape") {
+                          setCustomToneInput("");
+                          commitCustomTone();
+                        }
+                      }}
+                      onBlur={commitCustomTone}
+                      className="h-8 text-xs"
                     />
-                  </div>
+                  )}
                 </div>
-              )}
 
-              {step === "specialties" && (
-                <div className="space-y-2">
-                  <p className="text-xs text-text-muted">
-                    {t(`create.specialtiesTitleByRole.${agentRole}`)}
-                  </p>
+                {/* Specialties */}
+                <div className="space-y-1.5">
+                  <Label>{t(`create.specialtiesLabel.${agentRole}`)}</Label>
                   <div className="flex flex-wrap gap-1.5">
                     {specialtyOptions.map((s) => {
                       const isOn = specialties.includes(s);
@@ -1419,7 +1259,7 @@ export function CreateAgentModal({ onClose }: { onClose: () => void }) {
                         onClick={() => setSpecialtyAddOpen(true)}
                         className="inline-flex items-center gap-1 rounded-full border border-dashed border-border px-3 py-1 text-xs text-text-muted hover:bg-accent"
                       >
-                        <Plus className="h-3 w-3" /> Custom
+                        <Plus className="h-3 w-3" /> {t("common:custom")}
                       </button>
                     )}
                   </div>
@@ -1445,678 +1285,562 @@ export function CreateAgentModal({ onClose }: { onClose: () => void }) {
                     />
                   )}
                 </div>
-              )}
 
-              {step === "details" && (
-                <div className="space-y-3">
-                  <div className="space-y-1.5">
-                    <div className="flex items-baseline justify-between">
-                      <Label htmlFor="agent-instructions">
-                        {t("create.customInstructionsOptional")}
-                      </Label>
-                      <span className="text-xs text-text-muted tabular-nums">
-                        {customInstructions.length}/2000
-                      </span>
-                    </div>
-                    <Textarea
-                      id="agent-instructions"
-                      value={customInstructions}
-                      onChange={(e) => setCustomInstructions(e.target.value)}
-                      placeholder={t("create.instructionsPlaceholder")}
-                      rows={4}
-                      maxLength={2000}
-                      className="resize-none"
-                    />
+                {/* Description */}
+                <div className="space-y-1.5">
+                  <div className="flex items-baseline justify-between">
+                    <Label htmlFor="agent-desc">{t("common:descriptionOptional")}</Label>
+                    <span className="text-xs text-text-muted tabular-nums">
+                      {description.length}/{limits.agent.description}
+                    </span>
                   </div>
-                  <div className="flex items-center justify-between rounded-lg border border-border px-3 py-2">
-                    <div className="flex items-center gap-2">
-                      <MapPin
-                        className={cn(
-                          "h-4 w-4",
-                          requiresLocation ? "text-primary" : "text-text-muted"
-                        )}
-                      />
-                      <div>
-                        <div className="text-xs font-medium">{t("create.locationAccess")}</div>
-                        <div className="text-[10px] text-text-muted">
-                          {t("create.locationAccessDescription")}
-                        </div>
+                  <Textarea
+                    id="agent-desc"
+                    value={description}
+                    onChange={(e) => setDescription(e.target.value)}
+                    placeholder={descPlaceholder}
+                    rows={2}
+                    maxLength={limits.agent.description}
+                    className="resize-none"
+                  />
+                </div>
+
+                {/* Instructions */}
+                <div className="space-y-1.5">
+                  <div className="flex items-baseline justify-between">
+                    <Label htmlFor="agent-instructions">
+                      {t("create.customInstructionsOptional")}
+                    </Label>
+                    <span className="text-xs text-text-muted tabular-nums">
+                      {customInstructions.length}/{INSTRUCTIONS_MAX}
+                    </span>
+                  </div>
+                  <Textarea
+                    id="agent-instructions"
+                    value={customInstructions}
+                    onChange={(e) => setCustomInstructions(e.target.value)}
+                    placeholder={t("create.instructionsPlaceholder")}
+                    rows={3}
+                    maxLength={INSTRUCTIONS_MAX}
+                    className="resize-none"
+                  />
+                </div>
+
+                {/* Location */}
+                <div className="flex items-center justify-between rounded-lg border border-border px-3 py-2">
+                  <div className="flex items-center gap-2">
+                    <MapPin
+                      className={cn(
+                        "h-4 w-4",
+                        requiresLocation ? "text-primary" : "text-text-muted"
+                      )}
+                    />
+                    <div>
+                      <div className="text-xs font-medium">{t("create.locationAccess")}</div>
+                      <div className="text-[10px] text-text-muted">
+                        {t("create.locationAccessDescription")}
                       </div>
                     </div>
-                    <Switch
-                      checked={requiresLocation}
-                      onCheckedChange={setRequiresLocation}
-                    />
                   </div>
+                  <Switch
+                    checked={requiresLocation}
+                    onCheckedChange={setRequiresLocation}
+                  />
                 </div>
-              )}
+              </div>
+            </Section>
 
-              {step === "tools" && (
-                <TooltipProvider delay={300}>
-                <div className="space-y-3">
-                  {groupIntegrationTools(toolCatalog).length === 0 ? (
-                    <p className="text-sm text-muted-foreground text-center py-6">
-                      {t("toolsTab.empty")}
-                    </p>
-                  ) : (
-                    groupIntegrationTools(toolCatalog).map((group) => {
-                      const enabledCount = group.tools.filter((tool) =>
-                        selectedTools.includes(tool.name)
-                      ).length;
-                      const allEnabled = enabledCount === group.tools.length;
-                      const expanded = expandedToolGroups.has(group.key);
-                      const groupNames = group.tools.map((tool) => tool.name);
-                      return (
-                        <div
-                          key={group.key}
-                          className="rounded-lg border border-border"
-                        >
-                          {/* Header is the control: one switch for the whole
-                              group; the chevron expands per-tool switches. */}
-                          <div className="flex items-center gap-2 px-3 py-2">
-                            <button
-                              type="button"
-                              onClick={() =>
-                                setExpandedToolGroups((prev) => {
-                                  const copy = new Set(prev);
-                                  if (copy.has(group.key)) copy.delete(group.key);
-                                  else copy.add(group.key);
-                                  return copy;
-                                })
-                              }
-                              className="flex min-w-0 flex-1 items-center gap-1.5 text-left"
-                            >
-                              {expanded ? (
-                                <ChevronDown className="w-3 h-3 shrink-0 text-text-muted" />
-                              ) : (
-                                <ChevronRight className="w-3 h-3 shrink-0 text-text-muted" />
-                              )}
-                              <span className="text-[11px] font-medium uppercase tracking-wide text-text-muted">
-                                {t(group.labelKey)}
-                              </span>
-                              <span
-                                className={cn(
-                                  "text-[10px] tabular-nums",
-                                  enabledCount > 0
-                                    ? "text-primary"
-                                    : "text-text-muted/70"
-                                )}
-                              >
-                                {enabledCount}/{group.tools.length}
-                              </span>
-                            </button>
-                            {group.credentialProvider &&
-                              (wizardConnections[group.credentialProvider] ===
-                              true ? (
-                                <span className="inline-flex items-center gap-1 rounded-full bg-muted px-1.5 py-px text-[9px] uppercase tracking-wide text-muted-foreground">
-                                  <Check className="w-2.5 h-2.5 text-success" />
-                                  {t("toolsTab.available")}
-                                </span>
-                              ) : wizardConnections[group.credentialProvider] ===
-                                false ? (
-                                <Button
-                                  type="button"
-                                  size="sm"
-                                  variant="outline"
-                                  className="h-5 px-2 text-[9px]"
-                                  onClick={() =>
-                                    void handleWizardConnect(
-                                      group.credentialProvider!
-                                    )
-                                  }
-                                >
-                                  {t("settings:connections.connectProvider", {
-                                    provider: PROVIDER_LABELS[
-                                      group.credentialProvider
-                                    ],
-                                  })}
-                                </Button>
-                              ) : null)}
-                            <Switch
-                              checked={allEnabled}
-                              onCheckedChange={(next) =>
-                                setSelectedTools((prev) =>
-                                  next
-                                    ? [
-                                        ...prev,
-                                        ...groupNames.filter(
-                                          (n) => !prev.includes(n)
-                                        ),
-                                      ]
-                                    : prev.filter((n) => !groupNames.includes(n))
-                                )
-                              }
-                            />
-                          </div>
-                          {expanded && (
-                            <div className="divide-y divide-border border-t border-border">
-                              {group.tools.map((tool) => {
-                                const checked = selectedTools.includes(tool.name);
-                                return (
-                                  <label
-                                    key={tool.id}
-                                    className="flex cursor-pointer items-center justify-between gap-3 px-3 py-2 hover:bg-accent/50 transition-colors"
-                                  >
-                                    <div className="min-w-0">
-                                      <p className="text-xs font-medium">
-                                        {tool.displayName || tool.name}
-                                      </p>
-                                      {tool.description && (
-                                        <Tooltip>
-                                          <TooltipTrigger
-                                            render={
-                                              <p className="text-[11px] text-text-muted line-clamp-1 cursor-default text-left">
-                                                {tool.description}
-                                              </p>
-                                            }
-                                          />
-                                          <TooltipContent
-                                            side="bottom"
-                                            align="start"
-                                            className="max-w-sm whitespace-normal text-left leading-snug"
-                                          >
-                                            {tool.description}
-                                          </TooltipContent>
-                                        </Tooltip>
-                                      )}
-                                    </div>
-                                    <Switch
-                                      checked={checked}
-                                      onCheckedChange={(next) =>
-                                        setSelectedTools((prev) =>
-                                          next
-                                            ? [...prev, tool.name]
-                                            : prev.filter((n) => n !== tool.name)
-                                        )
-                                      }
-                                    />
-                                  </label>
-                                );
-                              })}
-                            </div>
-                          )}
-                        </div>
-                      );
-                    })
-                  )}
-                </div>
-                </TooltipProvider>
-              )}
-
-              {step === "brain" && (
-                <div className="space-y-4">
-                  {/* Hosted/local picker is visible to everyone; without the
-                      hosted runtime unlocked the hosted card is disabled with
-                      a "coming soon" note and the agent runs locally. */}
-                  <div className="space-y-2">
-                      <div className="grid grid-cols-2 gap-2">
-                        <button
-                          type="button"
-                          disabled={!canHost}
-                          onClick={() => setHosting("hosted")}
-                          className={cn(
-                            "rounded-lg border p-3 text-left transition-colors",
-                            !canHost
-                              ? "cursor-not-allowed border-border opacity-60"
-                              : hosting === "hosted"
-                                ? "border-primary ring-1 ring-primary"
-                                : "border-border hover:border-foreground/30"
-                          )}
-                        >
-                          <div className="flex items-center gap-1.5 text-sm font-medium">
-                            ☁️ {t("hosting.hosted")}
-                            {!canHost && (
-                              <span className="rounded-full bg-muted px-1.5 py-px text-[9px] uppercase tracking-wide text-muted-foreground">
-                                {t("create.hostedComingSoon")}
-                              </span>
+            {/* Tools */}
+            <Section
+              title={t("create.stepLabels.tools")}
+              summary={toolsSummary}
+              summaryActive={selectedTools.length > 0}
+              open={toolsOpen}
+              onOpenChange={setToolsOpen}
+              hint={t("create.toolsHint")}
+            >
+              <TooltipProvider delay={300}>
+              <div className="space-y-2">
+                {groupIntegrationTools(toolCatalog).length === 0 ? (
+                  <p className="text-sm text-muted-foreground text-center py-4">
+                    {t("toolsTab.empty")}
+                  </p>
+                ) : (
+                  groupIntegrationTools(toolCatalog).map((group) => {
+                    const enabledCount = group.tools.filter((tool) =>
+                      selectedTools.includes(tool.name)
+                    ).length;
+                    const allEnabled = enabledCount === group.tools.length;
+                    const expanded = expandedToolGroups.has(group.key);
+                    const groupNames = group.tools.map((tool) => tool.name);
+                    return (
+                      <div
+                        key={group.key}
+                        className="rounded-lg border border-border"
+                      >
+                        {/* Header is the control: one switch for the whole
+                            group; the chevron expands per-tool switches. */}
+                        <div className="flex items-center gap-2 px-3 py-2">
+                          <button
+                            type="button"
+                            onClick={() =>
+                              setExpandedToolGroups((prev) => {
+                                const copy = new Set(prev);
+                                if (copy.has(group.key)) copy.delete(group.key);
+                                else copy.add(group.key);
+                                return copy;
+                              })
+                            }
+                            className="flex min-w-0 flex-1 items-center gap-1.5 text-left"
+                          >
+                            {expanded ? (
+                              <ChevronDown className="w-3 h-3 shrink-0 text-text-muted" />
+                            ) : (
+                              <ChevronRight className="w-3 h-3 shrink-0 text-text-muted" />
                             )}
+                            <span className="text-[11px] font-medium uppercase tracking-wide text-text-muted">
+                              {t(group.labelKey)}
+                            </span>
+                            <span
+                              className={cn(
+                                "text-[10px] tabular-nums",
+                                enabledCount > 0
+                                  ? "text-primary"
+                                  : "text-text-muted/70"
+                              )}
+                            >
+                              {enabledCount}/{group.tools.length}
+                            </span>
+                          </button>
+                          {group.credentialProvider &&
+                            (wizardConnections[group.credentialProvider] ===
+                            true ? (
+                              <span className="inline-flex items-center gap-1 rounded-full bg-muted px-1.5 py-px text-[9px] uppercase tracking-wide text-muted-foreground">
+                                <Check className="w-2.5 h-2.5 text-success" />
+                                {t("toolsTab.available")}
+                              </span>
+                            ) : wizardConnections[group.credentialProvider] ===
+                              false ? (
+                              <Button
+                                type="button"
+                                size="sm"
+                                variant="outline"
+                                className="h-5 px-2 text-[9px]"
+                                onClick={() =>
+                                  void handleWizardConnect(
+                                    group.credentialProvider!
+                                  )
+                                }
+                              >
+                                {t("settings:connections.connectProvider", {
+                                  provider: PROVIDER_LABELS[
+                                    group.credentialProvider
+                                  ],
+                                })}
+                              </Button>
+                            ) : null)}
+                          <Switch
+                            checked={allEnabled}
+                            onCheckedChange={(next) =>
+                              setSelectedTools((prev) =>
+                                next
+                                  ? [
+                                      ...prev,
+                                      ...groupNames.filter(
+                                        (n) => !prev.includes(n)
+                                      ),
+                                    ]
+                                  : prev.filter((n) => !groupNames.includes(n))
+                              )
+                            }
+                          />
+                        </div>
+                        {expanded && (
+                          <div className="divide-y divide-border border-t border-border">
+                            {group.tools.map((tool) => {
+                              const checked = selectedTools.includes(tool.name);
+                              return (
+                                <label
+                                  key={tool.id}
+                                  className="flex cursor-pointer items-center justify-between gap-3 px-3 py-2 hover:bg-accent/50 transition-colors"
+                                >
+                                  <div className="min-w-0">
+                                    <p className="text-xs font-medium">
+                                      {tool.displayName || tool.name}
+                                    </p>
+                                    {tool.description && (
+                                      <Tooltip>
+                                        <TooltipTrigger
+                                          render={
+                                            <p className="text-[11px] text-text-muted line-clamp-1 cursor-default text-left">
+                                              {tool.description}
+                                            </p>
+                                          }
+                                        />
+                                        <TooltipContent
+                                          side="bottom"
+                                          align="start"
+                                          className="max-w-sm whitespace-normal text-left leading-snug"
+                                        >
+                                          {tool.description}
+                                        </TooltipContent>
+                                      </Tooltip>
+                                    )}
+                                  </div>
+                                  <Switch
+                                    checked={checked}
+                                    onCheckedChange={(next) =>
+                                      setSelectedTools((prev) =>
+                                        next
+                                          ? [...prev, tool.name]
+                                          : prev.filter((n) => n !== tool.name)
+                                      )
+                                    }
+                                  />
+                                </label>
+                              );
+                            })}
                           </div>
-                          <div className="mt-0.5 text-xs text-text-muted">
-                            {t("create.hostedDescription")}
-                          </div>
-                        </button>
-                        <button
-                          type="button"
-                          onClick={() => setHosting("local")}
-                          className={cn(
-                            "rounded-lg border p-3 text-left transition-colors",
-                            hosting === "local"
-                              ? "border-primary ring-1 ring-primary"
-                              : "border-border hover:border-foreground/30"
-                          )}
-                        >
-                          <div className="text-sm font-medium">
-                            {t("hosting.local")}
-                          </div>
-                          <div className="mt-0.5 text-xs text-text-muted">
-                            {t("create.localDescription")}
-                          </div>
-                        </button>
+                        )}
                       </div>
-                  </div>
+                    );
+                  })
+                )}
+              </div>
+              </TooltipProvider>
+            </Section>
 
-                  {hosting === "hosted" && (
-                    <div className="rounded-lg border border-border bg-muted/40 p-3 text-sm text-text-muted">
-                      {t("create.hostedInfo")}
-                    </div>
-                  )}
-
-                  {hosting === "local" && (
-                  <>
-                  <div className="grid grid-cols-2 gap-3">
-                    <div className="space-y-1.5">
-                      <Label>{t("common:provider")}</Label>
-                      <Select
-                        value={backend}
-                        onValueChange={(v) => handleBackendChange(v ?? "")}
-                      >
-                        <SelectTrigger className="w-full">
-                          {/* Base UI renders the raw value unless given a
-                              render fn — map back to the display label. */}
-                          <SelectValue>
-                            {(val: unknown) =>
-                              PROVIDERS.find((p) => p.id === String(val))
-                                ?.label ?? String(val ?? "")
-                            }
-                          </SelectValue>
-                        </SelectTrigger>
-                        <SelectContent>
-                          {PROVIDERS.map((p) => (
-                            <SelectItem key={p.id} value={p.id}>
-                              {p.label}
-                            </SelectItem>
-                          ))}
-                        </SelectContent>
-                      </Select>
-                    </div>
-                    <div className="space-y-1.5">
-                      <Label>{t("common:model")}</Label>
-                      <Select
-                        value={model}
-                        onValueChange={(v) => v && setModel(v)}
-                      >
-                        <SelectTrigger className="w-full">
-                          <SelectValue>
-                            {(val: unknown) =>
-                              models.find((m) => m.id === String(val))?.label ??
-                              String(val ?? "")
-                            }
-                          </SelectValue>
-                        </SelectTrigger>
-                        <SelectContent>
-                          {models.map((m) => (
-                            <SelectItem key={m.id} value={m.id}>
-                              {m.label}
-                            </SelectItem>
-                          ))}
-                        </SelectContent>
-                      </Select>
-                    </div>
-                  </div>
-
-                  <div
+            {/* Brain */}
+            <Section
+              title={t("create.stepLabels.brain")}
+              summary={brainSummary}
+              open={brainOpen}
+              onOpenChange={setBrainOpen}
+              hint={t("create.brainHint")}
+            >
+              <div className="space-y-4">
+                {/* Hosted/local picker is visible to everyone; without the
+                    hosted runtime unlocked the hosted card is disabled with
+                    a "coming soon" note and the agent runs locally. */}
+                <div className="grid grid-cols-2 gap-2">
+                  <button
+                    type="button"
+                    disabled={!canHost}
+                    onClick={() => setHosting("hosted")}
                     className={cn(
-                      "grid gap-3",
-                      showEffort ? "grid-cols-2" : "grid-cols-1"
+                      "rounded-lg border p-3 text-left transition-colors",
+                      !canHost
+                        ? "cursor-not-allowed border-border opacity-60"
+                        : hosting === "hosted"
+                          ? "border-primary ring-1 ring-primary"
+                          : "border-border hover:border-foreground/30"
                     )}
                   >
+                    <div className="flex items-center gap-1.5 text-sm font-medium">
+                      ☁️ {t("hosting.hosted")}
+                      {!canHost && (
+                        <span className="rounded-full bg-muted px-1.5 py-px text-[9px] uppercase tracking-wide text-muted-foreground">
+                          {t("create.hostedComingSoon")}
+                        </span>
+                      )}
+                    </div>
+                    <div className="mt-0.5 text-xs text-text-muted">
+                      {t("create.hostedDescription")}
+                    </div>
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => setHosting("local")}
+                    className={cn(
+                      "rounded-lg border p-3 text-left transition-colors",
+                      hosting === "local"
+                        ? "border-primary ring-1 ring-primary"
+                        : "border-border hover:border-foreground/30"
+                    )}
+                  >
+                    <div className="text-sm font-medium">
+                      {t("hosting.local")}
+                    </div>
+                    <div className="mt-0.5 text-xs text-text-muted">
+                      {t("create.localDescription")}
+                    </div>
+                  </button>
+                </div>
+
+                {hosting === "hosted" && (
+                  <div className="rounded-lg border border-border bg-muted/40 p-3 text-sm text-text-muted">
+                    {t("create.hostedInfo")}
+                  </div>
+                )}
+
+                {hosting === "local" && (
+                <>
+                <div className="grid grid-cols-2 gap-3">
+                  <div className="space-y-1.5">
+                    <Label>{t("common:provider")}</Label>
+                    <Select
+                      value={backend}
+                      onValueChange={(v) => handleBackendChange(v ?? "")}
+                    >
+                      <SelectTrigger className="w-full">
+                        {/* Base UI renders the raw value unless given a
+                            render fn — map back to the display label. */}
+                        <SelectValue>
+                          {(val: unknown) =>
+                            PROVIDERS.find((p) => p.id === String(val))
+                              ?.label ?? String(val ?? "")
+                          }
+                        </SelectValue>
+                      </SelectTrigger>
+                      <SelectContent>
+                        {PROVIDERS.map((p) => (
+                          <SelectItem key={p.id} value={p.id}>
+                            {p.label}
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                  </div>
+                  <div className="space-y-1.5">
+                    <Label>{t("common:model")}</Label>
+                    <Select
+                      value={model}
+                      onValueChange={(v) => v && setModel(v)}
+                    >
+                      <SelectTrigger className="w-full">
+                        <SelectValue>
+                          {(val: unknown) =>
+                            models.find((m) => m.id === String(val))?.label ??
+                            String(val ?? "")
+                          }
+                        </SelectValue>
+                      </SelectTrigger>
+                      <SelectContent>
+                        {models.map((m) => (
+                          <SelectItem key={m.id} value={m.id}>
+                            {m.label}
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                  </div>
+                </div>
+
+                <div
+                  className={cn(
+                    "grid gap-3",
+                    showEffort ? "grid-cols-2" : "grid-cols-1"
+                  )}
+                >
+                  <div className="space-y-1.5">
+                    <Label>{t("executionMode")}</Label>
+                    <Select
+                      value={executionMode}
+                      onValueChange={(v) => v && setExecutionMode(v)}
+                    >
+                      <SelectTrigger className="w-full">
+                        <SelectValue>
+                          {(val: unknown) => {
+                            const mode = EXECUTION_MODES.find(
+                              (m) => m.id === String(val)
+                            );
+                            return mode ? t(mode.labelKey) : String(val ?? "");
+                          }}
+                        </SelectValue>
+                      </SelectTrigger>
+                      <SelectContent>
+                        {EXECUTION_MODES.filter((m) =>
+                          supportedModes.includes(m.id)
+                        ).map((m) => (
+                          <SelectItem key={m.id} value={m.id}>
+                            {t(m.labelKey)}
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                  </div>
+                  {showEffort && (
                     <div className="space-y-1.5">
-                      <Label>{t("executionMode")}</Label>
+                      <Label>{t("effortLabel")}</Label>
                       <Select
-                        value={executionMode}
-                        onValueChange={(v) => v && setExecutionMode(v)}
+                        value={effort || "high"}
+                        onValueChange={(v) => v && setEffort(v)}
                       >
                         <SelectTrigger className="w-full">
                           <SelectValue>
                             {(val: unknown) => {
-                              const mode = EXECUTION_MODES.find(
-                                (m) => m.id === String(val)
+                              const level = EFFORT_LEVELS.find(
+                                (e) => e.id === String(val)
                               );
-                              return mode ? t(mode.labelKey) : String(val ?? "");
+                              return level
+                                ? t(level.labelKey)
+                                : String(val ?? "");
                             }}
                           </SelectValue>
                         </SelectTrigger>
                         <SelectContent>
-                          {EXECUTION_MODES.filter((m) =>
-                            supportedModes.includes(m.id)
-                          ).map((m) => (
-                            <SelectItem key={m.id} value={m.id}>
-                              {t(m.labelKey)}
+                          {EFFORT_LEVELS.map((e) => (
+                            <SelectItem key={e.id} value={e.id}>
+                              {t(e.labelKey)}
                             </SelectItem>
                           ))}
                         </SelectContent>
                       </Select>
                     </div>
-                    {showEffort && (
-                      <div className="space-y-1.5">
-                        <Label>{t("effortLabel")}</Label>
-                        <Select
-                          value={effort || "high"}
-                          onValueChange={(v) => v && setEffort(v)}
-                        >
-                          <SelectTrigger className="w-full">
-                            <SelectValue>
-                              {(val: unknown) => {
-                                const level = EFFORT_LEVELS.find(
-                                  (e) => e.id === String(val)
-                                );
-                                return level
-                                  ? t(level.labelKey)
-                                  : String(val ?? "");
-                              }}
-                            </SelectValue>
-                          </SelectTrigger>
-                          <SelectContent>
-                            {EFFORT_LEVELS.map((e) => (
-                              <SelectItem key={e.id} value={e.id}>
-                                {t(e.labelKey)}
-                              </SelectItem>
-                            ))}
-                          </SelectContent>
-                        </Select>
-                      </div>
+                  )}
+                </div>
+
+                {needsApiKey && hasDefaultKey && (
+                  <div className="space-y-1.5">
+                    <Label>{t("create.providerApiKey", { provider: providerLabel })}</Label>
+                    <Select
+                      value={keySelection}
+                      onValueChange={(v) => {
+                        setKeySelection(String(v));
+                        if (v !== "__custom__") setApiKey("");
+                      }}
+                    >
+                      <SelectTrigger className="w-full">
+                        <SelectValue>
+                          {(val: unknown) => {
+                            const v = String(val);
+                            if (v === "__default__") return t("create.keyOptions.providerDefault");
+                            if (v === "__custom__") return t("create.keyOptions.customForAgent");
+                            return providerKeys.find((k) => k.id === v)?.label ?? v;
+                          }}
+                        </SelectValue>
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="__default__">{t("create.keyOptions.providerDefault")}</SelectItem>
+                        {providerKeys
+                          .filter((k) => !k.isDefault)
+                          .map((k) => (
+                            <SelectItem key={k.id} value={k.id}>
+                              {k.label}
+                            </SelectItem>
+                          ))}
+                        <SelectItem value="__custom__">{t("create.keyOptions.customForAgent")}</SelectItem>
+                      </SelectContent>
+                    </Select>
+                    {keySelection === "__default__" && (
+                      <p className="text-xs text-text-muted">
+                        {t("create.keyOptions.usesDefaultHint")}
+                      </p>
+                    )}
+                    {keySelection !== "__default__" && keySelection !== "__custom__" && (
+                      <p className="text-xs text-text-muted">
+                        {t("create.keyOptions.pinnedHint")}
+                      </p>
                     )}
                   </div>
+                )}
 
-                  {needsApiKey && hasDefaultKey && (
-                    <div className="space-y-1.5">
-                      <Label>{t("create.providerApiKey", { provider: providerLabel })}</Label>
-                      <Select
-                        value={keySelection}
-                        onValueChange={(v) => {
-                          setKeySelection(String(v));
-                          if (v !== "__custom__") setApiKey("");
-                        }}
+                {showApiKeyInput && (
+                  <div className="space-y-1.5">
+                    <Label htmlFor="llm-api-key">
+                      {hasDefaultKey
+                        ? t("create.newKeyThisAgent")
+                        : t("create.providerApiKey", { provider: providerLabel })}
+                    </Label>
+                    <div className="relative">
+                      <Input
+                        id="llm-api-key"
+                        type={showApiKey ? "text" : "password"}
+                        value={apiKey}
+                        onChange={(e) => setApiKey(e.target.value)}
+                        placeholder="sk-..."
+                        className="pr-10 font-mono text-xs"
+                      />
+                      <button
+                        type="button"
+                        onClick={() => setShowApiKey((v) => !v)}
+                        className="absolute right-2 top-1/2 -translate-y-1/2 text-text-muted hover:text-foreground"
                       >
-                        <SelectTrigger className="w-full">
-                          <SelectValue>
-                            {(val: unknown) => {
-                              const v = String(val);
-                              if (v === "__default__") return t("create.keyOptions.providerDefault");
-                              if (v === "__custom__") return t("create.keyOptions.customForAgent");
-                              return providerKeys.find((k) => k.id === v)?.label ?? v;
-                            }}
-                          </SelectValue>
-                        </SelectTrigger>
-                        <SelectContent>
-                          <SelectItem value="__default__">{t("create.keyOptions.providerDefault")}</SelectItem>
-                          {providerKeys
-                            .filter((k) => !k.isDefault)
-                            .map((k) => (
-                              <SelectItem key={k.id} value={k.id}>
-                                {k.label}
-                              </SelectItem>
-                            ))}
-                          <SelectItem value="__custom__">{t("create.keyOptions.customForAgent")}</SelectItem>
-                        </SelectContent>
-                      </Select>
-                      {keySelection === "__default__" && (
-                        <p className="text-xs text-text-muted">
-                          {t("create.keyOptions.usesDefaultHint")}
-                        </p>
-                      )}
-                      {keySelection !== "__default__" && keySelection !== "__custom__" && (
-                        <p className="text-xs text-text-muted">
-                          {t("create.keyOptions.pinnedHint")}
-                        </p>
-                      )}
+                        {showApiKey ? (
+                          <EyeOff className="w-4 h-4" />
+                        ) : (
+                          <Eye className="w-4 h-4" />
+                        )}
+                      </button>
                     </div>
-                  )}
+                    <p className="text-xs text-text-muted">
+                      {hasDefaultKey
+                        ? t("create.keySavedThisAgentHint")
+                        : t("create.keySavedAsDefaultHint", { provider: providerLabel })}
+                    </p>
+                  </div>
+                )}
 
-                  {showApiKeyInput && (
-                    <div className="space-y-1.5">
-                      <Label htmlFor="llm-api-key">
-                        {hasDefaultKey
-                          ? t("create.newKeyThisAgent")
-                          : t("create.providerApiKey", { provider: providerLabel })}
-                      </Label>
-                      <div className="relative">
-                        <Input
-                          id="llm-api-key"
-                          type={showApiKey ? "text" : "password"}
-                          value={apiKey}
-                          onChange={(e) => setApiKey(e.target.value)}
-                          placeholder="sk-..."
-                          required
-                          className="pr-10 font-mono text-xs"
-                        />
-                        <button
-                          type="button"
-                          onClick={() => setShowApiKey((v) => !v)}
-                          className="absolute right-2 top-1/2 -translate-y-1/2 text-text-muted hover:text-foreground"
-                        >
-                          {showApiKey ? (
-                            <EyeOff className="w-4 h-4" />
-                          ) : (
-                            <Eye className="w-4 h-4" />
-                          )}
-                        </button>
+                {/* Skip-permissions is a CLI-backend feature
+                    (Claude Code: --dangerously-skip-permissions,
+                    Codex: --dangerously-bypass-approvals-and-sandbox).
+                    The plain Anthropic/OpenAI APIs have no permission
+                    prompts to skip. */}
+                {(backend === "claude_cli" || backend === "codex_cli") && (
+                  <label className="flex items-start gap-2.5 cursor-pointer group">
+                    <input
+                      type="checkbox"
+                      checked={skipPermissions}
+                      onChange={(e) => setSkipPermissions(e.target.checked)}
+                      className="mt-0.5 rounded border-border"
+                    />
+                    <div className="flex-1 min-w-0">
+                      <div className="flex items-center gap-1.5 text-sm font-medium text-foreground group-hover:text-accent-hover transition-colors">
+                        <ShieldOff className="w-3.5 h-3.5" />
+                        {t("create.skipPermissions")}
                       </div>
-                      <p className="text-xs text-text-muted">
-                        {hasDefaultKey
-                          ? t("create.keySavedThisAgentHint")
-                          : t("create.keySavedAsDefaultHint", { provider: providerLabel })}
+                      <p className="text-xs text-text-muted mt-0.5">
+                        {t("create.skipPermissionsDescription")}
                       </p>
                     </div>
-                  )}
+                  </label>
+                )}
 
-                  {/* Skip-permissions is a CLI-backend feature
-                      (Claude Code: --dangerously-skip-permissions,
-                      Codex: --dangerously-bypass-approvals-and-sandbox).
-                      The plain Anthropic/OpenAI APIs have no permission
-                      prompts to skip. */}
-                  {(backend === "claude_cli" || backend === "codex_cli") && (
-                    <label className="flex items-start gap-2.5 cursor-pointer group">
-                      <input
-                        type="checkbox"
-                        checked={skipPermissions}
-                        onChange={(e) => setSkipPermissions(e.target.checked)}
-                        className="mt-0.5 rounded border-border"
-                      />
-                      <div className="flex-1 min-w-0">
-                        <div className="flex items-center gap-1.5 text-sm font-medium text-foreground group-hover:text-accent-hover transition-colors">
-                          <ShieldOff className="w-3.5 h-3.5" />
-                          {t("create.skipPermissions")}
-                        </div>
-                        <p className="text-xs text-text-muted mt-0.5">
-                          {t("create.skipPermissionsDescription")}
-                        </p>
+                {/* Computer use is a claude_cli-only capability today.
+                    Hosted (Anthropic API), OpenAI, and Codex backends
+                    don't run through our local MCP server. */}
+                {backend === "claude_cli" && (
+                  <label className="flex items-start gap-2.5 cursor-pointer group">
+                    <input
+                      type="checkbox"
+                      checked={computerUseEnabled}
+                      onChange={(e) => setComputerUseEnabled(e.target.checked)}
+                      className="mt-0.5 rounded border-border"
+                    />
+                    <div className="flex-1 min-w-0">
+                      <div className="flex items-center gap-1.5 text-sm font-medium text-foreground group-hover:text-accent-hover transition-colors">
+                        <ShieldOff className="w-3.5 h-3.5" />
+                        {t("create.computerUse")}
                       </div>
-                    </label>
-                  )}
-
-                  {/* Computer use is a claude_cli-only capability today.
-                      Hosted (Anthropic API), OpenAI, and Codex backends
-                      don't run through our local MCP server. */}
-                  {backend === "claude_cli" && (
-                    <label className="flex items-start gap-2.5 cursor-pointer group">
-                      <input
-                        type="checkbox"
-                        checked={computerUseEnabled}
-                        onChange={(e) => setComputerUseEnabled(e.target.checked)}
-                        className="mt-0.5 rounded border-border"
-                      />
-                      <div className="flex-1 min-w-0">
-                        <div className="flex items-center gap-1.5 text-sm font-medium text-foreground group-hover:text-accent-hover transition-colors">
-                          <ShieldOff className="w-3.5 h-3.5" />
-                          {t("create.computerUse")}
-                        </div>
-                        <p className="text-xs text-text-muted mt-0.5">
-                          <Trans
-                            t={t}
-                            i18nKey="create.computerUseDescription"
-                            components={{ code: <code /> }}
-                          />
-                        </p>
-                      </div>
-                    </label>
-                  )}
-                  </>
-                  )}
-                </div>
-              )}
-
-              {step === "review" && (
-                <div className="space-y-4">
-                  <div className="rounded-lg border border-border p-3">
-                    <div className="flex items-start gap-3">
-                      <Avatar className="h-12 w-12 shrink-0 rounded-full border border-border">
-                        {avatarUrl && (
-                          <AvatarImage
-                            src={avatarUrl}
-                            className="rounded-full object-cover"
-                          />
-                        )}
-                        <AvatarFallback className="rounded-full bg-primary/5 text-text-muted">
-                          {initials || "?"}
-                        </AvatarFallback>
-                      </Avatar>
-                      <div className="min-w-0 flex-1">
-                        <div className="truncate text-sm font-semibold">
-                          {displayName || t("common:untitled")}
-                        </div>
-                        {description && (
-                          <p className="mt-0.5 line-clamp-2 text-xs text-text-muted">
-                            {description}
-                          </p>
-                        )}
-                        <div className="mt-2 flex flex-wrap gap-1">
-                          {(tone || customTone) && (
-                            <span className="rounded-full bg-accent px-2 py-0.5 text-[10px] text-accent-foreground">
-                              {tone ? t(`tones.${tone}`) : customTone}
-                            </span>
-                          )}
-                          {allSpecialties.slice(0, 4).map((s) => (
-                            <span
-                              key={s}
-                              className="rounded-full bg-accent px-2 py-0.5 text-[10px] text-accent-foreground"
-                            >
-                              {t(`create.specialtyOptions.${specialtySlug(s)}`, {
-                                defaultValue: s,
-                              })}
-                            </span>
-                          ))}
-                          {allSpecialties.length > 4 && (
-                            <span className="rounded-full bg-accent px-2 py-0.5 text-[10px] text-accent-foreground">
-                              +{allSpecialties.length - 4}
-                            </span>
-                          )}
-                          {requiresLocation && (
-                            <span className="inline-flex items-center gap-0.5 rounded-full bg-accent px-2 py-0.5 text-[10px] text-accent-foreground">
-                              <MapPin className="h-2.5 w-2.5" /> {t("nav:location")}
-                            </span>
-                          )}
-                        </div>
-                      </div>
+                      <p className="text-xs text-text-muted mt-0.5">
+                        {t("create.computerUseDescription")}
+                      </p>
                     </div>
-                  </div>
+                  </label>
+                )}
+                </>
+                )}
+              </div>
+            </Section>
 
-                  <div className="rounded-lg border border-border p-3 space-y-1.5 text-xs">
-                    <ReviewRow label={t("create.review.brain")} value={`${providerLabel ?? "—"} · ${models.find((m) => m.id === model)?.label ?? model ?? "—"}`} />
-                    <ReviewRow
-                      label={t("create.review.mode")}
-                      value={(() => {
-                        const foundMode = EXECUTION_MODES.find(
-                          (m) => m.id === executionMode
-                        );
-                        return foundMode ? t(foundMode.labelKey) : executionMode;
-                      })()}
-                    />
-                    {showEffort && (
-                      <ReviewRow
-                        label={t("effortLabel")}
-                        value={(() => {
-                          const foundEffort = EFFORT_LEVELS.find(
-                            (e) => e.id === (effort || "high")
-                          );
-                          return foundEffort
-                            ? t(foundEffort.labelKey)
-                            : effort ?? "high";
-                        })()}
-                      />
-                    )}
-                    <ReviewRow
-                      label={t("create.review.key")}
-                      value={
-                        keySelection === "__custom__" || (showApiKeyInput && !hasDefaultKey)
-                          ? t("create.review.customKeyThisAgent")
-                          : keySelection === "__default__"
-                            ? t("create.review.providerDefaultValue", { provider: providerLabel ?? backend })
-                            : providerKeys.find((k) => k.id === keySelection)?.label ??
-                              t("create.review.pinnedKey")
-                      }
-                    />
-                    {skipPermissions && (
-                      <ReviewRow label={t("create.review.safety")} value={t("create.skipPermissions")} />
-                    )}
-                    {computerUseEnabled && (
-                      <ReviewRow
-                        data-testid="review-computer-use"
-                        label={t("create.review.computerUse")}
-                        value={t("create.review.computerUseAllowed")}
-                      />
-                    )}
-                    {selectedTools.length > 0 && (
-                      <ReviewRow
-                        label={t("create.review.toolsLabel")}
-                        value={t("create.review.toolsCount", {
-                          count: selectedTools.length,
-                        })}
-                      />
-                    )}
-                  </div>
+            {workspacesEnabled && (
+              <VisibilityChoice
+                value={visibilityOrgIds}
+                onChange={setVisibilityOrgIds}
+              />
+            )}
+          </form>
 
-                  {workspacesEnabled && (
-                    <VisibilityChoice
-                      value={visibilityOrgIds}
-                      onChange={setVisibilityOrgIds}
-                    />
-                  )}
-
-                  {/* Jump-to-step chips: the quick path never visited these
-                      steps, so this is how a drafted agent gets adjusted. */}
-                  <div className="space-y-1.5">
-                    <p className="text-[11px] text-text-muted">
-                      {t("create.review.editHint")}
-                    </p>
-                    <div className="flex flex-wrap gap-1.5">
-                      {EDITABLE_STEPS.map((s) => (
-                        <button
-                          key={s}
-                          type="button"
-                          onClick={() => editStep(s)}
-                          disabled={creating}
-                          className="rounded-full border border-border px-2.5 py-1 text-xs transition-colors hover:bg-accent disabled:opacity-50"
-                        >
-                          {t(`create.stepLabels.${s}`)}
-                        </button>
-                      ))}
-                    </div>
-                  </div>
-                </div>
-              )}
-
+          {/* Footer */}
+          <div className="relative flex items-center justify-between gap-3 border-t border-border bg-background/80 px-6 py-3 backdrop-blur-sm">
+            <div className="min-w-0 flex-1">
               {error && (
-                <p className="text-xs text-destructive" role="alert">
+                <p className="truncate text-xs text-destructive" role="alert">
                   {error}
                 </p>
               )}
-            </form>
-          </div>
-
-          {/* Footer */}
-          <div className="relative px-6 py-4 border-t border-border bg-background/80 backdrop-blur-sm flex items-center justify-between">
-            {!isFirst ? (
-              <Button
-                type="button"
-                variant="ghost"
-                onClick={handleBack}
-                disabled={creating}
-              >
-                <ArrowLeft className="w-4 h-4" />
-                {t("common:back")}
-              </Button>
-            ) : (
+            </div>
+            <div className="flex shrink-0 items-center gap-2">
               <Button
                 type="button"
                 variant="ghost"
@@ -2125,33 +1849,22 @@ export function CreateAgentModal({ onClose }: { onClose: () => void }) {
               >
                 {t("common:cancel")}
               </Button>
-            )}
-
-            {/* The brief step advances by drafting or picking a chip, so no Next. */}
-            {step !== "brief" && (
               <Button
                 type="button"
-                onClick={handleNext}
-                disabled={!canNext || creating || (isLast && PROVIDERS.length === 0)}
+                onClick={() => void handleCreate()}
+                disabled={!canCreate}
               >
                 {creating && <Loader2 className="mr-1.5 h-3 w-3 animate-spin" />}
-                {isLast
-                  ? creating
-                    ? t("create.creatingLabel")
-                    : t("create.createAgent")
-                  : editingFromReview
-                    ? t("create.review.backToReview")
-                    : t("common:next")}
-                {!isLast && !creating && <ArrowRight className="ml-1 h-3 w-3" />}
+                {creating ? t("create.creatingLabel") : t("create.createAgent")}
               </Button>
-            )}
+            </div>
           </div>
         </div>
       </DialogContent>
     </Dialog>
 
-    {/* Alongside the wizard rather than inside its DialogContent, so the
-        cropper is its own top-level layer and the wizard stays open behind
+    {/* Alongside the form rather than inside its DialogContent, so the
+        cropper is its own top-level layer and the form stays open behind
         it. */}
     {cropImageSrc && (
       <AvatarCropDialog
@@ -2166,10 +1879,76 @@ export function CreateAgentModal({ onClose }: { onClose: () => void }) {
 }
 
 /**
- * Workspace visibility on the review step: All workspaces
- * (organizationIds omitted — the agent follows the owner everywhere,
- * the default) or a selected SET of workspaces. Mirrors the
- * VisibilityField on the agent config Profile tab.
+ * A titled block of the form. With `open`/`onOpenChange` it collapses: the
+ * header becomes a toggle and `summary` shows the current choice next to the
+ * title so a closed section still tells the user what they're getting.
+ */
+function Section({
+  title,
+  hint,
+  summary,
+  summaryActive,
+  open,
+  onOpenChange,
+  children,
+}: {
+  title: string;
+  hint?: string;
+  summary?: string;
+  summaryActive?: boolean;
+  open?: boolean;
+  onOpenChange?: (open: boolean) => void;
+  children: ReactNode;
+}) {
+  const collapsible = onOpenChange !== undefined;
+  const expanded = collapsible ? !!open : true;
+  const header = (
+    <div className="flex items-center gap-2">
+      {collapsible &&
+        (expanded ? (
+          <ChevronDown className="h-3.5 w-3.5 shrink-0 text-text-muted" />
+        ) : (
+          <ChevronRight className="h-3.5 w-3.5 shrink-0 text-text-muted" />
+        ))}
+      <span className="text-sm font-semibold text-foreground">{title}</span>
+      {summary && !expanded && (
+        <span
+          className={cn(
+            "min-w-0 truncate text-xs",
+            summaryActive ? "text-primary" : "text-text-muted"
+          )}
+        >
+          {summary}
+        </span>
+      )}
+    </div>
+  );
+  return (
+    <section className="space-y-2.5">
+      <div className="space-y-0.5">
+        {collapsible ? (
+          <button
+            type="button"
+            onClick={() => onOpenChange(!open)}
+            aria-expanded={expanded}
+            className="flex w-full items-center text-left"
+          >
+            {header}
+          </button>
+        ) : (
+          header
+        )}
+        {hint && expanded && <p className="text-xs text-text-muted">{hint}</p>}
+      </div>
+      {expanded && children}
+    </section>
+  );
+}
+
+/**
+ * Workspace visibility: All workspaces (organizationIds omitted — the agent
+ * follows the owner everywhere, the default) or a selected SET of
+ * workspaces. Mirrors the VisibilityField on the agent config Profile tab.
  */
 function VisibilityChoice({
   value,
@@ -2196,63 +1975,47 @@ function VisibilityChoice({
   };
 
   return (
-    <div className="space-y-1.5">
-      <Label className="text-xs">{t("visibility.label")}</Label>
-      <div className="space-y-1.5 rounded-lg border border-border p-2.5">
-        <label className="flex cursor-pointer items-center gap-2 text-xs font-medium">
-          <input
-            type="checkbox"
-            checked={value === null}
-            onChange={() =>
-              value === null
-                ? onChange(seed ? [seed.id] : [])
-                : onChange(null)
-            }
-            className="h-3.5 w-3.5 accent-primary"
-          />
-          {t("visibility.all")}
-        </label>
-        <div className="ml-5 space-y-1 border-l border-border pl-3">
-          {allWorkspaces.map((w) => (
-            <label
-              key={w.id}
-              className={cn(
-                "flex items-center gap-2 text-xs",
-                value === null ? "cursor-not-allowed opacity-50" : "cursor-pointer"
-              )}
-            >
-              <input
-                type="checkbox"
-                disabled={value === null}
-                checked={value !== null && value.includes(w.id)}
-                onChange={() => toggle(w.id)}
-                className="h-3.5 w-3.5 accent-primary"
-              />
-              {w.name}
-            </label>
-          ))}
+    <Section title={t("visibility.label")}>
+      <div className="space-y-1.5">
+        <div className="space-y-1.5 rounded-lg border border-border p-2.5">
+          <label className="flex cursor-pointer items-center gap-2 text-xs font-medium">
+            <input
+              type="checkbox"
+              checked={value === null}
+              onChange={() =>
+                value === null
+                  ? onChange(seed ? [seed.id] : [])
+                  : onChange(null)
+              }
+              className="h-3.5 w-3.5 accent-primary"
+            />
+            {t("visibility.all")}
+          </label>
+          <div className="ml-5 space-y-1 border-l border-border pl-3">
+            {allWorkspaces.map((w) => (
+              <label
+                key={w.id}
+                className={cn(
+                  "flex items-center gap-2 text-xs",
+                  value === null ? "cursor-not-allowed opacity-50" : "cursor-pointer"
+                )}
+              >
+                <input
+                  type="checkbox"
+                  disabled={value === null}
+                  checked={value !== null && value.includes(w.id)}
+                  onChange={() => toggle(w.id)}
+                  className="h-3.5 w-3.5 accent-primary"
+                />
+                {w.name}
+              </label>
+            ))}
+          </div>
         </div>
+        <p className="text-[11px] text-text-muted">
+          {value === null ? t("visibility.allHint") : t("visibility.selectedHint")}
+        </p>
       </div>
-      <p className="text-[11px] text-text-muted">
-        {value === null ? t("visibility.allHint") : t("visibility.selectedHint")}
-      </p>
-    </div>
-  );
-}
-
-function ReviewRow({
-  label,
-  value,
-  "data-testid": testId,
-}: {
-  label: string;
-  value: string;
-  "data-testid"?: string;
-}) {
-  return (
-    <div className="flex items-center justify-between" data-testid={testId}>
-      <span className="text-text-muted">{label}</span>
-      <span className="font-medium truncate ml-3">{value}</span>
-    </div>
+    </Section>
   );
 }
