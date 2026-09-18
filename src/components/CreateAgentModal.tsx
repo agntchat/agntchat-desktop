@@ -3,24 +3,18 @@ import { useNavStore } from "../stores/navStore";
 import { useTranslation } from "react-i18next";
 import {
   X,
-  Bot,
-  Workflow,
-  ClipboardCheck,
-  Eye,
-  EyeOff,
   Camera,
   Plus,
   Loader2,
   MapPin,
   ShieldOff,
-  Sparkles,
-  Mail,
-  CalendarDays,
-  Telescope,
   Check,
   ChevronDown,
   ChevronRight,
   Wand2,
+  Eye,
+  EyeOff,
+  Monitor,
 } from "lucide-react";
 import { useAgentStore } from "../stores/agentStore";
 import { useAuthStore } from "../stores/authStore";
@@ -54,7 +48,9 @@ import { Switch } from "@/components/ui/switch";
 import {
   Select,
   SelectContent,
+  SelectGroup,
   SelectItem,
+  SelectLabel,
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
@@ -74,22 +70,13 @@ import { AvatarCropDialog } from "./AvatarCropDialog";
 import { BotMascot } from "./onboarding/BotMascot";
 import { AmbientParticles } from "./onboarding/AmbientParticles";
 
-// Icons for the role picker. Catalog data (id/label/description) comes from
-// the backend via useAgentTypes(); only the icon stays in the UI layer.
-const TYPE_ICONS: Record<string, typeof Bot> = {
-  worker: Bot,
-  orchestrator: Workflow,
-  reviewer: ClipboardCheck,
-  observer: Eye,
-};
-
 // How the fields got filled — sent along as analytics. "quick" = the server
-// drafted them from a brief, "preset" = a template chip seeded them,
-// "advanced" = typed by hand. Whichever happened LAST wins; edits after a
-// draft or preset don't demote it.
+// drafted them from a brief, "preset" = a template seeded them, "advanced"
+// = typed by hand. Whichever happened LAST wins; edits after a draft or
+// template don't demote it.
 type CreationPath = "quick" | "preset" | "advanced";
 
-// Display names for credentialed providers on the tools section's Connect
+// Display names for credentialed providers on the integrations' Connect
 // buttons (provider ids are lowercase machine keys).
 const PROVIDER_LABELS: Record<"google" | "github" | "x", string> = {
   google: "Google",
@@ -97,26 +84,24 @@ const PROVIDER_LABELS: Record<"google" | "github" | "x", string> = {
   x: "X",
 };
 
-// Icons for the preset chips stay UI-side, like TYPE_ICONS above.
-const PRESET_ICONS: Record<AgentPreset["id"], typeof Bot> = {
-  assistant: Sparkles,
-  email: Mail,
-  calendar: CalendarDays,
-  research: Telescope,
-};
-
 const INSTRUCTIONS_MAX = 2000;
+
+// Sentinel values for the single-choice dropdowns.
+const NO_TEMPLATE = "__none__";
+const CUSTOM_TONE = "__custom__";
+// The model dropdown carries provider + model in one value so a single
+// pick switches both.
+const brainValue = (backend: string, model: string) => `${backend}::${model}`;
 
 /**
  * Create Agent — one form, one screen.
  *
- * Everything the agent needs is on a single scrollable dialog: identity
- * (avatar, name, role), an optional brief the server drafts the rest from,
- * personality, integrations, brain, and visibility. Tools and Brain start
- * collapsed with their current choice summarized on the header, so the
- * defaults (hosted when available, otherwise Claude Code + Opus) are visible
- * without opening them. Only the name is required; Create is one click away
- * from the moment the dialog opens.
+ * The dialog is built to be scanned top to bottom: name and template, a
+ * brief the server can draft the rest from, then a grid of dropdowns (role,
+ * tone, specialties, where it runs, model) and a description. Everything
+ * else — instructions, location, integrations, execution knobs, API key,
+ * safety switches, workspace visibility — lives behind one collapsed "More
+ * options" section. Only the name is required.
  */
 export function CreateAgentModal({ onClose }: { onClose: () => void }) {
   const { t, i18n } = useTranslation("agents");
@@ -131,9 +116,12 @@ export function CreateAgentModal({ onClose }: { onClose: () => void }) {
   }, [llmKeysLoaded, refreshLlmKeys]);
 
   const catalog = useModelCatalog();
+  // Keyed on the (stable) action, not the store object: a failed load
+  // flips `loading` and would otherwise re-trigger this effect forever.
+  const ensureCatalog = useModelCatalog((s) => s.ensureLoaded);
   useEffect(() => {
-    void catalog.ensureLoaded();
-  }, [catalog]);
+    void ensureCatalog();
+  }, [ensureCatalog]);
   const PROVIDERS = catalog.providers;
 
   const agentTypes = useAgentTypes();
@@ -141,8 +129,6 @@ export function CreateAgentModal({ onClose }: { onClose: () => void }) {
   const { tones, specialtiesByRole } = usePersonaVocab();
 
   // ---- Fill source ----
-  // preset — the chip that last seeded the fields (drives the post-create
-  // Google connect pane via requiresGoogle and the name placeholder).
   const [preset, setPreset] = useState<AgentPreset | null>(null);
   // brief — free text sent to POST /api/agents/draft; the proposal fills the
   // fields below. Also stored on the agent (metadata.creation_brief) so its
@@ -180,9 +166,9 @@ export function CreateAgentModal({ onClose }: { onClose: () => void }) {
 
   // ---- Personality ----
   const [tone, setTone] = useState<string | null>(null);
+  // customTone is non-null while "Custom" is the chosen tone (empty string
+  // = the input is showing but nothing typed yet).
   const [customTone, setCustomTone] = useState<string | null>(null);
-  const [customToneInput, setCustomToneInput] = useState("");
-  const [toneAddOpen, setToneAddOpen] = useState(false);
   const [description, setDescription] = useState("");
   const [specialties, setSpecialties] = useState<string[]>([]);
   const [customSpecialties, setCustomSpecialties] = useState<string[]>([]);
@@ -191,11 +177,13 @@ export function CreateAgentModal({ onClose }: { onClose: () => void }) {
   const [customInstructions, setCustomInstructions] = useState("");
   const [requiresLocation, setRequiresLocation] = useState(false);
 
-  // ---- Tools — integration tools (scope "agent") to assign after creation.
-  // Pre-seeded by presets/drafts; the picker fetches the catalog on mount.
+  // ---- More options ----
+  const [moreOpen, setMoreOpen] = useState(false);
+
+  // ---- Integrations — tools (scope "agent") to assign after creation.
+  // Pre-seeded by templates/drafts; the picker fetches the catalog on mount.
   const [selectedTools, setSelectedTools] = useState<string[]>([]);
   const [toolCatalog, setToolCatalog] = useState<PlatformToolSummary[]>([]);
-  const [toolsOpen, setToolsOpen] = useState(false);
   // Provider groups start collapsed; the header switch toggles the whole
   // group, the chevron reveals individual tools.
   const [expandedToolGroups, setExpandedToolGroups] = useState<Set<string>>(
@@ -267,7 +255,7 @@ export function CreateAgentModal({ onClose }: { onClose: () => void }) {
     listToolCatalog()
       .then(setToolCatalog)
       .catch(() => {
-        // picker shows an empty state; preset assignment still works by name
+        // picker shows an empty state; template assignment still works by name
       });
   }, []);
 
@@ -277,14 +265,13 @@ export function CreateAgentModal({ onClose }: { onClose: () => void }) {
   const activeWorkspace = useActiveWorkspace();
 
   // ---- Brain — backend / model / execution mode / effort / key / safety
-  const [brainOpen, setBrainOpen] = useState(false);
   const [backend, setBackend] = useState("claude_cli");
   const [model, setModel] = useState("");
   const [executionMode, setExecutionMode] = useState("tool_use");
   const [effort, setEffort] = useState<string | null>(null);
   // Default ON: agents run unattended, and permission prompts stall them
   // waiting for an operator. Skip-permissions is server-owned and only
-  // applies to the CLI backends (claude_cli/codex_cli); the checkbox is
+  // applies to the CLI backends (claude_cli/codex_cli); the switch is
   // hidden for API backends, so this default is inert there.
   const [skipPermissions, setSkipPermissions] = useState(true);
   const [computerUseEnabled, setComputerUseEnabled] = useState(false);
@@ -316,8 +303,8 @@ export function CreateAgentModal({ onClose }: { onClose: () => void }) {
   const [error, setError] = useState<string | null>(null);
 
   // Default model for a provider: Opus 4.8 when the catalog has it (the
-  // scratch default), else the catalog's first entry. Presets override this
-  // with their own model in applyPreset.
+  // scratch default), else the catalog's first entry. Templates override
+  // this with their own model in applyPreset.
   const defaultModelFor = useCallback(
     (backendId: string) => {
       const list = catalog.modelsFor(backendId);
@@ -384,6 +371,17 @@ export function CreateAgentModal({ onClose }: { onClose: () => void }) {
     setKeySelection("__default__");
   };
 
+  // One dropdown for provider + model: "<backend>::<model>".
+  const handleBrainChange = (value: string | null) => {
+    if (!value) return;
+    const sep = value.indexOf("::");
+    if (sep < 0) return;
+    const nextBackend = value.slice(0, sep);
+    const nextModel = value.slice(sep + 2);
+    if (nextBackend !== backend) handleBackendChange(nextBackend);
+    setModel(nextModel);
+  };
+
   const specialtyOptions = specialtiesByRole[agentRole] ?? [];
 
   // Only some specialties have a tailored placeholder in the catalog, so the
@@ -397,8 +395,7 @@ export function CreateAgentModal({ onClose }: { onClose: () => void }) {
   }, [agentRole, specialties, t, i18n]);
 
   // Split a mixed specialty list into the role's catalog options and the
-  // custom remainder — the two are separate state so the chips render them
-  // differently.
+  // custom remainder — the two are separate state (dropdown vs. chips).
   const seedSpecialties = (role: AgentType, list: string[]) => {
     const options = specialtiesByRole[role] ?? [];
     setSpecialties(list.filter((s) => options.includes(s)));
@@ -456,10 +453,10 @@ export function CreateAgentModal({ onClose }: { onClose: () => void }) {
     }
   };
 
-  // Template chip: seed role/tone/specialties/description/instructions/
-  // tools. The name is left alone (the placeholder hints at one). Sets role
-  // FIRST and then specialties in the same handler — the role picker's own
-  // click handler resets specialties on change, but this path bypasses it
+  // Template: seed role/tone/specialties/description/instructions/tools.
+  // The name is left alone (the placeholder hints at one). Sets role FIRST
+  // and then specialties in the same handler — the role dropdown's own
+  // change handler resets specialties, but this path bypasses it
   // deliberately.
   const applyPreset = (p: AgentPreset) => {
     setPreset(p);
@@ -480,11 +477,31 @@ export function CreateAgentModal({ onClose }: { onClose: () => void }) {
       t(`create.presets.${p.id}.instructions`, { defaultValue: p.instructions })
     );
     setSelectedTools(p.tools ?? []);
-    // Preset default model (only meaningful on the claude_cli backend the
+    // Template default model (only meaningful on the claude_cli backend the
     // form starts on; a later provider switch re-defaults it anyway).
     if (p.model && backend === "claude_cli") setModel(p.model);
     if (p.requiresGoogle) prefetchGoogle();
     if (!displayName.trim()) nameInputRef.current?.focus();
+  };
+
+  const handleTemplateChange = (value: string | null) => {
+    if (!value || value === NO_TEMPLATE) {
+      setPreset(null);
+      return;
+    }
+    const p = agentPresets.find((x) => x.id === value);
+    if (p) applyPreset(p);
+  };
+
+  const handleToneChange = (value: string | null) => {
+    if (!value) return;
+    if (value === CUSTOM_TONE) {
+      setTone(null);
+      setCustomTone((prev) => prev ?? "");
+      return;
+    }
+    setTone(value);
+    setCustomTone(null);
   };
 
   const handleAvatarPick = () => fileInputRef.current?.click();
@@ -522,12 +539,6 @@ export function CreateAgentModal({ onClose }: { onClose: () => void }) {
     }
   };
 
-  const toggleSpecialty = (s: string) => {
-    setSpecialties((prev) =>
-      prev.includes(s) ? prev.filter((x) => x !== s) : [...prev, s]
-    );
-  };
-
   const addCustomSpecialty = () => {
     const v = customSpecialtyInput.trim();
     if (!v) {
@@ -552,18 +563,6 @@ export function CreateAgentModal({ onClose }: { onClose: () => void }) {
     setCustomSpecialties((prev) => prev.filter((x) => x !== s));
   };
 
-  const commitCustomTone = () => {
-    const v = customToneInput.trim();
-    if (!v) {
-      setToneAddOpen(false);
-      return;
-    }
-    setTone(null);
-    setCustomTone(v);
-    setCustomToneInput("");
-    setToneAddOpen(false);
-  };
-
   const handleCreate = useCallback(async () => {
     if (!displayName.trim()) {
       setError(t("create.errors.nameRequired"));
@@ -573,7 +572,7 @@ export function CreateAgentModal({ onClose }: { onClose: () => void }) {
     // Hosted agents use the host's shared brain — no API key to enter.
     if (hosting === "local" && showApiKeyInput && !apiKey.trim()) {
       setError(t("create.errors.apiKeyRequired"));
-      setBrainOpen(true);
+      setMoreOpen(true);
       return;
     }
     setCreating(true);
@@ -582,10 +581,10 @@ export function CreateAgentModal({ onClose }: { onClose: () => void }) {
       // Hosted agents run on the org host with its shared Claude seat, so we
       // pin sensible defaults (claude_cli) and skip per-agent key handling.
       // canHost guard: users without the hosted runtime can never create
-      // hosted (the picker disables it, this backstops it).
+      // hosted (the dropdown disables it, this backstops it).
       const hosted = hosting === "hosted" && canHost;
       const effBackend = hosted ? "claude_cli" : backend;
-      // Hosted model: honor the chosen model (a preset default like Sonnet
+      // Hosted model: honor the chosen model (a template default like Sonnet
       // 4.6, or whatever the user picked) when it's a valid claude_cli model;
       // otherwise fall back to Opus 4.8 (the scratch default), then the
       // catalog's first hosted entry.
@@ -632,7 +631,7 @@ export function CreateAgentModal({ onClose }: { onClose: () => void }) {
       // from the specialties (Agentchat.Accounts.SoulBuilder).
       const persona = {
         tone,
-        customTone,
+        customTone: customTone?.trim() || null,
         specialties: [...specialties, ...customSpecialties],
         description,
         instructions: customInstructions,
@@ -719,7 +718,7 @@ export function CreateAgentModal({ onClose }: { onClose: () => void }) {
       // Google-backed selection: if the owner hasn't connected Google, keep
       // the modal open on a connect pane instead of closing — the agent
       // exists either way, but its tools only work once connected. Covers
-      // presets AND hand-built agents that picked Google tools.
+      // templates AND hand-built agents that picked Google tools.
       const wantsGoogle =
         preset?.requiresGoogle || anyGoogleTool(toolCatalog, selectedTools);
 
@@ -795,16 +794,18 @@ export function CreateAgentModal({ onClose }: { onClose: () => void }) {
     .toUpperCase();
 
   const providerLabel = PROVIDERS.find((p) => p.id === backend)?.label;
-  const modelLabel = models.find((m) => m.id === model)?.label ?? model;
-  const brainSummary =
-    hosting === "hosted"
-      ? `${t("hosting.hosted")} · ${t("create.hostedDescription")}`
-      : [providerLabel, modelLabel].filter(Boolean).join(" · ");
-  const toolsSummary =
+  const specialtyLabel = (s: string) =>
+    t(`create.specialtyOptions.${specialtySlug(s)}`, { defaultValue: s });
+  const toneSelectValue = tone ?? (customTone !== null ? CUSTOM_TONE : "");
+  const moreSummary = [
     selectedTools.length > 0
       ? t("create.review.toolsCount", { count: selectedTools.length })
-      : t("create.summary.noTools");
-  const selectedRole = agentTypes.find((x) => x.id === agentRole);
+      : null,
+    requiresLocation ? t("nav:location") : null,
+    computerUseEnabled ? t("create.computerUse") : null,
+  ]
+    .filter(Boolean)
+    .join(" · ");
 
   const canCreate =
     displayName.trim().length > 0 && !creating && PROVIDERS.length > 0;
@@ -907,7 +908,7 @@ export function CreateAgentModal({ onClose }: { onClose: () => void }) {
   return (
     <>
     <Dialog open onOpenChange={(open) => !open && onClose()}>
-      <DialogContent className="sm:max-w-[640px] p-0 gap-0 overflow-hidden">
+      <DialogContent className="sm:max-w-[860px] p-0 gap-0 overflow-hidden">
         <div className="relative flex max-h-[88vh] flex-col">
           <AmbientParticles count={10} />
 
@@ -930,161 +931,155 @@ export function CreateAgentModal({ onClose }: { onClose: () => void }) {
             }}
             className="relative min-h-0 flex-1 space-y-5 overflow-y-auto px-6 pb-5"
           >
-            {/* Identity: avatar + name + role */}
-            <div className="flex items-start gap-4">
-              <button
-                type="button"
-                onClick={handleAvatarPick}
-                className="relative group shrink-0"
-                title={t("create.chooseAvatar")}
-              >
-                <Avatar className="h-[72px] w-[72px] rounded-2xl border-2 border-dashed border-border group-hover:border-primary transition-colors">
-                  {avatarUrl && (
-                    <AvatarImage
-                      src={avatarUrl}
-                      className="rounded-2xl object-cover"
-                    />
-                  )}
-                  <AvatarFallback className="rounded-2xl bg-primary/5 text-lg font-semibold text-text-muted">
-                    {initials || <Camera className="h-5 w-5" />}
-                  </AvatarFallback>
-                </Avatar>
-                {uploadingAvatar && (
-                  <div className="absolute inset-0 flex items-center justify-center rounded-2xl bg-background/70">
-                    <Loader2 className="h-5 w-5 animate-spin text-primary" />
-                  </div>
-                )}
-              </button>
-              <input
-                ref={fileInputRef}
-                type="file"
-                accept="image/jpeg,image/png,image/webp"
-                className="hidden"
-                onChange={(e) => {
-                  handleAvatarFile(e.target.files?.[0]);
-                  // Clear the value so picking the same file again after
-                  // cancelling the crop still fires onChange.
-                  e.target.value = "";
-                }}
-              />
-              <div className="min-w-0 flex-1 space-y-3">
-                <div className="space-y-1.5">
-                  <div className="flex items-baseline justify-between">
-                    <Label htmlFor="agent-name">{t("common:name")}</Label>
-                    <span className="text-xs text-text-muted tabular-nums">
-                      {displayName.length}/{limits.agent.displayName}
-                    </span>
-                  </div>
-                  <Input
-                    id="agent-name"
-                    ref={nameInputRef}
-                    type="text"
-                    value={displayName}
-                    onChange={(e) => {
-                      setDisplayName(e.target.value);
-                      if (error) setError(null);
-                    }}
-                    placeholder={
-                      preset
-                        ? t(preset.namePlaceholderKey)
-                        : t("create.namePlaceholder")
-                    }
-                    autoFocus
-                    maxLength={limits.agent.displayName}
-                  />
-                </div>
-                <div className="space-y-1.5">
-                  <Label>{t("create.stepLabels.role")}</Label>
-                  <div className="grid grid-cols-4 gap-1.5">
-                    {agentTypes.map((type) => {
-                      const Icon = TYPE_ICONS[type.id] ?? Bot;
-                      const selected = agentRole === type.id;
-                      return (
-                        <button
-                          key={type.id}
-                          type="button"
-                          onClick={() => {
-                            if (agentRole === type.id) return;
-                            setAgentRole(type.id as AgentType);
-                            setSpecialties([]);
-                            setCustomSpecialties([]);
-                          }}
-                          className={cn(
-                            "flex flex-col items-center gap-1 rounded-lg border px-2 py-2 text-center transition-colors",
-                            selected
-                              ? "border-primary bg-primary/5"
-                              : "border-border hover:bg-accent"
-                          )}
-                        >
-                          <Icon
-                            className={cn(
-                              "h-4 w-4",
-                              selected ? "text-primary" : "text-text-muted"
-                            )}
-                          />
-                          <span className="text-[11px] font-medium leading-tight">
-                            {t(`roles.${type.id}.label`, { defaultValue: type.label })}
-                          </span>
-                        </button>
-                      );
-                    })}
-                  </div>
-                  {selectedRole && (
-                    <p className="text-[11px] text-text-muted">
-                      {t(`roles.${selectedRole.id}.desc`, {
-                        defaultValue: selectedRole.description,
-                      })}
-                    </p>
-                  )}
-                </div>
-              </div>
-            </div>
-
-            {/* Brief → draft, or a template chip */}
-            <Section title={t("create.brief.title")} hint={t("create.brief.hint")}>
-              <div className="space-y-2">
-                <div className="relative">
-                  <Textarea
-                    id="agent-brief"
-                    aria-label={t("create.brief.title")}
-                    value={brief}
-                    onChange={(e) => setBrief(e.target.value)}
-                    placeholder={t("create.brief.placeholder")}
-                    rows={3}
-                    maxLength={limits.agent.creationBrief}
-                    disabled={drafting}
-                    className="resize-none"
-                    onKeyDown={(e) => {
-                      if (e.key === "Enter" && (e.metaKey || e.ctrlKey)) {
-                        e.preventDefault();
-                        void handleDraft();
-                      }
-                    }}
-                  />
-                  <span className="pointer-events-none absolute bottom-1.5 right-2 text-[10px] text-text-muted tabular-nums">
-                    {brief.length}/{limits.agent.creationBrief}
-                  </span>
-                </div>
-                <div className="flex flex-wrap items-center gap-2">
-                  <Button
+            {/* Two columns: who they are (left), how they work (right). */}
+            <div className="grid grid-cols-2 gap-x-6">
+              <div className="space-y-5">
+                <Category>{t("create.sections.identity")}</Category>
+                {/* Identity: avatar + name + template */}
+                <div className="flex items-start gap-4">
+                  <button
                     type="button"
-                    size="sm"
-                    variant={drafted ? "outline" : "default"}
-                    onClick={() => void handleDraft()}
-                    disabled={drafting || brief.trim().length === 0}
+                    onClick={handleAvatarPick}
+                    className="relative group shrink-0"
+                    title={t("create.chooseAvatar")}
                   >
-                    {drafting ? (
-                      <>
-                        <Loader2 className="mr-1.5 h-3.5 w-3.5 animate-spin" />
-                        {t("create.brief.drafting")}
-                      </>
-                    ) : (
-                      <>
-                        <Wand2 className="mr-1.5 h-3.5 w-3.5" />
-                        {t("create.brief.draftButton")}
-                      </>
+                    <Avatar className="h-[76px] w-[76px] rounded-2xl border-2 border-dashed border-border group-hover:border-primary transition-colors">
+                      {avatarUrl && (
+                        <AvatarImage
+                          src={avatarUrl}
+                          className="rounded-2xl object-cover"
+                        />
+                      )}
+                      <AvatarFallback className="rounded-2xl bg-primary/5 text-lg font-semibold text-text-muted">
+                        {initials || <Camera className="h-5 w-5" />}
+                      </AvatarFallback>
+                    </Avatar>
+                    {uploadingAvatar && (
+                      <div className="absolute inset-0 flex items-center justify-center rounded-2xl bg-background/70">
+                        <Loader2 className="h-5 w-5 animate-spin text-primary" />
+                      </div>
                     )}
-                  </Button>
+                  </button>
+                  <input
+                    ref={fileInputRef}
+                    type="file"
+                    accept="image/jpeg,image/png,image/webp"
+                    className="hidden"
+                    onChange={(e) => {
+                      handleAvatarFile(e.target.files?.[0]);
+                      // Clear the value so picking the same file again after
+                      // cancelling the crop still fires onChange.
+                      e.target.value = "";
+                    }}
+                  />
+                  <div className="min-w-0 flex-1 space-y-3">
+                    <Field label={t("common:name")} htmlFor="agent-name" counter={`${displayName.length}/${limits.agent.displayName}`}>
+                      <Input
+                        id="agent-name"
+                        ref={nameInputRef}
+                        type="text"
+                        value={displayName}
+                        onChange={(e) => {
+                          setDisplayName(e.target.value);
+                          if (error) setError(null);
+                        }}
+                        placeholder={
+                          preset
+                            ? t(preset.namePlaceholderKey)
+                            : t("create.namePlaceholder")
+                        }
+                        autoFocus
+                        maxLength={limits.agent.displayName}
+                      />
+                    </Field>
+                    <Field label={t("create.template.label")}>
+                      <Select
+                        value={preset?.id ?? NO_TEMPLATE}
+                        onValueChange={handleTemplateChange}
+                        disabled={drafting || agentPresets.length === 0}
+                      >
+                        <SelectTrigger className="w-full">
+                          <SelectValue>
+                            {(val: unknown) => {
+                              const p = agentPresets.find((x) => x.id === String(val));
+                              return p ? (
+                                t(p.labelKey)
+                              ) : (
+                                <span className="text-muted-foreground">
+                                  {t("create.template.placeholder")}
+                                </span>
+                              );
+                            }}
+                          </SelectValue>
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value={NO_TEMPLATE}>{t("create.template.none")}</SelectItem>
+                          {agentPresets.map((p) => (
+                            <SelectItem key={p.id} value={p.id}>
+                              <span className="flex items-center gap-1.5">
+                                {t(p.labelKey)}
+                                {p.requiresGoogle && (
+                                  <span className="rounded-full bg-muted px-1.5 py-px text-[9px] uppercase tracking-wide text-muted-foreground">
+                                    {t("create.presets.googleBadge")}
+                                  </span>
+                                )}
+                              </span>
+                            </SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
+                    </Field>
+                  </div>
+                </div>
+
+                {/* Brief → draft */}
+                <Field
+                  label={t("create.brief.title")}
+                  htmlFor="agent-brief"
+                  hint={t("create.brief.hint")}
+                >
+                  <div className="relative">
+                    <Textarea
+                      id="agent-brief"
+                      value={brief}
+                      onChange={(e) => setBrief(e.target.value)}
+                      placeholder={t("create.brief.placeholder")}
+                      rows={6}
+                      maxLength={limits.agent.creationBrief}
+                      disabled={drafting}
+                      className="min-h-[150px] resize-none pb-10"
+                      onKeyDown={(e) => {
+                        if (e.key === "Enter" && (e.metaKey || e.ctrlKey)) {
+                          e.preventDefault();
+                          void handleDraft();
+                        }
+                      }}
+                    />
+                    <div className="absolute bottom-1.5 left-1.5 right-1.5 flex items-center justify-between gap-2">
+                      <Button
+                        type="button"
+                        size="sm"
+                        variant={drafted ? "outline" : "default"}
+                        onClick={() => void handleDraft()}
+                        disabled={drafting || brief.trim().length === 0}
+                      >
+                        {drafting ? (
+                          <>
+                            <Loader2 className="mr-1.5 h-3.5 w-3.5 animate-spin" />
+                            {t("create.brief.drafting")}
+                          </>
+                        ) : (
+                          <>
+                            <Wand2 className="mr-1.5 h-3.5 w-3.5" />
+                            {t("create.brief.draftButton")}
+                          </>
+                        )}
+                      </Button>
+                      <span className="text-[10px] text-text-muted tabular-nums">
+                        {brief.length}/{limits.agent.creationBrief}
+                      </span>
+                    </div>
+                  </div>
                   {draftError && (
                     <p className="text-xs text-destructive" role="alert">
                       {draftError}
@@ -1096,154 +1091,122 @@ export function CreateAgentModal({ onClose }: { onClose: () => void }) {
                       {t("create.brief.draftedHint")}
                     </p>
                   )}
-                </div>
-                {agentPresets.length > 0 && (
-                  <div className="flex flex-wrap items-center gap-1.5">
-                    <span className="text-[11px] text-text-muted">
-                      {t("create.brief.orPreset")}
-                    </span>
-                    {agentPresets.map((p) => {
-                      const Icon = PRESET_ICONS[p.id];
-                      const active = preset?.id === p.id;
-                      return (
-                        <button
-                          key={p.id}
-                          type="button"
-                          onClick={() => applyPreset(p)}
-                          disabled={drafting}
-                          title={t(p.taglineKey)}
-                          className={cn(
-                            "inline-flex items-center gap-1.5 rounded-full border px-2.5 py-1 text-xs transition-colors disabled:opacity-50",
-                            active
-                              ? "border-primary bg-primary/5 text-foreground"
-                              : "border-border hover:bg-accent"
-                          )}
-                        >
-                          <Icon
-                            className={cn(
-                              "h-3.5 w-3.5",
-                              active ? "text-primary" : "text-text-muted"
-                            )}
-                          />
-                          {t(p.labelKey)}
-                          {p.requiresGoogle && (
-                            <span className="rounded-full bg-muted px-1.5 py-px text-[9px] uppercase tracking-wide text-muted-foreground">
-                              {t("create.presets.googleBadge")}
-                            </span>
-                          )}
-                        </button>
-                      );
-                    })}
-                  </div>
-                )}
+                </Field>
+
               </div>
-            </Section>
-
-            {/* Personality */}
-            <Section title={t("create.sections.personality")}>
-              <div className="space-y-4">
-                {/* Tone */}
-                <div className="space-y-1.5">
-                  <Label>{t("create.stepLabels.tone")}</Label>
-                  <div className="flex flex-wrap gap-1.5">
-                    {tones.map((toneKey) => {
-                      const selected = tone === toneKey;
-                      return (
-                        <button
-                          key={toneKey}
-                          type="button"
-                          onClick={() => {
-                            setTone(toneKey);
-                            setCustomTone(null);
-                          }}
-                          className={cn(
-                            "rounded-full border px-3 py-1 text-xs transition-colors",
-                            selected
-                              ? "border-primary bg-primary text-primary-foreground"
-                              : "border-border hover:bg-accent"
-                          )}
-                        >
-                          {t(`tones.${toneKey}`)}
-                        </button>
-                      );
-                    })}
-                    {customTone && (
-                      <span className="inline-flex items-center gap-1 rounded-full border border-primary bg-primary px-3 py-1 text-xs text-primary-foreground">
-                        {customTone}
-                        <button
-                          type="button"
-                          onClick={() => setCustomTone(null)}
-                          aria-label={t("create.removeCustomTone")}
-                        >
-                          <X className="h-3 w-3" />
-                        </button>
-                      </span>
-                    )}
-                    {!toneAddOpen && (
-                      <button
-                        type="button"
-                        onClick={() => setToneAddOpen(true)}
-                        className="inline-flex items-center gap-1 rounded-full border border-dashed border-border px-3 py-1 text-xs text-text-muted hover:bg-accent"
-                      >
-                        <Plus className="h-3 w-3" /> {t("common:custom")}
-                      </button>
-                    )}
-                  </div>
-                  {toneAddOpen && (
-                    <Input
-                      autoFocus
-                      value={customToneInput}
-                      onChange={(e) => setCustomToneInput(e.target.value)}
-                      placeholder={t("create.customTonePlaceholder")}
-                      maxLength={30}
-                      onKeyDown={(e) => {
-                        if (e.key === "Enter") {
-                          e.preventDefault();
-                          commitCustomTone();
-                        }
-                        if (e.key === "Escape") {
-                          setCustomToneInput("");
-                          commitCustomTone();
-                        }
+              <div className="space-y-5 border-l border-border pl-6">
+                <Category>{t("create.sections.personality")}</Category>
+                {/* Role + Tone */}
+                <div className="grid grid-cols-2 gap-3">
+                  <Field label={t("create.stepLabels.role")}>
+                    <Select
+                      value={agentRole}
+                      onValueChange={(v) => {
+                        if (!v || v === agentRole) return;
+                        setAgentRole(v as AgentType);
+                        setSpecialties([]);
+                        setCustomSpecialties([]);
                       }}
-                      onBlur={commitCustomTone}
-                      className="h-8 text-xs"
-                    />
-                  )}
+                    >
+                      <SelectTrigger className="w-full">
+                        <SelectValue>
+                          {(val: unknown) => {
+                            const type = agentTypes.find((x) => x.id === String(val));
+                            return type
+                              ? t(`roles.${type.id}.label`, { defaultValue: type.label })
+                              : String(val ?? "");
+                          }}
+                        </SelectValue>
+                      </SelectTrigger>
+                      <SelectContent>
+                        {agentTypes.map((type) => (
+                          <SelectItem key={type.id} value={type.id}>
+                            <span className="flex flex-col">
+                              <span>{t(`roles.${type.id}.label`, { defaultValue: type.label })}</span>
+                              <span className="text-[11px] text-muted-foreground">
+                                {t(`roles.${type.id}.desc`, { defaultValue: type.description })}
+                              </span>
+                            </span>
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                  </Field>
+                  <Field label={t("create.stepLabels.tone")}>
+                    <Select value={toneSelectValue} onValueChange={handleToneChange}>
+                      <SelectTrigger className="w-full">
+                        <SelectValue>
+                          {(val: unknown) => {
+                            const v = String(val ?? "");
+                            if (!v)
+                              return (
+                                <span className="text-muted-foreground">
+                                  {t("create.tonePlaceholder")}
+                                </span>
+                              );
+                            if (v === CUSTOM_TONE) return t("common:custom");
+                            return t(`tones.${v}`);
+                          }}
+                        </SelectValue>
+                      </SelectTrigger>
+                      <SelectContent>
+                        {tones.map((toneKey) => (
+                          <SelectItem key={toneKey} value={toneKey}>
+                            {t(`tones.${toneKey}`)}
+                          </SelectItem>
+                        ))}
+                        <SelectItem value={CUSTOM_TONE}>{t("common:custom")}…</SelectItem>
+                      </SelectContent>
+                    </Select>
+                    {customTone !== null && (
+                      <Input
+                        autoFocus
+                        value={customTone}
+                        onChange={(e) => setCustomTone(e.target.value)}
+                        placeholder={t("create.customTonePlaceholder")}
+                        maxLength={30}
+                        className="h-8 text-xs"
+                      />
+                    )}
+                  </Field>
                 </div>
 
-                {/* Specialties */}
-                <div className="space-y-1.5">
-                  <Label>{t(`create.specialtiesLabel.${agentRole}`)}</Label>
-                  <div className="flex flex-wrap gap-1.5">
-                    {specialtyOptions.map((s) => {
-                      const isOn = specialties.includes(s);
-                      return (
-                        <button
-                          key={s}
-                          type="button"
-                          onClick={() => toggleSpecialty(s)}
-                          className={cn(
-                            "rounded-full border px-3 py-1 text-xs transition-colors",
-                            isOn
-                              ? "border-primary bg-primary text-primary-foreground"
-                              : "border-border hover:bg-accent"
-                          )}
-                        >
-                          {t(`create.specialtyOptions.${specialtySlug(s)}`, {
-                            defaultValue: s,
-                          })}
-                        </button>
-                      );
-                    })}
+                {/* Specialties (multi-select) */}
+                <Field label={t(`create.specialtiesLabel.${agentRole}`)}>
+                  <Select
+                    multiple
+                    value={specialties}
+                    onValueChange={(v) => setSpecialties(v ?? [])}
+                  >
+                    <SelectTrigger className="w-full">
+                      <SelectValue>
+                        {(val: unknown) => {
+                          const list = Array.isArray(val) ? (val as string[]) : [];
+                          return list.length === 0 ? (
+                            <span className="text-muted-foreground">
+                              {t("create.specialtiesPlaceholder")}
+                            </span>
+                          ) : (
+                            list.map(specialtyLabel).join(", ")
+                          );
+                        }}
+                      </SelectValue>
+                    </SelectTrigger>
+                    <SelectContent>
+                      {specialtyOptions.map((s) => (
+                        <SelectItem key={s} value={s}>
+                          {specialtyLabel(s)}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                  <div className="flex flex-wrap items-center gap-1.5">
                     {customSpecialties.map((s) => (
                       <span
                         key={s}
-                        className="inline-flex items-center gap-1 rounded-full border border-primary bg-primary px-3 py-1 text-xs text-primary-foreground"
+                        className="inline-flex items-center gap-1 rounded-full border border-primary bg-primary px-2.5 py-0.5 text-xs text-primary-foreground"
                       >
-                        {t(`create.specialtyOptions.${specialtySlug(s)}`, {
-                          defaultValue: s,
-                        })}
+                        {specialtyLabel(s)}
                         <button
                           type="button"
                           onClick={() => removeCustomSpecialty(s)}
@@ -1253,47 +1216,44 @@ export function CreateAgentModal({ onClose }: { onClose: () => void }) {
                         </button>
                       </span>
                     ))}
-                    {!specialtyAddOpen && (
+                    {specialtyAddOpen ? (
+                      <Input
+                        autoFocus
+                        value={customSpecialtyInput}
+                        onChange={(e) => setCustomSpecialtyInput(e.target.value)}
+                        placeholder={t("create.addSpecialtyPlaceholder")}
+                        maxLength={40}
+                        onKeyDown={(e) => {
+                          if (e.key === "Enter") {
+                            e.preventDefault();
+                            addCustomSpecialty();
+                          }
+                          if (e.key === "Escape") {
+                            setCustomSpecialtyInput("");
+                            setSpecialtyAddOpen(false);
+                          }
+                        }}
+                        onBlur={addCustomSpecialty}
+                        className="h-7 w-48 text-xs"
+                      />
+                    ) : (
                       <button
                         type="button"
                         onClick={() => setSpecialtyAddOpen(true)}
-                        className="inline-flex items-center gap-1 rounded-full border border-dashed border-border px-3 py-1 text-xs text-text-muted hover:bg-accent"
+                        className="inline-flex items-center gap-1 rounded-full border border-dashed border-border px-2.5 py-0.5 text-xs text-text-muted hover:bg-accent"
                       >
                         <Plus className="h-3 w-3" /> {t("common:custom")}
                       </button>
                     )}
                   </div>
-                  {specialtyAddOpen && (
-                    <Input
-                      autoFocus
-                      value={customSpecialtyInput}
-                      onChange={(e) => setCustomSpecialtyInput(e.target.value)}
-                      placeholder={t("create.addSpecialtyPlaceholder")}
-                      maxLength={40}
-                      onKeyDown={(e) => {
-                        if (e.key === "Enter") {
-                          e.preventDefault();
-                          addCustomSpecialty();
-                        }
-                        if (e.key === "Escape") {
-                          setCustomSpecialtyInput("");
-                          setSpecialtyAddOpen(false);
-                        }
-                      }}
-                      onBlur={addCustomSpecialty}
-                      className="h-8 text-xs"
-                    />
-                  )}
-                </div>
+                </Field>
 
                 {/* Description */}
-                <div className="space-y-1.5">
-                  <div className="flex items-baseline justify-between">
-                    <Label htmlFor="agent-desc">{t("common:descriptionOptional")}</Label>
-                    <span className="text-xs text-text-muted tabular-nums">
-                      {description.length}/{limits.agent.description}
-                    </span>
-                  </div>
+                <Field
+                  label={t("common:descriptionOptional")}
+                  htmlFor="agent-desc"
+                  counter={`${description.length}/${limits.agent.description}`}
+                >
                   <Textarea
                     id="agent-desc"
                     value={description}
@@ -1303,18 +1263,100 @@ export function CreateAgentModal({ onClose }: { onClose: () => void }) {
                     maxLength={limits.agent.description}
                     className="resize-none"
                   />
+                </Field>
+
+                <Category>{t("create.sections.runtime")}</Category>
+                {/* Runs on + Model */}
+                <div className="grid grid-cols-2 gap-3">
+                  <Field label={t("create.runsOn")}>
+                    <Select
+                      value={hosting}
+                      onValueChange={(v) => v && setHosting(v as "hosted" | "local")}
+                    >
+                      <SelectTrigger className="w-full">
+                        <SelectValue>
+                          {(val: unknown) =>
+                            val === "hosted" ? t("hosting.hosted") : t("hosting.local")
+                          }
+                        </SelectValue>
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="hosted" disabled={!canHost}>
+                          <span className="flex flex-col">
+                            <span className="flex items-center gap-1.5">
+                              {t("hosting.hosted")}
+                              {!canHost && (
+                                <span className="rounded-full bg-muted px-1.5 py-px text-[9px] uppercase tracking-wide text-muted-foreground">
+                                  {t("create.hostedComingSoon")}
+                                </span>
+                              )}
+                            </span>
+                            <span className="text-[11px] text-muted-foreground">
+                              {t("create.hostedDescription")}
+                            </span>
+                          </span>
+                        </SelectItem>
+                        <SelectItem value="local">
+                          <span className="flex flex-col">
+                            <span>{t("hosting.local")}</span>
+                            <span className="text-[11px] text-muted-foreground">
+                              {t("create.localDescription")}
+                            </span>
+                          </span>
+                        </SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </Field>
+                  <Field label={t("common:model")}>
+                    {hosting === "hosted" ? (
+                      <div className="flex h-8 items-center rounded-lg border border-dashed border-border px-2.5 text-xs text-text-muted">
+                        {t("create.hostedBrain")}
+                      </div>
+                    ) : (
+                      <Select value={brainValue(backend, model)} onValueChange={handleBrainChange}>
+                        <SelectTrigger className="w-full">
+                          <SelectValue>
+                            {() => {
+                              const m = models.find((x) => x.id === model);
+                              return [providerLabel, m?.label ?? model]
+                                .filter(Boolean)
+                                .join(" · ");
+                            }}
+                          </SelectValue>
+                        </SelectTrigger>
+                        <SelectContent>
+                          {PROVIDERS.map((p) => (
+                            <SelectGroup key={p.id}>
+                              <SelectLabel>{p.label}</SelectLabel>
+                              {catalog.modelsFor(p.id).map((m) => (
+                                <SelectItem key={m.id} value={brainValue(p.id, m.id)}>
+                                  {m.label}
+                                </SelectItem>
+                              ))}
+                            </SelectGroup>
+                          ))}
+                        </SelectContent>
+                      </Select>
+                    )}
+                  </Field>
                 </div>
 
-                {/* Instructions */}
-                <div className="space-y-1.5">
-                  <div className="flex items-baseline justify-between">
-                    <Label htmlFor="agent-instructions">
-                      {t("create.customInstructionsOptional")}
-                    </Label>
-                    <span className="text-xs text-text-muted tabular-nums">
-                      {customInstructions.length}/{INSTRUCTIONS_MAX}
-                    </span>
-                  </div>
+              </div>
+            </div>
+
+            {/* More options */}
+            <Section
+              title={t("create.moreOptions")}
+              summary={moreSummary || undefined}
+              open={moreOpen}
+              onOpenChange={setMoreOpen}
+            >
+              <div className="space-y-4">
+                <Field
+                  label={t("create.customInstructionsOptional")}
+                  htmlFor="agent-instructions"
+                  counter={`${customInstructions.length}/${INSTRUCTIONS_MAX}`}
+                >
                   <Textarea
                     id="agent-instructions"
                     value={customInstructions}
@@ -1324,511 +1366,355 @@ export function CreateAgentModal({ onClose }: { onClose: () => void }) {
                     maxLength={INSTRUCTIONS_MAX}
                     className="resize-none"
                   />
-                </div>
+                </Field>
 
-                {/* Location */}
-                <div className="flex items-center justify-between rounded-lg border border-border px-3 py-2">
-                  <div className="flex items-center gap-2">
-                    <MapPin
-                      className={cn(
-                        "h-4 w-4",
-                        requiresLocation ? "text-primary" : "text-text-muted"
-                      )}
-                    />
-                    <div>
-                      <div className="text-xs font-medium">{t("create.locationAccess")}</div>
-                      <div className="text-[10px] text-text-muted">
-                        {t("create.locationAccessDescription")}
-                      </div>
-                    </div>
+                {/* Integrations */}
+                <Field label={t("create.review.toolsLabel")} hint={t("create.toolsHint")}>
+                  <TooltipProvider delay={300}>
+                  <div className="space-y-2">
+                    {groupIntegrationTools(toolCatalog).length === 0 ? (
+                      <p className="text-xs text-muted-foreground py-1">
+                        {t("toolsTab.empty")}
+                      </p>
+                    ) : (
+                      groupIntegrationTools(toolCatalog).map((group) => {
+                        const enabledCount = group.tools.filter((tool) =>
+                          selectedTools.includes(tool.name)
+                        ).length;
+                        const allEnabled = enabledCount === group.tools.length;
+                        const expanded = expandedToolGroups.has(group.key);
+                        const groupNames = group.tools.map((tool) => tool.name);
+                        return (
+                          <div
+                            key={group.key}
+                            className="rounded-lg border border-border"
+                          >
+                            {/* Header is the control: one switch for the whole
+                                group; the chevron expands per-tool switches. */}
+                            <div className="flex items-center gap-2 px-3 py-2">
+                              <button
+                                type="button"
+                                onClick={() =>
+                                  setExpandedToolGroups((prev) => {
+                                    const copy = new Set(prev);
+                                    if (copy.has(group.key)) copy.delete(group.key);
+                                    else copy.add(group.key);
+                                    return copy;
+                                  })
+                                }
+                                className="flex min-w-0 flex-1 items-center gap-1.5 text-left"
+                              >
+                                {expanded ? (
+                                  <ChevronDown className="w-3 h-3 shrink-0 text-text-muted" />
+                                ) : (
+                                  <ChevronRight className="w-3 h-3 shrink-0 text-text-muted" />
+                                )}
+                                <span className="text-[11px] font-medium uppercase tracking-wide text-text-muted">
+                                  {t(group.labelKey)}
+                                </span>
+                                <span
+                                  className={cn(
+                                    "text-[10px] tabular-nums",
+                                    enabledCount > 0
+                                      ? "text-primary"
+                                      : "text-text-muted/70"
+                                  )}
+                                >
+                                  {enabledCount}/{group.tools.length}
+                                </span>
+                              </button>
+                              {group.credentialProvider &&
+                                (wizardConnections[group.credentialProvider] ===
+                                true ? (
+                                  <span className="inline-flex items-center gap-1 rounded-full bg-muted px-1.5 py-px text-[9px] uppercase tracking-wide text-muted-foreground">
+                                    <Check className="w-2.5 h-2.5 text-success" />
+                                    {t("toolsTab.available")}
+                                  </span>
+                                ) : wizardConnections[group.credentialProvider] ===
+                                  false ? (
+                                  <Button
+                                    type="button"
+                                    size="sm"
+                                    variant="outline"
+                                    className="h-5 px-2 text-[9px]"
+                                    onClick={() =>
+                                      void handleWizardConnect(
+                                        group.credentialProvider!
+                                      )
+                                    }
+                                  >
+                                    {t("settings:connections.connectProvider", {
+                                      provider: PROVIDER_LABELS[
+                                        group.credentialProvider
+                                      ],
+                                    })}
+                                  </Button>
+                                ) : null)}
+                              <Switch
+                                checked={allEnabled}
+                                onCheckedChange={(next) =>
+                                  setSelectedTools((prev) =>
+                                    next
+                                      ? [
+                                          ...prev,
+                                          ...groupNames.filter(
+                                            (n) => !prev.includes(n)
+                                          ),
+                                        ]
+                                      : prev.filter((n) => !groupNames.includes(n))
+                                  )
+                                }
+                              />
+                            </div>
+                            {expanded && (
+                              <div className="divide-y divide-border border-t border-border">
+                                {group.tools.map((tool) => {
+                                  const checked = selectedTools.includes(tool.name);
+                                  return (
+                                    <label
+                                      key={tool.id}
+                                      className="flex cursor-pointer items-center justify-between gap-3 px-3 py-2 hover:bg-accent/50 transition-colors"
+                                    >
+                                      <div className="min-w-0">
+                                        <p className="text-xs font-medium">
+                                          {tool.displayName || tool.name}
+                                        </p>
+                                        {tool.description && (
+                                          <Tooltip>
+                                            <TooltipTrigger
+                                              render={
+                                                <p className="text-[11px] text-text-muted line-clamp-1 cursor-default text-left">
+                                                  {tool.description}
+                                                </p>
+                                              }
+                                            />
+                                            <TooltipContent
+                                              side="bottom"
+                                              align="start"
+                                              className="max-w-sm whitespace-normal text-left leading-snug"
+                                            >
+                                              {tool.description}
+                                            </TooltipContent>
+                                          </Tooltip>
+                                        )}
+                                      </div>
+                                      <Switch
+                                        checked={checked}
+                                        onCheckedChange={(next) =>
+                                          setSelectedTools((prev) =>
+                                            next
+                                              ? [...prev, tool.name]
+                                              : prev.filter((n) => n !== tool.name)
+                                          )
+                                        }
+                                      />
+                                    </label>
+                                  );
+                                })}
+                              </div>
+                            )}
+                          </div>
+                        );
+                      })
+                    )}
                   </div>
-                  <Switch
+                  </TooltipProvider>
+                </Field>
+
+                {/* Local-brain knobs — hosted agents use the host's shared seat. */}
+                {hosting === "local" && (
+                  <>
+                    <div
+                      className={cn(
+                        "grid gap-3",
+                        showEffort ? "grid-cols-2" : "grid-cols-1"
+                      )}
+                    >
+                      <Field label={t("executionMode")}>
+                        <Select
+                          value={executionMode}
+                          onValueChange={(v) => v && setExecutionMode(v)}
+                        >
+                          <SelectTrigger className="w-full">
+                            <SelectValue>
+                              {(val: unknown) => {
+                                const mode = EXECUTION_MODES.find(
+                                  (m) => m.id === String(val)
+                                );
+                                return mode ? t(mode.labelKey) : String(val ?? "");
+                              }}
+                            </SelectValue>
+                          </SelectTrigger>
+                          <SelectContent>
+                            {EXECUTION_MODES.filter((m) =>
+                              supportedModes.includes(m.id)
+                            ).map((m) => (
+                              <SelectItem key={m.id} value={m.id}>
+                                {t(m.labelKey)}
+                              </SelectItem>
+                            ))}
+                          </SelectContent>
+                        </Select>
+                      </Field>
+                      {showEffort && (
+                        <Field label={t("effortLabel")}>
+                          <Select
+                            value={effort || "high"}
+                            onValueChange={(v) => v && setEffort(v)}
+                          >
+                            <SelectTrigger className="w-full">
+                              <SelectValue>
+                                {(val: unknown) => {
+                                  const level = EFFORT_LEVELS.find(
+                                    (e) => e.id === String(val)
+                                  );
+                                  return level
+                                    ? t(level.labelKey)
+                                    : String(val ?? "");
+                                }}
+                              </SelectValue>
+                            </SelectTrigger>
+                            <SelectContent>
+                              {EFFORT_LEVELS.map((e) => (
+                                <SelectItem key={e.id} value={e.id}>
+                                  {t(e.labelKey)}
+                                </SelectItem>
+                              ))}
+                            </SelectContent>
+                          </Select>
+                        </Field>
+                      )}
+                    </div>
+
+                    {needsApiKey && hasDefaultKey && (
+                      <Field
+                        label={t("create.providerApiKey", { provider: providerLabel })}
+                        hint={
+                          keySelection === "__default__"
+                            ? t("create.keyOptions.usesDefaultHint")
+                            : keySelection !== "__custom__"
+                              ? t("create.keyOptions.pinnedHint")
+                              : undefined
+                        }
+                      >
+                        <Select
+                          value={keySelection}
+                          onValueChange={(v) => {
+                            setKeySelection(String(v));
+                            if (v !== "__custom__") setApiKey("");
+                          }}
+                        >
+                          <SelectTrigger className="w-full">
+                            <SelectValue>
+                              {(val: unknown) => {
+                                const v = String(val);
+                                if (v === "__default__") return t("create.keyOptions.providerDefault");
+                                if (v === "__custom__") return t("create.keyOptions.customForAgent");
+                                return providerKeys.find((k) => k.id === v)?.label ?? v;
+                              }}
+                            </SelectValue>
+                          </SelectTrigger>
+                          <SelectContent>
+                            <SelectItem value="__default__">{t("create.keyOptions.providerDefault")}</SelectItem>
+                            {providerKeys
+                              .filter((k) => !k.isDefault)
+                              .map((k) => (
+                                <SelectItem key={k.id} value={k.id}>
+                                  {k.label}
+                                </SelectItem>
+                              ))}
+                            <SelectItem value="__custom__">{t("create.keyOptions.customForAgent")}</SelectItem>
+                          </SelectContent>
+                        </Select>
+                      </Field>
+                    )}
+
+                    {showApiKeyInput && (
+                      <Field
+                        label={
+                          hasDefaultKey
+                            ? t("create.newKeyThisAgent")
+                            : t("create.providerApiKey", { provider: providerLabel })
+                        }
+                        htmlFor="llm-api-key"
+                        hint={
+                          hasDefaultKey
+                            ? t("create.keySavedThisAgentHint")
+                            : t("create.keySavedAsDefaultHint", { provider: providerLabel })
+                        }
+                      >
+                        <div className="relative">
+                          <Input
+                            id="llm-api-key"
+                            type={showApiKey ? "text" : "password"}
+                            value={apiKey}
+                            onChange={(e) => setApiKey(e.target.value)}
+                            placeholder="sk-..."
+                            className="pr-10 font-mono text-xs"
+                          />
+                          <button
+                            type="button"
+                            onClick={() => setShowApiKey((v) => !v)}
+                            className="absolute right-2 top-1/2 -translate-y-1/2 text-text-muted hover:text-foreground"
+                          >
+                            {showApiKey ? (
+                              <EyeOff className="w-4 h-4" />
+                            ) : (
+                              <Eye className="w-4 h-4" />
+                            )}
+                          </button>
+                        </div>
+                      </Field>
+                    )}
+                  </>
+                )}
+
+                {/* Switch rows */}
+                <div className="divide-y divide-border rounded-lg border border-border">
+                  <SwitchRow
+                    icon={MapPin}
+                    label={t("create.locationAccess")}
+                    description={t("create.locationAccessDescription")}
                     checked={requiresLocation}
                     onCheckedChange={setRequiresLocation}
                   />
-                </div>
-              </div>
-            </Section>
-
-            {/* Tools */}
-            <Section
-              title={t("create.stepLabels.tools")}
-              summary={toolsSummary}
-              summaryActive={selectedTools.length > 0}
-              open={toolsOpen}
-              onOpenChange={setToolsOpen}
-              hint={t("create.toolsHint")}
-            >
-              <TooltipProvider delay={300}>
-              <div className="space-y-2">
-                {groupIntegrationTools(toolCatalog).length === 0 ? (
-                  <p className="text-sm text-muted-foreground text-center py-4">
-                    {t("toolsTab.empty")}
-                  </p>
-                ) : (
-                  groupIntegrationTools(toolCatalog).map((group) => {
-                    const enabledCount = group.tools.filter((tool) =>
-                      selectedTools.includes(tool.name)
-                    ).length;
-                    const allEnabled = enabledCount === group.tools.length;
-                    const expanded = expandedToolGroups.has(group.key);
-                    const groupNames = group.tools.map((tool) => tool.name);
-                    return (
-                      <div
-                        key={group.key}
-                        className="rounded-lg border border-border"
-                      >
-                        {/* Header is the control: one switch for the whole
-                            group; the chevron expands per-tool switches. */}
-                        <div className="flex items-center gap-2 px-3 py-2">
-                          <button
-                            type="button"
-                            onClick={() =>
-                              setExpandedToolGroups((prev) => {
-                                const copy = new Set(prev);
-                                if (copy.has(group.key)) copy.delete(group.key);
-                                else copy.add(group.key);
-                                return copy;
-                              })
-                            }
-                            className="flex min-w-0 flex-1 items-center gap-1.5 text-left"
-                          >
-                            {expanded ? (
-                              <ChevronDown className="w-3 h-3 shrink-0 text-text-muted" />
-                            ) : (
-                              <ChevronRight className="w-3 h-3 shrink-0 text-text-muted" />
-                            )}
-                            <span className="text-[11px] font-medium uppercase tracking-wide text-text-muted">
-                              {t(group.labelKey)}
-                            </span>
-                            <span
-                              className={cn(
-                                "text-[10px] tabular-nums",
-                                enabledCount > 0
-                                  ? "text-primary"
-                                  : "text-text-muted/70"
-                              )}
-                            >
-                              {enabledCount}/{group.tools.length}
-                            </span>
-                          </button>
-                          {group.credentialProvider &&
-                            (wizardConnections[group.credentialProvider] ===
-                            true ? (
-                              <span className="inline-flex items-center gap-1 rounded-full bg-muted px-1.5 py-px text-[9px] uppercase tracking-wide text-muted-foreground">
-                                <Check className="w-2.5 h-2.5 text-success" />
-                                {t("toolsTab.available")}
-                              </span>
-                            ) : wizardConnections[group.credentialProvider] ===
-                              false ? (
-                              <Button
-                                type="button"
-                                size="sm"
-                                variant="outline"
-                                className="h-5 px-2 text-[9px]"
-                                onClick={() =>
-                                  void handleWizardConnect(
-                                    group.credentialProvider!
-                                  )
-                                }
-                              >
-                                {t("settings:connections.connectProvider", {
-                                  provider: PROVIDER_LABELS[
-                                    group.credentialProvider
-                                  ],
-                                })}
-                              </Button>
-                            ) : null)}
-                          <Switch
-                            checked={allEnabled}
-                            onCheckedChange={(next) =>
-                              setSelectedTools((prev) =>
-                                next
-                                  ? [
-                                      ...prev,
-                                      ...groupNames.filter(
-                                        (n) => !prev.includes(n)
-                                      ),
-                                    ]
-                                  : prev.filter((n) => !groupNames.includes(n))
-                              )
-                            }
-                          />
-                        </div>
-                        {expanded && (
-                          <div className="divide-y divide-border border-t border-border">
-                            {group.tools.map((tool) => {
-                              const checked = selectedTools.includes(tool.name);
-                              return (
-                                <label
-                                  key={tool.id}
-                                  className="flex cursor-pointer items-center justify-between gap-3 px-3 py-2 hover:bg-accent/50 transition-colors"
-                                >
-                                  <div className="min-w-0">
-                                    <p className="text-xs font-medium">
-                                      {tool.displayName || tool.name}
-                                    </p>
-                                    {tool.description && (
-                                      <Tooltip>
-                                        <TooltipTrigger
-                                          render={
-                                            <p className="text-[11px] text-text-muted line-clamp-1 cursor-default text-left">
-                                              {tool.description}
-                                            </p>
-                                          }
-                                        />
-                                        <TooltipContent
-                                          side="bottom"
-                                          align="start"
-                                          className="max-w-sm whitespace-normal text-left leading-snug"
-                                        >
-                                          {tool.description}
-                                        </TooltipContent>
-                                      </Tooltip>
-                                    )}
-                                  </div>
-                                  <Switch
-                                    checked={checked}
-                                    onCheckedChange={(next) =>
-                                      setSelectedTools((prev) =>
-                                        next
-                                          ? [...prev, tool.name]
-                                          : prev.filter((n) => n !== tool.name)
-                                      )
-                                    }
-                                  />
-                                </label>
-                              );
-                            })}
-                          </div>
-                        )}
-                      </div>
-                    );
-                  })
-                )}
-              </div>
-              </TooltipProvider>
-            </Section>
-
-            {/* Brain */}
-            <Section
-              title={t("create.stepLabels.brain")}
-              summary={brainSummary}
-              open={brainOpen}
-              onOpenChange={setBrainOpen}
-              hint={t("create.brainHint")}
-            >
-              <div className="space-y-4">
-                {/* Hosted/local picker is visible to everyone; without the
-                    hosted runtime unlocked the hosted card is disabled with
-                    a "coming soon" note and the agent runs locally. */}
-                <div className="grid grid-cols-2 gap-2">
-                  <button
-                    type="button"
-                    disabled={!canHost}
-                    onClick={() => setHosting("hosted")}
-                    className={cn(
-                      "rounded-lg border p-3 text-left transition-colors",
-                      !canHost
-                        ? "cursor-not-allowed border-border opacity-60"
-                        : hosting === "hosted"
-                          ? "border-primary ring-1 ring-primary"
-                          : "border-border hover:border-foreground/30"
-                    )}
-                  >
-                    <div className="flex items-center gap-1.5 text-sm font-medium">
-                      ☁️ {t("hosting.hosted")}
-                      {!canHost && (
-                        <span className="rounded-full bg-muted px-1.5 py-px text-[9px] uppercase tracking-wide text-muted-foreground">
-                          {t("create.hostedComingSoon")}
-                        </span>
-                      )}
-                    </div>
-                    <div className="mt-0.5 text-xs text-text-muted">
-                      {t("create.hostedDescription")}
-                    </div>
-                  </button>
-                  <button
-                    type="button"
-                    onClick={() => setHosting("local")}
-                    className={cn(
-                      "rounded-lg border p-3 text-left transition-colors",
-                      hosting === "local"
-                        ? "border-primary ring-1 ring-primary"
-                        : "border-border hover:border-foreground/30"
-                    )}
-                  >
-                    <div className="text-sm font-medium">
-                      {t("hosting.local")}
-                    </div>
-                    <div className="mt-0.5 text-xs text-text-muted">
-                      {t("create.localDescription")}
-                    </div>
-                  </button>
-                </div>
-
-                {hosting === "hosted" && (
-                  <div className="rounded-lg border border-border bg-muted/40 p-3 text-sm text-text-muted">
-                    {t("create.hostedInfo")}
-                  </div>
-                )}
-
-                {hosting === "local" && (
-                <>
-                <div className="grid grid-cols-2 gap-3">
-                  <div className="space-y-1.5">
-                    <Label>{t("common:provider")}</Label>
-                    <Select
-                      value={backend}
-                      onValueChange={(v) => handleBackendChange(v ?? "")}
-                    >
-                      <SelectTrigger className="w-full">
-                        {/* Base UI renders the raw value unless given a
-                            render fn — map back to the display label. */}
-                        <SelectValue>
-                          {(val: unknown) =>
-                            PROVIDERS.find((p) => p.id === String(val))
-                              ?.label ?? String(val ?? "")
-                          }
-                        </SelectValue>
-                      </SelectTrigger>
-                      <SelectContent>
-                        {PROVIDERS.map((p) => (
-                          <SelectItem key={p.id} value={p.id}>
-                            {p.label}
-                          </SelectItem>
-                        ))}
-                      </SelectContent>
-                    </Select>
-                  </div>
-                  <div className="space-y-1.5">
-                    <Label>{t("common:model")}</Label>
-                    <Select
-                      value={model}
-                      onValueChange={(v) => v && setModel(v)}
-                    >
-                      <SelectTrigger className="w-full">
-                        <SelectValue>
-                          {(val: unknown) =>
-                            models.find((m) => m.id === String(val))?.label ??
-                            String(val ?? "")
-                          }
-                        </SelectValue>
-                      </SelectTrigger>
-                      <SelectContent>
-                        {models.map((m) => (
-                          <SelectItem key={m.id} value={m.id}>
-                            {m.label}
-                          </SelectItem>
-                        ))}
-                      </SelectContent>
-                    </Select>
-                  </div>
-                </div>
-
-                <div
-                  className={cn(
-                    "grid gap-3",
-                    showEffort ? "grid-cols-2" : "grid-cols-1"
-                  )}
-                >
-                  <div className="space-y-1.5">
-                    <Label>{t("executionMode")}</Label>
-                    <Select
-                      value={executionMode}
-                      onValueChange={(v) => v && setExecutionMode(v)}
-                    >
-                      <SelectTrigger className="w-full">
-                        <SelectValue>
-                          {(val: unknown) => {
-                            const mode = EXECUTION_MODES.find(
-                              (m) => m.id === String(val)
-                            );
-                            return mode ? t(mode.labelKey) : String(val ?? "");
-                          }}
-                        </SelectValue>
-                      </SelectTrigger>
-                      <SelectContent>
-                        {EXECUTION_MODES.filter((m) =>
-                          supportedModes.includes(m.id)
-                        ).map((m) => (
-                          <SelectItem key={m.id} value={m.id}>
-                            {t(m.labelKey)}
-                          </SelectItem>
-                        ))}
-                      </SelectContent>
-                    </Select>
-                  </div>
-                  {showEffort && (
-                    <div className="space-y-1.5">
-                      <Label>{t("effortLabel")}</Label>
-                      <Select
-                        value={effort || "high"}
-                        onValueChange={(v) => v && setEffort(v)}
-                      >
-                        <SelectTrigger className="w-full">
-                          <SelectValue>
-                            {(val: unknown) => {
-                              const level = EFFORT_LEVELS.find(
-                                (e) => e.id === String(val)
-                              );
-                              return level
-                                ? t(level.labelKey)
-                                : String(val ?? "");
-                            }}
-                          </SelectValue>
-                        </SelectTrigger>
-                        <SelectContent>
-                          {EFFORT_LEVELS.map((e) => (
-                            <SelectItem key={e.id} value={e.id}>
-                              {t(e.labelKey)}
-                            </SelectItem>
-                          ))}
-                        </SelectContent>
-                      </Select>
-                    </div>
-                  )}
-                </div>
-
-                {needsApiKey && hasDefaultKey && (
-                  <div className="space-y-1.5">
-                    <Label>{t("create.providerApiKey", { provider: providerLabel })}</Label>
-                    <Select
-                      value={keySelection}
-                      onValueChange={(v) => {
-                        setKeySelection(String(v));
-                        if (v !== "__custom__") setApiKey("");
-                      }}
-                    >
-                      <SelectTrigger className="w-full">
-                        <SelectValue>
-                          {(val: unknown) => {
-                            const v = String(val);
-                            if (v === "__default__") return t("create.keyOptions.providerDefault");
-                            if (v === "__custom__") return t("create.keyOptions.customForAgent");
-                            return providerKeys.find((k) => k.id === v)?.label ?? v;
-                          }}
-                        </SelectValue>
-                      </SelectTrigger>
-                      <SelectContent>
-                        <SelectItem value="__default__">{t("create.keyOptions.providerDefault")}</SelectItem>
-                        {providerKeys
-                          .filter((k) => !k.isDefault)
-                          .map((k) => (
-                            <SelectItem key={k.id} value={k.id}>
-                              {k.label}
-                            </SelectItem>
-                          ))}
-                        <SelectItem value="__custom__">{t("create.keyOptions.customForAgent")}</SelectItem>
-                      </SelectContent>
-                    </Select>
-                    {keySelection === "__default__" && (
-                      <p className="text-xs text-text-muted">
-                        {t("create.keyOptions.usesDefaultHint")}
-                      </p>
-                    )}
-                    {keySelection !== "__default__" && keySelection !== "__custom__" && (
-                      <p className="text-xs text-text-muted">
-                        {t("create.keyOptions.pinnedHint")}
-                      </p>
-                    )}
-                  </div>
-                )}
-
-                {showApiKeyInput && (
-                  <div className="space-y-1.5">
-                    <Label htmlFor="llm-api-key">
-                      {hasDefaultKey
-                        ? t("create.newKeyThisAgent")
-                        : t("create.providerApiKey", { provider: providerLabel })}
-                    </Label>
-                    <div className="relative">
-                      <Input
-                        id="llm-api-key"
-                        type={showApiKey ? "text" : "password"}
-                        value={apiKey}
-                        onChange={(e) => setApiKey(e.target.value)}
-                        placeholder="sk-..."
-                        className="pr-10 font-mono text-xs"
+                  {/* Skip-permissions is a CLI-backend feature
+                      (Claude Code: --dangerously-skip-permissions,
+                      Codex: --dangerously-bypass-approvals-and-sandbox).
+                      The plain Anthropic/OpenAI APIs have no permission
+                      prompts to skip. */}
+                  {hosting === "local" &&
+                    (backend === "claude_cli" || backend === "codex_cli") && (
+                      <SwitchRow
+                        icon={ShieldOff}
+                        label={t("create.skipPermissions")}
+                        description={t("create.skipPermissionsDescription")}
+                        checked={skipPermissions}
+                        onCheckedChange={setSkipPermissions}
                       />
-                      <button
-                        type="button"
-                        onClick={() => setShowApiKey((v) => !v)}
-                        className="absolute right-2 top-1/2 -translate-y-1/2 text-text-muted hover:text-foreground"
-                      >
-                        {showApiKey ? (
-                          <EyeOff className="w-4 h-4" />
-                        ) : (
-                          <Eye className="w-4 h-4" />
-                        )}
-                      </button>
-                    </div>
-                    <p className="text-xs text-text-muted">
-                      {hasDefaultKey
-                        ? t("create.keySavedThisAgentHint")
-                        : t("create.keySavedAsDefaultHint", { provider: providerLabel })}
-                    </p>
-                  </div>
-                )}
-
-                {/* Skip-permissions is a CLI-backend feature
-                    (Claude Code: --dangerously-skip-permissions,
-                    Codex: --dangerously-bypass-approvals-and-sandbox).
-                    The plain Anthropic/OpenAI APIs have no permission
-                    prompts to skip. */}
-                {(backend === "claude_cli" || backend === "codex_cli") && (
-                  <label className="flex items-start gap-2.5 cursor-pointer group">
-                    <input
-                      type="checkbox"
-                      checked={skipPermissions}
-                      onChange={(e) => setSkipPermissions(e.target.checked)}
-                      className="mt-0.5 rounded border-border"
-                    />
-                    <div className="flex-1 min-w-0">
-                      <div className="flex items-center gap-1.5 text-sm font-medium text-foreground group-hover:text-accent-hover transition-colors">
-                        <ShieldOff className="w-3.5 h-3.5" />
-                        {t("create.skipPermissions")}
-                      </div>
-                      <p className="text-xs text-text-muted mt-0.5">
-                        {t("create.skipPermissionsDescription")}
-                      </p>
-                    </div>
-                  </label>
-                )}
-
-                {/* Computer use is a claude_cli-only capability today.
-                    Hosted (Anthropic API), OpenAI, and Codex backends
-                    don't run through our local MCP server. */}
-                {backend === "claude_cli" && (
-                  <label className="flex items-start gap-2.5 cursor-pointer group">
-                    <input
-                      type="checkbox"
+                    )}
+                  {/* Computer use is a claude_cli-only capability today.
+                      Hosted (Anthropic API), OpenAI, and Codex backends
+                      don't run through our local MCP server. */}
+                  {hosting === "local" && backend === "claude_cli" && (
+                    <SwitchRow
+                      icon={Monitor}
+                      label={t("create.computerUse")}
+                      description={t("create.computerUseDescription")}
                       checked={computerUseEnabled}
-                      onChange={(e) => setComputerUseEnabled(e.target.checked)}
-                      className="mt-0.5 rounded border-border"
+                      onCheckedChange={setComputerUseEnabled}
                     />
-                    <div className="flex-1 min-w-0">
-                      <div className="flex items-center gap-1.5 text-sm font-medium text-foreground group-hover:text-accent-hover transition-colors">
-                        <ShieldOff className="w-3.5 h-3.5" />
-                        {t("create.computerUse")}
-                      </div>
-                      <p className="text-xs text-text-muted mt-0.5">
-                        {t("create.computerUseDescription")}
-                      </p>
-                    </div>
-                  </label>
-                )}
-                </>
+                  )}
+                </div>
+
+                {workspacesEnabled && (
+                  <VisibilityChoice
+                    value={visibilityOrgIds}
+                    onChange={setVisibilityOrgIds}
+                  />
                 )}
               </div>
             </Section>
-
-            {workspacesEnabled && (
-              <VisibilityChoice
-                value={visibilityOrgIds}
-                onChange={setVisibilityOrgIds}
-              />
-            )}
           </form>
 
           {/* Footer */}
@@ -1878,6 +1764,76 @@ export function CreateAgentModal({ onClose }: { onClose: () => void }) {
   );
 }
 
+/** Small uppercase header that names a group of fields. */
+function Category({ children }: { children: ReactNode }) {
+  return (
+    <p className="text-[11px] font-semibold uppercase tracking-wide text-text-muted">
+      {children}
+    </p>
+  );
+}
+
+/** Label + optional counter/hint around one control. */
+function Field({
+  label,
+  htmlFor,
+  counter,
+  hint,
+  children,
+}: {
+  label: string;
+  htmlFor?: string;
+  counter?: string;
+  hint?: string;
+  children: ReactNode;
+}) {
+  return (
+    <div className="space-y-1.5">
+      <div className="flex items-baseline justify-between">
+        <Label htmlFor={htmlFor}>{label}</Label>
+        {counter && (
+          <span className="text-xs text-text-muted tabular-nums">{counter}</span>
+        )}
+      </div>
+      {children}
+      {hint && <p className="text-[11px] text-text-muted">{hint}</p>}
+    </div>
+  );
+}
+
+/** One line of the switch list: icon, label, one-line description, switch. */
+function SwitchRow({
+  icon: Icon,
+  label,
+  description,
+  checked,
+  onCheckedChange,
+}: {
+  icon: typeof MapPin;
+  label: string;
+  description: string;
+  checked: boolean;
+  onCheckedChange: (next: boolean) => void;
+}) {
+  return (
+    <label className="flex cursor-pointer items-center justify-between gap-3 px-3 py-2">
+      <div className="flex min-w-0 items-center gap-2">
+        <Icon
+          className={cn(
+            "h-4 w-4 shrink-0",
+            checked ? "text-primary" : "text-text-muted"
+          )}
+        />
+        <div className="min-w-0">
+          <div className="text-xs font-medium">{label}</div>
+          <div className="text-[10px] text-text-muted">{description}</div>
+        </div>
+      </div>
+      <Switch checked={checked} onCheckedChange={onCheckedChange} />
+    </label>
+  );
+}
+
 /**
  * A titled block of the form. With `open`/`onOpenChange` it collapses: the
  * header becomes a toggle and `summary` shows the current choice next to the
@@ -1885,17 +1841,13 @@ export function CreateAgentModal({ onClose }: { onClose: () => void }) {
  */
 function Section({
   title,
-  hint,
   summary,
-  summaryActive,
   open,
   onOpenChange,
   children,
 }: {
   title: string;
-  hint?: string;
   summary?: string;
-  summaryActive?: boolean;
   open?: boolean;
   onOpenChange?: (open: boolean) => void;
   children: ReactNode;
@@ -1912,34 +1864,24 @@ function Section({
         ))}
       <span className="text-sm font-semibold text-foreground">{title}</span>
       {summary && !expanded && (
-        <span
-          className={cn(
-            "min-w-0 truncate text-xs",
-            summaryActive ? "text-primary" : "text-text-muted"
-          )}
-        >
-          {summary}
-        </span>
+        <span className="min-w-0 truncate text-xs text-primary">{summary}</span>
       )}
     </div>
   );
   return (
-    <section className="space-y-2.5">
-      <div className="space-y-0.5">
-        {collapsible ? (
-          <button
-            type="button"
-            onClick={() => onOpenChange(!open)}
-            aria-expanded={expanded}
-            className="flex w-full items-center text-left"
-          >
-            {header}
-          </button>
-        ) : (
-          header
-        )}
-        {hint && expanded && <p className="text-xs text-text-muted">{hint}</p>}
-      </div>
+    <section className="space-y-3">
+      {collapsible ? (
+        <button
+          type="button"
+          onClick={() => onOpenChange(!open)}
+          aria-expanded={expanded}
+          className="flex w-full items-center text-left"
+        >
+          {header}
+        </button>
+      ) : (
+        header
+      )}
       {expanded && children}
     </section>
   );
@@ -1975,47 +1917,45 @@ function VisibilityChoice({
   };
 
   return (
-    <Section title={t("visibility.label")}>
-      <div className="space-y-1.5">
-        <div className="space-y-1.5 rounded-lg border border-border p-2.5">
-          <label className="flex cursor-pointer items-center gap-2 text-xs font-medium">
-            <input
-              type="checkbox"
-              checked={value === null}
-              onChange={() =>
-                value === null
-                  ? onChange(seed ? [seed.id] : [])
-                  : onChange(null)
-              }
-              className="h-3.5 w-3.5 accent-primary"
-            />
-            {t("visibility.all")}
-          </label>
-          <div className="ml-5 space-y-1 border-l border-border pl-3">
-            {allWorkspaces.map((w) => (
-              <label
-                key={w.id}
-                className={cn(
-                  "flex items-center gap-2 text-xs",
-                  value === null ? "cursor-not-allowed opacity-50" : "cursor-pointer"
-                )}
-              >
-                <input
-                  type="checkbox"
-                  disabled={value === null}
-                  checked={value !== null && value.includes(w.id)}
-                  onChange={() => toggle(w.id)}
-                  className="h-3.5 w-3.5 accent-primary"
-                />
-                {w.name}
-              </label>
-            ))}
-          </div>
+    <Field
+      label={t("visibility.label")}
+      hint={value === null ? t("visibility.allHint") : t("visibility.selectedHint")}
+    >
+      <div className="space-y-1.5 rounded-lg border border-border p-2.5">
+        <label className="flex cursor-pointer items-center gap-2 text-xs font-medium">
+          <input
+            type="checkbox"
+            checked={value === null}
+            onChange={() =>
+              value === null
+                ? onChange(seed ? [seed.id] : [])
+                : onChange(null)
+            }
+            className="h-3.5 w-3.5 accent-primary"
+          />
+          {t("visibility.all")}
+        </label>
+        <div className="ml-5 space-y-1 border-l border-border pl-3">
+          {allWorkspaces.map((w) => (
+            <label
+              key={w.id}
+              className={cn(
+                "flex items-center gap-2 text-xs",
+                value === null ? "cursor-not-allowed opacity-50" : "cursor-pointer"
+              )}
+            >
+              <input
+                type="checkbox"
+                disabled={value === null}
+                checked={value !== null && value.includes(w.id)}
+                onChange={() => toggle(w.id)}
+                className="h-3.5 w-3.5 accent-primary"
+              />
+              {w.name}
+            </label>
+          ))}
         </div>
-        <p className="text-[11px] text-text-muted">
-          {value === null ? t("visibility.allHint") : t("visibility.selectedHint")}
-        </p>
       </div>
-    </Section>
+    </Field>
   );
 }

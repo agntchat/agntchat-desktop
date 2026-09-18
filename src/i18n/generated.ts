@@ -553,6 +553,7 @@ export const resources = {
           "uploadFailed": "Upload failed"
         },
         "executionMode": "Execution Mode",
+        "hostedBrain": "Shared Claude brain — nothing to set up",
         "hostedComingSoon": "Coming soon",
         "hostedDescription": "Runs in the cloud — no setup needed",
         "hostedInfo": "Hosted agents run on managed infrastructure with a shared Claude brain — no API key or local process needed.",
@@ -602,6 +603,7 @@ export const resources = {
         "maxTurns": "Max Turns",
         "model": "Model",
         "modelDefault": "Provider default",
+        "moreOptions": "More options",
         "nameHint": "Pick something memorable — you can always change it later.",
         "namePlaceholder": "e.g. Atlas, Scout, Luna...",
         "nameTitle": "What should we call your agent?",
@@ -669,8 +671,11 @@ export const resources = {
         "roleHint": "Pick the role that matches how they'll operate.",
         "roleTitle": "How should they work?",
         "roleTitleNamed": "How should {{name}} work?",
+        "runsOn": "Runs on",
         "sections": {
-          "personality": "Personality"
+          "identity": "Identity",
+          "personality": "Personality",
+          "runtime": "Runtime"
         },
         "setupConnection": "Set up connection",
         "skipPermissions": "Skip permission prompts",
@@ -687,6 +692,7 @@ export const resources = {
           "reviewer": "What do they review?",
           "worker": "What are they good at?"
         },
+        "specialtiesPlaceholder": "Choose specialties",
         "specialtiesTitleByRole": {
           "observer": "What do they monitor?",
           "orchestrator": "What will they manage?",
@@ -750,8 +756,14 @@ export const resources = {
         },
         "swipeToExplore": "Swipe to explore",
         "taskTimeout": "Task Timeout (seconds)",
+        "template": {
+          "label": "Template",
+          "none": "No template",
+          "placeholder": "Start from a template (optional)"
+        },
         "timeoutSeconds": "Timeout (seconds)",
         "toneHint": "Pick a style or add your own.",
+        "tonePlaceholder": "Choose a tone",
         "toneTitle": "How should they talk?",
         "toolsHint": "Pick the integrations this agent should work with. You can change this anytime in the agent's Tools tab.",
         "toolsTitle": "Which tools can they use?",
@@ -6080,6 +6092,7 @@ export const resources = {
           "uploadFailed": "Error al subir el archivo"
         },
         "executionMode": "Modo de ejecución",
+        "hostedBrain": "Cerebro Claude compartido: nada que configurar",
         "hostedComingSoon": "Próximamente",
         "hostedDescription": "Se ejecuta en la nube — sin configuración",
         "hostedInfo": "Los agentes alojados se ejecutan en infraestructura gestionada con un cerebro Claude compartido — no necesitan clave de API ni proceso local.",
@@ -6129,6 +6142,7 @@ export const resources = {
         "maxTurns": "Turnos máximos",
         "model": "Modelo",
         "modelDefault": "Predeterminado del proveedor",
+        "moreOptions": "Más opciones",
         "nameHint": "Elige algo memorable — siempre puedes cambiarlo más tarde.",
         "namePlaceholder": "p. ej. Atlas, Scout, Luna...",
         "nameTitle": "¿Cómo llamamos a tu agente?",
@@ -6196,8 +6210,11 @@ export const resources = {
         "roleHint": "Elige el rol que encaje con su forma de trabajar.",
         "roleTitle": "¿Cómo debería trabajar?",
         "roleTitleNamed": "¿Cómo debería trabajar {{name}}?",
+        "runsOn": "Se ejecuta en",
         "sections": {
-          "personality": "Personalidad"
+          "identity": "Identidad",
+          "personality": "Personalidad",
+          "runtime": "Ejecución"
         },
         "setupConnection": "Configurar conexión",
         "skipPermissions": "Omitir confirmaciones de permisos",
@@ -6214,6 +6231,7 @@ export const resources = {
           "reviewer": "¿Qué revisa?",
           "worker": "¿En qué es bueno?"
         },
+        "specialtiesPlaceholder": "Elige especialidades",
         "specialtiesTitleByRole": {
           "observer": "¿Qué supervisan?",
           "orchestrator": "¿Qué van a gestionar?",
@@ -6277,8 +6295,14 @@ export const resources = {
         },
         "swipeToExplore": "Desliza para explorar",
         "taskTimeout": "Tiempo de espera de tarea (segundos)",
+        "template": {
+          "label": "Plantilla",
+          "none": "Sin plantilla",
+          "placeholder": "Empezar desde una plantilla (opcional)"
+        },
         "timeoutSeconds": "Tiempo de espera (segundos)",
         "toneHint": "Elige un estilo o añade el tuyo.",
+        "tonePlaceholder": "Elige un tono",
         "toneTitle": "¿Cómo debería hablar?",
         "toolsHint": "Elige las integraciones con las que trabajará este agente. Puedes cambiarlo en cualquier momento en la pestaña Herramientas del agente.",
         "toolsTitle": "¿Qué herramientas puede usar?",
@@ -11607,6 +11631,7 @@ export const resources = {
           "uploadFailed": "Upload fehlgeschlagen"
         },
         "executionMode": "Ausführungsmodus",
+        "hostedBrain": "Gemeinsames Claude-Gehirn – nichts einzurichten",
         "hostedComingSoon": "Bald verfügbar",
         "hostedDescription": "Läuft in der Cloud — keine Einrichtung nötig",
         "hostedInfo": "Gehostete Agenten laufen auf verwalteter Infrastruktur mit einem gemeinsamen Claude-Gehirn — kein API-Schlüssel oder lokaler Prozess nötig.",
@@ -11656,6 +11681,7 @@ export const resources = {
         "maxTurns": "Max. Runden",
         "model": "Modell",
         "modelDefault": "Anbieter-Standard",
+        "moreOptions": "Weitere Optionen",
         "nameHint": "Wählen Sie etwas Einprägsames — Sie können es später jederzeit ändern.",
         "namePlaceholder": "z. B. Atlas, Scout, Luna...",
         "nameTitle": "Wie sollen wir Ihren Agenten nennen?",
@@ -11723,8 +11749,11 @@ export const resources = {
         "roleHint": "Wählen Sie die Rolle, die zur Arbeitsweise passt.",
         "roleTitle": "Wie sollen sie arbeiten?",
         "roleTitleNamed": "Wie soll {{name}} arbeiten?",
+        "runsOn": "Läuft auf",
         "sections": {
-          "personality": "Persönlichkeit"
+          "identity": "Identität",
+          "personality": "Persönlichkeit",
+          "runtime": "Laufzeit"
         },
         "setupConnection": "Verbindung einrichten",
         "skipPermissions": "Berechtigungsabfragen überspringen",
@@ -11741,6 +11770,7 @@ export const resources = {
           "reviewer": "Was überprüfen sie?",
           "worker": "Worin sind sie gut?"
         },
+        "specialtiesPlaceholder": "Spezialgebiete wählen",
         "specialtiesTitleByRole": {
           "observer": "Was überwachen sie?",
           "orchestrator": "Was werden sie verwalten?",
@@ -11804,8 +11834,14 @@ export const resources = {
         },
         "swipeToExplore": "Zum Erkunden wischen",
         "taskTimeout": "Aufgaben-Timeout (Sekunden)",
+        "template": {
+          "label": "Vorlage",
+          "none": "Keine Vorlage",
+          "placeholder": "Mit einer Vorlage starten (optional)"
+        },
         "timeoutSeconds": "Timeout (Sekunden)",
         "toneHint": "Wählen Sie einen Stil oder fügen Sie einen eigenen hinzu.",
+        "tonePlaceholder": "Tonfall wählen",
         "toneTitle": "Wie sollen sie sprechen?",
         "toolsHint": "Wählen Sie die Integrationen, mit denen dieser Agent arbeiten soll. Sie können das jederzeit im Tools-Tab des Agenten ändern.",
         "toolsTitle": "Welche Werkzeuge dürfen sie nutzen?",
@@ -17134,6 +17170,7 @@ export const resources = {
           "uploadFailed": "Échec du téléversement"
         },
         "executionMode": "Mode d'exécution",
+        "hostedBrain": "Cerveau Claude partagé — rien à configurer",
         "hostedComingSoon": "Bientôt disponible",
         "hostedDescription": "S'exécute dans le cloud — aucune configuration nécessaire",
         "hostedInfo": "Les agents hébergés s'exécutent sur une infrastructure gérée avec un cerveau Claude partagé — pas besoin de clé API ni de processus local.",
@@ -17183,6 +17220,7 @@ export const resources = {
         "maxTurns": "Nombre maximal de tours",
         "model": "Modèle",
         "modelDefault": "Modèle par défaut du fournisseur",
+        "moreOptions": "Plus d'options",
         "nameHint": "Choisissez quelque chose de mémorable — vous pourrez toujours le changer plus tard.",
         "namePlaceholder": "ex. Atlas, Scout, Luna...",
         "nameTitle": "Comment devons-nous appeler votre agent ?",
@@ -17250,8 +17288,11 @@ export const resources = {
         "roleHint": "Choisissez le rôle qui correspond à sa façon de travailler.",
         "roleTitle": "Comment doivent-ils travailler ?",
         "roleTitleNamed": "Comment {{name}} doit-il travailler ?",
+        "runsOn": "S'exécute sur",
         "sections": {
-          "personality": "Personnalité"
+          "identity": "Identité",
+          "personality": "Personnalité",
+          "runtime": "Exécution"
         },
         "setupConnection": "Configurer la connexion",
         "skipPermissions": "Ignorer les demandes de permission",
@@ -17268,6 +17309,7 @@ export const resources = {
           "reviewer": "Que révisent-ils ?",
           "worker": "Dans quoi excellent-ils ?"
         },
+        "specialtiesPlaceholder": "Choisir des spécialités",
         "specialtiesTitleByRole": {
           "observer": "Que surveillent-ils ?",
           "orchestrator": "Que vont-ils gérer ?",
@@ -17331,8 +17373,14 @@ export const resources = {
         },
         "swipeToExplore": "Balayez pour explorer",
         "taskTimeout": "Délai d'expiration des tâches (secondes)",
+        "template": {
+          "label": "Modèle",
+          "none": "Aucun modèle",
+          "placeholder": "Partir d'un modèle (facultatif)"
+        },
         "timeoutSeconds": "Délai d'expiration (secondes)",
         "toneHint": "Choisissez un style ou ajoutez le vôtre.",
+        "tonePlaceholder": "Choisir un ton",
         "toneTitle": "Comment doivent-ils parler ?",
         "toolsHint": "Choisissez les intégrations avec lesquelles cet agent travaillera. Modifiable à tout moment dans l'onglet Outils de l'agent.",
         "toolsTitle": "Quels outils peut-il utiliser ?",
@@ -22661,6 +22709,7 @@ export const resources = {
           "uploadFailed": "Falha no envio"
         },
         "executionMode": "Modo de Execução",
+        "hostedBrain": "Cérebro Claude compartilhado — nada a configurar",
         "hostedComingSoon": "Em breve",
         "hostedDescription": "Executa na nuvem — sem necessidade de configuração",
         "hostedInfo": "Agentes hospedados executam em infraestrutura gerenciada com um cérebro Claude compartilhado — sem necessidade de chave de API ou processo local.",
@@ -22710,6 +22759,7 @@ export const resources = {
         "maxTurns": "Máximo de Turnos",
         "model": "Modelo",
         "modelDefault": "Padrão do provedor",
+        "moreOptions": "Mais opções",
         "nameHint": "Escolha algo memorável — você sempre pode mudar depois.",
         "namePlaceholder": "ex.: Atlas, Scout, Luna...",
         "nameTitle": "Como devemos chamar seu agente?",
@@ -22777,8 +22827,11 @@ export const resources = {
         "roleHint": "Escolha o papel que combina com o jeito de trabalhar.",
         "roleTitle": "Como eles devem trabalhar?",
         "roleTitleNamed": "Como {{name}} deve trabalhar?",
+        "runsOn": "Executa em",
         "sections": {
-          "personality": "Personalidade"
+          "identity": "Identidade",
+          "personality": "Personalidade",
+          "runtime": "Execução"
         },
         "setupConnection": "Configurar conexão",
         "skipPermissions": "Pular avisos de permissão",
@@ -22795,6 +22848,7 @@ export const resources = {
           "reviewer": "O que eles revisam?",
           "worker": "Em que eles são bons?"
         },
+        "specialtiesPlaceholder": "Escolha especialidades",
         "specialtiesTitleByRole": {
           "observer": "O que eles monitoram?",
           "orchestrator": "O que eles vão gerenciar?",
@@ -22858,8 +22912,14 @@ export const resources = {
         },
         "swipeToExplore": "Deslize para explorar",
         "taskTimeout": "Tempo Limite de Tarefa (segundos)",
+        "template": {
+          "label": "Modelo",
+          "none": "Sem modelo",
+          "placeholder": "Começar de um modelo (opcional)"
+        },
         "timeoutSeconds": "Tempo Limite (segundos)",
         "toneHint": "Escolha um estilo ou adicione o seu próprio.",
+        "tonePlaceholder": "Escolha um tom",
         "toneTitle": "Como eles devem falar?",
         "toolsHint": "Escolha as integrações com as quais este agente vai trabalhar. Você pode mudar isso a qualquer momento na aba Ferramentas do agente.",
         "toolsTitle": "Quais ferramentas ele pode usar?",
@@ -28188,6 +28248,7 @@ export const resources = {
           "uploadFailed": "アップロードに失敗しました"
         },
         "executionMode": "実行モード",
+        "hostedBrain": "共有の Claude ブレイン — 設定不要",
         "hostedComingSoon": "近日公開",
         "hostedDescription": "クラウドで実行 — セットアップ不要",
         "hostedInfo": "ホスト型エージェントは、共有のClaude頭脳を使った管理インフラ上で動作します — APIキーもローカルプロセスも不要です。",
@@ -28237,6 +28298,7 @@ export const resources = {
         "maxTurns": "最大ターン数",
         "model": "モデル",
         "modelDefault": "プロバイダーの既定値",
+        "moreOptions": "その他のオプション",
         "nameHint": "覚えやすいものを選びましょう — 後でいつでも変更できます。",
         "namePlaceholder": "例：アトラス、スカウト、ルナ…",
         "nameTitle": "エージェントの名前は？",
@@ -28304,8 +28366,11 @@ export const resources = {
         "roleHint": "働き方に合ったロールを選びましょう。",
         "roleTitle": "どのように働きますか？",
         "roleTitleNamed": "{{name}}はどのように働きますか？",
+        "runsOn": "実行場所",
         "sections": {
-          "personality": "性格"
+          "identity": "アイデンティティ",
+          "personality": "性格",
+          "runtime": "実行環境"
         },
         "setupConnection": "接続をセットアップ",
         "skipPermissions": "許可プロンプトをスキップ",
@@ -28322,6 +28387,7 @@ export const resources = {
           "reviewer": "何をレビューしますか？",
           "worker": "何が得意ですか？"
         },
+        "specialtiesPlaceholder": "専門分野を選択",
         "specialtiesTitleByRole": {
           "observer": "何を監視しますか？",
           "orchestrator": "何を管理しますか？",
@@ -28385,8 +28451,14 @@ export const resources = {
         },
         "swipeToExplore": "スワイプして見る",
         "taskTimeout": "タスクタイムアウト（秒）",
+        "template": {
+          "label": "テンプレート",
+          "none": "テンプレートなし",
+          "placeholder": "テンプレートから始める（任意）"
+        },
         "timeoutSeconds": "タイムアウト（秒）",
         "toneHint": "スタイルを選ぶか、独自のものを追加してください。",
+        "tonePlaceholder": "口調を選択",
         "toneTitle": "どのように話しますか？",
         "toolsHint": "このエージェントが使う連携を選んでください。エージェントのツールタブでいつでも変更できます。",
         "toolsTitle": "使えるツールを選びましょう",
@@ -33715,6 +33787,7 @@ export const resources = {
           "uploadFailed": "上传失败"
         },
         "executionMode": "执行模式",
+        "hostedBrain": "共享 Claude 大脑——无需设置",
         "hostedComingSoon": "即将推出",
         "hostedDescription": "在云端运行 — 无需设置",
         "hostedInfo": "托管智能体运行在受管理的基础设施上，使用共享的 Claude 大脑 — 无需 API 密钥或本地进程。",
@@ -33764,6 +33837,7 @@ export const resources = {
         "maxTurns": "最大轮次",
         "model": "模型",
         "modelDefault": "提供商默认值",
+        "moreOptions": "更多选项",
         "nameHint": "选择一个容易记住的名字 — 之后随时可以更改。",
         "namePlaceholder": "例如：阿特拉斯、斯凯、露娜……",
         "nameTitle": "我们该如何称呼您的智能体？",
@@ -33831,8 +33905,11 @@ export const resources = {
         "roleHint": "选择与其工作方式相符的角色。",
         "roleTitle": "他们应该如何工作？",
         "roleTitleNamed": "{{name}} 应该如何工作？",
+        "runsOn": "运行位置",
         "sections": {
-          "personality": "个性"
+          "identity": "身份",
+          "personality": "个性",
+          "runtime": "运行环境"
         },
         "setupConnection": "设置连接",
         "skipPermissions": "跳过权限提示",
@@ -33849,6 +33926,7 @@ export const resources = {
           "reviewer": "他们审查什么？",
           "worker": "他们擅长什么？"
         },
+        "specialtiesPlaceholder": "选择专长",
         "specialtiesTitleByRole": {
           "observer": "他们监控什么？",
           "orchestrator": "他们将管理什么？",
@@ -33912,8 +33990,14 @@ export const resources = {
         },
         "swipeToExplore": "滑动以探索",
         "taskTimeout": "任务超时时间（秒）",
+        "template": {
+          "label": "模板",
+          "none": "不使用模板",
+          "placeholder": "从模板开始（可选）"
+        },
         "timeoutSeconds": "超时时间（秒）",
         "toneHint": "选择一种风格，或添加您自己的风格。",
+        "tonePlaceholder": "选择语气",
         "toneTitle": "他们应该如何说话？",
         "toolsHint": "选择这个智能体要使用的集成。可随时在智能体的“工具”标签中更改。",
         "toolsTitle": "它可以使用哪些工具？",
@@ -39242,6 +39326,7 @@ export const resources = {
           "uploadFailed": "업로드 실패"
         },
         "executionMode": "실행 모드",
+        "hostedBrain": "공유 Claude 브레인 — 설정할 것 없음",
         "hostedComingSoon": "곧 제공",
         "hostedDescription": "클라우드에서 실행됨 — 별도 설정 불필요",
         "hostedInfo": "호스팅 에이전트는 공유 Claude 브레인을 사용해 관리형 인프라에서 실행됩니다 — API 키나 로컬 프로세스가 필요 없습니다.",
@@ -39291,6 +39376,7 @@ export const resources = {
         "maxTurns": "최대 턴 수",
         "model": "모델",
         "modelDefault": "제공업체 기본값",
+        "moreOptions": "추가 옵션",
         "nameHint": "기억하기 쉬운 이름을 선택하세요 — 나중에 언제든 변경할 수 있습니다.",
         "namePlaceholder": "예: 아틀라스, 스카우트, 루나…",
         "nameTitle": "에이전트를 뭐라고 부를까요?",
@@ -39358,8 +39444,11 @@ export const resources = {
         "roleHint": "작업 방식에 맞는 역할을 선택하세요.",
         "roleTitle": "어떻게 일해야 할까요?",
         "roleTitleNamed": "{{name}}은(는) 어떻게 일해야 할까요?",
+        "runsOn": "실행 위치",
         "sections": {
-          "personality": "성격"
+          "identity": "아이덴티티",
+          "personality": "성격",
+          "runtime": "실행 환경"
         },
         "setupConnection": "연결 설정",
         "skipPermissions": "권한 확인 건너뛰기",
@@ -39376,6 +39465,7 @@ export const resources = {
           "reviewer": "무엇을 검토하나요?",
           "worker": "무엇을 잘하나요?"
         },
+        "specialtiesPlaceholder": "전문 분야 선택",
         "specialtiesTitleByRole": {
           "observer": "무엇을 모니터링하나요?",
           "orchestrator": "무엇을 관리하나요?",
@@ -39439,8 +39529,14 @@ export const resources = {
         },
         "swipeToExplore": "스와이프하여 둘러보기",
         "taskTimeout": "작업 타임아웃(초)",
+        "template": {
+          "label": "템플릿",
+          "none": "템플릿 없음",
+          "placeholder": "템플릿에서 시작 (선택)"
+        },
         "timeoutSeconds": "타임아웃(초)",
         "toneHint": "스타일을 선택하거나 직접 추가하세요.",
+        "tonePlaceholder": "말투 선택",
         "toneTitle": "어떻게 말해야 할까요?",
         "toolsHint": "이 에이전트가 사용할 통합을 선택하세요. 에이전트의 도구 탭에서 언제든지 변경할 수 있습니다.",
         "toolsTitle": "어떤 도구를 사용할 수 있나요?",
@@ -44769,6 +44865,7 @@ export const resources = {
           "uploadFailed": "Caricamento non riuscito"
         },
         "executionMode": "Modalità di esecuzione",
+        "hostedBrain": "Cervello Claude condiviso: niente da configurare",
         "hostedComingSoon": "In arrivo",
         "hostedDescription": "Esegue nel cloud — nessuna configurazione necessaria",
         "hostedInfo": "Gli agenti hosted vengono eseguiti su infrastruttura gestita con un cervello Claude condiviso — non servono chiave API o processo locale.",
@@ -44818,6 +44915,7 @@ export const resources = {
         "maxTurns": "Turni massimi",
         "model": "Modello",
         "modelDefault": "Predefinito del provider",
+        "moreOptions": "Altre opzioni",
         "nameHint": "Scegli qualcosa di memorabile — puoi sempre cambiarlo più tardi.",
         "namePlaceholder": "es. Atlas, Scout, Luna...",
         "nameTitle": "Come dovremmo chiamare il tuo agente?",
@@ -44885,8 +44983,11 @@ export const resources = {
         "roleHint": "Scegli il ruolo che corrisponde al suo modo di lavorare.",
         "roleTitle": "Come dovrebbero lavorare?",
         "roleTitleNamed": "Come dovrebbe lavorare {{name}}?",
+        "runsOn": "Viene eseguito su",
         "sections": {
-          "personality": "Personalità"
+          "identity": "Identità",
+          "personality": "Personalità",
+          "runtime": "Esecuzione"
         },
         "setupConnection": "Configura connessione",
         "skipPermissions": "Salta le richieste di permesso",
@@ -44903,6 +45004,7 @@ export const resources = {
           "reviewer": "Cosa rivedono?",
           "worker": "In cosa sono bravi?"
         },
+        "specialtiesPlaceholder": "Scegli le specialità",
         "specialtiesTitleByRole": {
           "observer": "Cosa monitorano?",
           "orchestrator": "Cosa gestiranno?",
@@ -44966,8 +45068,14 @@ export const resources = {
         },
         "swipeToExplore": "Scorri per esplorare",
         "taskTimeout": "Timeout attività (secondi)",
+        "template": {
+          "label": "Modello",
+          "none": "Nessun modello",
+          "placeholder": "Parti da un modello (facoltativo)"
+        },
         "timeoutSeconds": "Timeout (secondi)",
         "toneHint": "Scegli uno stile o aggiungine uno tuo.",
+        "tonePlaceholder": "Scegli un tono",
         "toneTitle": "Come dovrebbero parlare?",
         "toolsHint": "Scegli le integrazioni con cui questo agente lavorerà. Puoi cambiarle in qualsiasi momento nella scheda Strumenti dell'agente.",
         "toolsTitle": "Quali strumenti può usare?",
@@ -50296,6 +50404,7 @@ export const resources = {
           "uploadFailed": "अपलोड विफल"
         },
         "executionMode": "एग्ज़ीक्यूशन मोड",
+        "hostedBrain": "साझा Claude ब्रेन — कुछ सेट करने की ज़रूरत नहीं",
         "hostedComingSoon": "जल्द आ रहा है",
         "hostedDescription": "क्लाउड में चलता है — किसी सेटअप की आवश्यकता नहीं",
         "hostedInfo": "होस्टेड एजेंट प्रबंधित इन्फ्रास्ट्रक्चर पर साझा Claude ब्रेन के साथ चलते हैं — किसी API कुंजी या लोकल प्रोसेस की आवश्यकता नहीं।",
@@ -50345,6 +50454,7 @@ export const resources = {
         "maxTurns": "अधिकतम टर्न",
         "model": "मॉडल",
         "modelDefault": "प्रोवाइडर डिफ़ॉल्ट",
+        "moreOptions": "और विकल्प",
         "nameHint": "कुछ यादगार चुनें — आप इसे बाद में कभी भी बदल सकते हैं।",
         "namePlaceholder": "जैसे, एटलस, स्काउट, लूना…",
         "nameTitle": "हम आपके एजेंट को क्या कहें?",
@@ -50412,8 +50522,11 @@ export const resources = {
         "roleHint": "उनके काम करने के तरीक़े से मेल खाती भूमिका चुनें।",
         "roleTitle": "उन्हें कैसे काम करना चाहिए?",
         "roleTitleNamed": "{{name}} को कैसे काम करना चाहिए?",
+        "runsOn": "कहाँ चलेगा",
         "sections": {
-          "personality": "व्यक्तित्व"
+          "identity": "पहचान",
+          "personality": "व्यक्तित्व",
+          "runtime": "रनटाइम"
         },
         "setupConnection": "कनेक्शन सेट अप करें",
         "skipPermissions": "अनुमति संकेत छोड़ें",
@@ -50430,6 +50543,7 @@ export const resources = {
           "reviewer": "वे क्या समीक्षा करते हैं?",
           "worker": "वे किसमें अच्छे हैं?"
         },
+        "specialtiesPlaceholder": "विशेषज्ञताएँ चुनें",
         "specialtiesTitleByRole": {
           "observer": "वे किस पर नज़र रखते हैं?",
           "orchestrator": "वे क्या प्रबंधित करेंगे?",
@@ -50493,8 +50607,14 @@ export const resources = {
         },
         "swipeToExplore": "एक्सप्लोर करने के लिए स्वाइप करें",
         "taskTimeout": "कार्य टाइमआउट (सेकंड)",
+        "template": {
+          "label": "टेम्पलेट",
+          "none": "कोई टेम्पलेट नहीं",
+          "placeholder": "टेम्पलेट से शुरू करें (वैकल्पिक)"
+        },
         "timeoutSeconds": "टाइमआउट (सेकंड)",
         "toneHint": "एक शैली चुनें या अपनी खुद जोड़ें।",
+        "tonePlaceholder": "लहजा चुनें",
         "toneTitle": "उन्हें कैसे बात करनी चाहिए?",
         "toolsHint": "चुनें कि यह एजेंट किन इंटीग्रेशनों के साथ काम करे। इसे एजेंट के टूल्स टैब में कभी भी बदला जा सकता है।",
         "toolsTitle": "वे कौन से टूल इस्तेमाल कर सकते हैं?",
