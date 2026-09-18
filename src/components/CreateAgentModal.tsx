@@ -15,7 +15,6 @@ import {
   Eye,
   EyeOff,
   Monitor,
-  Sparkles,
   ArrowLeft,
   ArrowRight,
 } from "lucide-react";
@@ -855,16 +854,17 @@ export function CreateAgentModal({ onClose }: { onClose: () => void }) {
     selectedTools,
   ]);
 
-  // A score increase fires a one-shot burst (sweep + "+N%" + sparkle),
-  // keyed so back-to-back gains restart the animation. Decreases are quiet.
-  const [burst, setBurst] = useState<{ id: number; delta: number } | null>(null);
+  // A score increase fires a one-shot flash (a sweep across the bar and a
+  // bump on the number), keyed so back-to-back gains restart it. Decreases
+  // are quiet.
+  const [burst, setBurst] = useState<{ id: number } | null>(null);
   const prevPercentRef = useRef(completeness.percent);
   useEffect(() => {
     const prev = prevPercentRef.current;
     prevPercentRef.current = completeness.percent;
     if (completeness.percent <= prev) return;
-    setBurst({ id: Date.now(), delta: completeness.percent - prev });
-    const timer = setTimeout(() => setBurst(null), 1500);
+    setBurst({ id: Date.now() });
+    const timer = setTimeout(() => setBurst(null), 800);
     return () => clearTimeout(timer);
   }, [completeness.percent]);
 
@@ -1022,22 +1022,6 @@ export function CreateAgentModal({ onClose }: { onClose: () => void }) {
                   >
                     {t("create.completeness.label", { percent: completeness.percent })}
                   </span>
-                  {burst && (
-                    <span
-                      key={`pop-${burst.id}`}
-                      aria-hidden
-                      className="meter-pop pointer-events-none absolute -top-4 right-0 text-[11px] font-semibold text-primary"
-                    >
-                      +{burst.delta}%
-                    </span>
-                  )}
-                  {burst && (
-                    <Sparkles
-                      key={`spark-${burst.id}`}
-                      aria-hidden
-                      className="meter-sparkle pointer-events-none absolute -left-4 -top-1 h-3.5 w-3.5 text-primary"
-                    />
-                  )}
                 </span>
               </div>
               <span
