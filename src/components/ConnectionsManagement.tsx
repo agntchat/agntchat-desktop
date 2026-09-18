@@ -4,6 +4,7 @@ import { useTranslation } from "react-i18next";
 import * as api from "../lib/api";
 import { cn } from "../lib/utils";
 import { Button } from "@/components/ui/button";
+import { confirmDialog } from "../stores/confirmStore";
 
 const PROVIDER_ICONS: Record<string, React.ElementType> = {
   google: Globe,
@@ -92,7 +93,13 @@ export function ConnectionsManagement({ orgId, title, subtitle }: Props) {
   }
 
   async function handleDisconnect(credential: api.OrganizationCredential, providerLabel: string) {
-    if (!confirm(t("workspace.connections.disconnectTitle", { provider: providerLabel }))) return;
+    const ok = await confirmDialog({
+      title: t("workspace.connections.disconnectTitle", { provider: providerLabel }),
+      description: t("workspace.connections.disconnectBody"),
+      confirmLabel: t("common:disconnect"),
+      destructive: true,
+    });
+    if (!ok) return;
     try {
       await api.deleteOrganizationCredential(orgId, credential.id);
       setCredentials((prev) => prev.filter((c) => c.id !== credential.id));

@@ -31,6 +31,7 @@ import { isOnboarding, onboardingPct } from "./OnboardingChip";
 import { SoulChangeDialog } from "./SoulChangeDialog";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
+import { confirmDialog } from "../stores/confirmStore";
 
 // Rail labels resolved with t() at render time; literal keys so the i18n
 // audit can see them.
@@ -160,12 +161,22 @@ export function AgentOnboarding({
   };
 
   const onReviewNow = () => run("review", () => requestOnboardingReview(agentId));
-  const onMarkEstablished = () => {
-    if (!window.confirm(t("onboarding.confirmClear", { name: agentName }))) return;
+  const onMarkEstablished = async () => {
+    const ok = await confirmDialog({
+      title: t("onboarding.markEstablished"),
+      description: t("onboarding.confirmClear", { name: agentName }),
+      confirmLabel: t("onboarding.markEstablished"),
+    });
+    if (!ok) return;
     void run("clear", () => clearOnboarding(agentId));
   };
-  const onSendBack = () => {
-    if (!window.confirm(t("onboarding.confirmReopen", { name: agentName }))) return;
+  const onSendBack = async () => {
+    const ok = await confirmDialog({
+      title: t("onboarding.sendBack"),
+      description: t("onboarding.confirmReopen", { name: agentName }),
+      confirmLabel: t("onboarding.sendBack"),
+    });
+    if (!ok) return;
     void run("reopen", () => reopenOnboarding(agentId));
   };
 

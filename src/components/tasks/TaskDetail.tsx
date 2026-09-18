@@ -22,6 +22,7 @@ import { useChatStore } from "../../stores/chatStore";
 import { MarkdownContent } from "../messages/MarkdownContent";
 import { TaskActivity } from "./TaskActivity";
 import type { Task, TaskStatus } from "../../lib/api";
+import { confirmDialog } from "../../stores/confirmStore";
 
 const ACTIVE_STATUSES = new Set<TaskStatus>([
   "pending",
@@ -119,7 +120,14 @@ export function TaskDetail({
   };
 
   const handleCancel = async () => {
-    if (!confirm(t("confirmCancel", { title: task.title }))) return;
+    const ok = await confirmDialog({
+      title: t("cancel.title"),
+      description: t("confirmCancel", { title: task.title }),
+      confirmLabel: t("cancelTask"),
+      cancelLabel: t("common:keep"),
+      destructive: true,
+    });
+    if (!ok) return;
     setSubmitting(true);
     setActionError(null);
     try {

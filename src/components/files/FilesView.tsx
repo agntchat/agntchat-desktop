@@ -35,6 +35,7 @@ import { useFileStore } from "../../stores/fileStore";
 import { useNavStore } from "../../stores/navStore";
 import { ArtifactKindIcon } from "../messages/ArtifactCard";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { confirmDialog } from "../../stores/confirmStore";
 
 type Category = "all" | "documents" | "images" | "media" | "artifacts";
 
@@ -226,7 +227,13 @@ export function FilesView({ onOpenConversation }: Props) {
 
   const removeFile = useCallback(
     async (file: OwnerFile) => {
-      if (!confirm(t("deleteConfirm", { filename: file.filename }))) return;
+      const ok = await confirmDialog({
+        title: t("delete.title"),
+        description: t("deleteConfirm", { filename: file.filename }),
+        confirmLabel: t("common:delete"),
+        destructive: true,
+      });
+      if (!ok) return;
       try {
         await deleteOwnerFile(file.id);
         removeFromCache(file.id);

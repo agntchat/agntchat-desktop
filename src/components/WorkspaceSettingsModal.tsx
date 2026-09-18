@@ -10,6 +10,7 @@ import { useWorkspaceStore, useWorkspaces } from "../stores/workspaceStore";
 import type { WorkspaceMembership, OrganizationMembership, OrganizationInvite } from "../lib/api";
 import { ProvidersManagement } from "./ProvidersManagement";
 import { ConnectionsManagement } from "./ConnectionsManagement";
+import { confirmDialog } from "../stores/confirmStore";
 
 type Tab = "general" | "members" | "models" | "connections";
 
@@ -229,7 +230,13 @@ function GeneralTab({
   }
 
   async function handleDelete() {
-    if (!confirm(t("workspace.deleteConfirm", { name: workspace.name }))) return;
+    const ok = await confirmDialog({
+      title: t("workspace.deleteWorkspace"),
+      description: t("workspace.deleteConfirm", { name: workspace.name }),
+      confirmLabel: t("common:delete"),
+      destructive: true,
+    });
+    if (!ok) return;
     setDestroying(true);
     setError(null);
     try {
@@ -242,7 +249,13 @@ function GeneralTab({
   }
 
   async function handleLeave() {
-    if (!confirm(t("workspace.leaveConfirm", { name: workspace.name }))) return;
+    const ok = await confirmDialog({
+      title: t("workspace.leaveWorkspace"),
+      description: t("workspace.leaveConfirm", { name: workspace.name }),
+      confirmLabel: t("workspace.leave"),
+      destructive: true,
+    });
+    if (!ok) return;
     setLeaving(true);
     setError(null);
     try {
@@ -475,7 +488,13 @@ function MembersTab({
 
   async function handleRemove(member: OrganizationMembership) {
     const name = member.participant?.displayName ?? t("workspace.thisMember");
-    if (!confirm(t("workspace.removeMemberConfirm", { name, workspace: workspace.name }))) return;
+    const ok = await confirmDialog({
+      title: t("common:remove"),
+      description: t("workspace.removeMemberConfirm", { name, workspace: workspace.name }),
+      confirmLabel: t("common:remove"),
+      destructive: true,
+    });
+    if (!ok) return;
     try {
       await removeMember(workspace.id, member.participantId);
       await load();
@@ -689,7 +708,13 @@ function PendingInvites({
   }
 
   async function handleRevoke(invite: OrganizationInvite) {
-    if (!confirm(t("workspace.revokeInviteConfirm", { email: invite.email }))) return;
+    const ok = await confirmDialog({
+      title: t("workspace.revoke"),
+      description: t("workspace.revokeInviteConfirm", { email: invite.email }),
+      confirmLabel: t("workspace.revoke"),
+      destructive: true,
+    });
+    if (!ok) return;
     try {
       await revokeInvite(workspace.id, invite.id);
       await onChanged();

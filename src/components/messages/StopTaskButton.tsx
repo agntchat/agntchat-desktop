@@ -3,6 +3,7 @@ import { useTranslation } from "react-i18next";
 import { Loader2, Square } from "lucide-react";
 import { cn } from "../../lib/utils";
 import { useTaskStore } from "../../stores/taskStore";
+import { confirmDialog } from "../../stores/confirmStore";
 
 /**
  * Round stop button for in-flight task cards (TaskRequest card, StatusUpdate
@@ -30,7 +31,13 @@ export function StopTaskButton({
   const handleStop = async (e: React.MouseEvent) => {
     // Cards may sit inside clickable containers (expand toggles, row buttons).
     e.stopPropagation();
-    if (!confirm(t("stopConfirm", { title: title ?? t("thisTask") }))) return;
+    const ok = await confirmDialog({
+      title: t("stop.title"),
+      description: t("stopConfirm", { title: title ?? t("thisTask") }),
+      confirmLabel: t("common:stop"),
+      destructive: true,
+    });
+    if (!ok) return;
     setStopping(true);
     try {
       await updateTaskStatus(taskId, "cancelled");

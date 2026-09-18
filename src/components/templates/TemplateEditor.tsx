@@ -31,6 +31,7 @@ import { useTemplateStore } from "../../stores/templateStore";
 import { FieldEditor } from "./FieldEditor";
 import { TemplateCardPreview } from "../TemplateCardPreview";
 import type { DetailField, ResponseTemplate, ResultType } from "../../lib/api";
+import { confirmDialog } from "../../stores/confirmStore";
 
 const RESULT_TYPES: ResultType[] = [
   "hotel",
@@ -145,8 +146,13 @@ export function TemplateEditor({ template, isNew }: Props) {
 
   const handleDelete = useCallback(async () => {
     if (!template) return;
-    if (!confirm(t("deleteConfirm", { name: template.name })))
-      return;
+    const ok = await confirmDialog({
+      title: t("common:delete"),
+      description: t("deleteConfirm", { name: template.name }),
+      confirmLabel: t("common:delete"),
+      destructive: true,
+    });
+    if (!ok) return;
     setDeleting(true);
     setSaveError(null);
     try {

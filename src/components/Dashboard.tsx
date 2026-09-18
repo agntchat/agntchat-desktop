@@ -45,6 +45,7 @@ import type {
   ConnectionMode,
   DirectoryListing,
 } from "../lib/api";
+import { alertDialog, confirmDialog } from "../stores/confirmStore";
 
 type Tab = "agents" | "directory";
 
@@ -163,7 +164,13 @@ function DirectoryAgentDetail({
   }, [onConnect, allowsEither, chosenMode]);
 
   const handleDisconnect = useCallback(async () => {
-    if (!confirm(t("disconnectConfirm"))) return;
+    const ok = await confirmDialog({
+      title: t("disconnect.title"),
+      description: t("disconnectConfirm"),
+      confirmLabel: t("common:disconnect"),
+      destructive: true,
+    });
+    if (!ok) return;
     setDisconnecting(true);
     try {
       await onDisconnect();
@@ -529,7 +536,11 @@ export function Dashboard() {
       try {
         await requestConnection(listing.agentId, mode ? { mode } : undefined);
       } catch (e) {
-        alert(e instanceof Error ? e.message : t("errors.connectFailed"));
+        void alertDialog({
+          title: t("common:errorTitle"),
+          description: e instanceof Error ? e.message : t("errors.connectFailed"),
+          destructive: true,
+        });
       }
     },
     [requestConnection, t]
@@ -540,7 +551,11 @@ export function Dashboard() {
       try {
         await revokeConnection(connectionId);
       } catch (e) {
-        alert(e instanceof Error ? e.message : t("errors.disconnectFailed"));
+        void alertDialog({
+          title: t("common:errorTitle"),
+          description: e instanceof Error ? e.message : t("errors.disconnectFailed"),
+          destructive: true,
+        });
       }
     },
     [revokeConnection, t]

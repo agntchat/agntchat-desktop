@@ -5,6 +5,7 @@ import * as api from "../../lib/api";
 import { cn } from "../../lib/utils";
 import { Button } from "@/components/ui/button";
 import { relativeAge } from "./util";
+import { confirmDialog } from "../../stores/confirmStore";
 
 /** Wall-clock length of an op: finished ops show their total, running ops
  *  show elapsed-so-far (the caller re-polls, so this advances on each render). */
@@ -41,7 +42,14 @@ export function HostOpLog({
 
   const cancel = async (id: string) => {
     if (!onCancel) return;
-    if (!confirm(t("fleet.confirmCancelOp"))) return;
+    const ok = await confirmDialog({
+      title: t("fleet.cancelOpTitle"),
+      description: t("fleet.confirmCancelOp"),
+      confirmLabel: t("common:confirm"),
+      cancelLabel: t("common:keep"),
+      destructive: true,
+    });
+    if (!ok) return;
     setCancelingId(id);
     try {
       await onCancel(id);

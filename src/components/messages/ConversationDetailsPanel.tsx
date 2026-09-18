@@ -46,6 +46,7 @@ import type {
   ConversationMemory,
   ParticipantContextEntry,
 } from "../../lib/api";
+import { confirmDialog } from "../../stores/confirmStore";
 
 interface Props {
   conversation: Conversation;
@@ -212,7 +213,13 @@ export function ConversationDetailsPanel({
 
   const handleRemove = useCallback(
     async (participantId: string, name: string) => {
-      if (!confirm(t("details.removeMemberConfirm", { name }))) return;
+      const ok = await confirmDialog({
+        title: t("details.removeMember"),
+        description: t("details.removeMemberConfirm", { name }),
+        confirmLabel: t("common:remove"),
+        destructive: true,
+      });
+      if (!ok) return;
       try {
         await removeMember(conversation.id, participantId);
       } catch (e) {
@@ -516,9 +523,13 @@ export function ConversationDetailsPanel({
         <div className="relative px-4 py-3 before:absolute before:top-0 before:left-4 before:right-4 before:h-px before:bg-border">
           <button
             onClick={() => {
-              if (confirm(t("menu.clearChatConfirm"))) {
-                clearChatLocal(conversation.id);
-              }
+              void confirmDialog({
+                title: t("menu.clearChat"),
+                description: t("menu.clearChatConfirm"),
+                confirmLabel: t("common:clear"),
+              }).then((ok) => {
+                if (ok) clearChatLocal(conversation.id);
+              });
             }}
             className="flex w-full items-center gap-2 rounded-md px-2 py-1.5 text-sm text-muted-foreground hover:bg-muted hover:text-foreground"
           >

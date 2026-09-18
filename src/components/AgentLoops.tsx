@@ -46,6 +46,7 @@ import {
   AlertTriangle,
   HelpCircle,
 } from "lucide-react";
+import { alertDialog } from "../stores/confirmStore";
 
 const TERMINAL_STATUSES = new Set(["completed", "stopped", "exhausted", "failed"]);
 
@@ -324,7 +325,11 @@ export function AgentLoops({ agentId, onCount }: AgentLoopsProps) {
       }
     } catch (e) {
       console.error("Failed to toggle loop:", e);
-      window.alert(saveErrorMessage(e));
+      void alertDialog({
+        title: i18n.t("common:errorTitle"),
+        description: saveErrorMessage(e),
+        destructive: true,
+      });
     }
   };
 
@@ -335,7 +340,11 @@ export function AgentLoops({ agentId, onCount }: AgentLoopsProps) {
       setConfirmAction(null);
     } catch (e) {
       console.error("Failed to stop loop:", e);
-      window.alert(saveErrorMessage(e));
+      void alertDialog({
+        title: i18n.t("common:errorTitle"),
+        description: saveErrorMessage(e),
+        destructive: true,
+      });
     }
   };
 
@@ -346,7 +355,11 @@ export function AgentLoops({ agentId, onCount }: AgentLoopsProps) {
       setConfirmAction(null);
     } catch (e) {
       console.error("Failed to delete loop:", e);
-      window.alert(saveErrorMessage(e));
+      void alertDialog({
+        title: i18n.t("common:errorTitle"),
+        description: saveErrorMessage(e),
+        destructive: true,
+      });
     }
   };
 

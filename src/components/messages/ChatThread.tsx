@@ -21,6 +21,7 @@ import { agentConversationSourceId } from "../../lib/thread-selectors";
 import type { Artifact, Conversation, Message } from "../../lib/api";
 import { useArtifactStore } from "../../stores/artifactStore";
 import { ws } from "../../services/websocket";
+import { confirmDialog } from "../../stores/confirmStore";
 
 const SENDER_RUN_BREAK_MS = 2 * 60 * 1000;
 const SCROLL_BOTTOM_THRESHOLD = 120;
@@ -1246,9 +1247,14 @@ export function ChatThread({ conversationId }: { conversationId: string }) {
           onCopy={(m) => navigator.clipboard?.writeText(m.content ?? "")}
           onCopyId={(m) => navigator.clipboard?.writeText(m.id)}
           onDelete={(m) => {
-            if (confirm(t("deleteMessageConfirm"))) {
-              deleteMessage(conversationId, m.id);
-            }
+            void confirmDialog({
+              title: t("deleteMessage.title"),
+              description: t("deleteMessageConfirm"),
+              confirmLabel: t("common:delete"),
+              destructive: true,
+            }).then((ok) => {
+              if (ok) deleteMessage(conversationId, m.id);
+            });
           }}
           onClose={() => setMenu(null)}
         />

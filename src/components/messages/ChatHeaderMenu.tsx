@@ -13,6 +13,7 @@ import {
 import { cn } from "../../lib/utils";
 import { useAuthStore } from "../../stores/authStore";
 import { useChatStore } from "../../stores/chatStore";
+import { confirmDialog } from "../../stores/confirmStore";
 import type { Conversation } from "../../lib/api";
 
 /**
@@ -53,6 +54,10 @@ export function ChatHeaderMenu({
   useEffect(() => {
     if (!open) return;
     const onDown = (e: MouseEvent) => {
+      // A click inside a portaled dialog (the confirm prompt this menu
+      // raises) is not "outside" — closing here would unmount the error
+      // slot below before a failed delete/leave could render into it.
+      if ((e.target as Element)?.closest?.('[data-slot="dialog-content"]')) return;
       if (
         ref.current &&
         !ref.current.contains(e.target as Node) &&
@@ -84,10 +89,13 @@ export function ChatHeaderMenu({
     setTimeout(() => setCopied(false), 1500);
   };
 
-  const handleClearChat = () => {
-    if (!confirm(t("menu.clearChatConfirm"))) {
-      return;
-    }
+  const handleClearChat = async () => {
+    const ok = await confirmDialog({
+      title: t("menu.clearChat"),
+      description: t("menu.clearChatConfirm"),
+      confirmLabel: t("common:clear"),
+    });
+    if (!ok) return;
     clearChatLocal(conversation.id);
     setOpen(false);
   };
@@ -107,9 +115,15 @@ export function ChatHeaderMenu({
 
   const handleDanger = async () => {
     if (isAdmin) {
-      if (!confirm(t("menu.deleteConfirm", { title: conversation.title || t("thisConversation") }))) {
-        return;
-      }
+      const ok = await confirmDialog({
+        title: t("deleteConversation.title"),
+        description: t("menu.deleteConfirm", {
+          title: conversation.title || t("thisConversation"),
+        }),
+        confirmLabel: t("common:delete"),
+        destructive: true,
+      });
+      if (!ok) return;
       try {
         await deleteConversation(conversation.id);
         setOpen(false);
@@ -118,7 +132,13 @@ export function ChatHeaderMenu({
         setActionError(e instanceof Error ? e.message : t("menu.deleteFailed"));
       }
     } else {
-      if (!confirm(t("details.leaveConfirmTitle"))) return;
+      const ok = await confirmDialog({
+        title: t("leaveConversation.title"),
+        description: t("details.leaveConfirmTitle"),
+        confirmLabel: t("leaveConversation.action"),
+        destructive: true,
+      });
+      if (!ok) return;
       if (!currentUserId) return;
       try {
         await leaveConversation(conversation.id, currentUserId);
@@ -163,7 +183,7 @@ export function ChatHeaderMenu({
           <MenuItem
             icon={Eraser}
             label={t("menu.clearChatLocal")}
-            onClick={handleClearChat}
+            onClick={() => void handleClearChat()}
           />
           {hasAgents && (
             <MenuItem
@@ -181,7 +201,7 @@ export function ChatHeaderMenu({
           <MenuItem
             icon={isAdmin ? Trash2 : LogOut}
             label={isAdmin ? t("menu.deleteConversation") : t("menu.leaveConversation")}
-            onClick={handleDanger}
+            onClick={() => void handleDanger()}
             destructive
           />
 

@@ -260,8 +260,11 @@ export function useUnifiedActions() {
   const sections = useMemo(() => {
     if (!firstLoadDone) return [];
     const result: ActionSection[] = [];
-    if (openTodos.length > 0) result.push({ key: "todos", data: openTodos });
+    // Agent tasks lead: a running or queued task is transient — it's gone
+    // once the agent finishes — so it belongs where the eye lands first,
+    // not buried between the standing to-do list and the reminders.
     if (activeTasks.length > 0) result.push({ key: "tasks", data: activeTasks });
+    if (openTodos.length > 0) result.push({ key: "todos", data: openTodos });
     if (reminderItems.length > 0) result.push({ key: "reminders", data: reminderItems });
     if (routineItems.length > 0) result.push({ key: "routines", data: routineItems });
     if (done.length > 0) result.push({ key: "done", data: showCompleted ? done : [] });

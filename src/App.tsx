@@ -5,6 +5,7 @@ import { useAuthStore } from "./stores/authStore";
 import "./stores/themeStore";
 import { LoginScreen } from "./components/LoginScreen";
 import { AppShell } from "./components/AppShell";
+import { ConfirmDialog } from "./components/ui/confirm-dialog";
 
 // Global error boundary to prevent white-screen crashes
 class ErrorBoundary extends Component<
@@ -59,17 +60,21 @@ function App() {
     return () => window.removeEventListener("auth:expired", handleExpired);
   }, [restoreSession]);
 
-  if (!token) {
-    return <LoginScreen />;
-  }
-
-  return <AppShell />;
+  return token ? <AppShell /> : <LoginScreen />;
 }
 
 export default function AppWithErrorBoundary() {
+  // ConfirmDialog sits OUTSIDE both the auth split and the error boundary:
+  // every surface (login included) shares the one prompt, and a child crash
+  // swapping in the fallback must not unmount the only renderer of an open
+  // prompt — that would leave its `await confirmDialog(...)` unsettled and
+  // every later call with nothing to render it.
   return (
-    <ErrorBoundary>
-      <App />
-    </ErrorBoundary>
+    <>
+      <ErrorBoundary>
+        <App />
+      </ErrorBoundary>
+      <ConfirmDialog />
+    </>
   );
 }

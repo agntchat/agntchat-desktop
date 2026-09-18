@@ -41,6 +41,7 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
+import { alertDialog } from "../stores/confirmStore";
 
 /**
  * Platform-operator console (super-admin only — gated server-side by the env
@@ -669,7 +670,11 @@ function HostResidents({
       await reload();
       await onChanged();
     } catch (e) {
-      alert(e instanceof Error ? e.message : i18n.t("platform:errors.bulkMoveFailed"));
+      void alertDialog({
+        title: i18n.t("common:errorTitle"),
+        description: e instanceof Error ? e.message : i18n.t("platform:errors.bulkMoveFailed"),
+        destructive: true,
+      });
     } finally {
       setBulkBusy(false);
     }
@@ -689,7 +694,11 @@ function HostResidents({
       await reload();
       await onChanged();
     } catch (e) {
-      alert(e instanceof Error ? e.message : i18n.t("platform:errors.moveFailed"));
+      void alertDialog({
+        title: i18n.t("common:errorTitle"),
+        description: e instanceof Error ? e.message : i18n.t("platform:errors.moveFailed"),
+        destructive: true,
+      });
     } finally {
       setBusyAgent(null);
     }
@@ -702,15 +711,21 @@ function HostResidents({
       const r = await api.resetAgent(agentId);
       if (!r.reset) {
         unmarkRestarting([agentId]);
-        alert(
-          i18n.t("platform:errors.noRemoteReset", {
+        void alertDialog({
+          title: i18n.t("common:errorTitle"),
+          description: i18n.t("platform:errors.noRemoteReset", {
             reason: r.reason ?? i18n.t("platform:errors.unavailable"),
-          })
-        );
+          }),
+          destructive: true,
+        });
       }
     } catch (e) {
       unmarkRestarting([agentId]);
-      alert(e instanceof Error ? e.message : i18n.t("platform:errors.resetFailed"));
+      void alertDialog({
+        title: i18n.t("common:errorTitle"),
+        description: e instanceof Error ? e.message : i18n.t("platform:errors.resetFailed"),
+        destructive: true,
+      });
     } finally {
       setBusyAgent(null);
     }
@@ -734,7 +749,11 @@ function HostResidents({
       void onChanged();
     } catch (e) {
       unmarkRestarting(ids);
-      alert(e instanceof Error ? e.message : i18n.t("platform:errors.bulkResetFailed"));
+      void alertDialog({
+        title: i18n.t("common:errorTitle"),
+        description: e instanceof Error ? e.message : i18n.t("platform:errors.bulkResetFailed"),
+        destructive: true,
+      });
     } finally {
       setBulkBusy(false);
     }

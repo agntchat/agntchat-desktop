@@ -24,6 +24,7 @@ import { useTranslation } from "react-i18next";
 import i18n from "../../i18n";
 import * as api from "../../lib/api";
 import { cn } from "../../lib/utils";
+import { alertDialog, confirmDialog, type ConfirmRequest } from "../../stores/confirmStore";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
@@ -146,8 +147,8 @@ export function HostRow({
     };
   }, [expanded, opRunning, reloadOps]);
 
-  const op = async (kind: api.HostOpKind, confirmMsg?: string) => {
-    if (confirmMsg && !confirm(confirmMsg)) return;
+  const op = async (kind: api.HostOpKind, ask?: ConfirmRequest) => {
+    if (ask && !(await confirmDialog(ask))) return;
     setBusy(kind);
     try {
       await api.runHostOp(opsOrgId, host.id, kind);
@@ -156,7 +157,11 @@ export function HostRow({
       setExpanded(true);
       await reloadOps();
     } catch (e) {
-      alert(e instanceof Error ? e.message : i18n.t("platform:errors.operationFailed"));
+      void alertDialog({
+        title: i18n.t("common:errorTitle"),
+        description: e instanceof Error ? e.message : i18n.t("platform:errors.operationFailed"),
+        destructive: true,
+      });
     } finally {
       setBusy(null);
     }
@@ -183,7 +188,11 @@ export function HostRow({
       setEditing(false);
       await onChanged();
     } catch (e) {
-      alert(e instanceof Error ? e.message : i18n.t("platform:errors.renameHost"));
+      void alertDialog({
+        title: i18n.t("common:errorTitle"),
+        description: e instanceof Error ? e.message : i18n.t("platform:errors.renameHost"),
+        destructive: true,
+      });
       setNameInput(host.name);
     } finally {
       setRenameBusy(false);
@@ -196,7 +205,11 @@ export function HostRow({
     try {
       setPubKey(await api.getHostPublicKey(opsOrgId, host.id));
     } catch (e) {
-      alert(e instanceof Error ? e.message : i18n.t("platform:errors.loadPublicKey"));
+      void alertDialog({
+        title: i18n.t("common:errorTitle"),
+        description: e instanceof Error ? e.message : i18n.t("platform:errors.loadPublicKey"),
+        destructive: true,
+      });
     }
   };
 
@@ -207,18 +220,32 @@ export function HostRow({
       await onToggleShared(next);
     } catch (e) {
       setShared(!next);
-      alert(e instanceof Error ? e.message : i18n.t("platform:errors.updateHost"));
+      void alertDialog({
+        title: i18n.t("common:errorTitle"),
+        description: e instanceof Error ? e.message : i18n.t("platform:errors.updateHost"),
+        destructive: true,
+      });
     }
   };
 
   const handleDelete = async () => {
-    if (!confirm(t("hosts.deleteConfirm", { name: host.name }))) return;
+    const ok = await confirmDialog({
+      title: t("hosts.deleteHost"),
+      description: t("hosts.deleteConfirm", { name: host.name }),
+      confirmLabel: t("common:delete"),
+      destructive: true,
+    });
+    if (!ok) return;
     setBusy("delete");
     try {
       await api.deleteOrganizationHost(opsOrgId, host.id);
       await onChanged();
     } catch (e) {
-      alert(e instanceof Error ? e.message : i18n.t("platform:errors.deleteHost"));
+      void alertDialog({
+        title: i18n.t("common:errorTitle"),
+        description: e instanceof Error ? e.message : i18n.t("platform:errors.deleteHost"),
+        destructive: true,
+      });
     } finally {
       setBusy(null);
     }
@@ -400,7 +427,13 @@ export function HostRow({
           <Button
             variant="ghost"
             size="sm"
-            onClick={() => void op("update", t("hosts.updateConfirm", { name: host.name }))}
+            onClick={() =>
+              void op("update", {
+                title: t("common:update"),
+                description: t("hosts.updateConfirm", { name: host.name }),
+                confirmLabel: t("common:update"),
+              })
+            }
             disabled={busy !== null || !host.sshHost}
             title={t("hosts.updateHint")}
           >
@@ -414,7 +447,13 @@ export function HostRow({
           <Button
             variant="ghost"
             size="sm"
-            onClick={() => void op("restart", t("hosts.restartConfirm", { name: host.name }))}
+            onClick={() =>
+              void op("restart", {
+                title: t("hosts.restart"),
+                description: t("hosts.restartConfirm", { name: host.name }),
+                confirmLabel: t("hosts.restart"),
+              })
+            }
             disabled={busy !== null || !host.sshHost}
             title={t("hosts.restartHint")}
           >

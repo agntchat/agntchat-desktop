@@ -25,6 +25,7 @@ import { useCanvasStore } from "../../stores/canvasStore";
 import { CanvasRenderer } from "./CanvasRenderer";
 import { CanvasInspector } from "./CanvasInspector";
 import type { CanvasDefinitionSummary } from "../../lib/api";
+import { confirmDialog } from "../../stores/confirmStore";
 
 const EXAMPLE_DEFINITION = {
   layout: { zones: ["header", "content", "footer"] },
@@ -254,7 +255,13 @@ export function CanvasEditor({ canvas, isNew }: Props) {
 
   const handleDelete = useCallback(async () => {
     if (!canvas || isBuiltin) return;
-    if (!confirm(t("deleteConfirm", { name: canvas.name }))) return;
+    const ok = await confirmDialog({
+      title: t("delete.title"),
+      description: t("deleteConfirm", { name: canvas.name }),
+      confirmLabel: t("common:delete"),
+      destructive: true,
+    });
+    if (!ok) return;
     setDeleting(true);
     setSaveError(null);
     try {

@@ -150,6 +150,7 @@ import { FTUE_KEYS, hasSeenTour, markTourSeen } from "../lib/ftue";
 import { useLocalDeviceName } from "../hooks/useRunningElsewhere";
 import { useDeviceNicknameStore } from "../stores/deviceNicknameStore";
 import { seatErrorMessage } from "../lib/seatError";
+import { confirmDialog } from "../stores/confirmStore";
 // First-run orientation for the details pane. Each step spotlights one
 // sidebar group (`groupKey`, matched to the `key` on `sectionGroups`) and
 // switches the pane to a representative section so the user sees real content
@@ -2224,7 +2225,13 @@ function PublishSection({ agent }: { agent: Agent }) {
 
   const handleUnpublish = async () => {
     if (!existing) return;
-    if (!confirm(t("publish.unpublishMessage"))) return;
+    const ok = await confirmDialog({
+      title: t("publish.unpublishTitle"),
+      description: t("publish.unpublishMessage"),
+      confirmLabel: t("publish.unpublish"),
+      destructive: true,
+    });
+    if (!ok) return;
     setBusy(true);
     setError(null);
     try {
@@ -2922,7 +2929,7 @@ function HealthPanel({ managed }: { managed: ManagedAgent }) {
     );
   }
 
-  // Wrapper that gates destructive actions on a confirm() prompt,
+  // Wrapper that gates destructive actions on a confirm prompt,
   // surfaces success / error inline (no more silent console.error),
   // and produces a human-friendly summary on success.
   const handleAction = async (
@@ -2936,7 +2943,10 @@ function HealthPanel({ managed }: { managed: ManagedAgent }) {
     setActionLoading(key);
     setActionResult(null);
     setActionError(null);
-    if (confirmMsg && !window.confirm(confirmMsg)) {
+    if (
+      confirmMsg &&
+      !(await confirmDialog({ title: label, description: confirmMsg, destructive: true }))
+    ) {
       setActionLoading(null);
       return;
     }

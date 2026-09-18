@@ -48,6 +48,7 @@ import {
 } from "../stores/workspaceStore";
 import { WorkspaceSettingsModal } from "./WorkspaceSettingsModal";
 import type { OrganizationMembership } from "../lib/api";
+import { confirmDialog } from "../stores/confirmStore";
 
 type Segment = "friends" | "requests" | "sent";
 const SEGMENTS: Segment[] = ["friends", "requests", "sent"];
@@ -278,9 +279,14 @@ export function FriendsView({ onNavigate }: { onNavigate?: () => void } = {}) {
   };
 
   const handleRevoke = async (connection: api.UserConnection) => {
-    const question =
-      connection.status === "accepted" ? t("confirmUnfriend") : t("confirmCancelRequest");
-    if (!confirm(question)) return;
+    const accepted = connection.status === "accepted";
+    const ok = await confirmDialog({
+      title: accepted ? t("unfriend") : t("cancelRequest"),
+      description: accepted ? t("confirmUnfriend") : t("confirmCancelRequest"),
+      confirmLabel: accepted ? t("unfriend") : t("cancelRequest"),
+      destructive: true,
+    });
+    if (!ok) return;
     setBusyId(connection.id);
     setError(null);
     try {
@@ -294,7 +300,13 @@ export function FriendsView({ onNavigate }: { onNavigate?: () => void } = {}) {
   };
 
   const handleBlock = async (connection: api.UserConnection) => {
-    if (!confirm(t("confirmBlock"))) return;
+    const ok = await confirmDialog({
+      title: t("block.title"),
+      description: t("confirmBlock"),
+      confirmLabel: t("block.action"),
+      destructive: true,
+    });
+    if (!ok) return;
     setBusyId(connection.id);
     setError(null);
     try {
@@ -308,7 +320,12 @@ export function FriendsView({ onNavigate }: { onNavigate?: () => void } = {}) {
   };
 
   const handleUnblock = async (connection: api.UserConnection) => {
-    if (!confirm(t("unblockConfirm"))) return;
+    const ok = await confirmDialog({
+      title: t("unblock"),
+      description: t("unblockConfirm"),
+      confirmLabel: t("unblock"),
+    });
+    if (!ok) return;
     setBusyId(connection.id);
     setError(null);
     try {

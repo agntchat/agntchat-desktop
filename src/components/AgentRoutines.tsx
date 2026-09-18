@@ -48,6 +48,7 @@ import {
   Clock,
   AlertTriangle,
 } from "lucide-react";
+import { alertDialog } from "../stores/confirmStore";
 
 const HOURS = Array.from({ length: 24 }, (_, i) => ({ value: String(i) }));
 
@@ -752,7 +753,11 @@ export function AgentRoutines({ agentId, onCount }: AgentRoutinesProps) {
       }
     } catch (e) {
       console.error("Failed to toggle routine:", e);
-      window.alert(e instanceof Error ? e.message : i18n.t("agents:routines.errors.updateFailed"));
+      void alertDialog({
+        title: i18n.t("common:errorTitle"),
+        description: e instanceof Error ? e.message : i18n.t("agents:routines.errors.updateFailed"),
+        destructive: true,
+      });
     }
   };
 
@@ -763,7 +768,11 @@ export function AgentRoutines({ agentId, onCount }: AgentRoutinesProps) {
       setConfirmDelete(null);
     } catch (e) {
       console.error("Failed to delete routine:", e);
-      window.alert(e instanceof Error ? e.message : i18n.t("agents:routines.errors.deleteFailed"));
+      void alertDialog({
+        title: i18n.t("common:errorTitle"),
+        description: e instanceof Error ? e.message : i18n.t("agents:routines.errors.deleteFailed"),
+        destructive: true,
+      });
     }
   };
 

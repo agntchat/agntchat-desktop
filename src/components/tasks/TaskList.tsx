@@ -13,6 +13,7 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { cn, formatRelativeShort } from "../../lib/utils";
 import { useTaskStore } from "../../stores/taskStore";
 import type { Task, TaskStatus } from "../../lib/api";
+import { confirmDialog } from "../../stores/confirmStore";
 
 type Filter = "active" | "pending" | "in_progress" | "complete" | "cancelled";
 
@@ -242,7 +243,13 @@ function TaskRow({
   const stoppable = ACTIVE_ROW_STATUSES.has(task.status);
 
   const handleStop = async () => {
-    if (!confirm(t("stopConfirm", { title: task.title }))) return;
+    const ok = await confirmDialog({
+      title: t("stop.title"),
+      description: t("stopConfirm", { title: task.title }),
+      confirmLabel: t("common:stop"),
+      destructive: true,
+    });
+    if (!ok) return;
     setStopping(true);
     try {
       await updateTaskStatus(task.id, "cancelled");
