@@ -2983,6 +2983,14 @@ export interface Participant {
   /** For paying users: the host new agents should default to running on
    *  ("hosted" runtime). Null when the user has no host available. */
   hostedHostId?: string | null;
+  /** What that host can actually serve: the backend it runs, the CLI
+   *  connections it can authenticate, and whether a seat is really present.
+   *  The create-agent model picker greys out anything outside it. */
+  hostedHostRuntime?: {
+    backend: string;
+    connections: string[];
+    claudeSeat: boolean | null;
+  } | null;
   /** Consent / policy state (self-view only). `marketingOptIn` reflects the
    *  product-updates email preference; `analyticsOptIn` gates product
    *  analytics (no PostHog init until true); `acceptedPolicyVersion` is the

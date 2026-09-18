@@ -308,13 +308,25 @@ export function CreateAgentModal({ onClose }: { onClose: () => void }) {
     canHost ? "hosted" : "local"
   );
   const hosted = hosting === "hosted" && canHost;
-  // A hosted agent runs on its host's seat and carries no per-agent LLM key,
-  // so key-requiring providers can't start there. Narrow the model picker to
-  // what the host can actually run rather than hiding it — which model runs
-  // still matters when hosted.
+  // What the TARGET MACHINE can actually run. A host declares the backend it
+  // serves in its heartbeat (`/me` → hostedHostRuntime); assume the universal
+  // Claude seat when it predates that reporting. A local machine can run any
+  // CLI backend (presence isn't detectable from here) and any API backend,
+  // since the key field below can supply one.
+  //
+  // Blocked providers stay LISTED but disabled, with the reason — so the
+  // choice is visible without being a trap.
+  const hostRuntime = participant?.hostedHostRuntime ?? null;
+  const providerBlock = useCallback(
+    (providerId: string): "notOnHost" | null => {
+      if (!hosted) return null;
+      return providerId === (hostRuntime?.backend ?? "claude_cli") ? null : "notOnHost";
+    },
+    [hosted, hostRuntime]
+  );
   const availableProviders = useMemo(
-    () => (hosted ? PROVIDERS.filter((p) => !p.requiresLlmKey) : PROVIDERS),
-    [PROVIDERS, hosted]
+    () => PROVIDERS.filter((p) => providerBlock(p.id) === null),
+    [PROVIDERS, providerBlock]
   );
 
   const [creating, setCreating] = useState(false);
@@ -1456,7 +1468,13 @@ export function CreateAgentModal({ onClose }: { onClose: () => void }) {
                   </Field>
                   <Field
                     label={t("common:model")}
-                    hint={hosted ? t("create.hostedInfo") : undefined}
+                    hint={
+                      hosted
+                        ? hostRuntime?.claudeSeat === false
+                          ? t("create.hostNoSeat")
+                          : t("create.hostedInfo")
+                        : undefined
+                    }
                   >
                     <Select value={brainValue(backend, model)} onValueChange={handleBrainChange}>
                       <SelectTrigger className="w-full">
@@ -1470,16 +1488,28 @@ export function CreateAgentModal({ onClose }: { onClose: () => void }) {
                         </SelectValue>
                       </SelectTrigger>
                       <SelectContent>
-                        {availableProviders.map((p) => (
-                          <SelectGroup key={p.id}>
-                            <SelectLabel>{p.label}</SelectLabel>
-                            {catalog.modelsFor(p.id).map((m) => (
-                              <SelectItem key={m.id} value={brainValue(p.id, m.id)}>
-                                {m.label}
-                              </SelectItem>
-                            ))}
-                          </SelectGroup>
-                        ))}
+                        {PROVIDERS.map((p) => {
+                          const blocked = providerBlock(p.id);
+                          return (
+                            <SelectGroup key={p.id}>
+                              <SelectLabel>
+                                {p.label}
+                                {blocked
+                                  ? ` · ${t(`create.modelUnavailable.${blocked}`)}`
+                                  : ""}
+                              </SelectLabel>
+                              {catalog.modelsFor(p.id).map((m) => (
+                                <SelectItem
+                                  key={m.id}
+                                  value={brainValue(p.id, m.id)}
+                                  disabled={blocked !== null}
+                                >
+                                  {m.label}
+                                </SelectItem>
+                              ))}
+                            </SelectGroup>
+                          );
+                        })}
                       </SelectContent>
                     </Select>
                   </Field>

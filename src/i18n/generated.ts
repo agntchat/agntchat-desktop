@@ -566,6 +566,7 @@ export const resources = {
           "uploadFailed": "Upload failed"
         },
         "executionMode": "Execution Mode",
+        "hostNoSeat": "This host has no Claude seat yet, so agents on it can't start until one is connected.",
         "hostedComingSoon": "Coming soon",
         "hostedDescription": "Runs in the cloud — no setup needed",
         "hostedInfo": "Hosted agents run on managed infrastructure with a shared Claude brain — no API key or local process needed.",
@@ -615,6 +616,10 @@ export const resources = {
         "maxTurns": "Max Turns",
         "model": "Model",
         "modelDefault": "Provider default",
+        "modelUnavailable": {
+          "needsKey": "needs an API key",
+          "notOnHost": "not connected on this host"
+        },
         "moreOptions": "More options",
         "moreOptionsHint": "Optional settings — the defaults work for most agents.",
         "nameHint": "Pick something memorable — you can always change it later.",
@@ -6124,6 +6129,7 @@ export const resources = {
           "uploadFailed": "Error al subir el archivo"
         },
         "executionMode": "Modo de ejecución",
+        "hostNoSeat": "Este host aún no tiene una licencia de Claude, así que los agentes no podrán iniciarse hasta que se conecte una.",
         "hostedComingSoon": "Próximamente",
         "hostedDescription": "Se ejecuta en la nube — sin configuración",
         "hostedInfo": "Los agentes alojados se ejecutan en infraestructura gestionada con un cerebro Claude compartido — no necesitan clave de API ni proceso local.",
@@ -6173,6 +6179,10 @@ export const resources = {
         "maxTurns": "Turnos máximos",
         "model": "Modelo",
         "modelDefault": "Predeterminado del proveedor",
+        "modelUnavailable": {
+          "needsKey": "necesita una clave de API",
+          "notOnHost": "no conectado en este host"
+        },
         "moreOptions": "Más opciones",
         "moreOptionsHint": "Ajustes opcionales: los valores predeterminados sirven para la mayoría de los agentes.",
         "nameHint": "Elige algo memorable — siempre puedes cambiarlo más tarde.",
@@ -11682,6 +11692,7 @@ export const resources = {
           "uploadFailed": "Upload fehlgeschlagen"
         },
         "executionMode": "Ausführungsmodus",
+        "hostNoSeat": "Dieser Host hat noch keinen Claude-Platz, daher können Agenten darauf erst starten, wenn einer verbunden ist.",
         "hostedComingSoon": "Bald verfügbar",
         "hostedDescription": "Läuft in der Cloud — keine Einrichtung nötig",
         "hostedInfo": "Gehostete Agenten laufen auf verwalteter Infrastruktur mit einem gemeinsamen Claude-Gehirn — kein API-Schlüssel oder lokaler Prozess nötig.",
@@ -11731,6 +11742,10 @@ export const resources = {
         "maxTurns": "Max. Runden",
         "model": "Modell",
         "modelDefault": "Anbieter-Standard",
+        "modelUnavailable": {
+          "needsKey": "benötigt einen API-Schlüssel",
+          "notOnHost": "auf diesem Host nicht verbunden"
+        },
         "moreOptions": "Weitere Optionen",
         "moreOptionsHint": "Optionale Einstellungen – die Standardwerte passen für die meisten Agenten.",
         "nameHint": "Wählen Sie etwas Einprägsames — Sie können es später jederzeit ändern.",
@@ -17240,6 +17255,7 @@ export const resources = {
           "uploadFailed": "Échec du téléversement"
         },
         "executionMode": "Mode d'exécution",
+        "hostNoSeat": "Cet hôte n'a pas encore de siège Claude ; les agents ne pourront pas démarrer tant qu'il n'y en aura pas un.",
         "hostedComingSoon": "Bientôt disponible",
         "hostedDescription": "S'exécute dans le cloud — aucune configuration nécessaire",
         "hostedInfo": "Les agents hébergés s'exécutent sur une infrastructure gérée avec un cerveau Claude partagé — pas besoin de clé API ni de processus local.",
@@ -17289,6 +17305,10 @@ export const resources = {
         "maxTurns": "Nombre maximal de tours",
         "model": "Modèle",
         "modelDefault": "Modèle par défaut du fournisseur",
+        "modelUnavailable": {
+          "needsKey": "nécessite une clé API",
+          "notOnHost": "non connecté sur cet hôte"
+        },
         "moreOptions": "Plus d'options",
         "moreOptionsHint": "Réglages facultatifs — les valeurs par défaut conviennent à la plupart des agents.",
         "nameHint": "Choisissez quelque chose de mémorable — vous pourrez toujours le changer plus tard.",
@@ -22798,6 +22818,7 @@ export const resources = {
           "uploadFailed": "Falha no envio"
         },
         "executionMode": "Modo de Execução",
+        "hostNoSeat": "Este host ainda não tem um assento do Claude, então os agentes nele não vão iniciar até conectar um.",
         "hostedComingSoon": "Em breve",
         "hostedDescription": "Executa na nuvem — sem necessidade de configuração",
         "hostedInfo": "Agentes hospedados executam em infraestrutura gerenciada com um cérebro Claude compartilhado — sem necessidade de chave de API ou processo local.",
@@ -22847,6 +22868,10 @@ export const resources = {
         "maxTurns": "Máximo de Turnos",
         "model": "Modelo",
         "modelDefault": "Padrão do provedor",
+        "modelUnavailable": {
+          "needsKey": "precisa de uma chave de API",
+          "notOnHost": "não conectado neste host"
+        },
         "moreOptions": "Mais opções",
         "moreOptionsHint": "Configurações opcionais — os padrões funcionam para a maioria dos agentes.",
         "nameHint": "Escolha algo memorável — você sempre pode mudar depois.",
@@ -28356,6 +28381,7 @@ export const resources = {
           "uploadFailed": "アップロードに失敗しました"
         },
         "executionMode": "実行モード",
+        "hostNoSeat": "このホストにはまだ Claude のシートがないため、接続するまでエージェントは起動できません。",
         "hostedComingSoon": "近日公開",
         "hostedDescription": "クラウドで実行 — セットアップ不要",
         "hostedInfo": "ホスト型エージェントは、共有のClaude頭脳を使った管理インフラ上で動作します — APIキーもローカルプロセスも不要です。",
@@ -28405,6 +28431,10 @@ export const resources = {
         "maxTurns": "最大ターン数",
         "model": "モデル",
         "modelDefault": "プロバイダーの既定値",
+        "modelUnavailable": {
+          "needsKey": "API キーが必要",
+          "notOnHost": "このホストでは未接続"
+        },
         "moreOptions": "その他のオプション",
         "moreOptionsHint": "任意の設定です。ほとんどのエージェントはデフォルトのままで動作します。",
         "nameHint": "覚えやすいものを選びましょう — 後でいつでも変更できます。",
@@ -33914,6 +33944,7 @@ export const resources = {
           "uploadFailed": "上传失败"
         },
         "executionMode": "执行模式",
+        "hostNoSeat": "此主机尚未连接 Claude 席位，在连接之前其上的智能体无法启动。",
         "hostedComingSoon": "即将推出",
         "hostedDescription": "在云端运行 — 无需设置",
         "hostedInfo": "托管智能体运行在受管理的基础设施上，使用共享的 Claude 大脑 — 无需 API 密钥或本地进程。",
@@ -33963,6 +33994,10 @@ export const resources = {
         "maxTurns": "最大轮次",
         "model": "模型",
         "modelDefault": "提供商默认值",
+        "modelUnavailable": {
+          "needsKey": "需要 API 密钥",
+          "notOnHost": "此主机未连接"
+        },
         "moreOptions": "更多选项",
         "moreOptionsHint": "可选设置——默认值适用于大多数智能体。",
         "nameHint": "选择一个容易记住的名字 — 之后随时可以更改。",
@@ -39472,6 +39507,7 @@ export const resources = {
           "uploadFailed": "업로드 실패"
         },
         "executionMode": "실행 모드",
+        "hostNoSeat": "이 호스트에는 아직 Claude 시트가 없어, 연결하기 전까지는 에이전트를 시작할 수 없습니다.",
         "hostedComingSoon": "곧 제공",
         "hostedDescription": "클라우드에서 실행됨 — 별도 설정 불필요",
         "hostedInfo": "호스팅 에이전트는 공유 Claude 브레인을 사용해 관리형 인프라에서 실행됩니다 — API 키나 로컬 프로세스가 필요 없습니다.",
@@ -39521,6 +39557,10 @@ export const resources = {
         "maxTurns": "최대 턴 수",
         "model": "모델",
         "modelDefault": "제공업체 기본값",
+        "modelUnavailable": {
+          "needsKey": "API 키 필요",
+          "notOnHost": "이 호스트에 연결되지 않음"
+        },
         "moreOptions": "추가 옵션",
         "moreOptionsHint": "선택 설정입니다. 대부분의 에이전트는 기본값으로 충분합니다.",
         "nameHint": "기억하기 쉬운 이름을 선택하세요 — 나중에 언제든 변경할 수 있습니다.",
@@ -45030,6 +45070,7 @@ export const resources = {
           "uploadFailed": "Caricamento non riuscito"
         },
         "executionMode": "Modalità di esecuzione",
+        "hostNoSeat": "Questo host non ha ancora una postazione Claude, quindi gli agenti non potranno avviarsi finché non ne verrà collegata una.",
         "hostedComingSoon": "In arrivo",
         "hostedDescription": "Esegue nel cloud — nessuna configurazione necessaria",
         "hostedInfo": "Gli agenti hosted vengono eseguiti su infrastruttura gestita con un cervello Claude condiviso — non servono chiave API o processo locale.",
@@ -45079,6 +45120,10 @@ export const resources = {
         "maxTurns": "Turni massimi",
         "model": "Modello",
         "modelDefault": "Predefinito del provider",
+        "modelUnavailable": {
+          "needsKey": "richiede una chiave API",
+          "notOnHost": "non connesso su questo host"
+        },
         "moreOptions": "Altre opzioni",
         "moreOptionsHint": "Impostazioni facoltative: i valori predefiniti vanno bene per la maggior parte degli agenti.",
         "nameHint": "Scegli qualcosa di memorabile — puoi sempre cambiarlo più tardi.",
@@ -50588,6 +50633,7 @@ export const resources = {
           "uploadFailed": "अपलोड विफल"
         },
         "executionMode": "एग्ज़ीक्यूशन मोड",
+        "hostNoSeat": "इस होस्ट पर अभी Claude सीट नहीं है, इसलिए कनेक्ट होने तक एजेंट शुरू नहीं हो पाएंगे।",
         "hostedComingSoon": "जल्द आ रहा है",
         "hostedDescription": "क्लाउड में चलता है — किसी सेटअप की आवश्यकता नहीं",
         "hostedInfo": "होस्टेड एजेंट प्रबंधित इन्फ्रास्ट्रक्चर पर साझा Claude ब्रेन के साथ चलते हैं — किसी API कुंजी या लोकल प्रोसेस की आवश्यकता नहीं।",
@@ -50637,6 +50683,10 @@ export const resources = {
         "maxTurns": "अधिकतम टर्न",
         "model": "मॉडल",
         "modelDefault": "प्रोवाइडर डिफ़ॉल्ट",
+        "modelUnavailable": {
+          "needsKey": "एपीआई कुंजी चाहिए",
+          "notOnHost": "इस होस्ट पर कनेक्ट नहीं है"
+        },
         "moreOptions": "और विकल्प",
         "moreOptionsHint": "वैकल्पिक सेटिंग्स — ज़्यादातर एजेंट्स के लिए डिफ़ॉल्ट ही काफ़ी हैं।",
         "nameHint": "कुछ यादगार चुनें — आप इसे बाद में कभी भी बदल सकते हैं।",
