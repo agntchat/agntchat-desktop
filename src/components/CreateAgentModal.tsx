@@ -994,7 +994,7 @@ export function CreateAgentModal({ onClose }: { onClose: () => void }) {
                   <div
                     className={cn(
                       "relative h-full overflow-hidden rounded-full transition-all duration-500 ease-out",
-                      completeness.percent === 100 ? "bg-success" : "bg-primary"
+                      completeness.percent === 100 ? "bg-warning" : "bg-primary"
                     )}
                     style={{ width: `${completeness.percent}%` }}
                   >
@@ -1017,26 +1017,21 @@ export function CreateAgentModal({ onClose }: { onClose: () => void }) {
                     className={cn(
                       "text-xs font-semibold tabular-nums",
                       burst && "meter-bump",
-                      completeness.percent === 100 ? "text-success" : "text-foreground"
+                      completeness.percent === 100 ? "text-warning" : "text-foreground"
                     )}
                   >
                     {t("create.completeness.label", { percent: completeness.percent })}
                   </span>
                 </span>
               </div>
-              <span
-                className={cn(
-                  "text-[11px]",
-                  completeness.next ? "text-text-muted" : "text-success"
-                )}
-              >
-                {completeness.next
-                  ? t("create.completeness.nudge", {
-                      action: t(`create.completeness.items.${completeness.next.key}`),
-                      points: completeness.next.points,
-                    })
-                  : t("create.completeness.done")}
-              </span>
+              {completeness.next && (
+                <span className="text-[11px] text-text-muted">
+                  {t("create.completeness.nudge", {
+                    action: t(`create.completeness.items.${completeness.next.key}`),
+                    points: completeness.next.points,
+                  })}
+                </span>
+              )}
             </div>
           </div>
 

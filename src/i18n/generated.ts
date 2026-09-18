@@ -476,7 +476,6 @@ export const resources = {
         "clickToChange": "Click to change the photo",
         "clickToChoosePhoto": "Click to choose a photo (optional)",
         "completeness": {
-          "done": "Fully set up — nice work!",
           "items": {
             "brief": "Describe your agent",
             "description": "Write a description",
@@ -6033,7 +6032,6 @@ export const resources = {
         "clickToChange": "Haz clic para cambiar la foto",
         "clickToChoosePhoto": "Haz clic para elegir una foto (opcional)",
         "completeness": {
-          "done": "Configuración completa. ¡Bien hecho!",
           "items": {
             "brief": "Describe a tu agente",
             "description": "Escribe una descripción",
@@ -11590,7 +11588,6 @@ export const resources = {
         "clickToChange": "Klicken, um das Foto zu ändern",
         "clickToChoosePhoto": "Klicken, um ein Foto auszuwählen (optional)",
         "completeness": {
-          "done": "Vollständig eingerichtet – gute Arbeit!",
           "items": {
             "brief": "Agenten beschreiben",
             "description": "Eine Beschreibung schreiben",
@@ -17147,7 +17144,6 @@ export const resources = {
         "clickToChange": "Cliquez pour changer la photo",
         "clickToChoosePhoto": "Cliquez pour choisir une photo (facultatif)",
         "completeness": {
-          "done": "Entièrement configuré — bravo !",
           "items": {
             "brief": "Décrivez votre agent",
             "description": "Rédigez une description",
@@ -22704,7 +22700,6 @@ export const resources = {
         "clickToChange": "Clique para trocar a foto",
         "clickToChoosePhoto": "Clique para escolher uma foto (opcional)",
         "completeness": {
-          "done": "Totalmente configurado — bom trabalho!",
           "items": {
             "brief": "Descreva seu agente",
             "description": "Escreva uma descrição",
@@ -28261,7 +28256,6 @@ export const resources = {
         "clickToChange": "クリックして写真を変更",
         "clickToChoosePhoto": "クリックして写真を選択（任意）",
         "completeness": {
-          "done": "設定完了です。お見事！",
           "items": {
             "brief": "エージェントを説明",
             "description": "説明を書く",
@@ -33818,7 +33812,6 @@ export const resources = {
         "clickToChange": "点击更换照片",
         "clickToChoosePhoto": "点击选择照片（可选）",
         "completeness": {
-          "done": "全部设置完成——干得漂亮！",
           "items": {
             "brief": "描述你的智能体",
             "description": "写一段简介",
@@ -39375,7 +39368,6 @@ export const resources = {
         "clickToChange": "클릭하여 사진 변경",
         "clickToChoosePhoto": "클릭하여 사진 선택(선택 사항)",
         "completeness": {
-          "done": "설정 완료 — 잘하셨어요!",
           "items": {
             "brief": "에이전트 설명하기",
             "description": "설명 작성하기",
@@ -44932,7 +44924,6 @@ export const resources = {
         "clickToChange": "Clicca per cambiare la foto",
         "clickToChoosePhoto": "Clicca per scegliere una foto (opzionale)",
         "completeness": {
-          "done": "Configurazione completa: ottimo lavoro!",
           "items": {
             "brief": "Descrivi il tuo agente",
             "description": "Scrivi una descrizione",
@@ -50489,7 +50480,6 @@ export const resources = {
         "clickToChange": "फ़ोटो बदलने के लिए क्लिक करें",
         "clickToChoosePhoto": "फ़ोटो चुनने के लिए क्लिक करें (वैकल्पिक)",
         "completeness": {
-          "done": "पूरी तरह सेट — बढ़िया काम!",
           "items": {
             "brief": "अपने एजेंट का वर्णन करें",
             "description": "विवरण लिखें",
