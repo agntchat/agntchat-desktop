@@ -817,6 +817,43 @@ export function CreateAgentModal({ onClose }: { onClose: () => void }) {
   const canCreate =
     displayName.trim().length > 0 && !creating && PROVIDERS.length > 0;
 
+  // Completeness meter — LinkedIn-style nudge to keep filling the agent in.
+  // Weights sum to 100. Defaults that are always set (role, runtime, model)
+  // don't score; only things the user actively adds do. The nudge names the
+  // single highest-value item still missing.
+  const completeness = useMemo(() => {
+    const items: { key: string; points: number; done: boolean }[] = [
+      { key: "name", points: 15, done: displayName.trim().length > 0 },
+      { key: "photo", points: 10, done: !!avatarUrl },
+      { key: "brief", points: 10, done: brief.trim().length > 0 },
+      { key: "tone", points: 10, done: !!tone || !!customTone?.trim() },
+      {
+        key: "specialties",
+        points: 15,
+        done: specialties.length + customSpecialties.length > 0,
+      },
+      { key: "description", points: 10, done: description.trim().length > 0 },
+      { key: "instructions", points: 15, done: customInstructions.trim().length > 0 },
+      { key: "integrations", points: 15, done: selectedTools.length > 0 },
+    ];
+    const percent = items.reduce((sum, i) => sum + (i.done ? i.points : 0), 0);
+    const next = items
+      .filter((i) => !i.done)
+      .sort((a, b) => b.points - a.points)[0];
+    return { percent, next };
+  }, [
+    displayName,
+    avatarUrl,
+    brief,
+    tone,
+    customTone,
+    specialties,
+    customSpecialties,
+    description,
+    customInstructions,
+    selectedTools,
+  ]);
+
   // Launch the Google OAuth in the system browser and poll for the
   // credential landing (the callback is handled server-side; there's no
   // in-app completion event).
@@ -930,21 +967,62 @@ export function CreateAgentModal({ onClose }: { onClose: () => void }) {
                 {page === 1 ? t("create.dialogHint") : t("create.moreOptionsHint")}
               </p>
             </div>
-            <div className="ml-auto flex shrink-0 items-center gap-2 pr-8">
-              <span className="text-[11px] text-text-muted">
-                {t("create.stepOf", { current: page, total: 2 })}
-              </span>
-              <div className="flex items-center gap-1">
-                {[1, 2].map((p) => (
-                  <span
-                    key={p}
-                    className={cn(
-                      "h-1.5 rounded-full transition-all duration-300",
-                      p === page ? "w-5 bg-primary" : "w-1.5 bg-border"
-                    )}
-                  />
-                ))}
+            <div className="ml-auto flex shrink-0 flex-col items-end gap-1 pr-8">
+              <div className="flex items-center gap-2">
+                <span className="text-[11px] text-text-muted">
+                  {t("create.stepOf", { current: page, total: 2 })}
+                </span>
+                <div className="flex items-center gap-1">
+                  {[1, 2].map((p) => (
+                    <span
+                      key={p}
+                      className={cn(
+                        "h-1.5 rounded-full transition-all duration-300",
+                        p === page ? "w-5 bg-primary" : "w-1.5 bg-border"
+                      )}
+                    />
+                  ))}
+                </div>
               </div>
+              <div
+                className="flex items-center gap-2"
+                role="progressbar"
+                aria-valuemin={0}
+                aria-valuemax={100}
+                aria-valuenow={completeness.percent}
+                aria-label={t("create.completeness.label", { percent: completeness.percent })}
+              >
+                <div className="h-1.5 w-40 overflow-hidden rounded-full bg-border">
+                  <div
+                    className={cn(
+                      "h-full rounded-full transition-all duration-500",
+                      completeness.percent === 100 ? "bg-success" : "bg-primary"
+                    )}
+                    style={{ width: `${completeness.percent}%` }}
+                  />
+                </div>
+                <span
+                  className={cn(
+                    "text-xs font-semibold tabular-nums",
+                    completeness.percent === 100 ? "text-success" : "text-foreground"
+                  )}
+                >
+                  {t("create.completeness.label", { percent: completeness.percent })}
+                </span>
+              </div>
+              <span
+                className={cn(
+                  "text-[11px]",
+                  completeness.next ? "text-text-muted" : "text-success"
+                )}
+              >
+                {completeness.next
+                  ? t("create.completeness.nudge", {
+                      action: t(`create.completeness.items.${completeness.next.key}`),
+                      points: completeness.next.points,
+                    })
+                  : t("create.completeness.done")}
+              </span>
             </div>
           </div>
 

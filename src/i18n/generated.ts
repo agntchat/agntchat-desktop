@@ -475,6 +475,21 @@ export const resources = {
         "chooseAvatar": "Choose avatar image",
         "clickToChange": "Click to change the photo",
         "clickToChoosePhoto": "Click to choose a photo (optional)",
+        "completeness": {
+          "done": "Fully set up — nice work!",
+          "items": {
+            "brief": "Describe your agent",
+            "description": "Write a description",
+            "instructions": "Add custom instructions",
+            "integrations": "Turn on an integration",
+            "name": "Give them a name",
+            "photo": "Add a photo",
+            "specialties": "Add specialties",
+            "tone": "Pick a tone"
+          },
+          "label": "{{percent}}% complete",
+          "nudge": "{{action}} · +{{points}}%"
+        },
         "computerUse": "Computer use",
         "computerUseDescription": "Lets this agent control this computer — screenshots, clicks, typing. The allowed-app list is set after creation.",
         "connect": {
@@ -6016,6 +6031,21 @@ export const resources = {
         "chooseAvatar": "Elegir imagen de avatar",
         "clickToChange": "Haz clic para cambiar la foto",
         "clickToChoosePhoto": "Haz clic para elegir una foto (opcional)",
+        "completeness": {
+          "done": "Configuración completa. ¡Bien hecho!",
+          "items": {
+            "brief": "Describe a tu agente",
+            "description": "Escribe una descripción",
+            "instructions": "Añade instrucciones personalizadas",
+            "integrations": "Activa una integración",
+            "name": "Ponle un nombre",
+            "photo": "Añade una foto",
+            "specialties": "Añade especialidades",
+            "tone": "Elige un tono"
+          },
+          "label": "{{percent}}% completado",
+          "nudge": "{{action}} · +{{points}}%"
+        },
         "computerUse": "Uso del ordenador",
         "computerUseDescription": "Permite que este agente controle este equipo: capturas de pantalla, clics, escritura. La lista de apps permitidas se define después de crearlo.",
         "connect": {
@@ -11557,6 +11587,21 @@ export const resources = {
         "chooseAvatar": "Avatarbild auswählen",
         "clickToChange": "Klicken, um das Foto zu ändern",
         "clickToChoosePhoto": "Klicken, um ein Foto auszuwählen (optional)",
+        "completeness": {
+          "done": "Vollständig eingerichtet – gute Arbeit!",
+          "items": {
+            "brief": "Agenten beschreiben",
+            "description": "Eine Beschreibung schreiben",
+            "instructions": "Eigene Anweisungen hinzufügen",
+            "integrations": "Eine Integration aktivieren",
+            "name": "Einen Namen vergeben",
+            "photo": "Ein Foto hinzufügen",
+            "specialties": "Spezialgebiete hinzufügen",
+            "tone": "Einen Tonfall wählen"
+          },
+          "label": "{{percent}}% vollständig",
+          "nudge": "{{action}} · +{{points}}%"
+        },
         "computerUse": "Computernutzung",
         "computerUseDescription": "Erlaubt diesem Agenten, diesen Computer zu steuern – Screenshots, Klicks, Tastatureingaben. Die Liste erlaubter Apps wird nach dem Erstellen festgelegt.",
         "connect": {
@@ -17098,6 +17143,21 @@ export const resources = {
         "chooseAvatar": "Choisir une image d'avatar",
         "clickToChange": "Cliquez pour changer la photo",
         "clickToChoosePhoto": "Cliquez pour choisir une photo (facultatif)",
+        "completeness": {
+          "done": "Entièrement configuré — bravo !",
+          "items": {
+            "brief": "Décrivez votre agent",
+            "description": "Rédigez une description",
+            "instructions": "Ajoutez des instructions",
+            "integrations": "Activez une intégration",
+            "name": "Donnez-lui un nom",
+            "photo": "Ajoutez une photo",
+            "specialties": "Ajoutez des spécialités",
+            "tone": "Choisissez un ton"
+          },
+          "label": "{{percent}}% complété",
+          "nudge": "{{action}} · +{{points}}%"
+        },
         "computerUse": "Utilisation de l'ordinateur",
         "computerUseDescription": "Permet à cet agent de contrôler cet ordinateur — captures d'écran, clics, saisie. La liste des apps autorisées se définit après la création.",
         "connect": {
@@ -22639,6 +22699,21 @@ export const resources = {
         "chooseAvatar": "Escolher imagem de avatar",
         "clickToChange": "Clique para trocar a foto",
         "clickToChoosePhoto": "Clique para escolher uma foto (opcional)",
+        "completeness": {
+          "done": "Totalmente configurado — bom trabalho!",
+          "items": {
+            "brief": "Descreva seu agente",
+            "description": "Escreva uma descrição",
+            "instructions": "Adicione instruções personalizadas",
+            "integrations": "Ative uma integração",
+            "name": "Dê um nome",
+            "photo": "Adicione uma foto",
+            "specialties": "Adicione especialidades",
+            "tone": "Escolha um tom"
+          },
+          "label": "{{percent}}% concluído",
+          "nudge": "{{action}} · +{{points}}%"
+        },
         "computerUse": "Uso do computador",
         "computerUseDescription": "Permite que este agente controle este computador — capturas de tela, cliques, digitação. A lista de apps permitidos é definida após a criação.",
         "connect": {
@@ -28180,6 +28255,21 @@ export const resources = {
         "chooseAvatar": "アバター画像を選択",
         "clickToChange": "クリックして写真を変更",
         "clickToChoosePhoto": "クリックして写真を選択（任意）",
+        "completeness": {
+          "done": "設定完了です。お見事！",
+          "items": {
+            "brief": "エージェントを説明",
+            "description": "説明を書く",
+            "instructions": "カスタム指示を追加",
+            "integrations": "連携をオンにする",
+            "name": "名前を付ける",
+            "photo": "写真を追加",
+            "specialties": "専門分野を追加",
+            "tone": "口調を選ぶ"
+          },
+          "label": "{{percent}}% 完了",
+          "nudge": "{{action}} · +{{points}}%"
+        },
         "computerUse": "コンピュータ操作",
         "computerUseDescription": "このエージェントにこのコンピューターの操作（スクリーンショット、クリック、入力）を許可します。許可するアプリの一覧は作成後に設定します。",
         "connect": {
@@ -33721,6 +33811,21 @@ export const resources = {
         "chooseAvatar": "选择头像图片",
         "clickToChange": "点击更换照片",
         "clickToChoosePhoto": "点击选择照片（可选）",
+        "completeness": {
+          "done": "全部设置完成——干得漂亮！",
+          "items": {
+            "brief": "描述你的智能体",
+            "description": "写一段简介",
+            "instructions": "添加自定义指令",
+            "integrations": "开启一个集成",
+            "name": "起个名字",
+            "photo": "添加照片",
+            "specialties": "添加专长",
+            "tone": "选择语气"
+          },
+          "label": "已完成 {{percent}}%",
+          "nudge": "{{action}} · +{{points}}%"
+        },
         "computerUse": "计算机使用",
         "computerUseDescription": "允许此智能体控制这台电脑——截图、点击、输入。允许的应用列表在创建后设置。",
         "connect": {
@@ -39262,6 +39367,21 @@ export const resources = {
         "chooseAvatar": "아바타 이미지 선택",
         "clickToChange": "클릭하여 사진 변경",
         "clickToChoosePhoto": "클릭하여 사진 선택(선택 사항)",
+        "completeness": {
+          "done": "설정 완료 — 잘하셨어요!",
+          "items": {
+            "brief": "에이전트 설명하기",
+            "description": "설명 작성하기",
+            "instructions": "맞춤 지침 추가",
+            "integrations": "연동 켜기",
+            "name": "이름 정하기",
+            "photo": "사진 추가",
+            "specialties": "전문 분야 추가",
+            "tone": "말투 고르기"
+          },
+          "label": "{{percent}}% 완료",
+          "nudge": "{{action}} · +{{points}}%"
+        },
         "computerUse": "컴퓨터 사용",
         "computerUseDescription": "이 에이전트가 이 컴퓨터를 제어할 수 있게 합니다 — 스크린샷, 클릭, 입력. 허용 앱 목록은 생성 후에 설정합니다.",
         "connect": {
@@ -44803,6 +44923,21 @@ export const resources = {
         "chooseAvatar": "Scegli immagine avatar",
         "clickToChange": "Clicca per cambiare la foto",
         "clickToChoosePhoto": "Clicca per scegliere una foto (opzionale)",
+        "completeness": {
+          "done": "Configurazione completa: ottimo lavoro!",
+          "items": {
+            "brief": "Descrivi il tuo agente",
+            "description": "Scrivi una descrizione",
+            "instructions": "Aggiungi istruzioni personalizzate",
+            "integrations": "Attiva un'integrazione",
+            "name": "Dagli un nome",
+            "photo": "Aggiungi una foto",
+            "specialties": "Aggiungi specialità",
+            "tone": "Scegli un tono"
+          },
+          "label": "{{percent}}% completato",
+          "nudge": "{{action}} · +{{points}}%"
+        },
         "computerUse": "Uso del computer",
         "computerUseDescription": "Consente a questo agente di controllare questo computer: screenshot, clic, digitazione. L'elenco delle app consentite si imposta dopo la creazione.",
         "connect": {
@@ -50344,6 +50479,21 @@ export const resources = {
         "chooseAvatar": "अवतार छवि चुनें",
         "clickToChange": "फ़ोटो बदलने के लिए क्लिक करें",
         "clickToChoosePhoto": "फ़ोटो चुनने के लिए क्लिक करें (वैकल्पिक)",
+        "completeness": {
+          "done": "पूरी तरह सेट — बढ़िया काम!",
+          "items": {
+            "brief": "अपने एजेंट का वर्णन करें",
+            "description": "विवरण लिखें",
+            "instructions": "कस्टम निर्देश जोड़ें",
+            "integrations": "एक इंटीग्रेशन चालू करें",
+            "name": "एक नाम दें",
+            "photo": "फ़ोटो जोड़ें",
+            "specialties": "विशेषज्ञताएँ जोड़ें",
+            "tone": "लहजा चुनें"
+          },
+          "label": "{{percent}}% पूरा",
+          "nudge": "{{action}} · +{{points}}%"
+        },
         "computerUse": "कंप्यूटर उपयोग",
         "computerUseDescription": "इस एजेंट को इस कंप्यूटर को नियंत्रित करने देता है — स्क्रीनशॉट, क्लिक, टाइपिंग। अनुमत ऐप्स की सूची बनाने के बाद सेट होती है।",
         "connect": {
