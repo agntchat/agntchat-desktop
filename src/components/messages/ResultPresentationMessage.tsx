@@ -749,6 +749,19 @@ async function executeCTAAction(
   return null; // unknown action — caller falls through to the WS relay
 }
 
+/**
+ * What a `copy_to_clipboard` CTA puts on the clipboard: an explicit
+ * `copy_text`, else a `code` field (invite codes are the case this exists
+ * for), else the item title.
+ */
+function clipboardTextFor(
+  itemDetails: Record<string, unknown>,
+  itemTitle: string | undefined
+): string {
+  const explicit = itemDetails.copy_text ?? itemDetails.code;
+  return String(explicit ?? itemTitle ?? "").trim();
+}
+
 /** `done` is false for a refusal (missing recipient) — shown, never recorded. */
 interface CTAOutcome {
   done: boolean;
@@ -849,6 +862,28 @@ function CTAButton({
 
   const handleClick = async () => {
     if (busy || done) return;
+
+    // Copy is the one CTA that must stay pressable: it hands the user a
+    // string (an invite code, a reference) they may well want twice, so it
+    // flashes "Copied" and resets instead of latching done + recording a
+    // completion the way a send does.
+    if (cta.action === "copy_to_clipboard") {
+      const text = clipboardTextFor(itemDetails, itemTitle);
+      if (!text) {
+        setLocalDone(t("results.nothingToCopy"));
+        window.setTimeout(() => setLocalDone(null), 2000);
+        return;
+      }
+      try {
+        await navigator.clipboard.writeText(text);
+        setLocalDone(t("results.copied"));
+      } catch {
+        setLocalDone(t("results.actionFailed"));
+      }
+      window.setTimeout(() => setLocalDone(null), 2000);
+      return;
+    }
+
     setBusy(true);
     try {
       const result = await executeCTAAction(cta.action!, itemTitle, itemDetails, t);
