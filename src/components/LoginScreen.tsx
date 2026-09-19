@@ -53,12 +53,14 @@ export function LoginScreen() {
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [isSignup, setIsSignup] = useState(false);
-  const [displayName, setDisplayName] = useState("");
+  const [firstName, setFirstName] = useState("");
+  const [lastName, setLastName] = useState("");
   const [birthDate, setBirthDate] = useState("");
   const [acceptedTerms, setAcceptedTerms] = useState(false);
   const [marketingOptIn, setMarketingOptIn] = useState(false);
   const [analyticsOptIn, setAnalyticsOptIn] = useState(false);
   const [consentError, setConsentError] = useState(false);
+  const [firstNameError, setFirstNameError] = useState(false);
   const [passwordError, setPasswordError] = useState<
     "errors.passwordTooShort" | "errors.passwordTooWeak" | "errors.passwordsDontMatch" | null
   >(null);
@@ -142,6 +144,10 @@ export function LoginScreen() {
       return;
     }
     if (isSignup) {
+      if (!firstName.trim()) {
+        setFirstNameError(true);
+        return;
+      }
       // Password rules first: they sit at the top of the form, so a failure
       // here shouldn't be reported under the consent block.
       const assessment = assessPassword(password, email);
@@ -170,13 +176,18 @@ export function LoginScreen() {
         setConsentError(true);
         return;
       }
-      await signup(email, password, displayName || undefined, {
-        acceptedTerms: true,
-        birthDate,
-        marketingOptIn,
-        analyticsOptIn,
-        inviteCode: acceptedInvite?.code,
-      });
+      await signup(
+        email,
+        password,
+        { firstName: firstName.trim(), lastName: lastName.trim() || undefined },
+        {
+          acceptedTerms: true,
+          birthDate,
+          marketingOptIn,
+          analyticsOptIn,
+          inviteCode: acceptedInvite?.code,
+        }
+      );
     } else {
       await login(email, password);
     }
@@ -210,9 +221,16 @@ export function LoginScreen() {
           <h1 className="text-xl font-semibold text-text">agntchat</h1>
           <BetaBadge />
         </div>
-        <p className={cn("text-text-secondary text-sm mb-8", signupForm && "mb-5")}>
-          {gateOpen ? t("invite.subtitle") : t("tagline")}
-        </p>
+        {/* The tagline is orientation for the sign-in and gate cards; on the
+            signup form the fields say what this is, and the line costs a row
+            of height the form doesn't have to spare. */}
+        {signupForm ? (
+          <div className="mb-5" />
+        ) : (
+          <p className="text-text-secondary text-sm mb-8">
+            {gateOpen ? t("invite.subtitle") : t("tagline")}
+          </p>
+        )}
 
         <form onSubmit={handleSubmit} className={cn("space-y-4", signupForm && "space-y-3")}>
           {gateOpen && (
@@ -267,50 +285,77 @@ export function LoginScreen() {
             </div>
           )}
 
-          {/* Name and date of birth share a row — two short fields that
-              would otherwise cost the form 120px of height. */}
+          {/* First and last name share a row — the profile editor takes the
+              same two fields, and display_name is derived from them. */}
           {signupForm && (
             <div className="grid grid-cols-2 gap-3">
               <div className="space-y-1.5">
-                <Label htmlFor="displayName">{t("displayName")}</Label>
+                <Label htmlFor="firstName">{t("firstName")}</Label>
                 <Input
-                  id="displayName"
+                  id="firstName"
                   type="text"
-                  value={displayName}
-                  onChange={(e) => setDisplayName(e.target.value)}
-                  placeholder={t("placeholders.yourName")}
+                  value={firstName}
+                  onChange={(e) => {
+                    setFirstName(e.target.value);
+                    if (e.target.value.trim()) setFirstNameError(false);
+                  }}
+                  placeholder={t("placeholders.firstName")}
+                  autoComplete="given-name"
+                  maxLength={50}
+                  required
                 />
               </div>
               <div className="space-y-1.5">
-                <Label htmlFor="birthDate">{t("birthDate")}</Label>
+                <Label htmlFor="lastName">{t("lastName")}</Label>
                 <Input
-                  id="birthDate"
-                  type="date"
-                  value={birthDate}
-                  onChange={(e) => {
-                    setBirthDate(e.target.value);
-                    if (e.target.value) setBirthDateError(null);
-                  }}
+                  id="lastName"
+                  type="text"
+                  value={lastName}
+                  onChange={(e) => setLastName(e.target.value)}
+                  placeholder={t("placeholders.lastName")}
+                  autoComplete="family-name"
+                  maxLength={50}
                 />
               </div>
             </div>
           )}
 
           {!gateOpen && (
-            <div className="space-y-1.5">
-              <Label htmlFor="email">{t("email")}</Label>
-              <Input
-                id="email"
-                type="email"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                placeholder={t("placeholders.email")}
-                required
-                readOnly={emailLocked}
-                disabled={emailLocked}
-              />
-              {emailLocked && (
-                <p className="text-xs text-text-secondary">{t("invite.emailLocked", { email })}</p>
+            <div className={cn(signupForm && "grid grid-cols-[3fr_2fr] gap-3")}>
+              <div className="space-y-1.5">
+                <Label htmlFor="email">{t("email")}</Label>
+                <Input
+                  id="email"
+                  type="email"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  placeholder={t("placeholders.email")}
+                  required
+                  readOnly={emailLocked}
+                  disabled={emailLocked}
+                />
+                {emailLocked && (
+                  <p className="text-xs text-text-secondary">
+                    {t("invite.emailLocked", { email })}
+                  </p>
+                )}
+              </div>
+              {/* Date of birth rides along with the email: it is the only
+                  other one-line field, and a row of its own costs 60px the
+                  card doesn't have. */}
+              {signupForm && (
+                <div className="space-y-1.5">
+                  <Label htmlFor="birthDate">{t("birthDate")}</Label>
+                  <Input
+                    id="birthDate"
+                    type="date"
+                    value={birthDate}
+                    onChange={(e) => {
+                      setBirthDate(e.target.value);
+                      if (e.target.value) setBirthDateError(null);
+                    }}
+                  />
+                </div>
               )}
             </div>
           )}
@@ -376,6 +421,12 @@ export function LoginScreen() {
                     : t("errors.passwordsDontMatch")}
                 </p>
               )}
+            </div>
+          )}
+
+          {firstNameError && signupForm && (
+            <div className="text-sm text-danger bg-danger-light px-3 py-2 rounded-md">
+              {t("errors.firstNameRequired")}
             </div>
           )}
 
@@ -493,6 +544,7 @@ export function LoginScreen() {
             setConsentError(false);
             setBirthDateError(null);
             setPasswordError(null);
+            setFirstNameError(false);
             setConfirmPassword("");
             setCodeError("");
             useAuthStore.setState({ error: null, errorCode: null, confirmationMessage: null });

@@ -2096,8 +2096,8 @@ export const resources = {
       "email": "Email",
       "enterEmailAndPassword": "Please enter email and password",
       "errors": {
-        "displayNameTooLong": "Display name must be {{max}} characters or fewer.",
         "emailPasswordRequired": "Email and password are required.",
+        "firstNameRequired": "Please enter your first name.",
         "handleTaken": "That handle is already taken.",
         "invitePreviewFailed": "Could not load invitation",
         "loginFailed": "Login failed.",
@@ -2106,6 +2106,7 @@ export const resources = {
         "passwordsDontMatch": "Passwords do not match.",
         "signupFailed": "Signup failed."
       },
+      "firstName": "First Name",
       "forgotPassword": "Forgot password?",
       "goToSignIn": "Go to Sign In",
       "handle": "Handle",
@@ -2138,6 +2139,7 @@ export const resources = {
       "inviteSignupDescription": "Create your agntchat account to join the team.",
       "inviteSignupOrgDescription": "Create your agntchat account to join {{orgName}} as {{role}}.",
       "joinOrg": "Join {{orgName}}",
+      "lastName": "Last Name",
       "password": "Password",
       "passwordRules": {
         "case": "Upper & lowercase",
@@ -2158,7 +2160,9 @@ export const resources = {
       "placeholders": {
         "confirmPassword": "Re-enter your password",
         "email": "you@example.com",
+        "firstName": "First name",
         "handle": "yourhandle",
+        "lastName": "Last name (optional)",
         "passwordMin": "Min. {{min}} characters",
         "yourName": "Your name"
       },
@@ -7672,13 +7676,13 @@ export const resources = {
         "terms": "Términos del servicio"
       },
       "createAccount": "Crear cuenta",
-      "displayName": "Nombre para mostrar",
+      "displayName": "Nombre visible",
       "dontHaveAccount": "¿No tienes una cuenta?",
       "email": "Correo electrónico",
       "enterEmailAndPassword": "Introduce tu correo electrónico y contraseña",
       "errors": {
-        "displayNameTooLong": "El nombre para mostrar debe tener {{max}} caracteres o menos.",
         "emailPasswordRequired": "El correo y la contraseña son obligatorios.",
+        "firstNameRequired": "Introduce tu nombre.",
         "handleTaken": "Ese handle ya está en uso.",
         "invitePreviewFailed": "No se pudo cargar la invitación",
         "loginFailed": "Error al iniciar sesión.",
@@ -7687,6 +7691,7 @@ export const resources = {
         "passwordsDontMatch": "Las contraseñas no coinciden.",
         "signupFailed": "Error al registrarse."
       },
+      "firstName": "Nombre",
       "forgotPassword": "¿Olvidaste tu contraseña?",
       "goToSignIn": "Ir a iniciar sesión",
       "handle": "Handle",
@@ -7719,6 +7724,7 @@ export const resources = {
       "inviteSignupDescription": "Crea tu cuenta de agntchat para unirte al equipo.",
       "inviteSignupOrgDescription": "Crea tu cuenta de agntchat para unirte a {{orgName}} como {{role}}.",
       "joinOrg": "Únete a {{orgName}}",
+      "lastName": "Apellidos",
       "password": "Contraseña",
       "passwordRules": {
         "case": "Mayúsculas y minúsculas",
@@ -7739,7 +7745,9 @@ export const resources = {
       "placeholders": {
         "confirmPassword": "Vuelve a escribir la contraseña",
         "email": "tu@ejemplo.com",
+        "firstName": "Nombre",
         "handle": "tuhandle",
+        "lastName": "Apellidos (opcional)",
         "passwordMin": "Mín. {{min}} caracteres",
         "yourName": "Tu nombre"
       },
@@ -13258,8 +13266,8 @@ export const resources = {
       "email": "E-Mail",
       "enterEmailAndPassword": "Bitte geben Sie E-Mail und Passwort ein",
       "errors": {
-        "displayNameTooLong": "Der Anzeigename darf höchstens {{max}} Zeichen lang sein.",
         "emailPasswordRequired": "E-Mail und Passwort sind erforderlich.",
+        "firstNameRequired": "Bitte gib deinen Vornamen ein.",
         "handleTaken": "Dieser Benutzername ist bereits vergeben.",
         "invitePreviewFailed": "Einladung konnte nicht geladen werden",
         "loginFailed": "Anmeldung fehlgeschlagen.",
@@ -13268,6 +13276,7 @@ export const resources = {
         "passwordsDontMatch": "Die Passwörter stimmen nicht überein.",
         "signupFailed": "Registrierung fehlgeschlagen."
       },
+      "firstName": "Vorname",
       "forgotPassword": "Passwort vergessen?",
       "goToSignIn": "Zur Anmeldung",
       "handle": "Benutzername",
@@ -13300,6 +13309,7 @@ export const resources = {
       "inviteSignupDescription": "Erstellen Sie Ihr agntchat-Konto, um dem Team beizutreten.",
       "inviteSignupOrgDescription": "Erstellen Sie Ihr agntchat-Konto, um {{orgName}} als {{role}} beizutreten.",
       "joinOrg": "{{orgName}} beitreten",
+      "lastName": "Nachname",
       "password": "Passwort",
       "passwordRules": {
         "case": "Groß- und Kleinbuchstaben",
@@ -13320,9 +13330,11 @@ export const resources = {
       "placeholders": {
         "confirmPassword": "Passwort erneut eingeben",
         "email": "you@example.com",
+        "firstName": "Vorname",
         "handle": "yourhandle",
+        "lastName": "Nachname (optional)",
         "passwordMin": "Mind. {{min}} Zeichen",
-        "yourName": "Ihr Name"
+        "yourName": "Dein Name"
       },
       "resetPassword": {
         "emailRequired": "Bitte geben Sie Ihre E-Mail-Adresse ein.",
@@ -18839,8 +18851,8 @@ export const resources = {
       "email": "E-mail",
       "enterEmailAndPassword": "Veuillez saisir votre e-mail et votre mot de passe",
       "errors": {
-        "displayNameTooLong": "Le nom affiché doit comporter au maximum {{max}} caractères.",
         "emailPasswordRequired": "L'e-mail et le mot de passe sont requis.",
+        "firstNameRequired": "Veuillez saisir votre prénom.",
         "handleTaken": "Cet identifiant est déjà pris.",
         "invitePreviewFailed": "Impossible de charger l'invitation",
         "loginFailed": "Échec de la connexion.",
@@ -18849,6 +18861,7 @@ export const resources = {
         "passwordsDontMatch": "Les mots de passe ne correspondent pas.",
         "signupFailed": "Échec de l'inscription."
       },
+      "firstName": "Prénom",
       "forgotPassword": "Mot de passe oublié ?",
       "goToSignIn": "Aller à la connexion",
       "handle": "Identifiant",
@@ -18881,6 +18894,7 @@ export const resources = {
       "inviteSignupDescription": "Créez votre compte agntchat pour rejoindre l'équipe.",
       "inviteSignupOrgDescription": "Créez votre compte agntchat pour rejoindre {{orgName}} en tant que {{role}}.",
       "joinOrg": "Rejoindre {{orgName}}",
+      "lastName": "Nom",
       "password": "Mot de passe",
       "passwordRules": {
         "case": "Majuscules et minuscules",
@@ -18901,7 +18915,9 @@ export const resources = {
       "placeholders": {
         "confirmPassword": "Saisissez à nouveau le mot de passe",
         "email": "you@example.com",
+        "firstName": "Prénom",
         "handle": "yourhandle",
+        "lastName": "Nom (facultatif)",
         "passwordMin": "{{min}} caractères min.",
         "yourName": "Votre nom"
       },
@@ -24420,8 +24436,8 @@ export const resources = {
       "email": "E-mail",
       "enterEmailAndPassword": "Informe o e-mail e a senha",
       "errors": {
-        "displayNameTooLong": "O nome de exibição deve ter no máximo {{max}} caracteres.",
         "emailPasswordRequired": "E-mail e senha são obrigatórios.",
+        "firstNameRequired": "Informe seu nome.",
         "handleTaken": "Esse nome de usuário já está em uso.",
         "invitePreviewFailed": "Não foi possível carregar o convite",
         "loginFailed": "Falha ao entrar.",
@@ -24430,6 +24446,7 @@ export const resources = {
         "passwordsDontMatch": "As senhas não coincidem.",
         "signupFailed": "Falha ao cadastrar."
       },
+      "firstName": "Nome",
       "forgotPassword": "Esqueceu a senha?",
       "goToSignIn": "Ir para Entrar",
       "handle": "Nome de usuário",
@@ -24462,6 +24479,7 @@ export const resources = {
       "inviteSignupDescription": "Crie sua conta agntchat para entrar na equipe.",
       "inviteSignupOrgDescription": "Crie sua conta agntchat para entrar em {{orgName}} como {{role}}.",
       "joinOrg": "Entrar em {{orgName}}",
+      "lastName": "Sobrenome",
       "password": "Senha",
       "passwordRules": {
         "case": "Maiúsculas e minúsculas",
@@ -24482,7 +24500,9 @@ export const resources = {
       "placeholders": {
         "confirmPassword": "Digite a senha novamente",
         "email": "you@example.com",
+        "firstName": "Nome",
         "handle": "yourhandle",
+        "lastName": "Sobrenome (opcional)",
         "passwordMin": "Mín. {{min}} caracteres",
         "yourName": "Seu nome"
       },
@@ -30001,8 +30021,8 @@ export const resources = {
       "email": "メールアドレス",
       "enterEmailAndPassword": "メールアドレスとパスワードを入力してください",
       "errors": {
-        "displayNameTooLong": "表示名は{{max}}文字以内で入力してください。",
         "emailPasswordRequired": "メールアドレスとパスワードは必須です。",
+        "firstNameRequired": "名を入力してください。",
         "handleTaken": "そのハンドルは既に使用されています。",
         "invitePreviewFailed": "招待を読み込めませんでした",
         "loginFailed": "ログインに失敗しました。",
@@ -30011,6 +30031,7 @@ export const resources = {
         "passwordsDontMatch": "パスワードが一致しません。",
         "signupFailed": "登録に失敗しました。"
       },
+      "firstName": "名",
       "forgotPassword": "パスワードをお忘れですか？",
       "goToSignIn": "ログインへ進む",
       "handle": "ハンドル",
@@ -30043,6 +30064,7 @@ export const resources = {
       "inviteSignupDescription": "チームに参加するには、agntchatアカウントを作成してください。",
       "inviteSignupOrgDescription": "{{orgName}}に{{role}}として参加するには、agntchatアカウントを作成してください。",
       "joinOrg": "{{orgName}}に参加",
+      "lastName": "姓",
       "password": "パスワード",
       "passwordRules": {
         "case": "大文字と小文字",
@@ -30063,7 +30085,9 @@ export const resources = {
       "placeholders": {
         "confirmPassword": "パスワードを再入力",
         "email": "you@example.com",
+        "firstName": "名",
         "handle": "yourhandle",
+        "lastName": "姓（任意）",
         "passwordMin": "{{min}}文字以上",
         "yourName": "お名前"
       },
@@ -35582,8 +35606,8 @@ export const resources = {
       "email": "电子邮箱",
       "enterEmailAndPassword": "请输入电子邮箱和密码",
       "errors": {
-        "displayNameTooLong": "显示名称不能超过 {{max}} 个字符。",
         "emailPasswordRequired": "电子邮箱和密码为必填项。",
+        "firstNameRequired": "请输入您的名字。",
         "handleTaken": "该用户名已被占用。",
         "invitePreviewFailed": "无法加载邀请",
         "loginFailed": "登录失败。",
@@ -35592,6 +35616,7 @@ export const resources = {
         "passwordsDontMatch": "两次输入的密码不一致。",
         "signupFailed": "注册失败。"
       },
+      "firstName": "名",
       "forgotPassword": "忘记密码？",
       "goToSignIn": "前往登录",
       "handle": "用户名",
@@ -35624,6 +35649,7 @@ export const resources = {
       "inviteSignupDescription": "创建你的 agntchat 账号以加入团队。",
       "inviteSignupOrgDescription": "创建你的 agntchat 账号，以 {{role}} 身份加入 {{orgName}}。",
       "joinOrg": "加入 {{orgName}}",
+      "lastName": "姓",
       "password": "密码",
       "passwordRules": {
         "case": "大小写字母",
@@ -35644,9 +35670,11 @@ export const resources = {
       "placeholders": {
         "confirmPassword": "再次输入密码",
         "email": "you@example.com",
+        "firstName": "名",
         "handle": "yourhandle",
+        "lastName": "姓（可选）",
         "passwordMin": "至少 {{min}} 个字符",
-        "yourName": "你的名字"
+        "yourName": "您的名字"
       },
       "resetPassword": {
         "emailRequired": "请输入您的电子邮箱。",
@@ -41163,8 +41191,8 @@ export const resources = {
       "email": "이메일",
       "enterEmailAndPassword": "이메일과 비밀번호를 입력하세요",
       "errors": {
-        "displayNameTooLong": "표시 이름은 {{max}}자 이하여야 합니다.",
         "emailPasswordRequired": "이메일과 비밀번호는 필수입니다.",
+        "firstNameRequired": "이름을 입력하세요.",
         "handleTaken": "이미 사용 중인 핸들입니다.",
         "invitePreviewFailed": "초대를 불러올 수 없음",
         "loginFailed": "로그인 실패.",
@@ -41173,6 +41201,7 @@ export const resources = {
         "passwordsDontMatch": "비밀번호가 일치하지 않습니다.",
         "signupFailed": "회원가입 실패."
       },
+      "firstName": "이름",
       "forgotPassword": "비밀번호를 잊으셨나요?",
       "goToSignIn": "로그인으로 이동",
       "handle": "핸들",
@@ -41205,6 +41234,7 @@ export const resources = {
       "inviteSignupDescription": "팀에 합류하려면 agntchat 계정을 만드세요.",
       "inviteSignupOrgDescription": "{{orgName}}에 {{role}}(으)로 합류하려면 agntchat 계정을 만드세요.",
       "joinOrg": "{{orgName}} 합류하기",
+      "lastName": "성",
       "password": "비밀번호",
       "passwordRules": {
         "case": "대문자와 소문자",
@@ -41225,7 +41255,9 @@ export const resources = {
       "placeholders": {
         "confirmPassword": "비밀번호를 다시 입력하세요",
         "email": "you@example.com",
+        "firstName": "이름",
         "handle": "yourhandle",
+        "lastName": "성(선택)",
         "passwordMin": "{{min}}자 이상",
         "yourName": "이름"
       },
@@ -46744,8 +46776,8 @@ export const resources = {
       "email": "Email",
       "enterEmailAndPassword": "Inserisci email e password",
       "errors": {
-        "displayNameTooLong": "Il nome visualizzato deve avere massimo {{max}} caratteri.",
         "emailPasswordRequired": "Email e password sono obbligatorie.",
+        "firstNameRequired": "Inserisci il tuo nome.",
         "handleTaken": "Questo handle è già in uso.",
         "invitePreviewFailed": "Impossibile caricare l'invito",
         "loginFailed": "Accesso non riuscito.",
@@ -46754,6 +46786,7 @@ export const resources = {
         "passwordsDontMatch": "Le password non coincidono.",
         "signupFailed": "Registrazione non riuscita."
       },
+      "firstName": "Nome",
       "forgotPassword": "Password dimenticata?",
       "goToSignIn": "Vai alla schermata di accesso",
       "handle": "Handle",
@@ -46786,6 +46819,7 @@ export const resources = {
       "inviteSignupDescription": "Crea il tuo account agntchat per unirti al team.",
       "inviteSignupOrgDescription": "Crea il tuo account agntchat per unirti a {{orgName}} come {{role}}.",
       "joinOrg": "Unisciti a {{orgName}}",
+      "lastName": "Cognome",
       "password": "Password",
       "passwordRules": {
         "case": "Maiuscole e minuscole",
@@ -46806,7 +46840,9 @@ export const resources = {
       "placeholders": {
         "confirmPassword": "Reinserisci la password",
         "email": "you@example.com",
+        "firstName": "Nome",
         "handle": "yourhandle",
+        "lastName": "Cognome (facoltativo)",
         "passwordMin": "Min. {{min}} caratteri",
         "yourName": "Il tuo nome"
       },
@@ -52325,8 +52361,8 @@ export const resources = {
       "email": "ईमेल",
       "enterEmailAndPassword": "कृपया ईमेल और पासवर्ड दर्ज करें",
       "errors": {
-        "displayNameTooLong": "प्रदर्शित नाम {{max}} वर्णों या उससे कम का होना चाहिए।",
         "emailPasswordRequired": "ईमेल और पासवर्ड आवश्यक हैं।",
+        "firstNameRequired": "कृपया अपना पहला नाम दर्ज करें।",
         "handleTaken": "वह हैंडल पहले से लिया जा चुका है।",
         "invitePreviewFailed": "आमंत्रण लोड नहीं कर सके",
         "loginFailed": "लॉगिन विफल।",
@@ -52335,6 +52371,7 @@ export const resources = {
         "passwordsDontMatch": "पासवर्ड मेल नहीं खाते।",
         "signupFailed": "साइन अप विफल।"
       },
+      "firstName": "पहला नाम",
       "forgotPassword": "पासवर्ड भूल गए?",
       "goToSignIn": "साइन इन पर जाएँ",
       "handle": "हैंडल",
@@ -52367,6 +52404,7 @@ export const resources = {
       "inviteSignupDescription": "टीम में शामिल होने के लिए अपना agntchat खाता बनाएं।",
       "inviteSignupOrgDescription": "{{orgName}} में {{role}} के रूप में शामिल होने के लिए अपना agntchat खाता बनाएं।",
       "joinOrg": "{{orgName}} में शामिल हों",
+      "lastName": "अंतिम नाम",
       "password": "पासवर्ड",
       "passwordRules": {
         "case": "बड़े और छोटे अक्षर",
@@ -52387,7 +52425,9 @@ export const resources = {
       "placeholders": {
         "confirmPassword": "पासवर्ड दोबारा दर्ज करें",
         "email": "you@example.com",
+        "firstName": "पहला नाम",
         "handle": "yourhandle",
+        "lastName": "अंतिम नाम (वैकल्पिक)",
         "passwordMin": "कम से कम {{min}} अक्षर",
         "yourName": "आपका नाम"
       },

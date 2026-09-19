@@ -257,7 +257,9 @@ export type SignupResult =
 export async function signup(
   email: string,
   password: string,
-  displayName: string | undefined,
+  /** First name is required by the backend; last name is optional, and
+   *  `display_name` is derived from the two. */
+  name: { firstName: string; lastName?: string },
   opts: {
     acceptedTerms: boolean;
     birthDate: string;
@@ -273,7 +275,8 @@ export async function signup(
     body: JSON.stringify({
       email,
       password,
-      displayName,
+      firstName: name.firstName,
+      lastName: name.lastName,
       inviteCode: opts.inviteCode,
       acceptedTerms: opts.acceptedTerms,
       birthDate: opts.birthDate,

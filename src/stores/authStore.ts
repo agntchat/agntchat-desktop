@@ -63,7 +63,7 @@ interface AuthState {
   signup: (
     email: string,
     password: string,
-    displayName: string | undefined,
+    name: { firstName: string; lastName?: string },
     opts: {
       acceptedTerms: boolean;
       birthDate: string;
@@ -108,10 +108,10 @@ export const useAuthStore = create<AuthState>((set) => ({
     }
   },
 
-  signup: async (email, password, displayName, opts) => {
+  signup: async (email, password, name, opts) => {
     set({ loading: true, error: null, errorCode: null, confirmationMessage: null });
     try {
-      const result = await api.signup(email, password, displayName, opts);
+      const result = await api.signup(email, password, name, opts);
       if ("status" in result) {
         // No token was issued — do NOT store anything. Surface the
         // "check your email" state to the LoginScreen instead.
