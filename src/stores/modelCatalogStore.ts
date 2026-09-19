@@ -25,8 +25,24 @@ export interface CatalogProvider {
   cliConnections?: string[];
 }
 
+/**
+ * A vendor the user can store an LLM API key for — what Settings -> LLM Keys
+ * renders. A SUPERSET of the key-requiring entries in `providers`: TypeSafe's
+ * Jev answers typed questions rather than chat turns, so it takes a key but is
+ * not an agent backend and deliberately never appears in a backend picker.
+ * Filtering `providers` on `requiresLlmKey` (what this used to do) can't see
+ * those, so the server sends them as their own list.
+ */
+export interface LlmKeyProvider {
+  id: string;
+  label: string;
+}
+
 interface ModelCatalogState {
   providers: CatalogProvider[];
+  /** Vendors the LLM Keys tab offers. Not the same set as `providers`
+   *  — see LlmKeyProvider. */
+  llmKeyProviders: LlmKeyProvider[];
   loaded: boolean;
   loading: boolean;
   ensureLoaded: () => Promise<void>;
@@ -56,6 +72,7 @@ let inflight: Promise<void> | null = null;
 
 export const useModelCatalog = create<ModelCatalogState>((set, get) => ({
   providers: [],
+  llmKeyProviders: [],
   loaded: false,
   loading: false,
 
@@ -65,9 +82,14 @@ export const useModelCatalog = create<ModelCatalogState>((set, get) => ({
     }
     set({ loading: true });
     inflight = api
-      .request<{ providers: CatalogProvider[] }>("/api/models/providers")
+      .request<{ providers: CatalogProvider[]; llmKeyProviders?: LlmKeyProvider[] }>("/api/models/providers")
       .then((data) => {
-        set({ providers: data.providers ?? [], loaded: true, loading: false });
+        set({
+          providers: data.providers ?? [],
+          llmKeyProviders: data.llmKeyProviders ?? [],
+          loaded: true,
+          loading: false,
+        });
       })
       .catch((e) => {
         // eslint-disable-next-line no-console

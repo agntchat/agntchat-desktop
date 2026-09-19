@@ -93,7 +93,7 @@ import { AvatarCropDialog } from "./AvatarCropDialog";
 import { FriendsView } from "./FriendsView";
 import { open as tauriOpen } from "@tauri-apps/plugin-shell";
 import { openExternal } from "../lib/openExternal";
-import { PROVIDERS } from "../lib/models";
+import { useModelCatalog } from "../stores/modelCatalogStore";
 import { useLlmKeyStore, type LlmApiKey as LlmApiKeyEntry } from "../stores/llmKeyStore";
 
 // ---------------------------------------------------------------------------
@@ -2561,7 +2561,16 @@ function LlmApiKeysSection() {
   const [busy, setBusy] = useState<string | null>(null);
   const [opError, setOpError] = useState<string | null>(null);
 
-  const providersWithKeys = PROVIDERS.filter((p) => p.requiresLlmKey);
+  // Server-driven, not the local `PROVIDERS` mirror in lib/models.ts: that
+  // array is a copy of the backend catalog and had already drifted behind it.
+  // `llmKeyProviders` is also a superset of the selectable backends —
+  // TypeSafe's Jev takes a key but can't run an agent, so it exists only
+  // here and a `requiresLlmKey` filter over the backend list can't see it.
+  const ensureCatalog = useModelCatalog((s) => s.ensureLoaded);
+  const providersWithKeys = useModelCatalog((s) => s.llmKeyProviders);
+  useEffect(() => {
+    void ensureCatalog();
+  }, [ensureCatalog]);
 
   // Pull from the backend every time the section mounts (not just the
   // first time). Avoids the failure mode where a stale Zustand
