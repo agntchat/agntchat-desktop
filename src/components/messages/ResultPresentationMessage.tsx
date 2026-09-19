@@ -701,14 +701,20 @@ function DetailSection({
 // CTA Buttons
 // ---------------------------------------------------------------------------
 
-// Direct REST execution for email actions; anything else without a URL is
-// relayed to the agent as a UserAction event. Mirrors web/mobile.
+// Direct REST execution for the actions that ARE a backend call — email,
+// and accepting a waitlist signup; anything else without a URL is relayed
+// to the agent as a UserAction event. Mirrors web/mobile.
 async function executeCTAAction(
   action: string,
   itemTitle: string | undefined,
   itemDetails: Record<string, unknown>,
-  t: TFunction<"chat">
+  t: TFunction<"chat">,
+  messageId?: string
 ): Promise<CTAOutcome | null> {
+  if (action === "accept_waitlist_signup") {
+    return acceptWaitlistSignup(itemDetails, t, messageId);
+  }
+
   if (action === "send_email" || action === "save_draft") {
     const { request } = await import("../../lib/api");
     const to = String(itemDetails.to ?? "");
@@ -747,6 +753,34 @@ async function executeCTAAction(
   }
 
   return null; // unknown action — caller falls through to the WS relay
+}
+
+/**
+ * The accept button on a `waitlist_signup` card. Presses exactly what the
+ * Platform console's Waitlist tab presses (`POST /api/admin/waitlist/:id/
+ * invite`) rather than relaying a UserAction to the agent: the code is
+ * issued here and now, and the backend posts it back into this
+ * conversation as an invite card (docs/reference/waitlist.md § Watching
+ * the queue). Platform-admin only — the server refuses anyone else.
+ */
+async function acceptWaitlistSignup(
+  itemDetails: Record<string, unknown>,
+  t: TFunction<"chat">,
+  messageId?: string
+): Promise<CTAOutcome> {
+  const entryId = String(itemDetails.entry_id ?? "").trim();
+  if (!entryId) return { done: false, label: t("results.cannotAcceptMissing") };
+
+  const { inviteWaitlistEntry } = await import("../../lib/api");
+  const res = await inviteWaitlistEntry(entryId, { messageId });
+
+  if (res.delivery === "email" && res.invite.email) {
+    return { done: true, label: t("results.waitlistInviteEmailed", { email: res.invite.email }) };
+  }
+  if (res.delivery === "existing") {
+    return { done: true, label: t("results.waitlistAlreadyInvited", { code: res.invite.code }) };
+  }
+  return { done: true, label: t("results.waitlistInviteIssued", { code: res.invite.code }) };
 }
 
 /**
@@ -796,6 +830,9 @@ function completedLabel(
       subject: itemTitle || String(itemDetails.subject ?? ""),
     });
   }
+  // The code itself is not on the row — it is in the invite card the accept
+  // posted right below, so the button only has to say it happened.
+  if (cta.action === "accept_waitlist_signup") return t("results.waitlistInvited");
   return cta.label;
 }
 
@@ -886,7 +923,7 @@ function CTAButton({
 
     setBusy(true);
     try {
-      const result = await executeCTAAction(cta.action!, itemTitle, itemDetails, t);
+      const result = await executeCTAAction(cta.action!, itemTitle, itemDetails, t, messageId);
       if (result != null) {
         setLocalDone(result.label);
         if (result.done && messageId) {

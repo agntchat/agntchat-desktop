@@ -1492,8 +1492,21 @@ export async function listWaitlist(): Promise<{ entries: WaitlistEntry[]; counts
   return request("/api/admin/waitlist");
 }
 
-export async function inviteWaitlistEntry(entryId: string): Promise<InviteResult & { entry: WaitlistEntry }> {
-  return request(`/api/admin/waitlist/${entryId}/invite`, { method: "POST" });
+/**
+ * Let one entry in. `messageId` is the arrival card whose accept button was
+ * pressed (docs/reference/waitlist.md § Watching the queue) — the backend
+ * then posts the issued code back into that card's conversation as an
+ * invite card. The Platform console passes nothing and just shows the code
+ * itself.
+ */
+export async function inviteWaitlistEntry(
+  entryId: string,
+  opts: { messageId?: string } = {}
+): Promise<InviteResult & { entry: WaitlistEntry; cardPosted: boolean }> {
+  return request(`/api/admin/waitlist/${entryId}/invite`, {
+    method: "POST",
+    body: JSON.stringify(opts.messageId ? { messageId: opts.messageId } : {}),
+  });
 }
 
 export async function listSignupInvites(): Promise<SignupInvite[]> {

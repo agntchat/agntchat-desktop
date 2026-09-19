@@ -2913,6 +2913,7 @@ export const resources = {
       "resizeList": "Resize conversation list",
       "results": {
         "actionFailed": "Action failed",
+        "cannotAcceptMissing": "Can't accept — this card has no waitlist entry on it.",
         "cannotSaveDraftEmpty": "Cannot save draft — no email body.",
         "cannotSendMissing": "Cannot send — missing recipient or body.",
         "copied": "Copied",
@@ -2948,7 +2949,11 @@ export const resources = {
         "stops_other": "{{count}} stops",
         "title": "Results",
         "uploading": "Uploading...",
-        "viewDetails": "View details"
+        "viewDetails": "View details",
+        "waitlistAlreadyInvited": "Already accepted — code {{code}}",
+        "waitlistInviteEmailed": "Accepted — invite emailed to {{email}}",
+        "waitlistInviteIssued": "Accepted — code {{code}}",
+        "waitlistInvited": "Accepted"
       },
       "scrollUpForMore": "Scroll up for more",
       "search": {
@@ -8500,6 +8505,7 @@ export const resources = {
       "resizeList": "Redimensionar la lista de conversaciones",
       "results": {
         "actionFailed": "La acción falló",
+        "cannotAcceptMissing": "No se puede aceptar: esta tarjeta no tiene ninguna entrada de la lista de espera.",
         "cannotSaveDraftEmpty": "No se puede guardar el borrador — el correo no tiene cuerpo.",
         "cannotSendMissing": "No se puede enviar — falta el destinatario o el cuerpo.",
         "copied": "Copiado",
@@ -8535,7 +8541,11 @@ export const resources = {
         "stops_other": "{{count}} escalas",
         "title": "Resultados",
         "uploading": "Subiendo...",
-        "viewDetails": "Ver detalles"
+        "viewDetails": "Ver detalles",
+        "waitlistAlreadyInvited": "Ya aceptado: código {{code}}",
+        "waitlistInviteEmailed": "Aceptado: invitación enviada a {{email}}",
+        "waitlistInviteIssued": "Aceptado: código {{code}}",
+        "waitlistInvited": "Aceptado"
       },
       "scrollUpForMore": "Desplázate hacia arriba para ver más",
       "search": {
@@ -14087,6 +14097,7 @@ export const resources = {
       "resizeList": "Größe der Unterhaltungsliste ändern",
       "results": {
         "actionFailed": "Aktion fehlgeschlagen",
+        "cannotAcceptMissing": "Annahme nicht möglich — auf dieser Karte steht kein Wartelisteneintrag.",
         "cannotSaveDraftEmpty": "Entwurf kann nicht gespeichert werden — keine E-Mail-Nachricht.",
         "cannotSendMissing": "Senden nicht möglich — Empfänger oder Nachrichtentext fehlt.",
         "copied": "Kopiert",
@@ -14122,7 +14133,11 @@ export const resources = {
         "stops_other": "{{count}} Zwischenstopps",
         "title": "Ergebnisse",
         "uploading": "Wird hochgeladen...",
-        "viewDetails": "Details anzeigen"
+        "viewDetails": "Details anzeigen",
+        "waitlistAlreadyInvited": "Bereits angenommen — Code {{code}}",
+        "waitlistInviteEmailed": "Angenommen — Einladung an {{email}} gesendet",
+        "waitlistInviteIssued": "Angenommen — Code {{code}}",
+        "waitlistInvited": "Angenommen"
       },
       "scrollUpForMore": "Nach oben scrollen für mehr",
       "search": {
@@ -19674,6 +19689,7 @@ export const resources = {
       "resizeList": "Redimensionner la liste des conversations",
       "results": {
         "actionFailed": "Échec de l'action",
+        "cannotAcceptMissing": "Impossible d'accepter — cette carte ne contient aucune entrée de liste d'attente.",
         "cannotSaveDraftEmpty": "Impossible d'enregistrer le brouillon — aucun contenu d'e-mail.",
         "cannotSendMissing": "Impossible d'envoyer — destinataire ou contenu manquant.",
         "copied": "Copié",
@@ -19709,7 +19725,11 @@ export const resources = {
         "stops_other": "{{count}} escales",
         "title": "Résultats",
         "uploading": "Téléversement...",
-        "viewDetails": "Voir les détails"
+        "viewDetails": "Voir les détails",
+        "waitlistAlreadyInvited": "Déjà accepté — code {{code}}",
+        "waitlistInviteEmailed": "Accepté — invitation envoyée à {{email}}",
+        "waitlistInviteIssued": "Accepté — code {{code}}",
+        "waitlistInvited": "Accepté"
       },
       "scrollUpForMore": "Faites défiler vers le haut pour en voir plus",
       "search": {
@@ -25261,6 +25281,7 @@ export const resources = {
       "resizeList": "Redimensionar lista de conversas",
       "results": {
         "actionFailed": "Falha na ação",
+        "cannotAcceptMissing": "Não é possível aceitar — este cartão não tem nenhuma entrada da lista de espera.",
         "cannotSaveDraftEmpty": "Não é possível salvar o rascunho — sem corpo de e-mail.",
         "cannotSendMissing": "Não é possível enviar — destinatário ou corpo ausente.",
         "copied": "Copiado",
@@ -25296,7 +25317,11 @@ export const resources = {
         "stops_other": "{{count}} escalas",
         "title": "Resultados",
         "uploading": "Enviando...",
-        "viewDetails": "Ver detalhes"
+        "viewDetails": "Ver detalhes",
+        "waitlistAlreadyInvited": "Já aceite — código {{code}}",
+        "waitlistInviteEmailed": "Aceite — convite enviado para {{email}}",
+        "waitlistInviteIssued": "Aceite — código {{code}}",
+        "waitlistInvited": "Aceite"
       },
       "scrollUpForMore": "Role para cima para ver mais",
       "search": {
@@ -30848,6 +30873,7 @@ export const resources = {
       "resizeList": "会話リストのサイズを変更",
       "results": {
         "actionFailed": "操作に失敗しました",
+        "cannotAcceptMissing": "承認できません — このカードには順番待ちの登録情報がありません。",
         "cannotSaveDraftEmpty": "下書きを保存できません — メールの本文がありません。",
         "cannotSendMissing": "送信できません — 宛先または本文がありません。",
         "copied": "コピーしました",
@@ -30883,7 +30909,11 @@ export const resources = {
         "stops_other": "経由地{{count}}か所",
         "title": "結果",
         "uploading": "アップロード中…",
-        "viewDetails": "詳細を表示"
+        "viewDetails": "詳細を表示",
+        "waitlistAlreadyInvited": "すでに承認済み — コード {{code}}",
+        "waitlistInviteEmailed": "承認しました — 招待を {{email}} に送信しました",
+        "waitlistInviteIssued": "承認しました — コード {{code}}",
+        "waitlistInvited": "承認済み"
       },
       "scrollUpForMore": "上にスクロールしてさらに表示",
       "search": {
@@ -36435,6 +36465,7 @@ export const resources = {
       "resizeList": "调整对话列表大小",
       "results": {
         "actionFailed": "操作失败",
+        "cannotAcceptMissing": "无法接受——此卡片上没有候补名单条目。",
         "cannotSaveDraftEmpty": "无法保存草稿——邮件正文为空。",
         "cannotSendMissing": "无法发送——缺少收件人或正文。",
         "copied": "已复制",
@@ -36470,7 +36501,11 @@ export const resources = {
         "stops_other": "{{count}} 次中转",
         "title": "结果",
         "uploading": "上传中…",
-        "viewDetails": "查看详情"
+        "viewDetails": "查看详情",
+        "waitlistAlreadyInvited": "已接受过——代码 {{code}}",
+        "waitlistInviteEmailed": "已接受——邀请已发送至 {{email}}",
+        "waitlistInviteIssued": "已接受——代码 {{code}}",
+        "waitlistInvited": "已接受"
       },
       "scrollUpForMore": "向上滚动查看更多",
       "search": {
@@ -42022,6 +42057,7 @@ export const resources = {
       "resizeList": "대화 목록 크기 조정",
       "results": {
         "actionFailed": "작업 실패",
+        "cannotAcceptMissing": "수락할 수 없습니다 — 이 카드에 대기자 항목이 없습니다.",
         "cannotSaveDraftEmpty": "임시 저장 불가 — 이메일 본문이 없습니다.",
         "cannotSendMissing": "전송 불가 — 받는 사람 또는 본문이 없습니다.",
         "copied": "복사됨",
@@ -42057,7 +42093,11 @@ export const resources = {
         "stops_other": "경유 {{count}}회",
         "title": "결과",
         "uploading": "업로드 중...",
-        "viewDetails": "상세 정보 보기"
+        "viewDetails": "상세 정보 보기",
+        "waitlistAlreadyInvited": "이미 수락됨 — 코드 {{code}}",
+        "waitlistInviteEmailed": "수락됨 — 초대장을 {{email}}(으)로 보냈습니다",
+        "waitlistInviteIssued": "수락됨 — 코드 {{code}}",
+        "waitlistInvited": "수락됨"
       },
       "scrollUpForMore": "위로 스크롤하여 더 보기",
       "search": {
@@ -47609,6 +47649,7 @@ export const resources = {
       "resizeList": "Ridimensiona elenco conversazioni",
       "results": {
         "actionFailed": "Azione non riuscita",
+        "cannotAcceptMissing": "Impossibile accettare: questa scheda non contiene alcuna voce della lista d'attesa.",
         "cannotSaveDraftEmpty": "Impossibile salvare la bozza — nessun corpo email.",
         "cannotSendMissing": "Impossibile inviare — destinatario o corpo mancante.",
         "copied": "Copiato",
@@ -47644,7 +47685,11 @@ export const resources = {
         "stops_other": "{{count}} scali",
         "title": "Risultati",
         "uploading": "Caricamento in corso...",
-        "viewDetails": "Visualizza dettagli"
+        "viewDetails": "Visualizza dettagli",
+        "waitlistAlreadyInvited": "Già accettato: codice {{code}}",
+        "waitlistInviteEmailed": "Accettato: invito inviato a {{email}}",
+        "waitlistInviteIssued": "Accettato: codice {{code}}",
+        "waitlistInvited": "Accettato"
       },
       "scrollUpForMore": "Scorri in su per altri",
       "search": {
@@ -53196,6 +53241,7 @@ export const resources = {
       "resizeList": "बातचीत सूची का आकार बदलें",
       "results": {
         "actionFailed": "कार्रवाई विफल",
+        "cannotAcceptMissing": "स्वीकार नहीं किया जा सकता — इस कार्ड पर कोई प्रतीक्षा-सूची प्रविष्टि नहीं है।",
         "cannotSaveDraftEmpty": "ड्राफ़्ट सहेजा नहीं जा सकता — ईमेल में कोई बॉडी नहीं है।",
         "cannotSendMissing": "भेजा नहीं जा सकता — प्राप्तकर्ता या बॉडी गायब है।",
         "copied": "कॉपी किया गया",
@@ -53231,7 +53277,11 @@ export const resources = {
         "stops_other": "{{count}} पड़ाव",
         "title": "परिणाम",
         "uploading": "अपलोड हो रहा है...",
-        "viewDetails": "विवरण देखें"
+        "viewDetails": "विवरण देखें",
+        "waitlistAlreadyInvited": "पहले ही स्वीकृत — कोड {{code}}",
+        "waitlistInviteEmailed": "स्वीकृत — निमंत्रण {{email}} पर भेजा गया",
+        "waitlistInviteIssued": "स्वीकृत — कोड {{code}}",
+        "waitlistInvited": "स्वीकृत"
       },
       "scrollUpForMore": "और देखने के लिए ऊपर स्क्रॉल करें",
       "search": {
