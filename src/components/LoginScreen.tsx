@@ -3,7 +3,7 @@ import { useTranslation } from "react-i18next";
 import { useAuthStore } from "../stores/authStore";
 import * as api from "../lib/api";
 import { WAITLIST_URL } from "../lib/marketingSite";
-import { Bot, KeyRound } from "lucide-react";
+import { Bot, KeyRound, Loader2 } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
@@ -11,6 +11,9 @@ import { Card } from "@/components/ui/card";
 import { open as tauriOpen } from "@tauri-apps/plugin-shell";
 import { LEGAL_URLS } from "../lib/legal";
 import { BetaBadge } from "./BetaBadge";
+import { PasswordStrengthMeter } from "./PasswordStrengthMeter";
+import { assessPassword, PASSWORD_MIN_LENGTH } from "../lib/passwordStrength";
+import { cn } from "@/lib/utils";
 
 /** Open a URL in the system browser — Tauri native with window.open fallback. */
 function openExternal(url: string) {
@@ -48,6 +51,7 @@ export function LoginScreen() {
   const { login, signup, loading, error, confirmationMessage } = useAuthStore();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
   const [isSignup, setIsSignup] = useState(false);
   const [displayName, setDisplayName] = useState("");
   const [birthDate, setBirthDate] = useState("");
@@ -55,6 +59,9 @@ export function LoginScreen() {
   const [marketingOptIn, setMarketingOptIn] = useState(false);
   const [analyticsOptIn, setAnalyticsOptIn] = useState(false);
   const [consentError, setConsentError] = useState(false);
+  const [passwordError, setPasswordError] = useState<
+    "errors.passwordTooShort" | "errors.passwordTooWeak" | "errors.passwordsDontMatch" | null
+  >(null);
   const [birthDateError, setBirthDateError] = useState<
     "birthDateRequired" | "ageTooYoung" | null
   >(null);
@@ -135,6 +142,22 @@ export function LoginScreen() {
       return;
     }
     if (isSignup) {
+      // Password rules first: they sit at the top of the form, so a failure
+      // here shouldn't be reported under the consent block.
+      const assessment = assessPassword(password, email);
+      if (password.length < PASSWORD_MIN_LENGTH) {
+        setPasswordError("errors.passwordTooShort");
+        return;
+      }
+      if (!assessment.acceptable) {
+        setPasswordError("errors.passwordTooWeak");
+        return;
+      }
+      if (password !== confirmPassword) {
+        setPasswordError("errors.passwordsDontMatch");
+        return;
+      }
+      setPasswordError(null);
       if (!birthDate) {
         setBirthDateError("birthDateRequired");
         return;
@@ -159,9 +182,27 @@ export function LoginScreen() {
     }
   };
 
+  // Until the policy lands we don't know whether the invite gate or the full
+  // form belongs here — render neither, rather than flashing the form and
+  // replacing it a beat later.
+  if (isSignup && inviteRequired === null) {
+    return (
+      <div className="flex h-screen w-screen items-center justify-center bg-bg">
+        <Loader2 className="h-5 w-5 animate-spin text-text-secondary" />
+      </div>
+    );
+  }
+
+  // The signup form carries twice the fields of the sign-in form, which
+  // overflowed the default 680px window. It gets a wider, tighter card with
+  // paired rows; the shell scrolls so the short-window case still works.
+  const signupForm = isSignup && !gateOpen;
+
   return (
-    <div className="flex items-center justify-center h-screen w-screen bg-bg">
-      <Card className="w-[400px] p-10">
+    // `my-auto` rather than `items-center`: a card taller than the window
+    // still scrolls to its own top instead of being clipped.
+    <div className="flex h-screen w-screen justify-center overflow-y-auto bg-bg p-4">
+      <Card className={cn("my-auto w-[400px] p-10", signupForm && "w-[440px] p-7")}>
         <div className="flex items-center gap-3 mb-1">
           <div className="w-9 h-9 rounded-lg bg-primary flex items-center justify-center">
             <Bot className="w-5 h-5 text-primary-foreground" />
@@ -169,11 +210,11 @@ export function LoginScreen() {
           <h1 className="text-xl font-semibold text-text">agntchat</h1>
           <BetaBadge />
         </div>
-        <p className="text-text-secondary text-sm mb-8">
+        <p className={cn("text-text-secondary text-sm mb-8", signupForm && "mb-5")}>
           {gateOpen ? t("invite.subtitle") : t("tagline")}
         </p>
 
-        <form onSubmit={handleSubmit} className="space-y-4">
+        <form onSubmit={handleSubmit} className={cn("space-y-4", signupForm && "space-y-3")}>
           {gateOpen && (
             <div className="space-y-1.5">
               <Label htmlFor="inviteCode" className="flex items-center gap-1.5">
@@ -202,7 +243,7 @@ export function LoginScreen() {
                 <button
                   type="button"
                   onClick={() => openExternal(WAITLIST_URL)}
-                  className="text-accent hover:text-accent-hover underline"
+                  className="text-primary underline hover:text-primary/80"
                 >
                   {t("invite.joinWaitlist")}
                 </button>
@@ -226,16 +267,32 @@ export function LoginScreen() {
             </div>
           )}
 
-          {isSignup && !gateOpen && (
-            <div className="space-y-1.5">
-              <Label htmlFor="displayName">{t("displayName")}</Label>
-              <Input
-                id="displayName"
-                type="text"
-                value={displayName}
-                onChange={(e) => setDisplayName(e.target.value)}
-                placeholder={t("placeholders.yourName")}
-              />
+          {/* Name and date of birth share a row — two short fields that
+              would otherwise cost the form 120px of height. */}
+          {signupForm && (
+            <div className="grid grid-cols-2 gap-3">
+              <div className="space-y-1.5">
+                <Label htmlFor="displayName">{t("displayName")}</Label>
+                <Input
+                  id="displayName"
+                  type="text"
+                  value={displayName}
+                  onChange={(e) => setDisplayName(e.target.value)}
+                  placeholder={t("placeholders.yourName")}
+                />
+              </div>
+              <div className="space-y-1.5">
+                <Label htmlFor="birthDate">{t("birthDate")}</Label>
+                <Input
+                  id="birthDate"
+                  type="date"
+                  value={birthDate}
+                  onChange={(e) => {
+                    setBirthDate(e.target.value);
+                    if (e.target.value) setBirthDateError(null);
+                  }}
+                />
+              </div>
             </div>
           )}
 
@@ -258,7 +315,7 @@ export function LoginScreen() {
             </div>
           )}
 
-          {!gateOpen && (
+          {!gateOpen && !isSignup && (
             <div className="space-y-1.5">
               <Label htmlFor="password">{t("password")}</Label>
               <Input
@@ -272,28 +329,70 @@ export function LoginScreen() {
             </div>
           )}
 
-          {isSignup && !gateOpen && (
+          {signupForm && (
             <div className="space-y-1.5">
-              <Label htmlFor="birthDate">{t("birthDate")}</Label>
-              <Input
-                id="birthDate"
-                type="date"
-                value={birthDate}
-                onChange={(e) => {
-                  setBirthDate(e.target.value);
-                  if (e.target.value) setBirthDateError(null);
-                }}
-              />
-              {birthDateError && (
-                <div className="text-sm text-danger bg-danger-light px-3 py-2 rounded-md">
-                  {t(birthDateError)}
+              <div className="grid grid-cols-2 gap-3">
+                <div className="space-y-1.5">
+                  <Label htmlFor="password">{t("password")}</Label>
+                  <Input
+                    id="password"
+                    type="password"
+                    value={password}
+                    onChange={(e) => {
+                      setPassword(e.target.value);
+                      setPasswordError(null);
+                    }}
+                    placeholder={t("placeholders.passwordMin", { min: PASSWORD_MIN_LENGTH })}
+                    autoComplete="new-password"
+                    required
+                  />
                 </div>
+                <div className="space-y-1.5">
+                  <Label htmlFor="confirmPassword">{t("confirmPassword")}</Label>
+                  <Input
+                    id="confirmPassword"
+                    type="password"
+                    value={confirmPassword}
+                    onChange={(e) => {
+                      setConfirmPassword(e.target.value);
+                      setPasswordError(null);
+                    }}
+                    placeholder={t("placeholders.confirmPassword")}
+                    autoComplete="new-password"
+                    required
+                  />
+                </div>
+              </div>
+              <PasswordStrengthMeter password={password} email={email} />
+              {confirmPassword.length > 0 && (
+                <p
+                  className={cn(
+                    "text-xs",
+                    password === confirmPassword ? "text-success" : "text-danger"
+                  )}
+                >
+                  {password === confirmPassword
+                    ? t("passwordsMatch")
+                    : t("errors.passwordsDontMatch")}
+                </p>
               )}
             </div>
           )}
 
-          {isSignup && !gateOpen && (
-            <div className="space-y-2.5">
+          {birthDateError && signupForm && (
+            <div className="text-sm text-danger bg-danger-light px-3 py-2 rounded-md">
+              {t(birthDateError)}
+            </div>
+          )}
+
+          {passwordError && signupForm && (
+            <div className="text-sm text-danger bg-danger-light px-3 py-2 rounded-md">
+              {t(passwordError, { min: PASSWORD_MIN_LENGTH })}
+            </div>
+          )}
+
+          {signupForm && (
+            <div className="space-y-2">
               <label className="flex items-start gap-2.5 cursor-pointer group">
                 <input
                   type="checkbox"
@@ -304,25 +403,25 @@ export function LoginScreen() {
                   }}
                   className="mt-0.5 rounded border-border"
                 />
-                <div className="flex-1 min-w-0">
-                  <span className="text-sm text-text">{t("consent.label")}</span>
-                  <div className="mt-1 flex items-center gap-2 text-xs">
-                    <button
-                      type="button"
-                      onClick={() => openExternal(LEGAL_URLS.terms)}
-                      className="text-accent hover:text-accent-hover underline"
-                    >
-                      {t("consent.terms")}
-                    </button>
-                    <span className="text-text-secondary">·</span>
-                    <button
-                      type="button"
-                      onClick={() => openExternal(LEGAL_URLS.privacy)}
-                      className="text-accent hover:text-accent-hover underline"
-                    >
-                      {t("consent.privacy")}
-                    </button>
-                  </div>
+                {/* Links sit on the same line as the label: the consent
+                    block is three rows and every extra line is height. */}
+                <div className="flex-1 min-w-0 text-xs leading-snug text-text">
+                  {t("consent.label")}{" "}
+                  <button
+                    type="button"
+                    onClick={() => openExternal(LEGAL_URLS.terms)}
+                    className="text-primary underline hover:text-primary/80"
+                  >
+                    {t("consent.terms")}
+                  </button>
+                  <span className="text-text-secondary"> · </span>
+                  <button
+                    type="button"
+                    onClick={() => openExternal(LEGAL_URLS.privacy)}
+                    className="text-primary underline hover:text-primary/80"
+                  >
+                    {t("consent.privacy")}
+                  </button>
                 </div>
               </label>
 
@@ -333,7 +432,7 @@ export function LoginScreen() {
                   onChange={(e) => setMarketingOptIn(e.target.checked)}
                   className="mt-0.5 rounded border-border"
                 />
-                <span className="flex-1 min-w-0 text-sm text-text-secondary">
+                <span className="flex-1 min-w-0 text-xs leading-snug text-text-secondary">
                   {t("consent.marketing")}
                 </span>
               </label>
@@ -345,7 +444,7 @@ export function LoginScreen() {
                   onChange={(e) => setAnalyticsOptIn(e.target.checked)}
                   className="mt-0.5 rounded border-border"
                 />
-                <span className="flex-1 min-w-0 text-sm text-text-secondary">
+                <span className="flex-1 min-w-0 text-xs leading-snug text-text-secondary">
                   {t("consent.analytics")}
                 </span>
               </label>
@@ -393,6 +492,8 @@ export function LoginScreen() {
             setIsSignup(!isSignup);
             setConsentError(false);
             setBirthDateError(null);
+            setPasswordError(null);
+            setConfirmPassword("");
             setCodeError("");
             useAuthStore.setState({ error: null, errorCode: null, confirmationMessage: null });
           }}

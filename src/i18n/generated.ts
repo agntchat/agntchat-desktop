@@ -2101,7 +2101,8 @@ export const resources = {
         "handleTaken": "That handle is already taken.",
         "invitePreviewFailed": "Could not load invitation",
         "loginFailed": "Login failed.",
-        "passwordTooShort": "Password must be at least 6 characters.",
+        "passwordTooShort": "Password must be at least {{min}} characters.",
+        "passwordTooWeak": "Please choose a stronger password.",
         "passwordsDontMatch": "Passwords do not match.",
         "signupFailed": "Signup failed."
       },
@@ -2138,10 +2139,27 @@ export const resources = {
       "inviteSignupOrgDescription": "Create your agntchat account to join {{orgName}} as {{role}}.",
       "joinOrg": "Join {{orgName}}",
       "password": "Password",
+      "passwordRules": {
+        "case": "Upper & lowercase",
+        "common": "That password is too easy to guess.",
+        "email": "Don't build your password out of your email address.",
+        "length": "{{min}}+ characters",
+        "number": "A number",
+        "symbol": "A symbol (optional)"
+      },
+      "passwordStrength": {
+        "fair": "Fair",
+        "good": "Good",
+        "label": "Password strength",
+        "strong": "Strong",
+        "weak": "Weak"
+      },
+      "passwordsMatch": "Passwords match",
       "placeholders": {
+        "confirmPassword": "Re-enter your password",
         "email": "you@example.com",
         "handle": "yourhandle",
-        "passwordMin": "Min. 6 characters",
+        "passwordMin": "Min. {{min}} characters",
         "yourName": "Your name"
       },
       "resetPassword": {
@@ -7664,7 +7682,8 @@ export const resources = {
         "handleTaken": "Ese handle ya está en uso.",
         "invitePreviewFailed": "No se pudo cargar la invitación",
         "loginFailed": "Error al iniciar sesión.",
-        "passwordTooShort": "La contraseña debe tener al menos 6 caracteres.",
+        "passwordTooShort": "La contraseña debe tener al menos {{min}} caracteres.",
+        "passwordTooWeak": "Elige una contraseña más segura.",
         "passwordsDontMatch": "Las contraseñas no coinciden.",
         "signupFailed": "Error al registrarse."
       },
@@ -7701,10 +7720,27 @@ export const resources = {
       "inviteSignupOrgDescription": "Crea tu cuenta de agntchat para unirte a {{orgName}} como {{role}}.",
       "joinOrg": "Únete a {{orgName}}",
       "password": "Contraseña",
+      "passwordRules": {
+        "case": "Mayúsculas y minúsculas",
+        "common": "Esa contraseña es demasiado fácil de adivinar.",
+        "email": "No uses tu dirección de correo como contraseña.",
+        "length": "{{min}} caracteres o más",
+        "number": "Un número",
+        "symbol": "Un símbolo (opcional)"
+      },
+      "passwordStrength": {
+        "fair": "Aceptable",
+        "good": "Buena",
+        "label": "Seguridad de la contraseña",
+        "strong": "Fuerte",
+        "weak": "Débil"
+      },
+      "passwordsMatch": "Las contraseñas coinciden",
       "placeholders": {
+        "confirmPassword": "Vuelve a escribir la contraseña",
         "email": "tu@ejemplo.com",
         "handle": "tuhandle",
-        "passwordMin": "Mín. 6 caracteres",
+        "passwordMin": "Mín. {{min}} caracteres",
         "yourName": "Tu nombre"
       },
       "resetPassword": {
@@ -13227,7 +13263,8 @@ export const resources = {
         "handleTaken": "Dieser Benutzername ist bereits vergeben.",
         "invitePreviewFailed": "Einladung konnte nicht geladen werden",
         "loginFailed": "Anmeldung fehlgeschlagen.",
-        "passwordTooShort": "Das Passwort muss mindestens 6 Zeichen lang sein.",
+        "passwordTooShort": "Das Passwort muss mindestens {{min}} Zeichen lang sein.",
+        "passwordTooWeak": "Bitte wähle ein stärkeres Passwort.",
         "passwordsDontMatch": "Die Passwörter stimmen nicht überein.",
         "signupFailed": "Registrierung fehlgeschlagen."
       },
@@ -13264,10 +13301,27 @@ export const resources = {
       "inviteSignupOrgDescription": "Erstellen Sie Ihr agntchat-Konto, um {{orgName}} als {{role}} beizutreten.",
       "joinOrg": "{{orgName}} beitreten",
       "password": "Passwort",
+      "passwordRules": {
+        "case": "Groß- und Kleinbuchstaben",
+        "common": "Dieses Passwort ist zu leicht zu erraten.",
+        "email": "Verwende nicht deine E-Mail-Adresse als Passwort.",
+        "length": "Mindestens {{min}} Zeichen",
+        "number": "Eine Ziffer",
+        "symbol": "Ein Sonderzeichen (optional)"
+      },
+      "passwordStrength": {
+        "fair": "Mittel",
+        "good": "Gut",
+        "label": "Passwortstärke",
+        "strong": "Stark",
+        "weak": "Schwach"
+      },
+      "passwordsMatch": "Passwörter stimmen überein",
       "placeholders": {
+        "confirmPassword": "Passwort erneut eingeben",
         "email": "you@example.com",
         "handle": "yourhandle",
-        "passwordMin": "Min. 6 Zeichen",
+        "passwordMin": "Mind. {{min}} Zeichen",
         "yourName": "Ihr Name"
       },
       "resetPassword": {
@@ -18790,7 +18844,8 @@ export const resources = {
         "handleTaken": "Cet identifiant est déjà pris.",
         "invitePreviewFailed": "Impossible de charger l'invitation",
         "loginFailed": "Échec de la connexion.",
-        "passwordTooShort": "Le mot de passe doit comporter au moins 6 caractères.",
+        "passwordTooShort": "Le mot de passe doit comporter au moins {{min}} caractères.",
+        "passwordTooWeak": "Choisissez un mot de passe plus robuste.",
         "passwordsDontMatch": "Les mots de passe ne correspondent pas.",
         "signupFailed": "Échec de l'inscription."
       },
@@ -18827,10 +18882,27 @@ export const resources = {
       "inviteSignupOrgDescription": "Créez votre compte agntchat pour rejoindre {{orgName}} en tant que {{role}}.",
       "joinOrg": "Rejoindre {{orgName}}",
       "password": "Mot de passe",
+      "passwordRules": {
+        "case": "Majuscules et minuscules",
+        "common": "Ce mot de passe est trop facile à deviner.",
+        "email": "N'utilisez pas votre adresse e-mail comme mot de passe.",
+        "length": "{{min}} caractères minimum",
+        "number": "Un chiffre",
+        "symbol": "Un symbole (facultatif)"
+      },
+      "passwordStrength": {
+        "fair": "Moyenne",
+        "good": "Bonne",
+        "label": "Robustesse du mot de passe",
+        "strong": "Forte",
+        "weak": "Faible"
+      },
+      "passwordsMatch": "Les mots de passe correspondent",
       "placeholders": {
+        "confirmPassword": "Saisissez à nouveau le mot de passe",
         "email": "you@example.com",
         "handle": "yourhandle",
-        "passwordMin": "Min. 6 caractères",
+        "passwordMin": "{{min}} caractères min.",
         "yourName": "Votre nom"
       },
       "resetPassword": {
@@ -24353,7 +24425,8 @@ export const resources = {
         "handleTaken": "Esse nome de usuário já está em uso.",
         "invitePreviewFailed": "Não foi possível carregar o convite",
         "loginFailed": "Falha ao entrar.",
-        "passwordTooShort": "A senha deve ter pelo menos 6 caracteres.",
+        "passwordTooShort": "A senha deve ter pelo menos {{min}} caracteres.",
+        "passwordTooWeak": "Escolha uma senha mais forte.",
         "passwordsDontMatch": "As senhas não coincidem.",
         "signupFailed": "Falha ao cadastrar."
       },
@@ -24390,10 +24463,27 @@ export const resources = {
       "inviteSignupOrgDescription": "Crie sua conta agntchat para entrar em {{orgName}} como {{role}}.",
       "joinOrg": "Entrar em {{orgName}}",
       "password": "Senha",
+      "passwordRules": {
+        "case": "Maiúsculas e minúsculas",
+        "common": "Essa senha é fácil demais de adivinhar.",
+        "email": "Não use seu e-mail como senha.",
+        "length": "{{min}} caracteres ou mais",
+        "number": "Um número",
+        "symbol": "Um símbolo (opcional)"
+      },
+      "passwordStrength": {
+        "fair": "Razoável",
+        "good": "Boa",
+        "label": "Força da senha",
+        "strong": "Forte",
+        "weak": "Fraca"
+      },
+      "passwordsMatch": "As senhas coincidem",
       "placeholders": {
+        "confirmPassword": "Digite a senha novamente",
         "email": "you@example.com",
         "handle": "yourhandle",
-        "passwordMin": "Mín. 6 caracteres",
+        "passwordMin": "Mín. {{min}} caracteres",
         "yourName": "Seu nome"
       },
       "resetPassword": {
@@ -29916,7 +30006,8 @@ export const resources = {
         "handleTaken": "そのハンドルは既に使用されています。",
         "invitePreviewFailed": "招待を読み込めませんでした",
         "loginFailed": "ログインに失敗しました。",
-        "passwordTooShort": "パスワードは6文字以上で入力してください。",
+        "passwordTooShort": "パスワードは{{min}}文字以上で入力してください。",
+        "passwordTooWeak": "より強いパスワードを選んでください。",
         "passwordsDontMatch": "パスワードが一致しません。",
         "signupFailed": "登録に失敗しました。"
       },
@@ -29953,10 +30044,27 @@ export const resources = {
       "inviteSignupOrgDescription": "{{orgName}}に{{role}}として参加するには、agntchatアカウントを作成してください。",
       "joinOrg": "{{orgName}}に参加",
       "password": "パスワード",
+      "passwordRules": {
+        "case": "大文字と小文字",
+        "common": "このパスワードは推測されやすすぎます。",
+        "email": "メールアドレスをパスワードに使わないでください。",
+        "length": "{{min}}文字以上",
+        "number": "数字",
+        "symbol": "記号（任意）"
+      },
+      "passwordStrength": {
+        "fair": "普通",
+        "good": "良好",
+        "label": "パスワードの強度",
+        "strong": "強い",
+        "weak": "弱い"
+      },
+      "passwordsMatch": "パスワードが一致しました",
       "placeholders": {
+        "confirmPassword": "パスワードを再入力",
         "email": "you@example.com",
         "handle": "yourhandle",
-        "passwordMin": "6文字以上",
+        "passwordMin": "{{min}}文字以上",
         "yourName": "お名前"
       },
       "resetPassword": {
@@ -35479,7 +35587,8 @@ export const resources = {
         "handleTaken": "该用户名已被占用。",
         "invitePreviewFailed": "无法加载邀请",
         "loginFailed": "登录失败。",
-        "passwordTooShort": "密码至少需要 6 个字符。",
+        "passwordTooShort": "密码至少需要 {{min}} 个字符。",
+        "passwordTooWeak": "请选择更强的密码。",
         "passwordsDontMatch": "两次输入的密码不一致。",
         "signupFailed": "注册失败。"
       },
@@ -35516,10 +35625,27 @@ export const resources = {
       "inviteSignupOrgDescription": "创建你的 agntchat 账号，以 {{role}} 身份加入 {{orgName}}。",
       "joinOrg": "加入 {{orgName}}",
       "password": "密码",
+      "passwordRules": {
+        "case": "大小写字母",
+        "common": "该密码太容易被猜到。",
+        "email": "请勿使用邮箱地址作为密码。",
+        "length": "至少 {{min}} 个字符",
+        "number": "一个数字",
+        "symbol": "一个符号（可选）"
+      },
+      "passwordStrength": {
+        "fair": "一般",
+        "good": "良好",
+        "label": "密码强度",
+        "strong": "强",
+        "weak": "弱"
+      },
+      "passwordsMatch": "密码一致",
       "placeholders": {
+        "confirmPassword": "再次输入密码",
         "email": "you@example.com",
         "handle": "yourhandle",
-        "passwordMin": "至少 6 个字符",
+        "passwordMin": "至少 {{min}} 个字符",
         "yourName": "你的名字"
       },
       "resetPassword": {
@@ -41042,7 +41168,8 @@ export const resources = {
         "handleTaken": "이미 사용 중인 핸들입니다.",
         "invitePreviewFailed": "초대를 불러올 수 없음",
         "loginFailed": "로그인 실패.",
-        "passwordTooShort": "비밀번호는 최소 6자 이상이어야 합니다.",
+        "passwordTooShort": "비밀번호는 {{min}}자 이상이어야 합니다.",
+        "passwordTooWeak": "더 강력한 비밀번호를 선택하세요.",
         "passwordsDontMatch": "비밀번호가 일치하지 않습니다.",
         "signupFailed": "회원가입 실패."
       },
@@ -41079,10 +41206,27 @@ export const resources = {
       "inviteSignupOrgDescription": "{{orgName}}에 {{role}}(으)로 합류하려면 agntchat 계정을 만드세요.",
       "joinOrg": "{{orgName}} 합류하기",
       "password": "비밀번호",
+      "passwordRules": {
+        "case": "대문자와 소문자",
+        "common": "너무 쉽게 추측할 수 있는 비밀번호입니다.",
+        "email": "이메일 주소로 비밀번호를 만들지 마세요.",
+        "length": "{{min}}자 이상",
+        "number": "숫자",
+        "symbol": "기호(선택)"
+      },
+      "passwordStrength": {
+        "fair": "보통",
+        "good": "양호",
+        "label": "비밀번호 강도",
+        "strong": "강함",
+        "weak": "약함"
+      },
+      "passwordsMatch": "비밀번호가 일치합니다",
       "placeholders": {
+        "confirmPassword": "비밀번호를 다시 입력하세요",
         "email": "you@example.com",
         "handle": "yourhandle",
-        "passwordMin": "최소 6자",
+        "passwordMin": "{{min}}자 이상",
         "yourName": "이름"
       },
       "resetPassword": {
@@ -46605,7 +46749,8 @@ export const resources = {
         "handleTaken": "Questo handle è già in uso.",
         "invitePreviewFailed": "Impossibile caricare l'invito",
         "loginFailed": "Accesso non riuscito.",
-        "passwordTooShort": "La password deve contenere almeno 6 caratteri.",
+        "passwordTooShort": "La password deve contenere almeno {{min}} caratteri.",
+        "passwordTooWeak": "Scegli una password più sicura.",
         "passwordsDontMatch": "Le password non coincidono.",
         "signupFailed": "Registrazione non riuscita."
       },
@@ -46642,10 +46787,27 @@ export const resources = {
       "inviteSignupOrgDescription": "Crea il tuo account agntchat per unirti a {{orgName}} come {{role}}.",
       "joinOrg": "Unisciti a {{orgName}}",
       "password": "Password",
+      "passwordRules": {
+        "case": "Maiuscole e minuscole",
+        "common": "Questa password è troppo facile da indovinare.",
+        "email": "Non usare il tuo indirizzo email come password.",
+        "length": "Almeno {{min}} caratteri",
+        "number": "Un numero",
+        "symbol": "Un simbolo (facoltativo)"
+      },
+      "passwordStrength": {
+        "fair": "Discreta",
+        "good": "Buona",
+        "label": "Sicurezza della password",
+        "strong": "Forte",
+        "weak": "Debole"
+      },
+      "passwordsMatch": "Le password coincidono",
       "placeholders": {
+        "confirmPassword": "Reinserisci la password",
         "email": "you@example.com",
         "handle": "yourhandle",
-        "passwordMin": "Min. 6 caratteri",
+        "passwordMin": "Min. {{min}} caratteri",
         "yourName": "Il tuo nome"
       },
       "resetPassword": {
@@ -52168,7 +52330,8 @@ export const resources = {
         "handleTaken": "वह हैंडल पहले से लिया जा चुका है।",
         "invitePreviewFailed": "आमंत्रण लोड नहीं कर सके",
         "loginFailed": "लॉगिन विफल।",
-        "passwordTooShort": "पासवर्ड कम से कम 6 वर्णों का होना चाहिए।",
+        "passwordTooShort": "पासवर्ड कम से कम {{min}} अक्षरों का होना चाहिए।",
+        "passwordTooWeak": "कृपया अधिक मजबूत पासवर्ड चुनें।",
         "passwordsDontMatch": "पासवर्ड मेल नहीं खाते।",
         "signupFailed": "साइन अप विफल।"
       },
@@ -52205,10 +52368,27 @@ export const resources = {
       "inviteSignupOrgDescription": "{{orgName}} में {{role}} के रूप में शामिल होने के लिए अपना agntchat खाता बनाएं।",
       "joinOrg": "{{orgName}} में शामिल हों",
       "password": "पासवर्ड",
+      "passwordRules": {
+        "case": "बड़े और छोटे अक्षर",
+        "common": "यह पासवर्ड बहुत आसानी से अनुमान लगाया जा सकता है।",
+        "email": "अपना पासवर्ड अपने ईमेल पते से न बनाएं।",
+        "length": "कम से कम {{min}} अक्षर",
+        "number": "एक अंक",
+        "symbol": "एक चिह्न (वैकल्पिक)"
+      },
+      "passwordStrength": {
+        "fair": "ठीक-ठाक",
+        "good": "अच्छी",
+        "label": "पासवर्ड की मजबूती",
+        "strong": "मजबूत",
+        "weak": "कमज़ोर"
+      },
+      "passwordsMatch": "पासवर्ड मेल खाते हैं",
       "placeholders": {
+        "confirmPassword": "पासवर्ड दोबारा दर्ज करें",
         "email": "you@example.com",
         "handle": "yourhandle",
-        "passwordMin": "न्यूनतम 6 वर्ण",
+        "passwordMin": "कम से कम {{min}} अक्षर",
         "yourName": "आपका नाम"
       },
       "resetPassword": {
