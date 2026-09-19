@@ -3,7 +3,7 @@ import { useTranslation } from "react-i18next";
 import { useAuthStore } from "../stores/authStore";
 import * as api from "../lib/api";
 import { WAITLIST_URL } from "../lib/marketingSite";
-import { Bot, KeyRound, Loader2 } from "lucide-react";
+import { Bot, Check, KeyRound, Loader2 } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
@@ -269,12 +269,17 @@ export function LoginScreen() {
             </div>
           )}
 
-          {isSignup && !gateOpen && acceptedInvite && (
-            <div className="flex items-start justify-between gap-3 text-sm text-success bg-success/10 px-3 py-2 rounded-md">
-              <span>{t("invite.accepted", { code: acceptedInvite.code })}</span>
+          {/* One line: the tick says "accepted", the label says which code.
+              It sits above a form that already explains itself. */}
+          {signupForm && acceptedInvite && (
+            <div className="flex items-center gap-2 text-xs text-text-secondary">
+              <Check className="h-3.5 w-3.5 shrink-0 text-success" />
+              <span className="truncate">
+                {t("invite.accepted", { code: acceptedInvite.code })}
+              </span>
               <button
                 type="button"
-                className="shrink-0 text-xs text-text-secondary hover:underline"
+                className="ml-auto shrink-0 text-primary hover:underline"
                 onClick={() => {
                   setAcceptedInvite(null);
                   setCodeError("");
