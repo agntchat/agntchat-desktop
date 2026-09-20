@@ -822,10 +822,17 @@ export function StatusUpdateMessage({ message }: { message: Message }) {
   const payload = safeParseJson<StatusPayload>(message.content, {
     summary: message.content,
   });
-  // Watchdog redrive nudges (parked-thread / commitment re-checks) are
-  // agent-directed prompts, not user-facing content — skip them entirely,
-  // same as thread_completed below.
-  if (message.metadata?.parked_recheck || message.metadata?.commitment_recheck) {
+  // Platform whispers (hand-back / verify nudges, parked-thread and
+  // commitment re-checks, thread idle reminders) are agent-directed prompts,
+  // not user-facing content — skip them entirely, same as thread_completed
+  // below. New whispers post as ContextBriefing and never reach a client at
+  // all; this guard covers the StatusUpdate rows already in history.
+  if (
+    message.metadata?.parked_recheck ||
+    message.metadata?.commitment_recheck ||
+    message.metadata?.thread_nudge ||
+    message.metadata?.nudge_kind
+  ) {
     return null;
   }
   // No lifecycle info at all (e.g. plain-text content) must NOT default to
