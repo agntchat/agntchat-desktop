@@ -88,6 +88,8 @@ export const PROVIDERS: ProviderConfig[] = [
  *  so "claude-opus-4-6" matches "claude-opus-4-6-20260101" too.
  */
 const MODEL_DISPLAY_NAMES: Record<string, string> = {
+  // The platform picks per turn (backend `Agentchat.Models` auto mode).
+  auto: "Auto",
   // Claude 4.7 (current)
   "claude-opus-4-7": "Claude Opus 4.7",
   // Claude 4.6

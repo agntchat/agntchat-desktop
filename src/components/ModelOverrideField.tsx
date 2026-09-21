@@ -63,7 +63,9 @@ export function ModelOverrideField({
     };
   }, [isHosted, agentId]);
   const backend = hostBackend ?? localBackend;
-  const models = modelsFor(backend);
+  // "auto" is an agent-level mode (the platform picks per turn), not a
+  // model a pulse or routine can pin — keep it out of override pickers.
+  const models = modelsFor(backend).filter((m) => m.id !== "auto");
   // Keep a stored value selectable even when it's no longer in the catalog
   // (renamed/retired model) so opening the editor doesn't silently clear it.
   const orphaned = !!value && !models.some((m) => m.id === value);
