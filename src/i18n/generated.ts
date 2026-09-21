@@ -5651,6 +5651,31 @@ export const resources = {
       "setNameForPreview": "Set a card name above to generate a preview.",
       "setNameHint": "Set a card name above to generate a preview.",
       "showPreview": "Show Card Preview",
+      "surface": {
+        "carousel": "carousel",
+        "done": {
+          "copied": "Copied",
+          "done": "Done",
+          "saved": "Saved",
+          "sent": "Sent"
+        },
+        "lowConfidence": "Lower-confidence source",
+        "moreActions": "More",
+        "moreChips": "+{{count}}",
+        "photos_one": "{{count}} photo",
+        "photos_other": "{{count}} photos",
+        "rated": "Rated {{value}} out of {{scale}}",
+        "ratedBy": "by {{count}} reviews",
+        "ratedOn": "on {{source}}",
+        "savedDraft": "Draft saved to Gmail",
+        "sentTo": "Sent to {{to}}",
+        "showLess": "Show less",
+        "showMore": "Show more",
+        "showMoreCount": "Show {{count}} more",
+        "slideOf": "{{index}} of {{count}}",
+        "sources": "Sources",
+        "trend": "Trend, {{count}} points, {{first}} to {{last}}"
+      },
       "template": "Card"
     }
   },
@@ -11278,6 +11303,31 @@ export const resources = {
       "setNameForPreview": "Escribe arriba un nombre de tarjeta para generar la vista previa.",
       "setNameHint": "Escribe un nombre de tarjeta arriba para generar una vista previa.",
       "showPreview": "Mostrar vista previa de la tarjeta",
+      "surface": {
+        "carousel": "carrusel",
+        "done": {
+          "copied": "Copiado",
+          "done": "Hecho",
+          "saved": "Guardado",
+          "sent": "Enviado"
+        },
+        "lowConfidence": "Fuente de menor fiabilidad",
+        "moreActions": "Más",
+        "moreChips": "+{{count}}",
+        "photos_one": "{{count}} foto",
+        "photos_other": "{{count}} fotos",
+        "rated": "Valoración {{value}} de {{scale}}",
+        "ratedBy": "por {{count}} reseñas",
+        "ratedOn": "en {{source}}",
+        "savedDraft": "Borrador guardado en Gmail",
+        "sentTo": "Enviado a {{to}}",
+        "showLess": "Mostrar menos",
+        "showMore": "Mostrar más",
+        "showMoreCount": "Mostrar {{count}} más",
+        "slideOf": "{{index}} de {{count}}",
+        "sources": "Fuentes",
+        "trend": "Tendencia, {{count}} puntos, de {{first}} a {{last}}"
+      },
       "template": "Tarjeta"
     }
   },
@@ -16905,6 +16955,31 @@ export const resources = {
       "setNameForPreview": "Legen Sie oben einen Kartennamen fest, um eine Vorschau zu erstellen.",
       "setNameHint": "Legen Sie oben einen Kartennamen fest, um eine Vorschau zu erstellen.",
       "showPreview": "Kartenvorschau anzeigen",
+      "surface": {
+        "carousel": "Karussell",
+        "done": {
+          "copied": "Kopiert",
+          "done": "Erledigt",
+          "saved": "Gespeichert",
+          "sent": "Gesendet"
+        },
+        "lowConfidence": "Quelle mit geringerer Zuverlässigkeit",
+        "moreActions": "Mehr",
+        "moreChips": "+{{count}}",
+        "photos_one": "{{count}} Foto",
+        "photos_other": "{{count}} Fotos",
+        "rated": "Bewertet mit {{value}} von {{scale}}",
+        "ratedBy": "von {{count}} Bewertungen",
+        "ratedOn": "auf {{source}}",
+        "savedDraft": "Entwurf in Gmail gespeichert",
+        "sentTo": "Gesendet an {{to}}",
+        "showLess": "Weniger anzeigen",
+        "showMore": "Mehr anzeigen",
+        "showMoreCount": "{{count}} weitere anzeigen",
+        "slideOf": "{{index}} von {{count}}",
+        "sources": "Quellen",
+        "trend": "Trend, {{count}} Punkte, {{first}} bis {{last}}"
+      },
       "template": "Karte"
     }
   },
@@ -22532,6 +22607,31 @@ export const resources = {
       "setNameForPreview": "Définissez un nom de carte ci-dessus pour générer un aperçu.",
       "setNameHint": "Définissez un nom de carte ci-dessus pour générer un aperçu.",
       "showPreview": "Afficher l'aperçu de la carte",
+      "surface": {
+        "carousel": "carrousel",
+        "done": {
+          "copied": "Copié",
+          "done": "Terminé",
+          "saved": "Enregistré",
+          "sent": "Envoyé"
+        },
+        "lowConfidence": "Source moins fiable",
+        "moreActions": "Plus",
+        "moreChips": "+{{count}}",
+        "photos_one": "{{count}} photo",
+        "photos_other": "{{count}} photos",
+        "rated": "Note {{value}} sur {{scale}}",
+        "ratedBy": "par {{count}} avis",
+        "ratedOn": "sur {{source}}",
+        "savedDraft": "Brouillon enregistré dans Gmail",
+        "sentTo": "Envoyé à {{to}}",
+        "showLess": "Afficher moins",
+        "showMore": "Afficher plus",
+        "showMoreCount": "Afficher {{count}} de plus",
+        "slideOf": "{{index}} sur {{count}}",
+        "sources": "Sources",
+        "trend": "Tendance, {{count}} points, de {{first}} à {{last}}"
+      },
       "template": "Carte"
     }
   },
@@ -28159,6 +28259,31 @@ export const resources = {
       "setNameForPreview": "Defina um nome de cartão acima para gerar uma prévia.",
       "setNameHint": "Defina um nome de cartão acima para gerar uma prévia.",
       "showPreview": "Mostrar prévia do card",
+      "surface": {
+        "carousel": "carrossel",
+        "done": {
+          "copied": "Copiado",
+          "done": "Concluído",
+          "saved": "Salvo",
+          "sent": "Enviado"
+        },
+        "lowConfidence": "Fonte de menor confiança",
+        "moreActions": "Mais",
+        "moreChips": "+{{count}}",
+        "photos_one": "{{count}} foto",
+        "photos_other": "{{count}} fotos",
+        "rated": "Avaliação {{value}} de {{scale}}",
+        "ratedBy": "por {{count}} avaliações",
+        "ratedOn": "no {{source}}",
+        "savedDraft": "Rascunho salvo no Gmail",
+        "sentTo": "Enviado para {{to}}",
+        "showLess": "Mostrar menos",
+        "showMore": "Mostrar mais",
+        "showMoreCount": "Mostrar mais {{count}}",
+        "slideOf": "{{index}} de {{count}}",
+        "sources": "Fontes",
+        "trend": "Tendência, {{count}} pontos, de {{first}} a {{last}}"
+      },
       "template": "Cartão"
     }
   },
@@ -33786,6 +33911,31 @@ export const resources = {
       "setNameForPreview": "上でカード名を設定するとプレビューが生成されます。",
       "setNameHint": "上でカード名を設定するとプレビューが生成されます。",
       "showPreview": "カードプレビューを表示",
+      "surface": {
+        "carousel": "カルーセル",
+        "done": {
+          "copied": "コピー済み",
+          "done": "完了",
+          "saved": "保存済み",
+          "sent": "送信済み"
+        },
+        "lowConfidence": "信頼度の低い出典",
+        "moreActions": "その他",
+        "moreChips": "+{{count}}",
+        "photos_one": "{{count}}枚の写真",
+        "photos_other": "{{count}}枚の写真",
+        "rated": "評価 {{value}} / {{scale}}",
+        "ratedBy": "{{count}}件のレビュー",
+        "ratedOn": "{{source}}より",
+        "savedDraft": "下書きをGmailに保存しました",
+        "sentTo": "{{to}} に送信しました",
+        "showLess": "閉じる",
+        "showMore": "もっと見る",
+        "showMoreCount": "さらに{{count}}件を表示",
+        "slideOf": "{{count}}件中{{index}}件目",
+        "sources": "出典",
+        "trend": "推移、{{count}}ポイント、{{first}}から{{last}}"
+      },
       "template": "カード"
     }
   },
@@ -39413,6 +39563,31 @@ export const resources = {
       "setNameForPreview": "在上方设置卡片名称以生成预览。",
       "setNameHint": "在上方设置卡片名称以生成预览。",
       "showPreview": "显示卡片预览",
+      "surface": {
+        "carousel": "轮播",
+        "done": {
+          "copied": "已复制",
+          "done": "已完成",
+          "saved": "已保存",
+          "sent": "已发送"
+        },
+        "lowConfidence": "可信度较低的来源",
+        "moreActions": "更多",
+        "moreChips": "+{{count}}",
+        "photos_one": "{{count}} 张照片",
+        "photos_other": "{{count}} 张照片",
+        "rated": "评分 {{value}}（满分 {{scale}}）",
+        "ratedBy": "来自 {{count}} 条评价",
+        "ratedOn": "来源：{{source}}",
+        "savedDraft": "草稿已保存到 Gmail",
+        "sentTo": "已发送至 {{to}}",
+        "showLess": "收起",
+        "showMore": "展开",
+        "showMoreCount": "再显示 {{count}} 项",
+        "slideOf": "第 {{index}} 项，共 {{count}} 项",
+        "sources": "来源",
+        "trend": "趋势，{{count}} 个数据点，从 {{first}} 到 {{last}}"
+      },
       "template": "卡片"
     }
   },
@@ -45040,6 +45215,31 @@ export const resources = {
       "setNameForPreview": "미리보기를 생성하려면 위에 카드 이름을 입력하세요.",
       "setNameHint": "미리보기를 생성하려면 위에 카드 이름을 입력하세요.",
       "showPreview": "카드 미리보기 표시",
+      "surface": {
+        "carousel": "캐러셀",
+        "done": {
+          "copied": "복사됨",
+          "done": "완료",
+          "saved": "저장됨",
+          "sent": "전송됨"
+        },
+        "lowConfidence": "신뢰도가 낮은 출처",
+        "moreActions": "더 보기",
+        "moreChips": "+{{count}}",
+        "photos_one": "사진 {{count}}장",
+        "photos_other": "사진 {{count}}장",
+        "rated": "{{scale}}점 만점에 {{value}}점",
+        "ratedBy": "리뷰 {{count}}개",
+        "ratedOn": "{{source}} 기준",
+        "savedDraft": "임시보관함에 저장됨",
+        "sentTo": "{{to}}에게 전송됨",
+        "showLess": "접기",
+        "showMore": "더 보기",
+        "showMoreCount": "{{count}}개 더 보기",
+        "slideOf": "{{count}}개 중 {{index}}번째",
+        "sources": "출처",
+        "trend": "추세, {{count}}개 지점, {{first}}에서 {{last}}까지"
+      },
       "template": "카드"
     }
   },
@@ -50667,6 +50867,31 @@ export const resources = {
       "setNameForPreview": "Imposta un nome scheda sopra per generare un'anteprima.",
       "setNameHint": "Imposta un nome scheda sopra per generare un'anteprima.",
       "showPreview": "Mostra anteprima scheda",
+      "surface": {
+        "carousel": "carosello",
+        "done": {
+          "copied": "Copiato",
+          "done": "Fatto",
+          "saved": "Salvato",
+          "sent": "Inviato"
+        },
+        "lowConfidence": "Fonte meno affidabile",
+        "moreActions": "Altro",
+        "moreChips": "+{{count}}",
+        "photos_one": "{{count}} foto",
+        "photos_other": "{{count}} foto",
+        "rated": "Valutazione {{value}} su {{scale}}",
+        "ratedBy": "da {{count}} recensioni",
+        "ratedOn": "su {{source}}",
+        "savedDraft": "Bozza salvata in Gmail",
+        "sentTo": "Inviato a {{to}}",
+        "showLess": "Mostra meno",
+        "showMore": "Mostra altro",
+        "showMoreCount": "Mostra altri {{count}}",
+        "slideOf": "{{index}} di {{count}}",
+        "sources": "Fonti",
+        "trend": "Andamento, {{count}} punti, da {{first}} a {{last}}"
+      },
       "template": "Scheda"
     }
   },
@@ -56294,6 +56519,31 @@ export const resources = {
       "setNameForPreview": "पूर्वावलोकन बनाने के लिए ऊपर कार्ड नाम सेट करें।",
       "setNameHint": "पूर्वावलोकन बनाने के लिए ऊपर कार्ड नाम सेट करें।",
       "showPreview": "कार्ड पूर्वावलोकन दिखाएँ",
+      "surface": {
+        "carousel": "कैरोसेल",
+        "done": {
+          "copied": "कॉपी हो गया",
+          "done": "हो गया",
+          "saved": "सहेजा गया",
+          "sent": "भेजा गया"
+        },
+        "lowConfidence": "कम विश्वसनीय स्रोत",
+        "moreActions": "और",
+        "moreChips": "+{{count}}",
+        "photos_one": "{{count}} फ़ोटो",
+        "photos_other": "{{count}} फ़ोटो",
+        "rated": "{{scale}} में से {{value}} रेटिंग",
+        "ratedBy": "{{count}} समीक्षाओं द्वारा",
+        "ratedOn": "{{source}} पर",
+        "savedDraft": "ड्राफ़्ट Gmail में सहेजा गया",
+        "sentTo": "{{to}} को भेजा गया",
+        "showLess": "कम दिखाएँ",
+        "showMore": "और दिखाएँ",
+        "showMoreCount": "{{count}} और दिखाएँ",
+        "slideOf": "{{count}} में से {{index}}",
+        "sources": "स्रोत",
+        "trend": "रुझान, {{count}} बिंदु, {{first}} से {{last}} तक"
+      },
       "template": "कार्ड"
     }
   }
