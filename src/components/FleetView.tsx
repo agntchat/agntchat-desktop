@@ -503,6 +503,7 @@ export function ConnectHostDialog({
               />
             </p>
             <CopyField label={t("fleet.publicKey")} value={created.publicKey} mono />
+            <p className="text-xs text-muted-foreground">{t("fleet.gatewayKeyHint")}</p>
             {error && <p className="text-sm text-destructive">{error}</p>}
             <DialogFooter>
               <Button
@@ -589,6 +590,7 @@ export function ConnectHostDialog({
                 />
               </div>
             </div>
+            <p className="text-xs text-muted-foreground">{t("fleet.sshUserHint")}</p>
             {error && <p className="text-sm text-destructive">{error}</p>}
             <DialogFooter>
               <Button
