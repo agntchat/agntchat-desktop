@@ -99,8 +99,12 @@ export function FleetView() {
   }, [orgId, refresh]);
 
   useEffect(() => {
-    const off = ws.on("host_agent_status", () => void refresh());
-    return off;
+    const offStatus = ws.on("host_agent_status", () => void refresh());
+    const offFailed = ws.on("host_op_failed", () => void refresh());
+    return () => {
+      offStatus();
+      offFailed();
+    };
   }, [refresh]);
 
   if (!orgId) {
@@ -367,25 +371,41 @@ export function ConnectHostDialog({
   onOpenChange: (open: boolean) => void;
   onChanged: () => void;
   /** Preselect this Hostinger VM when the dialog opens (e.g. "Add host" was
-   *  clicked on a specific unmanaged VM row). Autofills name + SSH host. */
+   *  clicked on a specific unmanaged VM row). Autofills name + SSH host and
+   *  starts on the SSH path, since we already reach the VM that way. */
   initialVmId?: string;
 }) {
   const { t } = useTranslation("platform");
+  // Two ways in. "command": the operator pastes one line on the machine and it
+  // enrolls itself — nothing inbound, so it works behind NAT and on providers
+  // that gate SSH. "ssh": the backend connects out and installs (needs the key
+  // authorized first). Command is the default; SSH is the operator's choice.
+  const [mode, setMode] = useState<"command" | "ssh">(initialVmId ? "ssh" : "command");
   const [name, setName] = useState("");
   const [sshHost, setSshHost] = useState("");
   const [sshUser, setSshUser] = useState("root");
   const [sshPort, setSshPort] = useState("22");
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const [created, setCreated] = useState<{ hostId: string; publicKey: string } | null>(
-    null
-  );
+  const [created, setCreated] = useState<{
+    hostId: string;
+    publicKey: string;
+    sshGateway: string | null;
+  } | null>(null);
+  const [enroll, setEnroll] = useState<{
+    hostId: string;
+    command: string;
+    expiresAt: string;
+  } | null>(null);
+  const [enrollOnline, setEnrollOnline] = useState(false);
   const [bootstrapping, setBootstrapping] = useState(false);
+  const [testing, setTesting] = useState(false);
+  const [testResult, setTestResult] = useState<{ ok: boolean; text: string } | null>(null);
   const [vms, setVms] = useState<api.ProviderVm[]>([]);
   const [selectedVmId, setSelectedVmId] = useState("");
 
   // Existing provider VMs the operator can pick from (best-effort: empty when
-  // provisioning isn't configured — manual IP entry still works).
+  // provisioning isn't configured — manual entry still works).
   useEffect(() => {
     if (!open) return;
     let cancelled = false;
@@ -401,6 +421,7 @@ export function ConnectHostDialog({
           const vm = list.find((v) => v.id === initialVmId && !v.registered);
           if (vm) {
             setSelectedVmId(vm.id);
+            setMode("ssh");
             if (vm.ipv4) setSshHost(vm.ipv4);
             setName((n) => n || vm.hostname || "");
           }
@@ -412,7 +433,34 @@ export function ConnectHostDialog({
     };
   }, [open, orgId, initialVmId]);
 
+  // Command path: watch for the machine to come online so the operator sees
+  // it land without leaving the dialog.
+  useEffect(() => {
+    if (!open || !enroll || enrollOnline) return;
+    let cancelled = false;
+    const tick = async () => {
+      try {
+        const res = await api.listOrganizationHostFleet(orgId);
+        if (cancelled) return;
+        const host = res.hosts.find((h) => h.id === enroll.hostId);
+        if (host?.status === "online") {
+          setEnrollOnline(true);
+          onChanged();
+        }
+      } catch {
+        // Transient — next tick retries.
+      }
+    };
+    void tick();
+    const interval = setInterval(() => void tick(), 3_000);
+    return () => {
+      cancelled = true;
+      clearInterval(interval);
+    };
+  }, [open, enroll, enrollOnline, orgId, onChanged]);
+
   const reset = () => {
+    setMode(initialVmId ? "ssh" : "command");
     setName("");
     setSshHost("");
     setSshUser("root");
@@ -420,6 +468,44 @@ export function ConnectHostDialog({
     setSelectedVmId("");
     setError(null);
     setCreated(null);
+    setEnroll(null);
+    setEnrollOnline(false);
+    setTestResult(null);
+  };
+
+  const minutesLeft = (iso: string) =>
+    Math.max(1, Math.round((new Date(iso).getTime() - Date.now()) / 60_000));
+
+  const handleCreateEnrollable = async () => {
+    if (!name.trim()) {
+      setError(t("fleet.errors.nameAndHostRequired"));
+      return;
+    }
+    setSubmitting(true);
+    setError(null);
+    try {
+      const res = await api.createEnrollableHost(orgId, name.trim());
+      setEnroll({ hostId: res.host.id, command: res.enrollCommand, expiresAt: res.expiresAt });
+      onChanged();
+    } catch (e) {
+      setError(e instanceof Error ? e.message : t("fleet.errors.connectFailed"));
+    } finally {
+      setSubmitting(false);
+    }
+  };
+
+  const handleRenew = async () => {
+    if (!enroll) return;
+    setSubmitting(true);
+    setError(null);
+    try {
+      const res = await api.renewEnrollToken(orgId, enroll.hostId);
+      setEnroll({ hostId: enroll.hostId, command: res.enrollCommand, expiresAt: res.expiresAt });
+    } catch (e) {
+      setError(e instanceof Error ? e.message : t("fleet.errors.connectFailed"));
+    } finally {
+      setSubmitting(false);
+    }
   };
 
   const handleConnect = async () => {
@@ -442,7 +528,11 @@ export function ConnectHostDialog({
           ? { provider: "hostinger", providerVmId: vm.id, datacenter: vm.datacenter ?? null }
           : {}),
       });
-      setCreated({ hostId: res.host.id, publicKey: res.publicKey });
+      setCreated({
+        hostId: res.host.id,
+        publicKey: res.publicKey,
+        sshGateway: res.host.sshGateway ?? null,
+      });
       onChanged();
     } catch (e) {
       // The backend refuses to re-enroll a box that already backs a host
@@ -454,6 +544,43 @@ export function ConnectHostDialog({
       }
     } finally {
       setSubmitting(false);
+    }
+  };
+
+  // Runs a probe op and waits for it, so the key question is settled before
+  // a bootstrap is spent on it.
+  const handleTest = async () => {
+    if (!created) return;
+    setTesting(true);
+    setTestResult(null);
+    setError(null);
+    try {
+      const operation = await api.runHostOp(orgId, created.hostId, "probe");
+      const deadline = Date.now() + 60_000;
+      let done: api.HostOperation | undefined;
+      while (Date.now() < deadline) {
+        await new Promise((r) => setTimeout(r, 2_000));
+        const ops = await api.listHostOperations(orgId, created.hostId);
+        const op = ops.find((o) => o.id === operation.id);
+        if (op && op.status !== "pending" && op.status !== "running") {
+          done = op;
+          break;
+        }
+      }
+      if (!done) {
+        setTestResult({ ok: false, text: t("fleet.errors.bootstrapFailed") });
+      } else if (done.status === "ok") {
+        setTestResult({ ok: true, text: t("fleet.testConnectionOk") });
+      } else {
+        setTestResult({ ok: false, text: done.output ?? "" });
+      }
+    } catch (e) {
+      setTestResult({
+        ok: false,
+        text: e instanceof Error ? e.message : t("fleet.errors.connectFailed"),
+      });
+    } finally {
+      setTesting(false);
     }
   };
 
@@ -472,6 +599,17 @@ export function ConnectHostDialog({
     }
   };
 
+  const title = enroll
+    ? t("fleet.enrollCommandTitle")
+    : created
+      ? t("fleet.authorizeBootstrap")
+      : t("fleet.addHost");
+  const description = enroll
+    ? t("fleet.enrollCommandDescription", { name: name.trim() })
+    : created
+      ? t("fleet.addHostCreatedDescription")
+      : t("fleet.addHostDescription");
+
   return (
     <Dialog
       open={open}
@@ -482,28 +620,77 @@ export function ConnectHostDialog({
     >
       <DialogContent>
         <DialogHeader>
-          <DialogTitle>
-            {created ? t("fleet.authorizeBootstrap") : t("fleet.addHost")}
-          </DialogTitle>
-          <DialogDescription>
-            {created
-              ? t("fleet.addHostCreatedDescription")
-              : t("fleet.addHostDescription")}
-          </DialogDescription>
+          <DialogTitle>{title}</DialogTitle>
+          <DialogDescription>{description}</DialogDescription>
         </DialogHeader>
 
-        {created ? (
+        {enroll ? (
           <div className="space-y-3 py-1">
-            <p className="text-sm">
-              <Trans
-                i18nKey="fleet.appendKeyInstruction"
-                ns="platform"
-                values={{ user: sshUser || "root" }}
-                components={{ code: <code /> }}
-              />
+            <CopyField label={t("fleet.enrollCommandTitle")} value={enroll.command} mono />
+            <p className="text-xs text-muted-foreground">
+              {t("fleet.enrollCommandExpires", { minutes: minutesLeft(enroll.expiresAt) })}{" "}
+              {t("fleet.enrollRequirements")}
             </p>
-            <CopyField label={t("fleet.publicKey")} value={created.publicKey} mono />
-            <p className="text-xs text-muted-foreground">{t("fleet.gatewayKeyHint")}</p>
+            {enrollOnline ? (
+              <p className="flex items-center gap-2 text-sm text-success">
+                <ShieldCheck className="h-4 w-4" /> {t("fleet.enrollConnected")}
+              </p>
+            ) : (
+              <p className="flex items-center gap-2 text-sm text-muted-foreground">
+                <Loader2 className="h-4 w-4 animate-spin" /> {t("fleet.enrollWaiting")}
+              </p>
+            )}
+            {error && <p className="text-sm text-destructive">{error}</p>}
+            <DialogFooter>
+              {!enrollOnline && (
+                <Button variant="ghost" onClick={() => void handleRenew()} disabled={submitting}>
+                  {t("fleet.enrollNewCommand")}
+                </Button>
+              )}
+              <Button
+                onClick={() => {
+                  reset();
+                  onOpenChange(false);
+                }}
+              >
+                {enrollOnline ? t("common:done") : t("fleet.later")}
+              </Button>
+            </DialogFooter>
+          </div>
+        ) : created ? (
+          <div className="space-y-3 py-1">
+            {created.sshGateway === "exe.dev" ? (
+              <>
+                <p className="text-sm">{t("fleet.exeDevKeyHint")}</p>
+                <CopyField
+                  label={t("fleet.publicKey")}
+                  value={`ssh exe.dev ssh-key add '${created.publicKey}'`}
+                  mono
+                />
+              </>
+            ) : (
+              <>
+                <p className="text-sm">
+                  <Trans
+                    i18nKey="fleet.appendKeyInstruction"
+                    ns="platform"
+                    values={{ user: sshUser || "root" }}
+                    components={{ code: <code /> }}
+                  />
+                </p>
+                <CopyField label={t("fleet.publicKey")} value={created.publicKey} mono />
+                {created.sshGateway ? (
+                  <p className="text-xs text-amber-600">{t("fleet.gatewayKeyHint")}</p>
+                ) : (
+                  <p className="text-xs text-muted-foreground">{t("fleet.gatewayKeyHint")}</p>
+                )}
+              </>
+            )}
+            {testResult && (
+              <p className={cn("text-sm", testResult.ok ? "text-success" : "text-destructive")}>
+                {testResult.ok ? testResult.text : `${t("fleet.testConnectionFailed")} ${testResult.text}`}
+              </p>
+            )}
             {error && <p className="text-sm text-destructive">{error}</p>}
             <DialogFooter>
               <Button
@@ -512,18 +699,49 @@ export function ConnectHostDialog({
                   reset();
                   onOpenChange(false);
                 }}
-                disabled={bootstrapping}
+                disabled={bootstrapping || testing}
               >
                 {t("fleet.later")}
               </Button>
-              <Button onClick={() => void handleBootstrap()} disabled={bootstrapping}>
+              <Button
+                variant="outline"
+                onClick={() => void handleTest()}
+                disabled={bootstrapping || testing}
+              >
+                {testing ? t("fleet.testingConnection") : t("fleet.testConnection")}
+              </Button>
+              <Button onClick={() => void handleBootstrap()} disabled={bootstrapping || testing}>
                 {bootstrapping ? t("fleet.bootstrapping") : t("fleet.bootstrapNow")}
               </Button>
             </DialogFooter>
           </div>
         ) : (
           <div className="space-y-3 py-1">
-            {vms.length > 0 && (
+            <div className="grid grid-cols-2 gap-2">
+              {(["command", "ssh"] as const).map((m) => (
+                <button
+                  key={m}
+                  type="button"
+                  onClick={() => setMode(m)}
+                  className={cn(
+                    "rounded-md border p-3 text-left text-sm transition-colors",
+                    mode === m
+                      ? "border-primary bg-primary/5"
+                      : "border-border hover:bg-muted/50"
+                  )}
+                >
+                  <div className="font-medium">
+                    {m === "command" ? t("fleet.addHostModeCommand") : t("fleet.addHostModeSsh")}
+                  </div>
+                  <div className="mt-1 text-xs text-muted-foreground">
+                    {m === "command"
+                      ? t("fleet.addHostModeCommandHint")
+                      : t("fleet.addHostModeSshHint")}
+                  </div>
+                </button>
+              ))}
+            </div>
+            {mode === "ssh" && vms.length > 0 && (
               <div className="space-y-1">
                 <Label htmlFor="ch-vm">{t("fleet.virtualMachine")}</Label>
                 <select
@@ -547,9 +765,7 @@ export function ConnectHostDialog({
                     </option>
                   ))}
                 </select>
-                <p className="text-xs text-muted-foreground">
-                  {t("fleet.pickVmHint")}
-                </p>
+                <p className="text-xs text-muted-foreground">{t("fleet.pickVmHint")}</p>
               </div>
             )}
             <div className="space-y-1">
@@ -561,36 +777,43 @@ export function ConnectHostDialog({
                 placeholder="agent-host-1"
               />
             </div>
-            <div className="grid grid-cols-[1fr_auto_auto] gap-2">
-              <div className="space-y-1">
-                <Label htmlFor="ch-host">{t("fleet.sshHostIp")}</Label>
-                <Input
-                  id="ch-host"
-                  value={sshHost}
-                  onChange={(e) => setSshHost(e.target.value)}
-                  placeholder={t("fleet.sshHostPlaceholder")}
-                />
-              </div>
-              <div className="space-y-1">
-                <Label htmlFor="ch-user">{t("fleet.user")}</Label>
-                <Input
-                  id="ch-user"
-                  value={sshUser}
-                  onChange={(e) => setSshUser(e.target.value)}
-                  className="w-24"
-                />
-              </div>
-              <div className="space-y-1">
-                <Label htmlFor="ch-port">{t("fleet.port")}</Label>
-                <Input
-                  id="ch-port"
-                  value={sshPort}
-                  onChange={(e) => setSshPort(e.target.value)}
-                  className="w-16"
-                />
-              </div>
-            </div>
-            <p className="text-xs text-muted-foreground">{t("fleet.sshUserHint")}</p>
+            {mode === "ssh" && (
+              <>
+                <div className="grid grid-cols-[1fr_auto_auto] gap-2">
+                  <div className="space-y-1">
+                    <Label htmlFor="ch-host">{t("fleet.sshHostIp")}</Label>
+                    <Input
+                      id="ch-host"
+                      value={sshHost}
+                      onChange={(e) => setSshHost(e.target.value)}
+                      placeholder={t("fleet.sshHostPlaceholder")}
+                    />
+                  </div>
+                  <div className="space-y-1">
+                    <Label htmlFor="ch-user">{t("fleet.user")}</Label>
+                    <Input
+                      id="ch-user"
+                      value={sshUser}
+                      onChange={(e) => setSshUser(e.target.value)}
+                      className="w-24"
+                    />
+                  </div>
+                  <div className="space-y-1">
+                    <Label htmlFor="ch-port">{t("fleet.port")}</Label>
+                    <Input
+                      id="ch-port"
+                      value={sshPort}
+                      onChange={(e) => setSshPort(e.target.value)}
+                      className="w-16"
+                    />
+                  </div>
+                </div>
+                <p className="text-xs text-muted-foreground">{t("fleet.sshUserHint")}</p>
+              </>
+            )}
+            {mode === "command" && (
+              <p className="text-xs text-muted-foreground">{t("fleet.enrollRequirements")}</p>
+            )}
             {error && <p className="text-sm text-destructive">{error}</p>}
             <DialogFooter>
               <Button
@@ -603,7 +826,12 @@ export function ConnectHostDialog({
               >
                 {t("common:cancel")}
               </Button>
-              <Button onClick={() => void handleConnect()} disabled={submitting}>
+              <Button
+                onClick={() =>
+                  void (mode === "command" ? handleCreateEnrollable() : handleConnect())
+                }
+                disabled={submitting}
+              >
                 {submitting ? t("fleet.connecting") : t("common:continue")}
               </Button>
             </DialogFooter>

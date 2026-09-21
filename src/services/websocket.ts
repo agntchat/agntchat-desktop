@@ -180,6 +180,9 @@ class WebSocketService {
       // Org-host fleet: a bridge changed state on a VM (running/stopped/
       // crashed/idled). FleetView listens to live-update agent counts.
       "host_agent_status",
+      // A host management op (bootstrap/update/…) failed — the Hosts view
+      // refreshes so the row badges it.
+      "host_op_failed",
       // Remote-start/-stop: phone/web asked to bring a local agent online
       // (or take it offline) and the backend routed it here (a signed-in
       // desktop). agentStore handles both.

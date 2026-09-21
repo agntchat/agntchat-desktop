@@ -7,6 +7,10 @@ import {
 } from "react";
 import {
   Activity,
+  AlertTriangle,
+  CheckCircle2,
+  Circle,
+  Terminal,
   Check,
   ChevronDown,
   ChevronRight,
@@ -100,6 +104,9 @@ export function HostRow({
   const [busy, setBusy] = useState<api.HostOpKind | "delete" | null>(null);
   const [keyOpen, setKeyOpen] = useState(false);
   const [loginOpen, setLoginOpen] = useState(false);
+  const [cmdOpen, setCmdOpen] = useState(false);
+  const [cmd, setCmd] = useState<{ command: string; expiresAt: string } | null>(null);
+  const [cmdError, setCmdError] = useState<string | null>(null);
   const [pubKey, setPubKey] = useState<string | null>(null);
   const [editing, setEditing] = useState(false);
   const [nameInput, setNameInput] = useState(host.name);
@@ -111,6 +118,30 @@ export function HostRow({
   const bootstrapped = !!host.bootstrappedAt;
   const assigned = host.assignedAgentCount ?? host.agentCount ?? 0;
   const online = host.onlineAgentCount ?? host.runningAgentIds?.length ?? 0;
+  // A host enrolled by the one-line command has no SSH target: the backend
+  // reaches it only over its own connection, and only while it's online.
+  const commandEnrolled = !host.sshHost;
+  const isOnline = host.status === "online";
+  const opsAvailable = !!host.sshHost || (isOnline && !!host.opsOverWs);
+  const latestOp = ops[0] ?? host.lastOperation ?? null;
+  const lastOpFailed = !!latestOp && latestOp.status === "failed";
+  const hostCaps = (host.capabilities ?? {}) as { runtime?: { claude_seat?: boolean } };
+  const seatReady = hostCaps.runtime?.claude_seat === true;
+  // Onboarding checklist: what's done and the one thing to do next.
+  const steps = [
+    { key: "connected", done: isOnline, label: t("hosts.checklist.connected") },
+    { key: "seat", done: seatReady, label: t("hosts.checklist.seat") },
+    { key: "agent", done: assigned > 0, label: t("hosts.checklist.agent") },
+  ];
+  const nextStep = !isOnline
+    ? commandEnrolled
+      ? t("hosts.checklist.nextConnectCommand")
+      : t("hosts.checklist.nextConnectSsh")
+    : !seatReady
+      ? t("hosts.checklist.nextSeat")
+      : assigned === 0
+        ? t("hosts.checklist.nextAgent")
+        : null;
 
   const statusLabel = ["online", "offline", "disabled"].includes(host.status)
     ? t(`common:${host.status}`)
@@ -210,6 +241,19 @@ export function HostRow({
         description: e instanceof Error ? e.message : i18n.t("platform:errors.loadPublicKey"),
         destructive: true,
       });
+    }
+  };
+
+  // Command-enrolled host that hasn't connected yet: mint a fresh one-line
+  // enrollment command (the previous one stops working).
+  const showCommand = async () => {
+    setCmdOpen(true);
+    setCmdError(null);
+    try {
+      const res = await api.renewEnrollToken(opsOrgId, host.id);
+      setCmd({ command: res.enrollCommand, expiresAt: res.expiresAt });
+    } catch (e) {
+      setCmdError(e instanceof Error ? e.message : t("errors.operationFailed"));
     }
   };
 
@@ -350,9 +394,28 @@ export function HostRow({
                   </Badge>
                 )}
                 {extraBadges}
-                {!bootstrapped && (
+                {!bootstrapped && host.sshHost && (
                   <Badge variant="outline" className="shrink-0 border-amber-500/30 text-amber-600">
                     {t("hosts.notBootstrapped")}
+                  </Badge>
+                )}
+                {host.opsOverWs && (
+                  <Badge
+                    variant="outline"
+                    className="shrink-0 text-muted-foreground"
+                    title={t("hosts.inAppOpsHint")}
+                  >
+                    {t("hosts.inAppOps")}
+                  </Badge>
+                )}
+                {lastOpFailed && !opRunning && (
+                  <Badge
+                    variant="outline"
+                    className="shrink-0 gap-1 border-destructive/30 bg-destructive/10 text-destructive"
+                    title={t("hosts.lastOpFailedHint")}
+                  >
+                    <AlertTriangle className="h-3 w-3" />
+                    {t("hosts.lastOpFailed", { kind: latestOp?.kind })}
                   </Badge>
                 )}
                 {opRunning && (
@@ -393,9 +456,24 @@ export function HostRow({
             {host.hostGitSha ? ` · ${host.hostGitSha}` : ""}
             {` · ${t("hosts.seen", { age: relativeAge(host.lastSeenAt) })}`}
           </button>
+          {nextStep && (
+            <div className="mt-0.5 truncate text-xs text-amber-600">→ {nextStep}</div>
+          )}
         </div>
 
         <div className="flex shrink-0 items-center gap-1">
+          {commandEnrolled && !isOnline && (
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={() => void showCommand()}
+              disabled={busy !== null}
+              title={t("hosts.showCommandHint")}
+            >
+              <Terminal className="h-3.5 w-3.5" />
+              {t("hosts.showCommand")}
+            </Button>
+          )}
           {!bootstrapped && host.sshHost && (
             <Button
               variant="outline"
@@ -434,7 +512,7 @@ export function HostRow({
                 confirmLabel: t("common:update"),
               })
             }
-            disabled={busy !== null || !host.sshHost}
+            disabled={busy !== null || !opsAvailable}
             title={t("hosts.updateHint")}
           >
             {busy === "update" ? (
@@ -454,7 +532,7 @@ export function HostRow({
                 confirmLabel: t("hosts.restart"),
               })
             }
-            disabled={busy !== null || !host.sshHost}
+            disabled={busy !== null || !opsAvailable}
             title={t("hosts.restartHint")}
           >
             {busy === "restart" ? (
@@ -481,7 +559,7 @@ export function HostRow({
               variant="ghost"
               size="sm"
               onClick={() => void op("set_token")}
-              disabled={busy !== null || !host.sshHost}
+              disabled={busy !== null || !opsAvailable}
               title={t("hosts.seatHint")}
             >
               {busy === "set_token" ? (
@@ -496,7 +574,7 @@ export function HostRow({
             variant="ghost"
             size="sm"
             onClick={() => void op("probe")}
-            disabled={busy !== null || !host.sshHost}
+            disabled={busy !== null || !opsAvailable}
             title={t("hosts.probeHint")}
           >
             {busy === "probe" ? (
@@ -529,6 +607,29 @@ export function HostRow({
 
       {expanded && (
         <div className="border-t border-border px-4 py-3">
+          <div className="mb-3 rounded-md border border-border bg-muted/30 px-3 py-2">
+            <div className="flex flex-wrap items-center gap-x-4 gap-y-1 text-xs">
+              {steps.map((s) => (
+                <span
+                  key={s.key}
+                  className={cn(
+                    "flex items-center gap-1",
+                    s.done ? "text-success" : "text-muted-foreground"
+                  )}
+                >
+                  {s.done ? (
+                    <CheckCircle2 className="h-3.5 w-3.5" />
+                  ) : (
+                    <Circle className="h-3.5 w-3.5" />
+                  )}
+                  {s.label}
+                </span>
+              ))}
+            </div>
+            <div className={cn("mt-1 text-xs", nextStep ? "text-amber-600" : "text-muted-foreground")}>
+              {nextStep ?? t("hosts.checklist.done")}
+            </div>
+          </div>
           {renderDetail({ ops, opRunning, reloadOps, cancelOp })}
         </div>
       )}
@@ -574,6 +675,45 @@ export function HostRow({
             >
               {t("hosts.bootstrapNow")}
             </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
+      <Dialog open={cmdOpen} onOpenChange={setCmdOpen}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>{t("platform:fleet.enrollCommandTitle")}</DialogTitle>
+            <DialogDescription>
+              {t("platform:fleet.enrollCommandDescription", { name: host.name })}
+            </DialogDescription>
+          </DialogHeader>
+          <div className="space-y-3 py-1">
+            {cmd ? (
+              <>
+                <CopyField label={t("platform:fleet.enrollCommandTitle")} value={cmd.command} mono />
+                <p className="text-xs text-muted-foreground">
+                  {t("platform:fleet.enrollCommandExpires", {
+                    minutes: Math.max(
+                      1,
+                      Math.round((new Date(cmd.expiresAt).getTime() - Date.now()) / 60_000)
+                    ),
+                  })}{" "}
+                  {t("platform:fleet.enrollRequirements")}
+                </p>
+              </>
+            ) : cmdError ? (
+              <p className="text-sm text-destructive">{cmdError}</p>
+            ) : (
+              <div className="flex items-center gap-2 text-sm text-muted-foreground">
+                <Loader2 className="h-4 w-4 animate-spin" /> {t("hosts.loadingKey")}
+              </div>
+            )}
+          </div>
+          <DialogFooter>
+            <Button variant="ghost" onClick={() => void showCommand()} disabled={!cmd && !cmdError}>
+              {t("platform:fleet.enrollNewCommand")}
+            </Button>
+            <Button onClick={() => setCmdOpen(false)}>{t("common:done")}</Button>
           </DialogFooter>
         </DialogContent>
       </Dialog>

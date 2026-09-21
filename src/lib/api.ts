@@ -952,6 +952,14 @@ export interface OrganizationHost {
   sshPort?: number | null;
   sshUser?: string | null;
   bootstrappedAt?: string | null;
+  /** Provider that fronts SSH with its own gateway ("exe.dev", "gateway"), detected at registration. */
+  sshGateway?: string | null;
+  /** While set, a one-command enrollment link is armed for this host. */
+  enrollTokenExpiresAt?: string | null;
+  /** The host runs update/restart/seat ops itself over its connection (no SSH needed). */
+  opsOverWs?: boolean;
+  /** Latest operation, for the failure badge (fleet list only). */
+  lastOperation?: HostOperation | null;
   provider?: string | null;
   /** Provider VM id this host runs on (e.g. the Hostinger VM). */
   providerVmId?: string | null;
@@ -1113,6 +1121,27 @@ export async function connectHost(
     `/api/organizations/${orgId}/hosts/connect`,
     { method: "POST", body: JSON.stringify(params) }
   );
+}
+
+/** One-command enrollment: register a host whose machine enrolls itself. */
+export async function createEnrollableHost(
+  orgId: string,
+  name: string
+): Promise<{ host: OrganizationHost; enrollCommand: string; expiresAt: string }> {
+  return request(`/api/organizations/${orgId}/hosts/enrollable`, {
+    method: "POST",
+    body: JSON.stringify({ name }),
+  });
+}
+
+/** Mint a fresh enrollment command for a host (the previous one stops working). */
+export async function renewEnrollToken(
+  orgId: string,
+  hostId: string
+): Promise<{ host: OrganizationHost; enrollCommand: string; expiresAt: string }> {
+  return request(`/api/organizations/${orgId}/hosts/${hostId}/enroll-token`, {
+    method: "POST",
+  });
 }
 
 /** Existing provider (Hostinger) VMs the operator can register a host on. */
