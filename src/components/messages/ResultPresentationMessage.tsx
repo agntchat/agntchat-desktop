@@ -720,8 +720,14 @@ async function executeCTAAction(
     const to = String(itemDetails.to ?? "");
     const subject = itemTitle || String(itemDetails.subject ?? "");
     const body = String(itemDetails.body ?? "");
+    // A card bound to a saved Gmail draft (the server stamps `draft_id`
+    // when the agent saved one — Messaging.EmailDraftBinding). Send then
+    // sends THAT draft, thread and all; Save Draft revises it in place.
+    // Without it, a reply still threads via `reply_to_message_id`.
+    const draftId = String(itemDetails.draft_id ?? "").trim();
+    const replyToMessageId = String(itemDetails.reply_to_message_id ?? "").trim();
 
-    if (action === "send_email" && (!to || !body)) {
+    if (action === "send_email" && !draftId && (!to || !body)) {
       return { done: false, label: t("results.cannotSendMissing") };
     }
     if (action === "save_draft" && !body) {
@@ -735,6 +741,8 @@ async function executeCTAAction(
       body,
       ...(itemDetails.cc ? { cc: itemDetails.cc } : {}),
       ...(itemDetails.bcc ? { bcc: itemDetails.bcc } : {}),
+      ...(draftId ? { draft_id: draftId } : {}),
+      ...(replyToMessageId ? { reply_to_message_id: replyToMessageId } : {}),
       content_type: contentType,
     };
 
