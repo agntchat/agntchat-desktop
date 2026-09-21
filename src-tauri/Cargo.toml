@@ -1,6 +1,6 @@
 [package]
 name = "agentchat-desktop"
-version = "0.4.2"
+version = "0.4.3"
 description = "agntchat Desktop — Agent Management System"
 authors = ["agntchat"]
 edition = "2021"
