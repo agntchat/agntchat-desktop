@@ -2397,6 +2397,86 @@ function PublishSection({ agent }: { agent: Agent }) {
   );
 }
 
+// What an agent may do with email during a pulse — backend
+// `Agentchat.Agents.EmailAutonomy`, which enforces it and defaults to
+// "draft". Saved straight to `metadata.email_autonomy`, not through the
+// pulse panel's Save bar: it is a standing permission, not a schedule edit.
+const EMAIL_AUTONOMY_MODES = ["report", "draft", "send"] as const;
+type EmailAutonomy = (typeof EMAIL_AUTONOMY_MODES)[number];
+
+const EMAIL_AUTONOMY_LABEL_KEYS: Record<EmailAutonomy, string> = {
+  report: "pulse.email.options.report.label",
+  draft: "pulse.email.options.draft.label",
+  send: "pulse.email.options.send.label",
+};
+
+const EMAIL_AUTONOMY_DESC_KEYS: Record<EmailAutonomy, string> = {
+  report: "pulse.email.options.report.desc",
+  draft: "pulse.email.options.draft.desc",
+  send: "pulse.email.options.send.desc",
+};
+
+function EmailAutonomyField({ agent }: { agent: ManagedAgent["agent"] }) {
+  const { t } = useTranslation("agents");
+  const fetchAgents = useAgentStore((s) => s.fetchAgents);
+  const stored = agent.metadata?.email_autonomy;
+  const current: EmailAutonomy = EMAIL_AUTONOMY_MODES.includes(stored as EmailAutonomy)
+    ? (stored as EmailAutonomy)
+    : "draft";
+  const [pending, setPending] = useState<EmailAutonomy | null>(null);
+  const [error, setError] = useState<string | null>(null);
+  const shown = pending ?? current;
+
+  const choose = async (mode: EmailAutonomy) => {
+    if (mode === shown || pending) return;
+    setPending(mode);
+    setError(null);
+    try {
+      await updateAgent(agent.id, { metadata: { email_autonomy: mode } });
+      await fetchAgents();
+    } catch {
+      setError(t("pulse.email.saveFailed"));
+    } finally {
+      setPending(null);
+    }
+  };
+
+  return (
+    <div className="space-y-2">
+      <div role="radiogroup" aria-label={t("pulse.email.title")} className="grid grid-cols-3 gap-2">
+        {EMAIL_AUTONOMY_MODES.map((mode) => {
+          const selected = mode === shown;
+          return (
+            <button
+              key={mode}
+              type="button"
+              role="radio"
+              aria-checked={selected}
+              disabled={pending !== null}
+              onClick={() => choose(mode)}
+              className={cn(
+                "rounded-md border px-3 py-2 text-left transition-colors disabled:opacity-60",
+                selected
+                  ? "border-primary bg-primary/5"
+                  : "border-input hover:bg-muted/50"
+              )}
+            >
+              <span className="flex items-center gap-1.5 text-sm font-medium">
+                {selected && <Check className="w-3.5 h-3.5 shrink-0" />}
+                {t(EMAIL_AUTONOMY_LABEL_KEYS[mode])}
+              </span>
+              <span className="mt-0.5 block text-[11px] leading-snug text-muted-foreground">
+                {t(EMAIL_AUTONOMY_DESC_KEYS[mode])}
+              </span>
+            </button>
+          );
+        })}
+      </div>
+      {error && <p className="text-xs text-destructive">{error}</p>}
+    </div>
+  );
+}
+
 function PulsePanel({
   managed,
   onPulseChange,
@@ -2734,6 +2814,12 @@ function PulsePanel({
           onChange={(e) => { setPulseMd(e.target.value); setDirty(true); setProposed(false); }}
           placeholder={t("pulse.editorPlaceholder")}
         />
+      </Section>
+
+      <Separator />
+
+      <Section title={t("pulse.email.title")} help={t("pulse.email.hint")}>
+        <EmailAutonomyField agent={managed.agent} />
       </Section>
 
       <Separator />

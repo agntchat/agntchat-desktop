@@ -1373,6 +1373,25 @@ export const resources = {
         "delivery": "Delivery",
         "deliveryHint": "Which workspace should pulse alerts post into?",
         "editorPlaceholder": "e.g., Check if any reminders are due... or: [every: 6h] Check the inbox",
+        "email": {
+          "hint": "What this agent may do with your email during check-ins, when you didn't ask it to. Enforced by the server, not left to the agent.",
+          "options": {
+            "draft": {
+              "desc": "Saves the reply as a Gmail draft and shows it to you as a card with a Send button.",
+              "label": "Draft for review"
+            },
+            "report": {
+              "desc": "Tells you what needs a reply. Never drafts or sends.",
+              "label": "Just report"
+            },
+            "send": {
+              "desc": "Sends when it's confident, then shows you exactly what it sent.",
+              "label": "Send and tell me"
+            }
+          },
+          "saveFailed": "Couldn't save the email setting.",
+          "title": "Email"
+        },
         "errors": {
           "agentOffline": "{{name}} must be online for this. Bring the agent online and try again.",
           "agentTimeout": "{{name}} didn't respond in time. Try again in a moment.",
@@ -6833,6 +6852,25 @@ export const resources = {
         "delivery": "Entrega",
         "deliveryHint": "¿En qué espacio de trabajo deben publicarse las alertas del pulso?",
         "editorPlaceholder": "p. ej., Comprueba si vence algún recordatorio... o: [every: 6h] Revisa la bandeja de entrada",
+        "email": {
+          "hint": "Lo que este agente puede hacer con tu correo durante las revisiones, cuando no se lo pediste. Lo aplica el servidor, no el agente.",
+          "options": {
+            "draft": {
+              "desc": "Guarda la respuesta como borrador de Gmail y te la muestra como tarjeta con un botón Enviar.",
+              "label": "Borrador para revisar"
+            },
+            "report": {
+              "desc": "Te dice qué necesita respuesta. Nunca crea borradores ni envía.",
+              "label": "Solo informar"
+            },
+            "send": {
+              "desc": "Envía cuando está seguro y luego te muestra exactamente lo que envió.",
+              "label": "Enviar y avisarme"
+            }
+          },
+          "saveFailed": "No se pudo guardar la configuración de correo.",
+          "title": "Correo"
+        },
         "errors": {
           "agentOffline": "{{name}} debe estar en línea para esto. Conecta el agente e inténtalo de nuevo.",
           "agentTimeout": "{{name}} no respondió a tiempo. Vuelve a intentarlo en un momento.",
@@ -12293,6 +12331,25 @@ export const resources = {
         "delivery": "Zustellung",
         "deliveryHint": "In welchen Arbeitsbereich sollen Pulsmeldungen gepostet werden?",
         "editorPlaceholder": "z. B. Prüfen, ob Erinnerungen fällig sind … oder: [every: 6h] Posteingang prüfen",
+        "email": {
+          "hint": "Was dieser Agent bei Check-ins mit deinen E-Mails tun darf, ohne dass du ihn beauftragt hast. Wird vom Server durchgesetzt, nicht dem Agenten überlassen.",
+          "options": {
+            "draft": {
+              "desc": "Speichert die Antwort als Gmail-Entwurf und zeigt sie dir als Karte mit Senden-Button.",
+              "label": "Entwurf zur Prüfung"
+            },
+            "report": {
+              "desc": "Sagt dir, was eine Antwort braucht. Erstellt nie Entwürfe und sendet nie.",
+              "label": "Nur berichten"
+            },
+            "send": {
+              "desc": "Sendet, wenn er sich sicher ist, und zeigt dir genau, was er gesendet hat.",
+              "label": "Senden und Bescheid geben"
+            }
+          },
+          "saveFailed": "Die E-Mail-Einstellung konnte nicht gespeichert werden.",
+          "title": "E-Mail"
+        },
         "errors": {
           "agentOffline": "{{name}} muss dafür online sein. Bringe den Agenten online und versuche es erneut.",
           "agentTimeout": "{{name}} hat nicht rechtzeitig geantwortet. Versuche es gleich noch einmal.",
@@ -17753,6 +17810,25 @@ export const resources = {
         "delivery": "Livraison",
         "deliveryHint": "Dans quel espace de travail les alertes de pulsation doivent-elles être publiées ?",
         "editorPlaceholder": "ex. : Vérifier si des rappels sont dus... ou : [every: 6h] Vérifier la boîte de réception",
+        "email": {
+          "hint": "Ce que cet agent peut faire de vos e-mails pendant les vérifications, sans que vous le lui demandiez. Appliqué par le serveur, pas laissé à l'agent.",
+          "options": {
+            "draft": {
+              "desc": "Enregistre la réponse comme brouillon Gmail et vous la montre sous forme de carte avec un bouton Envoyer.",
+              "label": "Brouillon à valider"
+            },
+            "report": {
+              "desc": "Vous dit ce qui attend une réponse. Ne crée jamais de brouillon et n'envoie jamais.",
+              "label": "Signaler seulement"
+            },
+            "send": {
+              "desc": "Envoie quand il est sûr de lui, puis vous montre exactement ce qu'il a envoyé.",
+              "label": "Envoyer et me prévenir"
+            }
+          },
+          "saveFailed": "Impossible d'enregistrer le réglage e-mail.",
+          "title": "E-mail"
+        },
         "errors": {
           "agentOffline": "{{name}} doit être en ligne pour cela. Mettez l'agent en ligne et réessayez.",
           "agentTimeout": "{{name}} n'a pas répondu à temps. Réessayez dans un instant.",
@@ -23213,6 +23289,25 @@ export const resources = {
         "delivery": "Entrega",
         "deliveryHint": "Em qual workspace os alertas de pulso devem ser publicados?",
         "editorPlaceholder": "ex.: Verifique se há lembretes pendentes... ou: [every: 6h] Verifique a caixa de entrada",
+        "email": {
+          "hint": "O que este agente pode fazer com o seu e-mail durante as verificações, quando você não pediu. Aplicado pelo servidor, não deixado ao agente.",
+          "options": {
+            "draft": {
+              "desc": "Salva a resposta como rascunho do Gmail e mostra como um cartão com um botão Enviar.",
+              "label": "Rascunho para revisar"
+            },
+            "report": {
+              "desc": "Diz o que precisa de resposta. Nunca cria rascunhos nem envia.",
+              "label": "Só relatar"
+            },
+            "send": {
+              "desc": "Envia quando tem confiança e depois mostra exatamente o que enviou.",
+              "label": "Enviar e me avisar"
+            }
+          },
+          "saveFailed": "Não foi possível salvar a configuração de e-mail.",
+          "title": "E-mail"
+        },
         "errors": {
           "agentOffline": "{{name}} precisa estar on-line para isso. Coloque o agente on-line e tente novamente.",
           "agentTimeout": "{{name}} não respondeu a tempo. Tente novamente em instantes.",
@@ -28673,6 +28768,25 @@ export const resources = {
         "delivery": "配信先",
         "deliveryHint": "パルスの通知はどのワークスペースに投稿しますか？",
         "editorPlaceholder": "例: リマインダーが期限切れでないか確認する... または: [every: 6h] 受信トレイを確認",
+        "email": {
+          "hint": "チェックイン中に、あなたが頼んでいないときにこのエージェントがメールで何をしてよいか。エージェント任せではなく、サーバーが適用します。",
+          "options": {
+            "draft": {
+              "desc": "返信を Gmail の下書きとして保存し、送信ボタン付きのカードで表示します。",
+              "label": "下書きを確認"
+            },
+            "report": {
+              "desc": "返信が必要なものを伝えます。下書きも送信もしません。",
+              "label": "報告のみ"
+            },
+            "send": {
+              "desc": "確信があるときに送信し、送信した内容をそのまま表示します。",
+              "label": "送信して知らせる"
+            }
+          },
+          "saveFailed": "メール設定を保存できませんでした。",
+          "title": "メール"
+        },
         "errors": {
           "agentOffline": "これには {{name}} がオンラインである必要があります。エージェントをオンラインにして再試行してください。",
           "agentTimeout": "{{name}} が時間内に応答しませんでした。しばらくしてから再試行してください。",
@@ -34133,6 +34247,25 @@ export const resources = {
         "delivery": "投递",
         "deliveryHint": "脉搏提醒应发布到哪个工作区？",
         "editorPlaceholder": "例如：检查是否有提醒事项到期… 或：[every: 6h] 检查收件箱",
+        "email": {
+          "hint": "在你没有要求时，此代理在例行检查中可以如何处理你的邮件。由服务器强制执行，而不是交给代理自行决定。",
+          "options": {
+            "draft": {
+              "desc": "将回复保存为 Gmail 草稿，并以带“发送”按钮的卡片展示给你。",
+              "label": "草稿待审"
+            },
+            "report": {
+              "desc": "告诉你哪些邮件需要回复。从不起草，也从不发送。",
+              "label": "仅汇报"
+            },
+            "send": {
+              "desc": "有把握时直接发送，然后原样展示发送的内容。",
+              "label": "发送并告诉我"
+            }
+          },
+          "saveFailed": "无法保存邮件设置。",
+          "title": "邮件"
+        },
         "errors": {
           "agentOffline": "此操作需要 {{name}} 处于在线状态。请先让该智能体上线，然后重试。",
           "agentTimeout": "{{name}} 未及时响应。请稍后重试。",
@@ -39593,6 +39726,25 @@ export const resources = {
         "delivery": "전달",
         "deliveryHint": "펄스 알림을 어느 워크스페이스에 게시해야 하나요?",
         "editorPlaceholder": "예: 마감된 리마인더가 있는지 확인... 또는: [every: 6h] 받은편지함 확인",
+        "email": {
+          "hint": "요청하지 않았을 때 체크인 중 이 에이전트가 이메일로 할 수 있는 일. 에이전트에 맡기지 않고 서버가 적용합니다.",
+          "options": {
+            "draft": {
+              "desc": "답장을 Gmail 초안으로 저장하고 보내기 버튼이 있는 카드로 보여 줍니다.",
+              "label": "검토용 초안"
+            },
+            "report": {
+              "desc": "답장이 필요한 것을 알려 줍니다. 초안을 만들거나 보내지 않습니다.",
+              "label": "보고만"
+            },
+            "send": {
+              "desc": "확신이 있을 때 보내고, 보낸 내용을 그대로 보여 줍니다.",
+              "label": "보내고 알려 주기"
+            }
+          },
+          "saveFailed": "이메일 설정을 저장하지 못했습니다.",
+          "title": "이메일"
+        },
         "errors": {
           "agentOffline": "이 작업에는 {{name}}이(가) 온라인 상태여야 합니다. 에이전트를 온라인으로 전환한 후 다시 시도하세요.",
           "agentTimeout": "{{name}}이(가) 제때 응답하지 않았습니다. 잠시 후 다시 시도하세요.",
@@ -45053,6 +45205,25 @@ export const resources = {
         "delivery": "Consegna",
         "deliveryHint": "In quale workspace dovrebbero essere pubblicati gli avvisi pulse?",
         "editorPlaceholder": "es.: Controlla se ci sono promemoria in scadenza... oppure: [every: 6h] Controlla la posta",
+        "email": {
+          "hint": "Cosa può fare questo agente con la tua email durante i controlli, quando non gliel'hai chiesto. Applicato dal server, non lasciato all'agente.",
+          "options": {
+            "draft": {
+              "desc": "Salva la risposta come bozza Gmail e te la mostra come scheda con un pulsante Invia.",
+              "label": "Bozza da rivedere"
+            },
+            "report": {
+              "desc": "Ti dice cosa richiede una risposta. Non crea mai bozze e non invia mai.",
+              "label": "Solo segnalare"
+            },
+            "send": {
+              "desc": "Invia quando è sicuro, poi ti mostra esattamente cosa ha inviato.",
+              "label": "Invia e avvisami"
+            }
+          },
+          "saveFailed": "Impossibile salvare l'impostazione email.",
+          "title": "Email"
+        },
         "errors": {
           "agentOffline": "{{name}} deve essere online per questo. Porta l'agente online e riprova.",
           "agentTimeout": "{{name}} non ha risposto in tempo. Riprova tra un momento.",
@@ -50513,6 +50684,25 @@ export const resources = {
         "delivery": "डिलीवरी",
         "deliveryHint": "पल्स अलर्ट किस वर्कस्पेस में पोस्ट होने चाहिए?",
         "editorPlaceholder": "जैसे, जाँचें कि कोई रिमाइंडर देय है या नहीं... या: [every: 6h] इनबॉक्स जाँचें",
+        "email": {
+          "hint": "चेक-इन के दौरान, जब आपने नहीं कहा, यह एजेंट आपके ईमेल के साथ क्या कर सकता है। यह सर्वर लागू करता है, एजेंट पर नहीं छोड़ा जाता।",
+          "options": {
+            "draft": {
+              "desc": "जवाब को Gmail ड्राफ़्ट के रूप में सहेजता है और भेजें बटन वाले कार्ड में दिखाता है।",
+              "label": "समीक्षा के लिए ड्राफ़्ट"
+            },
+            "report": {
+              "desc": "बताता है कि किसे जवाब चाहिए। कभी ड्राफ़्ट या भेजता नहीं।",
+              "label": "सिर्फ़ बताएं"
+            },
+            "send": {
+              "desc": "भरोसा होने पर भेजता है, फिर ठीक वही दिखाता है जो भेजा।",
+              "label": "भेजें और बताएं"
+            }
+          },
+          "saveFailed": "ईमेल सेटिंग सहेजी नहीं जा सकी।",
+          "title": "ईमेल"
+        },
         "errors": {
           "agentOffline": "इसके लिए {{name}} का ऑनलाइन होना ज़रूरी है। एजेंट को ऑनलाइन करके दोबारा कोशिश करें।",
           "agentTimeout": "{{name}} ने समय पर जवाब नहीं दिया। थोड़ी देर बाद दोबारा कोशिश करें।",
