@@ -5,10 +5,10 @@ import type { Message } from "../../lib/api";
 import { cn } from "../../lib/utils";
 import { sanitizeHtml } from "../../lib/sanitizeHtml";
 import { MarkdownContent } from "./MarkdownContent";
+import { resolveIcon } from "../../lib/cardIcons";
 import { ScreenplayBody, isScreenplayTemplate } from "./ScreenplayBody";
 import {
   Star,
-  MapPin,
   ExternalLink,
   ChevronDown,
   ChevronLeft,
@@ -19,33 +19,14 @@ import {
   Calendar,
   ShoppingBag,
   Package,
-  Clock,
   DollarSign,
   Mail,
   Send,
-  Tag,
   CheckCircle,
-  User,
-  ShieldCheck,
-  Navigation,
-  TrendingUp,
-  TrendingDown,
   ArrowUpRight,
   ArrowDownRight,
   Minus,
-  Phone,
-  Globe,
-  Briefcase,
-  CircleDot,
   Contact,
-  Inbox,
-  Building2,
-  Landmark,
-  ArrowLeftRight,
-  Target,
-  Newspaper,
-  Banknote,
-  BarChart3,
 } from "lucide-react";
 import type { LucideIcon } from "lucide-react";
 
@@ -138,44 +119,6 @@ interface RPData {
 // Icon registry
 // ---------------------------------------------------------------------------
 
-// Keep in sync with web's ResultPresentationMessage ICON_MAP, mobile's
-// lib/detailTemplate/icons.tsx, and the backend catalog
-// (ResponseTemplates.Schema.icon_catalog/0).
-const ICON_MAP: Record<string, LucideIcon> = {
-  bed: Bed,
-  "map-pin": MapPin,
-  clock: Clock,
-  plane: Plane,
-  utensils: Utensils,
-  calendar: Calendar,
-  navigation: Navigation,
-  "shield-check": ShieldCheck,
-  "shopping-bag": ShoppingBag,
-  "dollar-sign": DollarSign,
-  mail: Mail,
-  send: Send,
-  inbox: Inbox,
-  tag: Tag,
-  "check-circle": CheckCircle,
-  user: User,
-  star: Star,
-  package: Package,
-  "external-link": ExternalLink,
-  "trending-up": TrendingUp,
-  "trending-down": TrendingDown,
-  phone: Phone,
-  globe: Globe,
-  briefcase: Briefcase,
-  "circle-dot": CircleDot,
-  "building-2": Building2,
-  landmark: Landmark,
-  "arrow-left-right": ArrowLeftRight,
-  target: Target,
-  newspaper: Newspaper,
-  banknote: Banknote,
-  "bar-chart-3": BarChart3,
-};
-
 const RESULT_TYPE_ICONS: Record<string, LucideIcon> = {
   hotel: Bed,
   restaurant: Utensils,
@@ -187,11 +130,6 @@ const RESULT_TYPE_ICONS: Record<string, LucideIcon> = {
   contact: Contact,
   generic: Package,
 };
-
-function resolveIcon(name?: string): LucideIcon | null {
-  if (!name) return null;
-  return ICON_MAP[name] ?? null;
-}
 
 function resultTypeIcon(type?: string): LucideIcon {
   if (!type) return Package;

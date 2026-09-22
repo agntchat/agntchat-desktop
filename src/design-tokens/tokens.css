@@ -38,6 +38,7 @@
   --color-success: #22A354;
   --color-success-light: #E6F5EC;
   --color-warning: #FFB800;
+  --color-warning-foreground: #1A1A1F;
   --color-warning-light: #FFF6E0;
   --color-info: #007BFF;
   --color-sidebar-background: #FCFCFC;
@@ -209,6 +210,7 @@
   --color-success: #2BCE68;
   --color-success-light: #0F3320;
   --color-warning: #FFD000;
+  --color-warning-foreground: #1A1A1F;
   --color-warning-light: #332800;
   --color-info: #3399FF;
   --color-sidebar-background: #0F0F13;
@@ -271,6 +273,7 @@ html.debug-tokens {
   --color-success: #00FF00 !important;
   --color-success-light: #CCFFCC !important;
   --color-warning: #FFFF00 !important;
+  --color-warning-foreground: #FF0000 !important;
   --color-warning-light: #FFFFCC !important;
   --color-info: #FF00FF !important;
   --color-sidebar-background: #00FFFF !important;
@@ -343,6 +346,7 @@ html.debug-tokens [class*="rounded"] { border-radius: 0 !important; }
   --ring: var(--color-ring);
   --success: var(--color-success);
   --warning: var(--color-warning);
+  --warning-foreground: var(--color-warning-foreground);
   --info: var(--color-info);
   --danger: var(--color-danger);
   --surface-hover: var(--color-surface-hover);

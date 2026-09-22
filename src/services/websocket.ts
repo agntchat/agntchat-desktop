@@ -236,6 +236,7 @@ class WebSocketService {
       "conversation_avatar_changed",
       "message_deleted",
       "message_metadata_changed",
+      "surface_update",
       "reaction_added",
       "reaction_removed",
       "message_streaming",

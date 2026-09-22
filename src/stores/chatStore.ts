@@ -3,6 +3,7 @@ import * as api from "../lib/api";
 import type { Conversation, Message } from "../lib/api";
 import { track, ANALYTICS_EVENTS } from "../lib/analytics";
 import { ws } from "../services/websocket";
+import { mergeSurfaceOperations, surfaceOperations } from "../a2ui/operations";
 import { useAuthStore } from "./authStore";
 import { useStreamingStore } from "./streamingStore";
 import { usePresenceStore } from "./presenceStore";
@@ -388,6 +389,18 @@ interface ChatState {
    * devices' badges clear while we read here. Debounced; no-ops when
    * backgrounded. */
   markReadIfActiveAndFocused: (conversationId: string) => void;
+
+  /** Append operations to a `Surface` row's
+   *  `contentStructured.data.operations`: the stamp the action endpoint
+   *  returned to the presser (applied optimistically), and later the same
+   *  stamp for everyone else as `surface_update`. An `updateDataModel` on a
+   *  path already present is skipped, so the two never double-apply.
+   *  Returns false when the row is not in the store. */
+  appendSurfaceOperations: (
+    conversationId: string,
+    messageId: string,
+    operations: Record<string, unknown>[]
+  ) => boolean;
 
   // WS wiring — returns cleanup
   initWsListeners: () => () => void;
@@ -885,6 +898,32 @@ export const useChatStore = create<ChatState>((set, get) => ({
     op.catch((e) => console.warn("[chat] toggleReaction failed", e));
   },
 
+  appendSurfaceOperations: (conversationId, messageId, operations) => {
+    let found = false;
+    set((s) => {
+      const current = s.messages[conversationId] ?? [];
+      const idx = current.findIndex((m) => m.id === messageId);
+      if (idx < 0) return s;
+      found = true;
+
+      const msg = current[idx]!;
+      const structured = msg.contentStructured;
+      const existing = surfaceOperations(msg);
+      // Only a row that already carries a surface takes a stamp.
+      if (!structured || !existing) return s;
+      const merged = mergeSurfaceOperations(existing, operations);
+      if (merged === existing) return s;
+
+      const updated = [...current];
+      updated[idx] = {
+        ...msg,
+        contentStructured: { ...structured, data: { ...structured.data, operations: merged } },
+      };
+      return { messages: { ...s.messages, [conversationId]: updated } };
+    });
+    return found;
+  },
+
   applyReactionEvent: (conversationId, messageId, emoji, participantId, kind) => {
     set((s) => {
       const current = s.messages[conversationId] ?? [];
@@ -1321,6 +1360,19 @@ export const useChatStore = create<ChatState>((set, get) => ({
             },
           };
         });
+      })
+    );
+
+    // A completion stamped on a Surface row (someone pressed a card button):
+    // the operations append to the row and SurfaceMessage feeds only the new
+    // tail to its processor.
+    unsubs.push(
+      ws.on("conv:surface_update", (payload) => {
+        const convId = payload._conversationId as string;
+        const messageId = payload.messageId as string;
+        const operations = payload.operations;
+        if (!convId || !messageId || !Array.isArray(operations)) return;
+        get().appendSurfaceOperations(convId, messageId, operations as Record<string, unknown>[]);
       })
     );
 

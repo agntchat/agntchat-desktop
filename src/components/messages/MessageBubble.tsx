@@ -30,6 +30,7 @@ import {
   StatusUpdateMessage,
 } from "./StatusUpdateMessage";
 import { ResultPresentationMessage } from "./ResultPresentationMessage";
+import { SurfaceMessage } from "./SurfaceMessage";
 import {
   isCompactionSummaryMessage,
   CompactionSummaryMessage,
@@ -344,6 +345,8 @@ export const MessageBubble = memo(function MessageBubble({
               <ToolMessage message={message} />
             ) : isFileMessage(message) ? (
               <FileMessage message={message} />
+            ) : message.messageType === "Surface" ? (
+              <SurfaceMessage message={message} />
             ) : isResultPresentationMessage(message) ? (
               <ResultPresentationMessage message={message} />
             ) : (

@@ -6,6 +6,7 @@ import {
   FileCode2,
   GitBranch,
   LayoutGrid,
+  LayoutTemplate,
   ListChecks,
   MessageSquare,
   Paperclip,
@@ -29,6 +30,7 @@ import { MemorySavedToastCard } from "../MemorySavedToast";
 import { OnboardingProgressToastCard } from "../OnboardingProgressToast";
 import { PermissionToastCard } from "../PermissionToast";
 import { cn } from "../../lib/utils";
+import { hotelSurfaceData } from "./surfaceFixtures";
 import type {
   ActiveStream,
   Artifact,
@@ -1208,6 +1210,64 @@ export function buildPreviewCategories(
                     })),
                   },
                 },
+              })}
+            />
+          ),
+        },
+      ],
+    },
+
+    // ------------------------------------------------------------ surfaces
+    // A2UI surfaces: the server-compiled successor to result cards
+    // (docs/reference/a2ui-surfaces.md), rendered by src/a2ui/ — a copy of the
+    // web client's renderer. Link actions only; the stamped state's one event
+    // action is already complete, so nothing here can post.
+    {
+      id: "surfaces",
+      name: "Surfaces",
+      description: "Server-compiled A2UI response cards",
+      icon: LayoutTemplate,
+      items: [
+        {
+          label: "Hotel search",
+          caption: "Three cards, carousel below 480px",
+          interactive: true,
+          node: (
+            <Bubble
+              message={mkMsg({
+                messageType: "Surface",
+                contentType: "structured",
+                content: "3 hotels near the venue",
+                contentStructured: hotelSurfaceData({ image: CHART_IMG, count: 3 }),
+              })}
+            />
+          ),
+        },
+        {
+          label: "Single result",
+          interactive: true,
+          node: (
+            <Bubble
+              message={mkMsg({
+                messageType: "Surface",
+                contentType: "structured",
+                content: "1 hotel near the venue",
+                contentStructured: hotelSurfaceData({ image: CHART_IMG, count: 1 }),
+              })}
+            />
+          ),
+        },
+        {
+          label: "Completed action",
+          caption: "Compare stamped done in the data model",
+          interactive: false,
+          node: (
+            <Bubble
+              message={mkMsg({
+                messageType: "Surface",
+                contentType: "structured",
+                content: "1 hotel near the venue",
+                contentStructured: hotelSurfaceData({ image: CHART_IMG, count: 1, completed: true }),
               })}
             />
           ),
