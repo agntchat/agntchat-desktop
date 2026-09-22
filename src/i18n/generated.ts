@@ -2913,47 +2913,8 @@ export const resources = {
       "resizeList": "Resize conversation list",
       "results": {
         "actionFailed": "Action failed",
-        "cannotAcceptMissing": "Can't accept — this card has no waitlist entry on it.",
-        "cannotSaveDraftEmpty": "Cannot save draft — no email body.",
-        "cannotSendMissing": "Cannot send — missing recipient or body.",
-        "copied": "Copied",
-        "count_one": "{{count}} result",
-        "count_other": "{{count}} results",
-        "draftSaved": "Draft saved to Gmail: \"{{subject}}\"",
-        "emailSentTo": "Email sent to {{to}}",
-        "empty": "No results to display",
-        "enableInSettings": "Enable in Settings",
         "failedWith": "Failed: {{message}}",
-        "imageAlt": "Result image",
-        "locationShared": "Location shared with me",
-        "more": "+{{count}} more",
-        "noAgentForAvatar": "Couldn't tell which agent to update.",
-        "noAgentForPulse": "Couldn't tell which agent to enable Pulse for.",
-        "nonstop": "Nonstop",
-        "nothingToCopy": "Nothing to copy",
-        "notificationsOn": "Notifications on",
-        "percentOff": "{{pct}}% off",
-        "photoSet": "Photo set!",
-        "photos_one": "{{count}} photo",
-        "photos_other": "{{count}} photos",
-        "pulseEnabled": "Pulse enabled",
-        "resultCount_one": "{{count}} result",
-        "resultCount_other": "{{count}} results",
-        "saveDraft": "Save Draft",
-        "sending": "Sending...",
-        "showFullContent": "Show full content",
-        "showLess": "Show less",
-        "skipped": "Skipped",
-        "sources": "Sources:",
-        "stops_one": "{{count}} stop",
-        "stops_other": "{{count}} stops",
-        "title": "Results",
-        "uploading": "Uploading...",
-        "viewDetails": "View details",
-        "waitlistAlreadyInvited": "Already accepted — code {{code}}",
-        "waitlistInviteEmailed": "Accepted — invite emailed to {{email}}",
-        "waitlistInviteIssued": "Accepted — code {{code}}",
-        "waitlistInvited": "Accepted"
+        "nothingToCopy": "Nothing to copy"
       },
       "scrollUpForMore": "Scroll up for more",
       "search": {
@@ -5536,13 +5497,6 @@ export const resources = {
       "createTooltip": "Create card",
       "deleteConfirm": "Delete card \"{{name}}\"? This cannot be undone.",
       "descriptionPlaceholder": "What does this card display?",
-      "details": {
-        "nonstop": "Nonstop",
-        "stops_one": "{{count}} stop",
-        "stops_other": "{{count}} stops"
-      },
-      "detailsLabel": "Details",
-      "displayType": "Display Type",
       "displayTypes": {
         "body": "body",
         "change": "change",
@@ -5553,15 +5507,13 @@ export const resources = {
       },
       "docs": "Docs",
       "empty": {
-        "subtitle": "Platform cards define how agents present results",
         "title": "No Cards"
       },
       "emptyDescription": "Cards define how this agent formats structured results (hotels, emails, products, etc.)",
       "emptyHint": "Create one to get started.",
       "emptyLabel": "No cards yet",
       "errors": {
-        "loadFailed": "Failed to load cards",
-        "previewFailed": "Failed to generate preview"
+        "loadFailed": "Failed to load cards"
       },
       "field": {
         "displayType": "Display Type",
@@ -5579,22 +5531,12 @@ export const resources = {
       },
       "fieldCount_one": "{{count}} field",
       "fieldCount_other": "{{count}} fields",
-      "fieldFormat": "Format",
-      "fieldFormatPlaceholder": "e.g. currency, date",
-      "fieldIcon": "Icon",
-      "fieldIconPlaceholder": "lucide icon name",
-      "fieldKey": "Key",
-      "fieldLabel": "Label",
-      "fieldLabelPlaceholder": "Display label",
-      "fieldsCount": "Fields ({{count}})",
       "fieldsWithCount": "Fields ({{count}})",
       "fields_one": "{{count}} field",
       "fields_other": "{{count}} fields",
       "filterAll_one": "All ({{count}})",
       "filterAll_other": "All ({{count}})",
       "gallery": "Card Gallery",
-      "hidePreview": "Hide Card Preview",
-      "highlightColor": "Highlight Color",
       "loading": "Loading cards…",
       "name": "Card Name",
       "nameHint": "Use snake_case. This identifies the card in API calls.",
@@ -5603,24 +5545,12 @@ export const resources = {
       "noFields": "No fields defined yet. Add one to get started.",
       "noMatches": "No matching cards.",
       "noSampleData": "No sample data on this card. The rendered HTML further down uses the server's preview pipeline regardless.",
-      "noSampleDataShort": "No sample data — add sampleData to see a preview",
       "notFound": "Card not found",
       "previewAll": "Preview all cards",
       "previewFailed": "Failed to generate preview",
       "previewLabel": "Card as delivered to conversation",
-      "rawJson": "Raw JSON",
-      "removeField": "Remove field",
       "removeFromAgent": "Remove from Agent",
-      "renderedHtml": "Rendered HTML",
       "resizeList": "Resize card list",
-      "resultType": {
-        "event": "Event",
-        "flight": "Flight",
-        "generic": "Generic",
-        "hotel": "Hotel",
-        "product": "Product",
-        "restaurant": "Restaurant"
-      },
       "resultTypeLabel": "Result Type",
       "resultTypes": {
         "contact": "Contact",
@@ -5634,7 +5564,6 @@ export const resources = {
         "restaurant": "Restaurant"
       },
       "sampleData": "Sample Data",
-      "sampleTitle": "Sample {{type}}",
       "saveChanges": "Save Changes",
       "searchPlaceholder": "Search cards...",
       "sections": {
@@ -5646,11 +5575,8 @@ export const resources = {
       },
       "select": "Select a card",
       "selectHint": "Pick one from the left to see its preview, fields, and raw JSON.",
-      "selectTemplate": "Select a card",
       "selectToPreview": "Select a card to preview",
       "setNameForPreview": "Set a card name above to generate a preview.",
-      "setNameHint": "Set a card name above to generate a preview.",
-      "showPreview": "Show Card Preview",
       "surface": {
         "carousel": "carousel",
         "done": {
@@ -5675,8 +5601,7 @@ export const resources = {
         "slideOf": "{{index}} of {{count}}",
         "sources": "Sources",
         "trend": "Trend, {{count}} points, {{first}} to {{last}}"
-      },
-      "template": "Card"
+      }
     }
   },
   "es": {
@@ -8565,47 +8490,8 @@ export const resources = {
       "resizeList": "Redimensionar la lista de conversaciones",
       "results": {
         "actionFailed": "La acción falló",
-        "cannotAcceptMissing": "No se puede aceptar: esta tarjeta no tiene ninguna entrada de la lista de espera.",
-        "cannotSaveDraftEmpty": "No se puede guardar el borrador — el correo no tiene cuerpo.",
-        "cannotSendMissing": "No se puede enviar — falta el destinatario o el cuerpo.",
-        "copied": "Copiado",
-        "count_one": "{{count}} resultado",
-        "count_other": "{{count}} resultados",
-        "draftSaved": "Borrador guardado en Gmail: \"{{subject}}\"",
-        "emailSentTo": "Correo enviado a {{to}}",
-        "empty": "No hay resultados que mostrar",
-        "enableInSettings": "Actívalo en Ajustes",
         "failedWith": "Error: {{message}}",
-        "imageAlt": "Imagen del resultado",
-        "locationShared": "Ubicación compartida conmigo",
-        "more": "+{{count}} más",
-        "noAgentForAvatar": "No se pudo determinar qué agente actualizar.",
-        "noAgentForPulse": "No se pudo determinar para qué agente activar Pulse.",
-        "nonstop": "Directo",
-        "nothingToCopy": "Nada que copiar",
-        "notificationsOn": "Notificaciones activadas",
-        "percentOff": "{{pct}}% de descuento",
-        "photoSet": "¡Foto establecida!",
-        "photos_one": "{{count}} foto",
-        "photos_other": "{{count}} fotos",
-        "pulseEnabled": "Pulse activado",
-        "resultCount_one": "{{count}} resultado",
-        "resultCount_other": "{{count}} resultados",
-        "saveDraft": "Guardar borrador",
-        "sending": "Enviando...",
-        "showFullContent": "Mostrar todo el contenido",
-        "showLess": "Mostrar menos",
-        "skipped": "Omitido",
-        "sources": "Fuentes:",
-        "stops_one": "{{count}} escala",
-        "stops_other": "{{count}} escalas",
-        "title": "Resultados",
-        "uploading": "Subiendo...",
-        "viewDetails": "Ver detalles",
-        "waitlistAlreadyInvited": "Ya aceptado: código {{code}}",
-        "waitlistInviteEmailed": "Aceptado: invitación enviada a {{email}}",
-        "waitlistInviteIssued": "Aceptado: código {{code}}",
-        "waitlistInvited": "Aceptado"
+        "nothingToCopy": "Nada que copiar"
       },
       "scrollUpForMore": "Desplázate hacia arriba para ver más",
       "search": {
@@ -11188,13 +11074,6 @@ export const resources = {
       "createTooltip": "Crear tarjeta",
       "deleteConfirm": "¿Eliminar la tarjeta «{{name}}»? Esta acción no se puede deshacer.",
       "descriptionPlaceholder": "¿Qué muestra esta tarjeta?",
-      "details": {
-        "nonstop": "Sin escalas",
-        "stops_one": "{{count}} escala",
-        "stops_other": "{{count}} escalas"
-      },
-      "detailsLabel": "Detalles",
-      "displayType": "Tipo de visualización",
       "displayTypes": {
         "body": "cuerpo",
         "change": "cambio",
@@ -11205,15 +11084,13 @@ export const resources = {
       },
       "docs": "Documentación",
       "empty": {
-        "subtitle": "Las tarjetas de la plataforma definen cómo los agentes presentan los resultados",
         "title": "No hay tarjetas"
       },
       "emptyDescription": "Las tarjetas definen cómo este agente da formato a los resultados estructurados (hoteles, correos, productos, etc.)",
       "emptyHint": "Crea una para empezar.",
       "emptyLabel": "Aún no hay tarjetas",
       "errors": {
-        "loadFailed": "No se pudieron cargar las tarjetas",
-        "previewFailed": "No se pudo generar la vista previa"
+        "loadFailed": "No se pudieron cargar las tarjetas"
       },
       "field": {
         "displayType": "Tipo de visualización",
@@ -11231,22 +11108,12 @@ export const resources = {
       },
       "fieldCount_one": "{{count}} campo",
       "fieldCount_other": "{{count}} campos",
-      "fieldFormat": "Formato",
-      "fieldFormatPlaceholder": "p. ej. currency, date",
-      "fieldIcon": "Icono",
-      "fieldIconPlaceholder": "nombre del icono (lucide)",
-      "fieldKey": "Clave",
-      "fieldLabel": "Etiqueta",
-      "fieldLabelPlaceholder": "Etiqueta visible",
-      "fieldsCount": "Campos ({{count}})",
       "fieldsWithCount": "Campos ({{count}})",
       "fields_one": "{{count}} campo",
       "fields_other": "{{count}} campos",
       "filterAll_one": "Todas ({{count}})",
       "filterAll_other": "Todas ({{count}})",
       "gallery": "Galería de tarjetas",
-      "hidePreview": "Ocultar vista previa de la tarjeta",
-      "highlightColor": "Color de resaltado",
       "loading": "Cargando tarjetas…",
       "name": "Nombre de la tarjeta",
       "nameHint": "Usa snake_case. Identifica la tarjeta en las llamadas a la API.",
@@ -11255,24 +11122,12 @@ export const resources = {
       "noFields": "Aún no hay campos definidos. Añade uno para empezar.",
       "noMatches": "No hay tarjetas que coincidan.",
       "noSampleData": "Esta tarjeta no tiene datos de ejemplo. El HTML renderizado más abajo usa igualmente el proceso de vista previa del servidor.",
-      "noSampleDataShort": "Sin datos de ejemplo: añade sampleData para ver una vista previa",
       "notFound": "Tarjeta no encontrada",
       "previewAll": "Ver todas las tarjetas",
       "previewFailed": "No se pudo generar la vista previa",
       "previewLabel": "Tarjeta tal como se entrega en la conversación",
-      "rawJson": "JSON sin procesar",
-      "removeField": "Quitar campo",
       "removeFromAgent": "Quitar del agente",
-      "renderedHtml": "HTML renderizado",
       "resizeList": "Redimensionar la lista de tarjetas",
-      "resultType": {
-        "event": "Evento",
-        "flight": "Vuelo",
-        "generic": "Genérico",
-        "hotel": "Hotel",
-        "product": "Producto",
-        "restaurant": "Restaurante"
-      },
       "resultTypeLabel": "Tipo de resultado",
       "resultTypes": {
         "contact": "Contacto",
@@ -11286,7 +11141,6 @@ export const resources = {
         "restaurant": "Restaurante"
       },
       "sampleData": "Datos de ejemplo",
-      "sampleTitle": "Ejemplo de {{type}}",
       "saveChanges": "Guardar cambios",
       "searchPlaceholder": "Buscar tarjetas...",
       "sections": {
@@ -11298,11 +11152,8 @@ export const resources = {
       },
       "select": "Selecciona una tarjeta",
       "selectHint": "Elige una a la izquierda para ver su vista previa, sus campos y su JSON sin procesar.",
-      "selectTemplate": "Selecciona una tarjeta",
       "selectToPreview": "Selecciona una tarjeta para previsualizarla",
       "setNameForPreview": "Escribe arriba un nombre de tarjeta para generar la vista previa.",
-      "setNameHint": "Escribe un nombre de tarjeta arriba para generar una vista previa.",
-      "showPreview": "Mostrar vista previa de la tarjeta",
       "surface": {
         "carousel": "carrusel",
         "done": {
@@ -11327,8 +11178,7 @@ export const resources = {
         "slideOf": "{{index}} de {{count}}",
         "sources": "Fuentes",
         "trend": "Tendencia, {{count}} puntos, de {{first}} a {{last}}"
-      },
-      "template": "Tarjeta"
+      }
     }
   },
   "de": {
@@ -14217,47 +14067,8 @@ export const resources = {
       "resizeList": "Größe der Unterhaltungsliste ändern",
       "results": {
         "actionFailed": "Aktion fehlgeschlagen",
-        "cannotAcceptMissing": "Annahme nicht möglich — auf dieser Karte steht kein Wartelisteneintrag.",
-        "cannotSaveDraftEmpty": "Entwurf kann nicht gespeichert werden — keine E-Mail-Nachricht.",
-        "cannotSendMissing": "Senden nicht möglich — Empfänger oder Nachrichtentext fehlt.",
-        "copied": "Kopiert",
-        "count_one": "{{count}} Ergebnis",
-        "count_other": "{{count}} Ergebnisse",
-        "draftSaved": "Entwurf in Gmail gespeichert: „{{subject}}“",
-        "emailSentTo": "E-Mail gesendet an {{to}}",
-        "empty": "Keine Ergebnisse anzuzeigen",
-        "enableInSettings": "In den Einstellungen aktivieren",
         "failedWith": "Fehlgeschlagen: {{message}}",
-        "imageAlt": "Ergebnisbild",
-        "locationShared": "Standort mit mir geteilt",
-        "more": "+{{count}} weitere",
-        "noAgentForAvatar": "Es konnte nicht ermittelt werden, welcher Agent aktualisiert werden soll.",
-        "noAgentForPulse": "Es konnte nicht ermittelt werden, für welchen Agenten Pulse aktiviert werden soll.",
-        "nonstop": "Nonstop",
-        "nothingToCopy": "Nichts zu kopieren",
-        "notificationsOn": "Benachrichtigungen aktiviert",
-        "percentOff": "{{pct}}% Rabatt",
-        "photoSet": "Foto festgelegt!",
-        "photos_one": "{{count}} Foto",
-        "photos_other": "{{count}} Fotos",
-        "pulseEnabled": "Pulse aktiviert",
-        "resultCount_one": "{{count}} Ergebnis",
-        "resultCount_other": "{{count}} Ergebnisse",
-        "saveDraft": "Entwurf speichern",
-        "sending": "Wird gesendet...",
-        "showFullContent": "Vollständigen Inhalt anzeigen",
-        "showLess": "Weniger anzeigen",
-        "skipped": "Übersprungen",
-        "sources": "Quellen:",
-        "stops_one": "{{count}} Zwischenstopp",
-        "stops_other": "{{count}} Zwischenstopps",
-        "title": "Ergebnisse",
-        "uploading": "Wird hochgeladen...",
-        "viewDetails": "Details anzeigen",
-        "waitlistAlreadyInvited": "Bereits angenommen — Code {{code}}",
-        "waitlistInviteEmailed": "Angenommen — Einladung an {{email}} gesendet",
-        "waitlistInviteIssued": "Angenommen — Code {{code}}",
-        "waitlistInvited": "Angenommen"
+        "nothingToCopy": "Nichts zu kopieren"
       },
       "scrollUpForMore": "Nach oben scrollen für mehr",
       "search": {
@@ -16840,13 +16651,6 @@ export const resources = {
       "createTooltip": "Karte erstellen",
       "deleteConfirm": "Karte \"{{name}}\" löschen? Dies kann nicht rückgängig gemacht werden.",
       "descriptionPlaceholder": "Was zeigt diese Karte an?",
-      "details": {
-        "nonstop": "Nonstop",
-        "stops_one": "{{count}} Zwischenstopp",
-        "stops_other": "{{count}} Zwischenstopps"
-      },
-      "detailsLabel": "Details",
-      "displayType": "Anzeigetyp",
       "displayTypes": {
         "body": "body",
         "change": "change",
@@ -16857,15 +16661,13 @@ export const resources = {
       },
       "docs": "Dokumentation",
       "empty": {
-        "subtitle": "Plattform-Karten legen fest, wie Agenten Ergebnisse präsentieren",
         "title": "Keine Karten"
       },
       "emptyDescription": "Karten legen fest, wie dieser Agent strukturierte Ergebnisse formatiert (Hotels, E-Mails, Produkte usw.)",
       "emptyHint": "Erstellen Sie eine, um loszulegen.",
       "emptyLabel": "Noch keine Karten",
       "errors": {
-        "loadFailed": "Karten konnten nicht geladen werden",
-        "previewFailed": "Vorschau konnte nicht erstellt werden"
+        "loadFailed": "Karten konnten nicht geladen werden"
       },
       "field": {
         "displayType": "Anzeigetyp",
@@ -16883,22 +16685,12 @@ export const resources = {
       },
       "fieldCount_one": "{{count}} Feld",
       "fieldCount_other": "{{count}} Felder",
-      "fieldFormat": "Format",
-      "fieldFormatPlaceholder": "z. B. Währung, Datum",
-      "fieldIcon": "Symbol",
-      "fieldIconPlaceholder": "Lucide-Symbolname",
-      "fieldKey": "Schlüssel",
-      "fieldLabel": "Bezeichnung",
-      "fieldLabelPlaceholder": "Anzeigebezeichnung",
-      "fieldsCount": "Felder ({{count}})",
       "fieldsWithCount": "Felder ({{count}})",
       "fields_one": "{{count}} Feld",
       "fields_other": "{{count}} Felder",
       "filterAll_one": "Alle ({{count}})",
       "filterAll_other": "Alle ({{count}})",
       "gallery": "Kartengalerie",
-      "hidePreview": "Kartenvorschau ausblenden",
-      "highlightColor": "Hervorhebungsfarbe",
       "loading": "Karten werden geladen…",
       "name": "Kartenname",
       "nameHint": "Verwenden Sie snake_case. Dies identifiziert die Karte in API-Aufrufen.",
@@ -16907,24 +16699,12 @@ export const resources = {
       "noFields": "Noch keine Felder definiert. Fügen Sie eines hinzu, um loszulegen.",
       "noMatches": "Keine passenden Karten.",
       "noSampleData": "Keine Beispieldaten für diese Karte. Das weiter unten gerenderte HTML nutzt trotzdem die Vorschau-Pipeline des Servers.",
-      "noSampleDataShort": "Keine Beispieldaten — sampleData hinzufügen, um eine Vorschau zu sehen",
       "notFound": "Karte nicht gefunden",
       "previewAll": "Alle Karten ansehen",
       "previewFailed": "Vorschau konnte nicht erstellt werden",
       "previewLabel": "Karte, wie sie an die Unterhaltung übermittelt wird",
-      "rawJson": "Roh-JSON",
-      "removeField": "Feld entfernen",
       "removeFromAgent": "Vom Agenten entfernen",
-      "renderedHtml": "Gerendertes HTML",
       "resizeList": "Größe der Kartenliste ändern",
-      "resultType": {
-        "event": "Veranstaltung",
-        "flight": "Flug",
-        "generic": "Allgemein",
-        "hotel": "Hotel",
-        "product": "Produkt",
-        "restaurant": "Restaurant"
-      },
       "resultTypeLabel": "Ergebnistyp",
       "resultTypes": {
         "contact": "Kontakt",
@@ -16938,7 +16718,6 @@ export const resources = {
         "restaurant": "Restaurant"
       },
       "sampleData": "Beispieldaten",
-      "sampleTitle": "Beispiel {{type}}",
       "saveChanges": "Änderungen speichern",
       "searchPlaceholder": "Karten durchsuchen...",
       "sections": {
@@ -16950,11 +16729,8 @@ export const resources = {
       },
       "select": "Karte auswählen",
       "selectHint": "Wählen Sie links eine aus, um Vorschau, Felder und Roh-JSON zu sehen.",
-      "selectTemplate": "Karte auswählen",
       "selectToPreview": "Karte zur Vorschau auswählen",
       "setNameForPreview": "Legen Sie oben einen Kartennamen fest, um eine Vorschau zu erstellen.",
-      "setNameHint": "Legen Sie oben einen Kartennamen fest, um eine Vorschau zu erstellen.",
-      "showPreview": "Kartenvorschau anzeigen",
       "surface": {
         "carousel": "Karussell",
         "done": {
@@ -16979,8 +16755,7 @@ export const resources = {
         "slideOf": "{{index}} von {{count}}",
         "sources": "Quellen",
         "trend": "Trend, {{count}} Punkte, {{first}} bis {{last}}"
-      },
-      "template": "Karte"
+      }
     }
   },
   "fr": {
@@ -19869,47 +19644,8 @@ export const resources = {
       "resizeList": "Redimensionner la liste des conversations",
       "results": {
         "actionFailed": "Échec de l'action",
-        "cannotAcceptMissing": "Impossible d'accepter — cette carte ne contient aucune entrée de liste d'attente.",
-        "cannotSaveDraftEmpty": "Impossible d'enregistrer le brouillon — aucun contenu d'e-mail.",
-        "cannotSendMissing": "Impossible d'envoyer — destinataire ou contenu manquant.",
-        "copied": "Copié",
-        "count_one": "{{count}} résultat",
-        "count_other": "{{count}} résultats",
-        "draftSaved": "Brouillon enregistré dans Gmail : «{{subject}}»",
-        "emailSentTo": "E-mail envoyé à {{to}}",
-        "empty": "Aucun résultat à afficher",
-        "enableInSettings": "Activer dans les paramètres",
         "failedWith": "Échec : {{message}}",
-        "imageAlt": "Image du résultat",
-        "locationShared": "Position partagée avec moi",
-        "more": "+{{count}} de plus",
-        "noAgentForAvatar": "Impossible de déterminer quel agent mettre à jour.",
-        "noAgentForPulse": "Impossible de déterminer pour quel agent activer Pulse.",
-        "nonstop": "Sans escale",
-        "nothingToCopy": "Rien à copier",
-        "notificationsOn": "Notifications activées",
-        "percentOff": "{{pct}} % de réduction",
-        "photoSet": "Photo définie !",
-        "photos_one": "{{count}} photo",
-        "photos_other": "{{count}} photos",
-        "pulseEnabled": "Pulse activé",
-        "resultCount_one": "{{count}} résultat",
-        "resultCount_other": "{{count}} résultats",
-        "saveDraft": "Enregistrer le brouillon",
-        "sending": "Envoi...",
-        "showFullContent": "Afficher le contenu complet",
-        "showLess": "Afficher moins",
-        "skipped": "Ignoré",
-        "sources": "Sources :",
-        "stops_one": "{{count}} escale",
-        "stops_other": "{{count}} escales",
-        "title": "Résultats",
-        "uploading": "Téléversement...",
-        "viewDetails": "Voir les détails",
-        "waitlistAlreadyInvited": "Déjà accepté — code {{code}}",
-        "waitlistInviteEmailed": "Accepté — invitation envoyée à {{email}}",
-        "waitlistInviteIssued": "Accepté — code {{code}}",
-        "waitlistInvited": "Accepté"
+        "nothingToCopy": "Rien à copier"
       },
       "scrollUpForMore": "Faites défiler vers le haut pour en voir plus",
       "search": {
@@ -22492,13 +22228,6 @@ export const resources = {
       "createTooltip": "Créer une carte",
       "deleteConfirm": "Supprimer la carte « {{name}} » ? Cette action est irréversible.",
       "descriptionPlaceholder": "Que doit afficher cette carte ?",
-      "details": {
-        "nonstop": "Sans escale",
-        "stops_one": "{{count}} escale",
-        "stops_other": "{{count}} escales"
-      },
-      "detailsLabel": "Détails",
-      "displayType": "Type d'affichage",
       "displayTypes": {
         "body": "body",
         "change": "change",
@@ -22509,15 +22238,13 @@ export const resources = {
       },
       "docs": "Documentation",
       "empty": {
-        "subtitle": "Les cartes de la plateforme définissent comment les agents présentent les résultats",
         "title": "Aucune carte"
       },
       "emptyDescription": "Les cartes définissent comment cet agent formate les résultats structurés (hôtels, e-mails, produits, etc.)",
       "emptyHint": "Créez-en une pour commencer.",
       "emptyLabel": "Aucune carte pour le moment",
       "errors": {
-        "loadFailed": "Échec du chargement des cartes",
-        "previewFailed": "Échec de la génération de l'aperçu"
+        "loadFailed": "Échec du chargement des cartes"
       },
       "field": {
         "displayType": "Type d'affichage",
@@ -22535,22 +22262,12 @@ export const resources = {
       },
       "fieldCount_one": "{{count}} champ",
       "fieldCount_other": "{{count}} champs",
-      "fieldFormat": "Format",
-      "fieldFormatPlaceholder": "ex. devise, date",
-      "fieldIcon": "Icône",
-      "fieldIconPlaceholder": "nom d'icône lucide",
-      "fieldKey": "Clé",
-      "fieldLabel": "Libellé",
-      "fieldLabelPlaceholder": "Libellé d'affichage",
-      "fieldsCount": "Champs ({{count}})",
       "fieldsWithCount": "Champs ({{count}})",
       "fields_one": "{{count}} champ",
       "fields_other": "{{count}} champs",
       "filterAll_one": "Tous ({{count}})",
       "filterAll_other": "Tous ({{count}})",
       "gallery": "Galerie de cartes",
-      "hidePreview": "Masquer l'aperçu de la carte",
-      "highlightColor": "Couleur de mise en évidence",
       "loading": "Chargement des cartes…",
       "name": "Nom de la carte",
       "nameHint": "Utilisez le snake_case. Cela identifie la carte dans les appels API.",
@@ -22559,24 +22276,12 @@ export const resources = {
       "noFields": "Aucun champ défini pour le moment. Ajoutez-en un pour commencer.",
       "noMatches": "Aucune carte correspondante.",
       "noSampleData": "Aucune donnée d'exemple sur cette carte. Le HTML rendu ci-dessous utilise malgré tout le pipeline de prévisualisation du serveur.",
-      "noSampleDataShort": "Aucune donnée d'exemple — ajoutez sampleData pour voir un aperçu",
       "notFound": "Carte introuvable",
       "previewAll": "Voir toutes les cartes",
       "previewFailed": "Échec de la génération de l'aperçu",
       "previewLabel": "Carte telle que livrée à la conversation",
-      "rawJson": "JSON brut",
-      "removeField": "Supprimer le champ",
       "removeFromAgent": "Retirer de l'agent",
-      "renderedHtml": "HTML rendu",
       "resizeList": "Redimensionner la liste des cartes",
-      "resultType": {
-        "event": "Événement",
-        "flight": "Vol",
-        "generic": "Générique",
-        "hotel": "Hôtel",
-        "product": "Produit",
-        "restaurant": "Restaurant"
-      },
       "resultTypeLabel": "Type de résultat",
       "resultTypes": {
         "contact": "Contact",
@@ -22590,7 +22295,6 @@ export const resources = {
         "restaurant": "Restaurant"
       },
       "sampleData": "Données d'exemple",
-      "sampleTitle": "Exemple de {{type}}",
       "saveChanges": "Enregistrer les modifications",
       "searchPlaceholder": "Rechercher des cartes...",
       "sections": {
@@ -22602,11 +22306,8 @@ export const resources = {
       },
       "select": "Sélectionner une carte",
       "selectHint": "Choisissez-en une à gauche pour voir son aperçu, ses champs et son JSON brut.",
-      "selectTemplate": "Sélectionner une carte",
       "selectToPreview": "Sélectionnez une carte à prévisualiser",
       "setNameForPreview": "Définissez un nom de carte ci-dessus pour générer un aperçu.",
-      "setNameHint": "Définissez un nom de carte ci-dessus pour générer un aperçu.",
-      "showPreview": "Afficher l'aperçu de la carte",
       "surface": {
         "carousel": "carrousel",
         "done": {
@@ -22631,8 +22332,7 @@ export const resources = {
         "slideOf": "{{index}} sur {{count}}",
         "sources": "Sources",
         "trend": "Tendance, {{count}} points, de {{first}} à {{last}}"
-      },
-      "template": "Carte"
+      }
     }
   },
   "pt": {
@@ -25521,47 +25221,8 @@ export const resources = {
       "resizeList": "Redimensionar lista de conversas",
       "results": {
         "actionFailed": "Falha na ação",
-        "cannotAcceptMissing": "Não é possível aceitar — este cartão não tem nenhuma entrada da lista de espera.",
-        "cannotSaveDraftEmpty": "Não é possível salvar o rascunho — sem corpo de e-mail.",
-        "cannotSendMissing": "Não é possível enviar — destinatário ou corpo ausente.",
-        "copied": "Copiado",
-        "count_one": "{{count}} resultado",
-        "count_other": "{{count}} resultados",
-        "draftSaved": "Rascunho salvo no Gmail: \"{{subject}}\"",
-        "emailSentTo": "E-mail enviado para {{to}}",
-        "empty": "Nenhum resultado para exibir",
-        "enableInSettings": "Ativar nas Configurações",
         "failedWith": "Falha: {{message}}",
-        "imageAlt": "Imagem de resultado",
-        "locationShared": "Localização compartilhada comigo",
-        "more": "+{{count}} mais",
-        "noAgentForAvatar": "Não foi possível identificar qual agente atualizar.",
-        "noAgentForPulse": "Não foi possível identificar para qual agente ativar o Pulse.",
-        "nonstop": "Sem escalas",
-        "nothingToCopy": "Nada para copiar",
-        "notificationsOn": "Notificações ativadas",
-        "percentOff": "{{pct}}% de desconto",
-        "photoSet": "Foto definida!",
-        "photos_one": "{{count}} foto",
-        "photos_other": "{{count}} fotos",
-        "pulseEnabled": "Pulse ativado",
-        "resultCount_one": "{{count}} resultado",
-        "resultCount_other": "{{count}} resultados",
-        "saveDraft": "Salvar rascunho",
-        "sending": "Enviando...",
-        "showFullContent": "Mostrar conteúdo completo",
-        "showLess": "Mostrar menos",
-        "skipped": "Ignorado",
-        "sources": "Fontes:",
-        "stops_one": "{{count}} escala",
-        "stops_other": "{{count}} escalas",
-        "title": "Resultados",
-        "uploading": "Enviando...",
-        "viewDetails": "Ver detalhes",
-        "waitlistAlreadyInvited": "Já aceite — código {{code}}",
-        "waitlistInviteEmailed": "Aceite — convite enviado para {{email}}",
-        "waitlistInviteIssued": "Aceite — código {{code}}",
-        "waitlistInvited": "Aceite"
+        "nothingToCopy": "Nada para copiar"
       },
       "scrollUpForMore": "Role para cima para ver mais",
       "search": {
@@ -28144,13 +27805,6 @@ export const resources = {
       "createTooltip": "Criar cartão",
       "deleteConfirm": "Excluir o cartão \"{{name}}\"? Isso não pode ser desfeito.",
       "descriptionPlaceholder": "O que este cartão exibe?",
-      "details": {
-        "nonstop": "Sem escalas",
-        "stops_one": "{{count}} escala",
-        "stops_other": "{{count}} escalas"
-      },
-      "detailsLabel": "Detalhes",
-      "displayType": "Tipo de exibição",
       "displayTypes": {
         "body": "corpo",
         "change": "variação",
@@ -28161,15 +27815,13 @@ export const resources = {
       },
       "docs": "Documentação",
       "empty": {
-        "subtitle": "Os cartões da plataforma definem como os agentes apresentam resultados",
         "title": "Nenhum cartão"
       },
       "emptyDescription": "Os cartões definem como este agente formata resultados estruturados (hotéis, e-mails, produtos etc.)",
       "emptyHint": "Crie um para começar.",
       "emptyLabel": "Nenhum cartão ainda",
       "errors": {
-        "loadFailed": "Falha ao carregar cartões",
-        "previewFailed": "Falha ao gerar a prévia"
+        "loadFailed": "Falha ao carregar cartões"
       },
       "field": {
         "displayType": "Tipo de exibição",
@@ -28187,22 +27839,12 @@ export const resources = {
       },
       "fieldCount_one": "{{count}} campo",
       "fieldCount_other": "{{count}} campos",
-      "fieldFormat": "Formato",
-      "fieldFormatPlaceholder": "ex.: moeda, data",
-      "fieldIcon": "Ícone",
-      "fieldIconPlaceholder": "nome do ícone lucide",
-      "fieldKey": "Chave",
-      "fieldLabel": "Rótulo",
-      "fieldLabelPlaceholder": "Rótulo de exibição",
-      "fieldsCount": "Campos ({{count}})",
       "fieldsWithCount": "Campos ({{count}})",
       "fields_one": "{{count}} campo",
       "fields_other": "{{count}} campos",
       "filterAll_one": "Todos ({{count}})",
       "filterAll_other": "Todos ({{count}})",
       "gallery": "Galeria de cartões",
-      "hidePreview": "Ocultar prévia do card",
-      "highlightColor": "Cor de destaque",
       "loading": "Carregando cartões…",
       "name": "Nome do cartão",
       "nameHint": "Use snake_case. Isso identifica o cartão nas chamadas de API.",
@@ -28211,24 +27853,12 @@ export const resources = {
       "noFields": "Nenhum campo definido ainda. Adicione um para começar.",
       "noMatches": "Nenhum cartão correspondente.",
       "noSampleData": "Nenhum dado de exemplo neste cartão. O HTML renderizado logo abaixo usa o pipeline de prévia do servidor de qualquer forma.",
-      "noSampleDataShort": "Nenhum dado de exemplo — adicione sampleData para ver uma prévia",
       "notFound": "Cartão não encontrado",
       "previewAll": "Ver todos os cartões",
       "previewFailed": "Falha ao gerar a prévia",
       "previewLabel": "Card como é entregue na conversa",
-      "rawJson": "JSON bruto",
-      "removeField": "Remover campo",
       "removeFromAgent": "Remover do agente",
-      "renderedHtml": "HTML renderizado",
       "resizeList": "Redimensionar lista de cartões",
-      "resultType": {
-        "event": "Evento",
-        "flight": "Voo",
-        "generic": "Genérico",
-        "hotel": "Hotel",
-        "product": "Produto",
-        "restaurant": "Restaurante"
-      },
       "resultTypeLabel": "Tipo de resultado",
       "resultTypes": {
         "contact": "Contato",
@@ -28242,7 +27872,6 @@ export const resources = {
         "restaurant": "Restaurante"
       },
       "sampleData": "Dados de exemplo",
-      "sampleTitle": "Exemplo de {{type}}",
       "saveChanges": "Salvar alterações",
       "searchPlaceholder": "Pesquisar cartões...",
       "sections": {
@@ -28254,11 +27883,8 @@ export const resources = {
       },
       "select": "Selecione um cartão",
       "selectHint": "Escolha um à esquerda para ver sua prévia, campos e JSON bruto.",
-      "selectTemplate": "Selecione um cartão",
       "selectToPreview": "Selecione um cartão para pré-visualizar",
       "setNameForPreview": "Defina um nome de cartão acima para gerar uma prévia.",
-      "setNameHint": "Defina um nome de cartão acima para gerar uma prévia.",
-      "showPreview": "Mostrar prévia do card",
       "surface": {
         "carousel": "carrossel",
         "done": {
@@ -28283,8 +27909,7 @@ export const resources = {
         "slideOf": "{{index}} de {{count}}",
         "sources": "Fontes",
         "trend": "Tendência, {{count}} pontos, de {{first}} a {{last}}"
-      },
-      "template": "Cartão"
+      }
     }
   },
   "ja": {
@@ -31173,47 +30798,8 @@ export const resources = {
       "resizeList": "会話リストのサイズを変更",
       "results": {
         "actionFailed": "操作に失敗しました",
-        "cannotAcceptMissing": "承認できません — このカードには順番待ちの登録情報がありません。",
-        "cannotSaveDraftEmpty": "下書きを保存できません — メールの本文がありません。",
-        "cannotSendMissing": "送信できません — 宛先または本文がありません。",
-        "copied": "コピーしました",
-        "count_one": "{{count}}件の結果",
-        "count_other": "{{count}}件の結果",
-        "draftSaved": "下書きをGmailに保存しました: 「{{subject}}」",
-        "emailSentTo": "{{to}}にメールを送信しました",
-        "empty": "表示する結果がありません",
-        "enableInSettings": "設定で有効にする",
         "failedWith": "失敗しました: {{message}}",
-        "imageAlt": "結果の画像",
-        "locationShared": "位置情報が共有されました",
-        "more": "他{{count}}件",
-        "noAgentForAvatar": "どのエージェントを更新すればよいか判断できませんでした。",
-        "noAgentForPulse": "どのエージェントのPulseを有効にすればよいか判断できませんでした。",
-        "nonstop": "直行",
-        "nothingToCopy": "コピーする内容がありません",
-        "notificationsOn": "通知オン",
-        "percentOff": "{{pct}}%オフ",
-        "photoSet": "写真を設定しました!",
-        "photos_one": "写真{{count}}枚",
-        "photos_other": "写真{{count}}枚",
-        "pulseEnabled": "Pulseを有効にしました",
-        "resultCount_one": "{{count}}件の結果",
-        "resultCount_other": "{{count}}件の結果",
-        "saveDraft": "下書きを保存",
-        "sending": "送信中…",
-        "showFullContent": "全文を表示",
-        "showLess": "表示を減らす",
-        "skipped": "スキップされました",
-        "sources": "出典:",
-        "stops_one": "経由地{{count}}か所",
-        "stops_other": "経由地{{count}}か所",
-        "title": "結果",
-        "uploading": "アップロード中…",
-        "viewDetails": "詳細を表示",
-        "waitlistAlreadyInvited": "すでに承認済み — コード {{code}}",
-        "waitlistInviteEmailed": "承認しました — 招待を {{email}} に送信しました",
-        "waitlistInviteIssued": "承認しました — コード {{code}}",
-        "waitlistInvited": "承認済み"
+        "nothingToCopy": "コピーする内容がありません"
       },
       "scrollUpForMore": "上にスクロールしてさらに表示",
       "search": {
@@ -33796,13 +33382,6 @@ export const resources = {
       "createTooltip": "カードを作成",
       "deleteConfirm": "カード「{{name}}」を削除しますか？この操作は元に戻せません。",
       "descriptionPlaceholder": "このカードは何を表示しますか？",
-      "details": {
-        "nonstop": "直行",
-        "stops_one": "{{count}}回経由",
-        "stops_other": "{{count}}回経由"
-      },
-      "detailsLabel": "詳細",
-      "displayType": "表示タイプ",
       "displayTypes": {
         "body": "本文",
         "change": "変化",
@@ -33813,15 +33392,13 @@ export const resources = {
       },
       "docs": "ドキュメント",
       "empty": {
-        "subtitle": "プラットフォームカードは、エージェントが結果をどのように表示するかを定義します",
         "title": "カードがありません"
       },
       "emptyDescription": "カードは、このエージェントが構造化された結果（ホテル、メール、商品など）をどのように整形するかを定義します",
       "emptyHint": "作成して始めましょう。",
       "emptyLabel": "カードがまだありません",
       "errors": {
-        "loadFailed": "カードの読み込みに失敗しました",
-        "previewFailed": "プレビューの生成に失敗しました"
+        "loadFailed": "カードの読み込みに失敗しました"
       },
       "field": {
         "displayType": "表示タイプ",
@@ -33839,22 +33416,12 @@ export const resources = {
       },
       "fieldCount_one": "{{count}}件のフィールド",
       "fieldCount_other": "{{count}}件のフィールド",
-      "fieldFormat": "フォーマット",
-      "fieldFormatPlaceholder": "例: currency、date",
-      "fieldIcon": "アイコン",
-      "fieldIconPlaceholder": "lucideアイコン名",
-      "fieldKey": "キー",
-      "fieldLabel": "ラベル",
-      "fieldLabelPlaceholder": "表示ラベル",
-      "fieldsCount": "フィールド（{{count}}）",
       "fieldsWithCount": "フィールド（{{count}}）",
       "fields_one": "{{count}}件のフィールド",
       "fields_other": "{{count}}件のフィールド",
       "filterAll_one": "すべて（{{count}}）",
       "filterAll_other": "すべて（{{count}}）",
       "gallery": "カードギャラリー",
-      "hidePreview": "カードプレビューを非表示",
-      "highlightColor": "ハイライトカラー",
       "loading": "カードを読み込み中…",
       "name": "カード名",
       "nameHint": "snake_caseを使用してください。API呼び出しでこのカードを識別するために使用されます。",
@@ -33863,24 +33430,12 @@ export const resources = {
       "noFields": "フィールドがまだ定義されていません。追加して始めましょう。",
       "noMatches": "一致するカードがありません。",
       "noSampleData": "このカードにはサンプルデータがありません。以下のレンダリング済みHTMLは、サーバーのプレビューパイプラインを使用して生成されています。",
-      "noSampleDataShort": "サンプルデータがありません — sampleDataを追加するとプレビューが表示されます",
       "notFound": "カードが見つかりません",
       "previewAll": "すべてのカードをプレビュー",
       "previewFailed": "プレビューの生成に失敗しました",
       "previewLabel": "会話に配信されるカードの表示",
-      "rawJson": "生のJSON",
-      "removeField": "フィールドを削除",
       "removeFromAgent": "エージェントから削除",
-      "renderedHtml": "レンダリング済みHTML",
       "resizeList": "カードリストのサイズを変更",
-      "resultType": {
-        "event": "イベント",
-        "flight": "フライト",
-        "generic": "汎用",
-        "hotel": "ホテル",
-        "product": "商品",
-        "restaurant": "レストラン"
-      },
       "resultTypeLabel": "結果タイプ",
       "resultTypes": {
         "contact": "連絡先",
@@ -33894,7 +33449,6 @@ export const resources = {
         "restaurant": "レストラン"
       },
       "sampleData": "サンプルデータ",
-      "sampleTitle": "サンプル {{type}}",
       "saveChanges": "変更を保存",
       "searchPlaceholder": "カードを検索...",
       "sections": {
@@ -33906,11 +33460,8 @@ export const resources = {
       },
       "select": "カードを選択",
       "selectHint": "左側から1つ選択すると、プレビュー、フィールド、生のJSONを確認できます。",
-      "selectTemplate": "カードを選択",
       "selectToPreview": "プレビューするカードを選択してください",
       "setNameForPreview": "上でカード名を設定するとプレビューが生成されます。",
-      "setNameHint": "上でカード名を設定するとプレビューが生成されます。",
-      "showPreview": "カードプレビューを表示",
       "surface": {
         "carousel": "カルーセル",
         "done": {
@@ -33935,8 +33486,7 @@ export const resources = {
         "slideOf": "{{count}}件中{{index}}件目",
         "sources": "出典",
         "trend": "推移、{{count}}ポイント、{{first}}から{{last}}"
-      },
-      "template": "カード"
+      }
     }
   },
   "zh": {
@@ -36825,47 +36375,8 @@ export const resources = {
       "resizeList": "调整对话列表大小",
       "results": {
         "actionFailed": "操作失败",
-        "cannotAcceptMissing": "无法接受——此卡片上没有候补名单条目。",
-        "cannotSaveDraftEmpty": "无法保存草稿——邮件正文为空。",
-        "cannotSendMissing": "无法发送——缺少收件人或正文。",
-        "copied": "已复制",
-        "count_one": "{{count}} 个结果",
-        "count_other": "{{count}} 个结果",
-        "draftSaved": "草稿已保存到 Gmail：「{{subject}}」",
-        "emailSentTo": "邮件已发送至 {{to}}",
-        "empty": "没有可显示的结果",
-        "enableInSettings": "在设置中启用",
         "failedWith": "失败：{{message}}",
-        "imageAlt": "结果图片",
-        "locationShared": "已与我分享位置",
-        "more": "还有 {{count}} 个",
-        "noAgentForAvatar": "无法确定要更新哪个智能体。",
-        "noAgentForPulse": "无法确定要为哪个智能体启用 Pulse。",
-        "nonstop": "直飞",
-        "nothingToCopy": "没有可复制的内容",
-        "notificationsOn": "通知已开启",
-        "percentOff": "{{pct}}% 折扣",
-        "photoSet": "照片已设置！",
-        "photos_one": "{{count}} 张照片",
-        "photos_other": "{{count}} 张照片",
-        "pulseEnabled": "Pulse 已启用",
-        "resultCount_one": "{{count}} 个结果",
-        "resultCount_other": "{{count}} 个结果",
-        "saveDraft": "保存草稿",
-        "sending": "发送中…",
-        "showFullContent": "显示完整内容",
-        "showLess": "收起",
-        "skipped": "已跳过",
-        "sources": "来源：",
-        "stops_one": "{{count}} 次中转",
-        "stops_other": "{{count}} 次中转",
-        "title": "结果",
-        "uploading": "上传中…",
-        "viewDetails": "查看详情",
-        "waitlistAlreadyInvited": "已接受过——代码 {{code}}",
-        "waitlistInviteEmailed": "已接受——邀请已发送至 {{email}}",
-        "waitlistInviteIssued": "已接受——代码 {{code}}",
-        "waitlistInvited": "已接受"
+        "nothingToCopy": "没有可复制的内容"
       },
       "scrollUpForMore": "向上滚动查看更多",
       "search": {
@@ -39448,13 +38959,6 @@ export const resources = {
       "createTooltip": "创建卡片",
       "deleteConfirm": "删除卡片“{{name}}”？此操作无法撤销。",
       "descriptionPlaceholder": "此卡片用于展示什么内容？",
-      "details": {
-        "nonstop": "直飞",
-        "stops_one": "{{count}} 次经停",
-        "stops_other": "{{count}} 次经停"
-      },
-      "detailsLabel": "详情",
-      "displayType": "显示类型",
       "displayTypes": {
         "body": "body",
         "change": "change",
@@ -39465,15 +38969,13 @@ export const resources = {
       },
       "docs": "文档",
       "empty": {
-        "subtitle": "平台卡片定义了智能体呈现结果的方式",
         "title": "暂无卡片"
       },
       "emptyDescription": "卡片定义了此智能体如何格式化结构化结果（酒店、邮件、产品等）",
       "emptyHint": "创建一个以开始使用。",
       "emptyLabel": "暂无卡片",
       "errors": {
-        "loadFailed": "加载卡片失败",
-        "previewFailed": "生成预览失败"
+        "loadFailed": "加载卡片失败"
       },
       "field": {
         "displayType": "显示类型",
@@ -39491,22 +38993,12 @@ export const resources = {
       },
       "fieldCount_one": "{{count}} 个字段",
       "fieldCount_other": "{{count}} 个字段",
-      "fieldFormat": "格式",
-      "fieldFormatPlaceholder": "例如：货币、日期",
-      "fieldIcon": "图标",
-      "fieldIconPlaceholder": "lucide 图标名称",
-      "fieldKey": "键",
-      "fieldLabel": "标签",
-      "fieldLabelPlaceholder": "显示标签",
-      "fieldsCount": "字段（{{count}}）",
       "fieldsWithCount": "字段（{{count}}）",
       "fields_one": "{{count}} 个字段",
       "fields_other": "{{count}} 个字段",
       "filterAll_one": "全部（{{count}}）",
       "filterAll_other": "全部（{{count}}）",
       "gallery": "卡片库",
-      "hidePreview": "隐藏卡片预览",
-      "highlightColor": "高亮颜色",
       "loading": "正在加载卡片…",
       "name": "卡片名称",
       "nameHint": "使用 snake_case 格式。此名称用于在 API 调用中标识卡片。",
@@ -39515,24 +39007,12 @@ export const resources = {
       "noFields": "尚未定义任何字段。添加一个以开始使用。",
       "noMatches": "没有匹配的卡片。",
       "noSampleData": "此卡片没有示例数据。下方渲染的 HTML 仍会使用服务器的预览流程生成。",
-      "noSampleDataShort": "没有示例数据——添加 sampleData 以查看预览",
       "notFound": "未找到卡片",
       "previewAll": "预览所有卡片",
       "previewFailed": "生成预览失败",
       "previewLabel": "卡片在对话中的实际展示效果",
-      "rawJson": "原始 JSON",
-      "removeField": "移除字段",
       "removeFromAgent": "从智能体中移除",
-      "renderedHtml": "渲染后的 HTML",
       "resizeList": "调整卡片列表大小",
-      "resultType": {
-        "event": "活动",
-        "flight": "航班",
-        "generic": "通用",
-        "hotel": "酒店",
-        "product": "产品",
-        "restaurant": "餐厅"
-      },
       "resultTypeLabel": "结果类型",
       "resultTypes": {
         "contact": "联系人",
@@ -39546,7 +39026,6 @@ export const resources = {
         "restaurant": "餐厅"
       },
       "sampleData": "示例数据",
-      "sampleTitle": "示例 {{type}}",
       "saveChanges": "保存更改",
       "searchPlaceholder": "搜索卡片…",
       "sections": {
@@ -39558,11 +39037,8 @@ export const resources = {
       },
       "select": "选择一张卡片",
       "selectHint": "从左侧选择一张卡片以查看其预览、字段和原始 JSON。",
-      "selectTemplate": "选择一张卡片",
       "selectToPreview": "选择一张卡片以预览",
       "setNameForPreview": "在上方设置卡片名称以生成预览。",
-      "setNameHint": "在上方设置卡片名称以生成预览。",
-      "showPreview": "显示卡片预览",
       "surface": {
         "carousel": "轮播",
         "done": {
@@ -39587,8 +39063,7 @@ export const resources = {
         "slideOf": "第 {{index}} 项，共 {{count}} 项",
         "sources": "来源",
         "trend": "趋势，{{count}} 个数据点，从 {{first}} 到 {{last}}"
-      },
-      "template": "卡片"
+      }
     }
   },
   "ko": {
@@ -42477,47 +41952,8 @@ export const resources = {
       "resizeList": "대화 목록 크기 조정",
       "results": {
         "actionFailed": "작업 실패",
-        "cannotAcceptMissing": "수락할 수 없습니다 — 이 카드에 대기자 항목이 없습니다.",
-        "cannotSaveDraftEmpty": "임시 저장 불가 — 이메일 본문이 없습니다.",
-        "cannotSendMissing": "전송 불가 — 받는 사람 또는 본문이 없습니다.",
-        "copied": "복사됨",
-        "count_one": "결과 {{count}}개",
-        "count_other": "결과 {{count}}개",
-        "draftSaved": "Gmail에 임시 보관함 저장됨: \"{{subject}}\"",
-        "emailSentTo": "{{to}}에게 이메일이 전송되었습니다",
-        "empty": "표시할 결과가 없습니다",
-        "enableInSettings": "설정에서 활성화",
         "failedWith": "실패: {{message}}",
-        "imageAlt": "결과 이미지",
-        "locationShared": "나와 위치가 공유되었습니다",
-        "more": "+{{count}}개 더보기",
-        "noAgentForAvatar": "업데이트할 에이전트를 알 수 없습니다.",
-        "noAgentForPulse": "Pulse를 활성화할 에이전트를 알 수 없습니다.",
-        "nonstop": "직항",
-        "nothingToCopy": "복사할 내용이 없습니다",
-        "notificationsOn": "알림 켜짐",
-        "percentOff": "{{pct}}% 할인",
-        "photoSet": "사진이 설정되었습니다!",
-        "photos_one": "사진 {{count}}장",
-        "photos_other": "사진 {{count}}장",
-        "pulseEnabled": "Pulse 활성화됨",
-        "resultCount_one": "결과 {{count}}개",
-        "resultCount_other": "결과 {{count}}개",
-        "saveDraft": "임시 저장",
-        "sending": "전송 중...",
-        "showFullContent": "전체 내용 보기",
-        "showLess": "간략히 보기",
-        "skipped": "건너뜀",
-        "sources": "출처:",
-        "stops_one": "경유 {{count}}회",
-        "stops_other": "경유 {{count}}회",
-        "title": "결과",
-        "uploading": "업로드 중...",
-        "viewDetails": "상세 정보 보기",
-        "waitlistAlreadyInvited": "이미 수락됨 — 코드 {{code}}",
-        "waitlistInviteEmailed": "수락됨 — 초대장을 {{email}}(으)로 보냈습니다",
-        "waitlistInviteIssued": "수락됨 — 코드 {{code}}",
-        "waitlistInvited": "수락됨"
+        "nothingToCopy": "복사할 내용이 없습니다"
       },
       "scrollUpForMore": "위로 스크롤하여 더 보기",
       "search": {
@@ -45100,13 +44536,6 @@ export const resources = {
       "createTooltip": "카드 만들기",
       "deleteConfirm": "카드 \"{{name}}\"을(를) 삭제하시겠습니까? 이 작업은 되돌릴 수 없습니다.",
       "descriptionPlaceholder": "이 카드는 무엇을 표시하나요?",
-      "details": {
-        "nonstop": "직항",
-        "stops_one": "경유 {{count}}회",
-        "stops_other": "경유 {{count}}회"
-      },
-      "detailsLabel": "세부 정보",
-      "displayType": "표시 유형",
       "displayTypes": {
         "body": "body",
         "change": "change",
@@ -45117,15 +44546,13 @@ export const resources = {
       },
       "docs": "문서",
       "empty": {
-        "subtitle": "플랫폼 카드는 에이전트가 결과를 표시하는 방식을 정의합니다",
         "title": "카드 없음"
       },
       "emptyDescription": "카드는 이 에이전트가 구조화된 결과(호텔, 이메일, 제품 등)를 표시하는 방식을 정의합니다",
       "emptyHint": "시작하려면 하나 만드세요.",
       "emptyLabel": "아직 카드가 없습니다",
       "errors": {
-        "loadFailed": "카드 로드 실패",
-        "previewFailed": "미리보기 생성 실패"
+        "loadFailed": "카드 로드 실패"
       },
       "field": {
         "displayType": "표시 유형",
@@ -45143,22 +44570,12 @@ export const resources = {
       },
       "fieldCount_one": "필드 {{count}}개",
       "fieldCount_other": "필드 {{count}}개",
-      "fieldFormat": "형식",
-      "fieldFormatPlaceholder": "예: currency, date",
-      "fieldIcon": "아이콘",
-      "fieldIconPlaceholder": "lucide 아이콘 이름",
-      "fieldKey": "키",
-      "fieldLabel": "라벨",
-      "fieldLabelPlaceholder": "표시 라벨",
-      "fieldsCount": "필드 ({{count}}개)",
       "fieldsWithCount": "필드 ({{count}}개)",
       "fields_one": "필드 {{count}}개",
       "fields_other": "필드 {{count}}개",
       "filterAll_one": "전체 ({{count}})",
       "filterAll_other": "전체 ({{count}})",
       "gallery": "카드 갤러리",
-      "hidePreview": "카드 미리보기 숨기기",
-      "highlightColor": "강조 색상",
       "loading": "카드 불러오는 중…",
       "name": "카드 이름",
       "nameHint": "snake_case를 사용하세요. API 호출에서 카드를 식별하는 데 사용됩니다.",
@@ -45167,24 +44584,12 @@ export const resources = {
       "noFields": "아직 정의된 필드가 없습니다. 시작하려면 하나 추가하세요.",
       "noMatches": "일치하는 카드가 없습니다.",
       "noSampleData": "이 카드에는 샘플 데이터가 없습니다. 아래의 렌더링된 HTML은 그와 상관없이 서버의 미리보기 파이프라인을 사용합니다.",
-      "noSampleDataShort": "샘플 데이터 없음 — 미리보기를 보려면 sampleData를 추가하세요",
       "notFound": "카드를 찾을 수 없습니다",
       "previewAll": "모든 카드 미리보기",
       "previewFailed": "미리보기 생성 실패",
       "previewLabel": "대화에 전달되는 카드",
-      "rawJson": "원본 JSON",
-      "removeField": "필드 제거",
       "removeFromAgent": "에이전트에서 제거",
-      "renderedHtml": "렌더링된 HTML",
       "resizeList": "카드 목록 크기 조정",
-      "resultType": {
-        "event": "이벤트",
-        "flight": "항공편",
-        "generic": "일반",
-        "hotel": "호텔",
-        "product": "제품",
-        "restaurant": "레스토랑"
-      },
       "resultTypeLabel": "결과 유형",
       "resultTypes": {
         "contact": "연락처",
@@ -45198,7 +44603,6 @@ export const resources = {
         "restaurant": "레스토랑"
       },
       "sampleData": "샘플 데이터",
-      "sampleTitle": "샘플 {{type}}",
       "saveChanges": "변경 사항 저장",
       "searchPlaceholder": "카드 검색...",
       "sections": {
@@ -45210,11 +44614,8 @@ export const resources = {
       },
       "select": "카드를 선택하세요",
       "selectHint": "왼쪽에서 하나를 선택하면 미리보기, 필드, 원본 JSON을 볼 수 있습니다.",
-      "selectTemplate": "카드를 선택하세요",
       "selectToPreview": "미리보려면 카드를 선택하세요",
       "setNameForPreview": "미리보기를 생성하려면 위에 카드 이름을 입력하세요.",
-      "setNameHint": "미리보기를 생성하려면 위에 카드 이름을 입력하세요.",
-      "showPreview": "카드 미리보기 표시",
       "surface": {
         "carousel": "캐러셀",
         "done": {
@@ -45239,8 +44640,7 @@ export const resources = {
         "slideOf": "{{count}}개 중 {{index}}번째",
         "sources": "출처",
         "trend": "추세, {{count}}개 지점, {{first}}에서 {{last}}까지"
-      },
-      "template": "카드"
+      }
     }
   },
   "it": {
@@ -48129,47 +47529,8 @@ export const resources = {
       "resizeList": "Ridimensiona elenco conversazioni",
       "results": {
         "actionFailed": "Azione non riuscita",
-        "cannotAcceptMissing": "Impossibile accettare: questa scheda non contiene alcuna voce della lista d'attesa.",
-        "cannotSaveDraftEmpty": "Impossibile salvare la bozza — nessun corpo email.",
-        "cannotSendMissing": "Impossibile inviare — destinatario o corpo mancante.",
-        "copied": "Copiato",
-        "count_one": "{{count}} risultato",
-        "count_other": "{{count}} risultati",
-        "draftSaved": "Bozza salvata su Gmail: \"{{subject}}\"",
-        "emailSentTo": "Email inviata a {{to}}",
-        "empty": "Nessun risultato da visualizzare",
-        "enableInSettings": "Attiva nelle impostazioni",
         "failedWith": "Non riuscito: {{message}}",
-        "imageAlt": "Immagine del risultato",
-        "locationShared": "Posizione condivisa con me",
-        "more": "+{{count}} altri",
-        "noAgentForAvatar": "Impossibile capire quale agente aggiornare.",
-        "noAgentForPulse": "Impossibile capire per quale agente abilitare Pulse.",
-        "nonstop": "Diretto",
-        "nothingToCopy": "Niente da copiare",
-        "notificationsOn": "Notifiche attive",
-        "percentOff": "{{pct}}% di sconto",
-        "photoSet": "Foto impostata!",
-        "photos_one": "{{count}} foto",
-        "photos_other": "{{count}} foto",
-        "pulseEnabled": "Pulse abilitato",
-        "resultCount_one": "{{count}} risultato",
-        "resultCount_other": "{{count}} risultati",
-        "saveDraft": "Salva bozza",
-        "sending": "Invio in corso...",
-        "showFullContent": "Mostra contenuto completo",
-        "showLess": "Mostra meno",
-        "skipped": "Saltato",
-        "sources": "Fonti:",
-        "stops_one": "{{count}} scalo",
-        "stops_other": "{{count}} scali",
-        "title": "Risultati",
-        "uploading": "Caricamento in corso...",
-        "viewDetails": "Visualizza dettagli",
-        "waitlistAlreadyInvited": "Già accettato: codice {{code}}",
-        "waitlistInviteEmailed": "Accettato: invito inviato a {{email}}",
-        "waitlistInviteIssued": "Accettato: codice {{code}}",
-        "waitlistInvited": "Accettato"
+        "nothingToCopy": "Niente da copiare"
       },
       "scrollUpForMore": "Scorri in su per altri",
       "search": {
@@ -50752,13 +50113,6 @@ export const resources = {
       "createTooltip": "Crea scheda",
       "deleteConfirm": "Eliminare la scheda \"{{name}}\"? Questa azione non può essere annullata.",
       "descriptionPlaceholder": "Cosa mostra questa scheda?",
-      "details": {
-        "nonstop": "Diretto",
-        "stops_one": "{{count}} scalo",
-        "stops_other": "{{count}} scali"
-      },
-      "detailsLabel": "Dettagli",
-      "displayType": "Tipo di visualizzazione",
       "displayTypes": {
         "body": "body",
         "change": "change",
@@ -50769,15 +50123,13 @@ export const resources = {
       },
       "docs": "Documentazione",
       "empty": {
-        "subtitle": "Le schede della piattaforma definiscono come gli agenti presentano i risultati",
         "title": "Nessuna scheda"
       },
       "emptyDescription": "Le schede definiscono come questo agente formatta i risultati strutturati (hotel, email, prodotti, ecc.)",
       "emptyHint": "Creane una per iniziare.",
       "emptyLabel": "Ancora nessuna scheda",
       "errors": {
-        "loadFailed": "Impossibile caricare le schede",
-        "previewFailed": "Impossibile generare l'anteprima"
+        "loadFailed": "Impossibile caricare le schede"
       },
       "field": {
         "displayType": "Tipo di visualizzazione",
@@ -50795,22 +50147,12 @@ export const resources = {
       },
       "fieldCount_one": "{{count}} campo",
       "fieldCount_other": "{{count}} campi",
-      "fieldFormat": "Formato",
-      "fieldFormatPlaceholder": "es. valuta, data",
-      "fieldIcon": "Icona",
-      "fieldIconPlaceholder": "nome icona lucide",
-      "fieldKey": "Chiave",
-      "fieldLabel": "Etichetta",
-      "fieldLabelPlaceholder": "Etichetta visualizzata",
-      "fieldsCount": "Campi ({{count}})",
       "fieldsWithCount": "Campi ({{count}})",
       "fields_one": "{{count}} campo",
       "fields_other": "{{count}} campi",
       "filterAll_one": "Tutti ({{count}})",
       "filterAll_other": "Tutti ({{count}})",
       "gallery": "Galleria schede",
-      "hidePreview": "Nascondi anteprima scheda",
-      "highlightColor": "Colore evidenziazione",
       "loading": "Caricamento delle schede…",
       "name": "Nome scheda",
       "nameHint": "Usa snake_case. Identifica la scheda nelle chiamate API.",
@@ -50819,24 +50161,12 @@ export const resources = {
       "noFields": "Nessun campo ancora definito. Aggiungine uno per iniziare.",
       "noMatches": "Nessuna scheda corrispondente.",
       "noSampleData": "Nessun dato di esempio su questa scheda. L'HTML renderizzato più sotto usa comunque la pipeline di anteprima del server.",
-      "noSampleDataShort": "Nessun dato di esempio — aggiungi sampleData per vedere un'anteprima",
       "notFound": "Scheda non trovata",
       "previewAll": "Vedi tutte le schede",
       "previewFailed": "Impossibile generare l'anteprima",
       "previewLabel": "Scheda come consegnata alla conversazione",
-      "rawJson": "JSON grezzo",
-      "removeField": "Rimuovi campo",
       "removeFromAgent": "Rimuovi dall'agente",
-      "renderedHtml": "HTML renderizzato",
       "resizeList": "Ridimensiona elenco schede",
-      "resultType": {
-        "event": "Evento",
-        "flight": "Volo",
-        "generic": "Generico",
-        "hotel": "Hotel",
-        "product": "Prodotto",
-        "restaurant": "Ristorante"
-      },
       "resultTypeLabel": "Tipo di risultato",
       "resultTypes": {
         "contact": "Contatto",
@@ -50850,7 +50180,6 @@ export const resources = {
         "restaurant": "Ristorante"
       },
       "sampleData": "Dati di esempio",
-      "sampleTitle": "Esempio {{type}}",
       "saveChanges": "Salva modifiche",
       "searchPlaceholder": "Cerca schede...",
       "sections": {
@@ -50862,11 +50191,8 @@ export const resources = {
       },
       "select": "Seleziona una scheda",
       "selectHint": "Scegline una a sinistra per vedere l'anteprima, i campi e il JSON grezzo.",
-      "selectTemplate": "Seleziona una scheda",
       "selectToPreview": "Seleziona una scheda per l'anteprima",
       "setNameForPreview": "Imposta un nome scheda sopra per generare un'anteprima.",
-      "setNameHint": "Imposta un nome scheda sopra per generare un'anteprima.",
-      "showPreview": "Mostra anteprima scheda",
       "surface": {
         "carousel": "carosello",
         "done": {
@@ -50891,8 +50217,7 @@ export const resources = {
         "slideOf": "{{index}} di {{count}}",
         "sources": "Fonti",
         "trend": "Andamento, {{count}} punti, da {{first}} a {{last}}"
-      },
-      "template": "Scheda"
+      }
     }
   },
   "hi": {
@@ -53781,47 +53106,8 @@ export const resources = {
       "resizeList": "बातचीत सूची का आकार बदलें",
       "results": {
         "actionFailed": "कार्रवाई विफल",
-        "cannotAcceptMissing": "स्वीकार नहीं किया जा सकता — इस कार्ड पर कोई प्रतीक्षा-सूची प्रविष्टि नहीं है।",
-        "cannotSaveDraftEmpty": "ड्राफ़्ट सहेजा नहीं जा सकता — ईमेल में कोई बॉडी नहीं है।",
-        "cannotSendMissing": "भेजा नहीं जा सकता — प्राप्तकर्ता या बॉडी गायब है।",
-        "copied": "कॉपी किया गया",
-        "count_one": "{{count}} परिणाम",
-        "count_other": "{{count}} परिणाम",
-        "draftSaved": "ड्राफ़्ट Gmail में सहेजा गया: \"{{subject}}\"",
-        "emailSentTo": "{{to}} को ईमेल भेजा गया",
-        "empty": "दिखाने के लिए कोई परिणाम नहीं",
-        "enableInSettings": "सेटिंग्स में सक्षम करें",
         "failedWith": "विफल: {{message}}",
-        "imageAlt": "परिणाम छवि",
-        "locationShared": "मेरे साथ स्थान साझा किया गया",
-        "more": "+{{count}} और",
-        "noAgentForAvatar": "यह पता नहीं चल सका कि किस एजेंट को अपडेट करना है।",
-        "noAgentForPulse": "यह पता नहीं चल सका कि किस एजेंट के लिए Pulse सक्षम करना है।",
-        "nonstop": "नॉनस्टॉप",
-        "nothingToCopy": "कॉपी करने के लिए कुछ नहीं",
-        "notificationsOn": "सूचनाएँ चालू",
-        "percentOff": "{{pct}}% छूट",
-        "photoSet": "फ़ोटो सेट हो गई!",
-        "photos_one": "{{count}} फ़ोटो",
-        "photos_other": "{{count}} फ़ोटो",
-        "pulseEnabled": "Pulse सक्षम",
-        "resultCount_one": "{{count}} परिणाम",
-        "resultCount_other": "{{count}} परिणाम",
-        "saveDraft": "ड्राफ़्ट सहेजें",
-        "sending": "भेजा जा रहा है...",
-        "showFullContent": "पूरी सामग्री दिखाएँ",
-        "showLess": "कम दिखाएँ",
-        "skipped": "छोड़ दिया गया",
-        "sources": "स्रोत:",
-        "stops_one": "{{count}} पड़ाव",
-        "stops_other": "{{count}} पड़ाव",
-        "title": "परिणाम",
-        "uploading": "अपलोड हो रहा है...",
-        "viewDetails": "विवरण देखें",
-        "waitlistAlreadyInvited": "पहले ही स्वीकृत — कोड {{code}}",
-        "waitlistInviteEmailed": "स्वीकृत — निमंत्रण {{email}} पर भेजा गया",
-        "waitlistInviteIssued": "स्वीकृत — कोड {{code}}",
-        "waitlistInvited": "स्वीकृत"
+        "nothingToCopy": "कॉपी करने के लिए कुछ नहीं"
       },
       "scrollUpForMore": "और देखने के लिए ऊपर स्क्रॉल करें",
       "search": {
@@ -56404,13 +55690,6 @@ export const resources = {
       "createTooltip": "कार्ड बनाएँ",
       "deleteConfirm": "कार्ड \"{{name}}\" हटाएँ? इसे पूर्ववत नहीं किया जा सकता।",
       "descriptionPlaceholder": "यह कार्ड क्या प्रदर्शित करता है?",
-      "details": {
-        "nonstop": "नॉनस्टॉप",
-        "stops_one": "{{count}} स्टॉप",
-        "stops_other": "{{count}} स्टॉप"
-      },
-      "detailsLabel": "विवरण",
-      "displayType": "डिस्प्ले प्रकार",
       "displayTypes": {
         "body": "बॉडी",
         "change": "बदलाव",
@@ -56421,15 +55700,13 @@ export const resources = {
       },
       "docs": "दस्तावेज़",
       "empty": {
-        "subtitle": "प्लेटफ़ॉर्म कार्ड तय करते हैं कि एजेंट परिणाम कैसे प्रस्तुत करें",
         "title": "कोई कार्ड नहीं"
       },
       "emptyDescription": "कार्ड तय करते हैं कि यह एजेंट संरचित परिणामों (होटल, ईमेल, उत्पाद, आदि) को कैसे फ़ॉर्मेट करे",
       "emptyHint": "शुरू करने के लिए एक बनाएँ।",
       "emptyLabel": "अभी तक कोई कार्ड नहीं",
       "errors": {
-        "loadFailed": "कार्ड लोड करना विफल",
-        "previewFailed": "पूर्वावलोकन बनाना विफल"
+        "loadFailed": "कार्ड लोड करना विफल"
       },
       "field": {
         "displayType": "डिस्प्ले प्रकार",
@@ -56447,22 +55724,12 @@ export const resources = {
       },
       "fieldCount_one": "{{count}} फ़ील्ड",
       "fieldCount_other": "{{count}} फ़ील्ड",
-      "fieldFormat": "फ़ॉर्मेट",
-      "fieldFormatPlaceholder": "जैसे मुद्रा, तारीख",
-      "fieldIcon": "आइकन",
-      "fieldIconPlaceholder": "lucide आइकन नाम",
-      "fieldKey": "की",
-      "fieldLabel": "लेबल",
-      "fieldLabelPlaceholder": "डिस्प्ले लेबल",
-      "fieldsCount": "फ़ील्ड ({{count}})",
       "fieldsWithCount": "फ़ील्ड ({{count}})",
       "fields_one": "{{count}} फ़ील्ड",
       "fields_other": "{{count}} फ़ील्ड",
       "filterAll_one": "सभी ({{count}})",
       "filterAll_other": "सभी ({{count}})",
       "gallery": "कार्ड गैलरी",
-      "hidePreview": "कार्ड पूर्वावलोकन छिपाएँ",
-      "highlightColor": "हाइलाइट रंग",
       "loading": "कार्ड लोड हो रहे हैं…",
       "name": "कार्ड नाम",
       "nameHint": "snake_case उपयोग करें। यह API कॉल में कार्ड की पहचान करता है।",
@@ -56471,24 +55738,12 @@ export const resources = {
       "noFields": "अभी तक कोई फ़ील्ड परिभाषित नहीं। शुरू करने के लिए एक जोड़ें।",
       "noMatches": "कोई मेल खाता कार्ड नहीं।",
       "noSampleData": "इस कार्ड पर कोई सैंपल डेटा नहीं है। नीचे दिया गया रेंडर किया गया HTML फिर भी सर्वर की पूर्वावलोकन पाइपलाइन का उपयोग करता है।",
-      "noSampleDataShort": "कोई सैंपल डेटा नहीं — पूर्वावलोकन देखने के लिए sampleData जोड़ें",
       "notFound": "कार्ड नहीं मिला",
       "previewAll": "सभी कार्ड देखें",
       "previewFailed": "पूर्वावलोकन बनाना विफल",
       "previewLabel": "बातचीत में भेजे गए अनुसार कार्ड",
-      "rawJson": "रॉ JSON",
-      "removeField": "फ़ील्ड हटाएँ",
       "removeFromAgent": "एजेंट से हटाएँ",
-      "renderedHtml": "रेंडर किया गया HTML",
       "resizeList": "कार्ड सूची का आकार बदलें",
-      "resultType": {
-        "event": "आयोजन",
-        "flight": "फ़्लाइट",
-        "generic": "सामान्य",
-        "hotel": "होटल",
-        "product": "उत्पाद",
-        "restaurant": "रेस्तरां"
-      },
       "resultTypeLabel": "परिणाम प्रकार",
       "resultTypes": {
         "contact": "संपर्क",
@@ -56502,7 +55757,6 @@ export const resources = {
         "restaurant": "रेस्तरां"
       },
       "sampleData": "सैंपल डेटा",
-      "sampleTitle": "सैंपल {{type}}",
       "saveChanges": "बदलाव सहेजें",
       "searchPlaceholder": "कार्ड खोजें...",
       "sections": {
@@ -56514,11 +55768,8 @@ export const resources = {
       },
       "select": "एक कार्ड चुनें",
       "selectHint": "इसका पूर्वावलोकन, फ़ील्ड और रॉ JSON देखने के लिए बाएँ से एक चुनें।",
-      "selectTemplate": "एक कार्ड चुनें",
       "selectToPreview": "पूर्वावलोकन के लिए एक कार्ड चुनें",
       "setNameForPreview": "पूर्वावलोकन बनाने के लिए ऊपर कार्ड नाम सेट करें।",
-      "setNameHint": "पूर्वावलोकन बनाने के लिए ऊपर कार्ड नाम सेट करें।",
-      "showPreview": "कार्ड पूर्वावलोकन दिखाएँ",
       "surface": {
         "carousel": "कैरोसेल",
         "done": {
@@ -56543,8 +55794,7 @@ export const resources = {
         "slideOf": "{{count}} में से {{index}}",
         "sources": "स्रोत",
         "trend": "रुझान, {{count}} बिंदु, {{first}} से {{last}} तक"
-      },
-      "template": "कार्ड"
+      }
     }
   }
 } as const;

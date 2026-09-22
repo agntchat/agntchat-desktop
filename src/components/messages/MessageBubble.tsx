@@ -29,7 +29,6 @@ import {
   isStatusUpdateMessage,
   StatusUpdateMessage,
 } from "./StatusUpdateMessage";
-import { ResultPresentationMessage } from "./ResultPresentationMessage";
 import { SurfaceMessage } from "./SurfaceMessage";
 import {
   isCompactionSummaryMessage,
@@ -37,34 +36,6 @@ import {
 } from "./CompactionSummaryMessage";
 import type { Message } from "../../lib/api";
 import { awaitingAgent } from "../../lib/awaitingAgent";
-
-function isResultPresentationMessage(message: Message): boolean {
-  // Primary path: backend sets messageType="ResultPresentation" when
-  // forwarding extracted <result_presentation> envelopes (see
-  // Gateway.maybe_forward_result_presentations).
-  if (message.messageType === "ResultPresentation") return true;
-
-  // Fallback: structured payload whose data looks like a ResultPresentation
-  // (items[] + result_type). Mirrors web's resolveType auto-detection so
-  // legacy / older-backend messages render as cards instead of raw JSON.
-  if (
-    message.messageType === "structured" ||
-    message.contentType === "structured"
-  ) {
-    const data = message.contentStructured?.data as
-      | Record<string, unknown>
-      | undefined;
-    if (
-      data &&
-      Array.isArray(data.items) &&
-      data.items.length > 0 &&
-      typeof data.result_type === "string"
-    ) {
-      return true;
-    }
-  }
-  return false;
-}
 
 /** Sender name + Agent pill + model label shown above the first bubble of a run.
  *  `viaTerminal` tags a message mirrored from an external CLI session (#148):
@@ -347,8 +318,6 @@ export const MessageBubble = memo(function MessageBubble({
               <FileMessage message={message} />
             ) : message.messageType === "Surface" ? (
               <SurfaceMessage message={message} />
-            ) : isResultPresentationMessage(message) ? (
-              <ResultPresentationMessage message={message} />
             ) : (
               <>
                 {message.content?.trim() ? (

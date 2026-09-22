@@ -38,8 +38,7 @@ import type { LucideIcon } from "lucide-react";
  * The icon names agents may reference by string. Mirrors the backend catalog
  * (`ResponseTemplates.Schema.icon_catalog/0`) — the server is the single
  * source; keep in sync with web's lib/cardIcons.ts and mobile's
- * lib/detailTemplate/icons.tsx. Shared by the ResultPresentation renderer
- * and the A2UI surface catalog.
+ * lib/detailTemplate/icons.tsx. Used by the A2UI surface catalog.
  */
 export const ICON_MAP: Record<string, LucideIcon> = {
   bed: Bed,

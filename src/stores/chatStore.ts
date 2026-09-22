@@ -358,8 +358,8 @@ interface ChatState {
   firstUnreadIds: Record<string, string | undefined>;
   /** Turn-group keys (message.turnGroupId, or message.id when unset) already
    * counted toward this session's live unread increments, per conversation.
-   * Dedupes humanlike continuation bubbles and result_presentation carousel
-   * cards — the same logical agent turn — down to one increment. Reset
+   * Dedupes humanlike continuation bubbles — the same logical agent
+   * turn — down to one increment. Reset
    * whenever a conversation's unread is cleared (opened, read elsewhere). */
   unreadTurnGroups: Record<string, Record<string, true>>;
 
@@ -1505,9 +1505,8 @@ export const useChatStore = create<ChatState>((set, get) => ({
         // are observational and shouldn't accumulate badges.
         const isPersonal = get().conversations.some((c) => c.id === convId);
         if (isPersonal && convId !== get().activeConversationId) {
-          // turnGroupId collapses humanlike continuation bubbles and
-          // result_presentation carousel cards from one agent turn into a
-          // single unread unit (issue #122); falls back to the message id
+          // turnGroupId collapses the humanlike continuation bubbles of
+          // one agent turn into a single unread unit (issue #122); falls back to the message id
           // for an ordinary standalone message.
           const turnGroupKey = lastMessage?.turnGroupId || lastMessage?.id;
           if (turnGroupKey) {

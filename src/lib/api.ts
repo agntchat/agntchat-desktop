@@ -3124,8 +3124,6 @@ export interface MessageContentStructured {
    *  the message type. `getMessagePayload` helper normalizes both. */
   data?: Record<string, unknown>;
   payload?: Record<string, unknown>;
-  result_type?: string;
-  items?: unknown[];
 }
 
 export interface FileAttachment {
@@ -3158,10 +3156,9 @@ export interface Message {
   contentStructured?: MessageContentStructured;
   taskSnapshot?: TaskSnapshot;
   parentMessageId?: string;
-  /** Shared by humanlike continuation bubbles and result_presentation cards
-   * extracted from the same source text — dedupes one agent turn into a
-   * single unread unit. Falls back to `id` when unset (see chatStore
-   * incrementUnread). */
+  /** Shared by the messages one agent turn produced (humanlike continuation
+   * bubbles) — dedupes that turn into a single unread unit. Falls back to
+   * `id` when unset (see chatStore incrementUnread). */
   turnGroupId?: string;
   fileAttachments?: FileAttachment[];
   reactions?: MessageReaction[];
