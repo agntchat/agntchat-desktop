@@ -339,9 +339,6 @@ a.a2ui-callout__text:hover { text-decoration: underline; }
 @keyframes a2ui-spin { to { transform: rotate(360deg); } }
 @media (prefers-reduced-motion: reduce) { .a2ui-spinner { animation: none; } }
 .a2ui-actions__caption { flex-basis: 100%; font-size: var(--font-size-sm); color: var(--color-muted-foreground); }
-@container bubble (max-width: 479px) {
-  .a2ui-actions .a2ui-btn--primary { flex: 1 1 100%; justify-content: center; }
-}
 .a2ui-menu {
   position: absolute; z-index: var(--z-dropdown, 30); top: calc(100% + var(--space-1)); right: 0; min-width: 160px;
   background: var(--color-popover, var(--color-card)); color: var(--color-popover-foreground, var(--color-foreground));

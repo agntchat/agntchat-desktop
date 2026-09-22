@@ -176,7 +176,9 @@ export const ActionBar = createBinderlessComponentImplementation(ActionBarApi, (
     if (action.fn === "saveDraft" && (outcome === undefined || outcome === "ok" || outcome === "saved")) {
       return { short: t("surface.done.saved"), caption: t("surface.savedDraft") };
     }
-    return { short: t("surface.done.done") };
+    // Anything else keeps its own label under the check mark — "✓ Watch"
+    // says what happened, a bare "Done" does not.
+    return { short: action.label };
   };
 
   const run = async (action: ResolvedAction) => {
