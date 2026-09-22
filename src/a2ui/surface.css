@@ -408,9 +408,42 @@ a.a2ui-cite:hover { color: var(--color-foreground); border-color: var(--color-bo
 .a2ui-dot--active { width: 8px; height: 8px; background: var(--color-primary); }
 .a2ui-rows { display: flex; flex-direction: column; background: var(--color-card); border: 1px solid var(--color-border); border-radius: var(--radius-lg); box-shadow: var(--shadow-sm); overflow: hidden; }
 .a2ui-rows > .a2ui-list__items { gap: 0; }
-.a2ui-rows > .a2ui-list__items > li { min-height: 72px; display: flex; align-items: center; padding: var(--space-2) var(--space-3); border-top: 1px solid var(--color-border); }
+.a2ui-rows > .a2ui-list__items > li { min-width: 0; border-top: 1px solid var(--color-border); }
 .a2ui-rows > .a2ui-list__items > li:first-child { border-top: none; }
-.a2ui-rows > .a2ui-list__items > li > * { flex: 1; min-width: 0; }
+/* The compact row: thumb · two lines · trailing column (rating over price) · chevron. 72px. */
+.a2ui-row {
+  display: grid; grid-template-columns: auto minmax(0, 1fr) auto auto; grid-auto-rows: auto; column-gap: var(--space-3); row-gap: 2px;
+  align-items: center; width: 100%; min-height: 72px; padding: var(--space-2) var(--space-3); box-sizing: border-box;
+  background: none; border: 0; text-align: left; font: inherit; color: var(--color-card-foreground); cursor: pointer;
+}
+.a2ui-row:hover { background: var(--color-surface-hover); }
+.a2ui-row:focus-visible { outline: 2px solid var(--color-ring); outline-offset: -2px; }
+.a2ui-row__thumb { grid-column: 1; grid-row: 1 / span 2; width: 64px; height: 64px; border-radius: var(--radius-md); object-fit: cover; background: var(--color-surface-active); }
+.a2ui-row__lead { grid-column: 1; grid-row: 1 / span 2; width: 40px; height: 40px; border-radius: var(--radius-full); display: inline-flex; align-items: center; justify-content: center; overflow: hidden; background: var(--color-accent-light); color: var(--color-primary); font-size: var(--font-size-sm); font-weight: 600; }
+.a2ui-row__lead--logo { border-radius: var(--radius-sm); background: none; }
+.a2ui-row__lead--icon { background: var(--color-surface-active); color: var(--color-muted-foreground); }
+.a2ui-row__lead img { width: 100%; height: 100%; object-fit: cover; }
+.a2ui-row__main { grid-column: 2; grid-row: 1 / span 2; min-width: 0; display: flex; flex-direction: column; gap: 2px; }
+.a2ui-row__title { font-size: var(--font-size-base); font-weight: 600; line-height: var(--line-height-tight); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.a2ui-row--visited .a2ui-row__title { color: var(--color-muted-foreground); font-weight: 500; }
+.a2ui-row__sub { display: flex; align-items: center; gap: var(--space-1_5); min-width: 0; font-size: var(--font-size-sm); color: var(--color-muted-foreground); }
+.a2ui-row__subtitle { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.a2ui-row__chip { flex: 0 0 auto; }
+.a2ui-row__trail { grid-column: 3; justify-self: end; text-align: right; white-space: nowrap; }
+.a2ui-row__trail:only-of-type { grid-row: 1 / span 2; }
+.a2ui-row__rating { color: var(--color-warning); }
+.a2ui-row__stat { font-size: var(--font-size-base); font-weight: 600; font-variant-numeric: tabular-nums; }
+.a2ui-row__chevron { grid-column: 4; grid-row: 1 / span 2; color: var(--color-muted-foreground); transition: transform .15s ease; }
+.a2ui-row--expanded .a2ui-row__chevron { transform: rotate(180deg); }
+@media (prefers-reduced-motion: reduce) { .a2ui-row__chevron { transition: none; } }
+/* The full card beneath its row: the same template, minus the card chrome the row list already draws. */
+.a2ui-row__detail { padding: 0 var(--space-3) var(--space-3); }
+.a2ui-row__detail > .a2ui-card { border: 0; box-shadow: none; border-radius: 0; padding: 0; }
+.a2ui-row__detail .a2ui-hero { border-radius: var(--radius-md); }
+@container bubble (max-width: 479px) {
+  .a2ui-row { column-gap: var(--space-2); }
+  .a2ui-row__thumb { width: 56px; height: 56px; }
+}
 .a2ui-list__more {
   align-self: flex-start; background: none; border: 0; padding: var(--space-1) 0; font: inherit; font-size: var(--font-size-sm);
   font-weight: 600; color: var(--color-primary); cursor: pointer;

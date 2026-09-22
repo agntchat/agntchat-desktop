@@ -1,9 +1,11 @@
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { useTranslation } from "../host";
 import { z } from "zod";
 import { CommonSchemas } from "@a2ui/web_core/v0_9";
 import { createComponentImplementation } from "@a2ui/react/v0_9";
+import { summarizeCard, templateIdOf } from "../rowSummary";
 import { VisibleSchema, WeightSchema, childKey, renderChild, weightStyle, type ChildRef } from "../shared";
+import { RowSummary } from "./RowSummary";
 
 /** Bubble width below which a `grid` degrades to the carousel and the cards
  *  go full-bleed — keep equal to the `@container bubble (max-width: 479px)`
@@ -27,17 +29,30 @@ export const ListApi = {
  * horizontal snap carousel at every width (full-bleed cards with a peek on
  * phones, ~380px cards with a peek on panes — the same idiom mobile uses,
  * so results can be compared side by side instead of read as a stack);
- * `rows` is the compact 72px row list; `grid` goes two-up at 720px and
- * degrades to the carousel below 480px. Beyond `maxVisible` a localized
- * "Show N more" button reveals the rest.
+ * `rows` is the compact row list — each row derived from the item's card
+ * template (`rowSummary.ts`), expanding in place to the full card on tap,
+ * one at a time, `Esc` to fold; `grid` goes two-up at 720px and degrades
+ * to the carousel below 480px. Beyond `maxVisible` a localized "Show N
+ * more" button reveals the rest.
  */
-export const List = createComponentImplementation(ListApi, ({ props, buildChild }) => {
+export const List = createComponentImplementation(ListApi, ({ props, buildChild, context }) => {
   const { t } = useTranslation("templates");
   const refs = (Array.isArray(props.children) ? props.children : []) as ChildRef[];
   const variant = props.variant ?? "cards";
   const maxVisible = props.maxVisible ?? 5;
   const [expanded, setExpanded] = useState(false);
   const [active, setActive] = useState(0);
+  // Rows: the one open row, and the rows opened this session (muted title).
+  const [openRow, setOpenRow] = useState<string | null>(null);
+  const [visited, setVisited] = useState<Set<string>>(() => new Set());
+  // The node layer hands template instances synthesized ids (`item_card-[/items/0]`);
+  // the component model is keyed by the authored id.
+  const templateId = templateIdOf(refs.find((r): r is { id: string; basePath: string } => typeof r !== "string")?.id);
+  const components = context.surfaceComponents;
+  const summary = useMemo(
+    () => (variant === "rows" && templateId ? summarizeCard(components, templateId) : null),
+    [variant, templateId, components]
+  );
   const scroller = useRef<HTMLUListElement>(null);
   const root = useRef<HTMLDivElement>(null);
   // The stylesheet degrades `grid` to the carousel below 480px (container
@@ -115,9 +130,48 @@ export const List = createComponentImplementation(ListApi, ({ props, buildChild 
   );
 
   if (variant === "rows") {
+    const toggle = (key: string) => {
+      setOpenRow((cur) => (cur === key ? null : key));
+      setVisited((cur) => (cur.has(key) ? cur : new Set(cur).add(key)));
+    };
     return (
-      <div ref={root} className="a2ui-list a2ui-list--rows a2ui-rows" style={weightStyle(props.weight)}>
-        {items}
+      <div
+        ref={root}
+        className="a2ui-list a2ui-list--rows a2ui-rows"
+        style={weightStyle(props.weight)}
+        onKeyDown={(e) => {
+          if (e.key === "Escape" && openRow !== null) {
+            e.stopPropagation();
+            setOpenRow(null);
+          }
+        }}
+      >
+        <ul className="a2ui-list__items" role="list">
+          {visible.map((ref, i) => {
+            const key = childKey(ref, i);
+            const open = openRow === key;
+            // A static child (no template) has no summary to derive: render it whole.
+            const summarised = summary !== null && typeof ref !== "string";
+            return (
+              <li key={key} role="listitem" className={open ? "a2ui-rows__item--open" : undefined}>
+                {summarised ? (
+                  <RowSummary
+                    ids={summary}
+                    components={components}
+                    dataContext={context.dataContext}
+                    basePath={ref.basePath}
+                    expanded={open}
+                    visited={visited.has(key)}
+                    onToggle={() => toggle(key)}
+                  />
+                ) : (
+                  renderChild(ref, buildChild)
+                )}
+                {summarised && open && <div className="a2ui-row__detail">{renderChild(ref, buildChild)}</div>}
+              </li>
+            );
+          })}
+        </ul>
         {more}
       </div>
     );
