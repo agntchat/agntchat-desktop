@@ -2819,41 +2819,23 @@ export async function deleteAnnotation(id: string): Promise<void> {
   await request(`/api/annotations/${id}`, { method: "DELETE" });
 }
 
-// Response Templates
+// Response Templates — a read-only, repo-curated library (JSON files in the
+// backend, reviewed in code). `id` equals the template `name`.
 export async function listResponseTemplates(): Promise<{ templates: ResponseTemplate[] }> {
   return request("/api/response-templates");
 }
 
-export async function createResponseTemplate(
-  attrs: Partial<ResponseTemplate>
-): Promise<{ template: ResponseTemplate }> {
-  return request("/api/response-templates", {
-    method: "POST",
-    body: JSON.stringify(attrs),
-  });
+export async function getResponseTemplate(id: string): Promise<{ template: ResponseTemplate }> {
+  return request(`/api/response-templates/${encodeURIComponent(id)}`);
 }
 
-export async function updateResponseTemplate(
-  id: string,
-  attrs: Partial<ResponseTemplate>
-): Promise<{ template: ResponseTemplate }> {
-  return request(`/api/response-templates/${id}`, {
-    method: "PATCH",
-    body: JSON.stringify(attrs),
-  });
-}
-
-export async function deleteResponseTemplate(id: string): Promise<void> {
-  await request(`/api/response-templates/${id}`, { method: "DELETE" });
-}
-
-export async function previewResponseTemplate(
-  attrs: Partial<ResponseTemplate>
-): Promise<{ html: string; css: string; valid: boolean; errors: string[] }> {
-  return request("/api/response-templates/preview", {
-    method: "POST",
-    body: JSON.stringify(attrs),
-  });
+/** The template compiled into an A2UI Surface for its sample data — the same
+ *  `contentStructured` a `Surface` chat message carries, so the real
+ *  `SurfaceMessage` renderer previews it. */
+export async function getResponseTemplateSurface(
+  id: string
+): Promise<{ surface: MessageContentStructured }> {
+  return request(`/api/response-templates/${encodeURIComponent(id)}/surface`);
 }
 
 // Canvas Definitions
@@ -3913,8 +3895,6 @@ export interface ResponseTemplate {
   resultType: ResultType;
   fields: DetailField[];
   sampleData?: Record<string, unknown>;
-  insertedAt: string;
-  updatedAt: string;
 }
 
 /** The human-owned sub-agent spawn policy. Stored sparsely — any unset key

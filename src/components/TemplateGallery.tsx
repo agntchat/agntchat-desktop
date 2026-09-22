@@ -1,7 +1,7 @@
 import { useEffect, useState, useCallback } from "react";
 import { useTranslation } from "react-i18next";
 import { type ResponseTemplate, listResponseTemplates } from "../lib/api";
-import { TemplateCardPreview } from "./TemplateCardPreview";
+import { TemplateSurfacePreview } from "./TemplateSurfacePreview";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import {
@@ -140,7 +140,7 @@ export function TemplateGallery({ onClose }: Props) {
                 <p className="text-[10px] font-semibold text-muted-foreground uppercase tracking-wider mb-2">
                   {t("cardPreview")}
                 </p>
-                <TemplateCardPreview template={selected} />
+                <TemplateSurfacePreview templateId={selected.id} />
               </div>
 
               {/* Field schema */}

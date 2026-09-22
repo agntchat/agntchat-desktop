@@ -4,7 +4,6 @@ import {
   Bot,
   User,
   ListTodo,
-  LayoutTemplate,
   Server,
   Shapes,
   FolderOpen,
@@ -54,7 +53,6 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Dashboard } from "./Dashboard";
 import { MessagesView } from "./messages/MessagesView";
 import { TasksView } from "./tasks/TasksView";
-import { TemplatesView } from "./templates/TemplatesView";
 import { PreviewsView } from "./previews/PreviewsView";
 import { FilesView } from "./files/FilesView";
 import { CanvasView } from "./canvas/CanvasView";
@@ -71,7 +69,6 @@ type View =
   | "friends"
   | "files"
   | "hosts"
-  | "templates"
   | "previews"
   | "canvas"
   | "fleet"
@@ -175,10 +172,6 @@ export function AppShell() {
           // persisted "hosts" view falls back to the dashboard rather than
           // rendering a surface that can only error.
           participant?.features?.org_hosts ? <FleetView /> : <Dashboard />
-        ) : view === "templates" ? (
-          // Response templates are an admin-only area now (matches the rail,
-          // which hides the button for non-admins).
-          participant?.platformAdmin ? <TemplatesView /> : <Dashboard />
         ) : view === "previews" ? (
           // Component previews are an admin-only debug gallery (matches the
           // rail, which hides the button for non-admins).
@@ -476,16 +469,8 @@ function LeftRail({
           />
         )}
         {/* Divider separating the everyone-buttons above from the admin-only
-            buttons (Templates, Platform) below. */}
+            buttons (Previews, Platform) below. */}
         {participant?.platformAdmin && <RailDivider />}
-        {participant?.platformAdmin && (
-          <RailButton
-            icon={LayoutTemplate}
-            label={t("templates")}
-            active={view === "templates"}
-            onClick={() => onChange("templates")}
-          />
-        )}
         {participant?.platformAdmin && (
           <RailButton
             icon={Shapes}

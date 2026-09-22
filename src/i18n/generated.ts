@@ -3703,8 +3703,7 @@ export const resources = {
       "settings": "Settings",
       "signOut": "Sign Out",
       "tasks": "Actions",
-      "team": "Team",
-      "templates": "Response Cards"
+      "team": "Team"
     },
     "onboarding": {
       "cards": {
@@ -5423,106 +5422,37 @@ export const resources = {
     },
     "templates": {
       "add": "Add Card",
-      "addField": "Add Field",
       "addTemplate": "Add Card",
       "addToAgent": "Add to Agent",
       "allAssigned": "All available cards are already assigned.",
       "assigned": "Assigned",
       "cardPreview": "Card Preview",
-      "colors": {
-        "blue": "Blue",
-        "green": "Green",
-        "red": "Red",
-        "yellow": "Yellow"
-      },
-      "copyId": "Copy card ID",
       "count_one": "{{count}} card",
       "count_other": "{{count}} cards",
-      "create": "Create Card",
-      "createTemplate": "Create Card",
-      "createTooltip": "Create card",
-      "deleteConfirm": "Delete card \"{{name}}\"? This cannot be undone.",
-      "descriptionPlaceholder": "What does this card display?",
-      "displayTypes": {
-        "body": "body",
-        "change": "change",
-        "chip": "chip",
-        "highlight": "highlight",
-        "row": "row",
-        "sparkline": "sparkline"
-      },
-      "docs": "Docs",
       "empty": {
         "title": "No Cards"
       },
       "emptyDescription": "Cards define how this agent formats structured results (hotels, emails, products, etc.)",
-      "emptyHint": "Create one to get started.",
       "emptyLabel": "No cards yet",
       "errors": {
         "loadFailed": "Failed to load cards"
       },
-      "field": {
-        "displayType": "Display Type",
-        "format": "Format",
-        "formatPlaceholder": "e.g. currency, date",
-        "hidden": "Hidden",
-        "highlightColor": "Highlight Color",
-        "icon": "Icon",
-        "iconPlaceholder": "lucide icon name",
-        "key": "Key",
-        "label": "Label",
-        "labelPlaceholder": "Display label",
-        "link": "Link",
-        "remove": "Remove field"
-      },
       "fieldCount_one": "{{count}} field",
       "fieldCount_other": "{{count}} fields",
       "fieldsWithCount": "Fields ({{count}})",
-      "fields_one": "{{count}} field",
-      "fields_other": "{{count}} fields",
       "filterAll_one": "All ({{count}})",
       "filterAll_other": "All ({{count}})",
       "gallery": "Card Gallery",
       "loading": "Loading cards…",
-      "name": "Card Name",
-      "nameHint": "Use snake_case. This identifies the card in API calls.",
-      "new": "New Card",
-      "newTitle": "New Card",
-      "noFields": "No fields defined yet. Add one to get started.",
       "noMatches": "No matching cards.",
-      "noSampleData": "No sample data on this card. The rendered HTML further down uses the server's preview pipeline regardless.",
-      "notFound": "Card not found",
       "previewAll": "Preview all cards",
-      "previewFailed": "Failed to generate preview",
-      "previewLabel": "Card as delivered to conversation",
       "removeFromAgent": "Remove from Agent",
-      "resizeList": "Resize card list",
-      "resultTypeLabel": "Result Type",
-      "resultTypes": {
-        "contact": "Contact",
-        "email": "Email",
-        "event": "Event",
-        "finance": "Finance",
-        "flight": "Flight",
-        "generic": "Generic",
-        "hotel": "Hotel",
-        "product": "Product",
-        "restaurant": "Restaurant"
-      },
       "sampleData": "Sample Data",
-      "saveChanges": "Save Changes",
       "searchPlaceholder": "Search cards...",
       "sections": {
-        "cardPreview": "Card Preview",
-        "details": "Details",
-        "fields": "Fields ({{count}})",
-        "rawJson": "Raw JSON",
-        "renderedHtml": "Rendered HTML"
+        "fields": "Fields ({{count}})"
       },
-      "select": "Select a card",
-      "selectHint": "Pick one from the left to see its preview, fields, and raw JSON.",
       "selectToPreview": "Select a card to preview",
-      "setNameForPreview": "Set a card name above to generate a preview.",
       "surface": {
         "carousel": "carousel",
         "done": {
@@ -9233,8 +9163,7 @@ export const resources = {
       "settings": "Ajustes",
       "signOut": "Cerrar sesión",
       "tasks": "Acciones",
-      "team": "Equipo",
-      "templates": "Tarjetas de respuesta"
+      "team": "Equipo"
     },
     "onboarding": {
       "cards": {
@@ -10953,106 +10882,37 @@ export const resources = {
     },
     "templates": {
       "add": "Añadir tarjeta",
-      "addField": "Añadir campo",
       "addTemplate": "Añadir tarjeta",
       "addToAgent": "Añadir al agente",
       "allAssigned": "Todas las tarjetas disponibles ya están asignadas.",
       "assigned": "Asignadas",
       "cardPreview": "Vista previa de la tarjeta",
-      "colors": {
-        "blue": "Azul",
-        "green": "Verde",
-        "red": "Rojo",
-        "yellow": "Amarillo"
-      },
-      "copyId": "Copiar ID de la tarjeta",
       "count_one": "{{count}} tarjeta",
       "count_other": "{{count}} tarjetas",
-      "create": "Crear tarjeta",
-      "createTemplate": "Crear tarjeta",
-      "createTooltip": "Crear tarjeta",
-      "deleteConfirm": "¿Eliminar la tarjeta «{{name}}»? Esta acción no se puede deshacer.",
-      "descriptionPlaceholder": "¿Qué muestra esta tarjeta?",
-      "displayTypes": {
-        "body": "cuerpo",
-        "change": "cambio",
-        "chip": "chip",
-        "highlight": "destacado",
-        "row": "fila",
-        "sparkline": "minigráfico"
-      },
-      "docs": "Documentación",
       "empty": {
         "title": "No hay tarjetas"
       },
       "emptyDescription": "Las tarjetas definen cómo este agente da formato a los resultados estructurados (hoteles, correos, productos, etc.)",
-      "emptyHint": "Crea una para empezar.",
       "emptyLabel": "Aún no hay tarjetas",
       "errors": {
         "loadFailed": "No se pudieron cargar las tarjetas"
       },
-      "field": {
-        "displayType": "Tipo de visualización",
-        "format": "Formato",
-        "formatPlaceholder": "p. ej. currency, date",
-        "hidden": "Oculto",
-        "highlightColor": "Color de resaltado",
-        "icon": "Icono",
-        "iconPlaceholder": "nombre de icono de lucide",
-        "key": "Clave",
-        "label": "Etiqueta",
-        "labelPlaceholder": "Etiqueta visible",
-        "link": "Enlace",
-        "remove": "Quitar campo"
-      },
       "fieldCount_one": "{{count}} campo",
       "fieldCount_other": "{{count}} campos",
       "fieldsWithCount": "Campos ({{count}})",
-      "fields_one": "{{count}} campo",
-      "fields_other": "{{count}} campos",
       "filterAll_one": "Todas ({{count}})",
       "filterAll_other": "Todas ({{count}})",
       "gallery": "Galería de tarjetas",
       "loading": "Cargando tarjetas…",
-      "name": "Nombre de la tarjeta",
-      "nameHint": "Usa snake_case. Identifica la tarjeta en las llamadas a la API.",
-      "new": "Nueva tarjeta",
-      "newTitle": "Nueva tarjeta",
-      "noFields": "Aún no hay campos definidos. Añade uno para empezar.",
       "noMatches": "No hay tarjetas que coincidan.",
-      "noSampleData": "Esta tarjeta no tiene datos de ejemplo. El HTML renderizado más abajo usa igualmente el proceso de vista previa del servidor.",
-      "notFound": "Tarjeta no encontrada",
       "previewAll": "Ver todas las tarjetas",
-      "previewFailed": "No se pudo generar la vista previa",
-      "previewLabel": "Tarjeta tal como se entrega en la conversación",
       "removeFromAgent": "Quitar del agente",
-      "resizeList": "Redimensionar la lista de tarjetas",
-      "resultTypeLabel": "Tipo de resultado",
-      "resultTypes": {
-        "contact": "Contacto",
-        "email": "Correo",
-        "event": "Evento",
-        "finance": "Finanzas",
-        "flight": "Vuelo",
-        "generic": "Genérico",
-        "hotel": "Hotel",
-        "product": "Producto",
-        "restaurant": "Restaurante"
-      },
       "sampleData": "Datos de ejemplo",
-      "saveChanges": "Guardar cambios",
       "searchPlaceholder": "Buscar tarjetas...",
       "sections": {
-        "cardPreview": "Vista previa de la tarjeta",
-        "details": "Detalles",
-        "fields": "Campos ({{count}})",
-        "rawJson": "JSON sin procesar",
-        "renderedHtml": "HTML renderizado"
+        "fields": "Campos ({{count}})"
       },
-      "select": "Selecciona una tarjeta",
-      "selectHint": "Elige una a la izquierda para ver su vista previa, sus campos y su JSON sin procesar.",
       "selectToPreview": "Selecciona una tarjeta para previsualizarla",
-      "setNameForPreview": "Escribe arriba un nombre de tarjeta para generar la vista previa.",
       "surface": {
         "carousel": "carrusel",
         "done": {
@@ -14763,8 +14623,7 @@ export const resources = {
       "settings": "Einstellungen",
       "signOut": "Abmelden",
       "tasks": "Aktionen",
-      "team": "Team",
-      "templates": "Antwortkarten"
+      "team": "Team"
     },
     "onboarding": {
       "cards": {
@@ -16483,106 +16342,37 @@ export const resources = {
     },
     "templates": {
       "add": "Karte hinzufügen",
-      "addField": "Feld hinzufügen",
       "addTemplate": "Karte hinzufügen",
       "addToAgent": "Zum Agenten hinzufügen",
       "allAssigned": "Alle verfügbaren Karten sind bereits zugewiesen.",
       "assigned": "Zugewiesen",
       "cardPreview": "Kartenvorschau",
-      "colors": {
-        "blue": "Blau",
-        "green": "Grün",
-        "red": "Rot",
-        "yellow": "Gelb"
-      },
-      "copyId": "Karten-ID kopieren",
       "count_one": "{{count}} Karte",
       "count_other": "{{count}} Karten",
-      "create": "Karte erstellen",
-      "createTemplate": "Karte erstellen",
-      "createTooltip": "Karte erstellen",
-      "deleteConfirm": "Karte \"{{name}}\" löschen? Dies kann nicht rückgängig gemacht werden.",
-      "descriptionPlaceholder": "Was zeigt diese Karte an?",
-      "displayTypes": {
-        "body": "body",
-        "change": "change",
-        "chip": "chip",
-        "highlight": "highlight",
-        "row": "row",
-        "sparkline": "sparkline"
-      },
-      "docs": "Dokumentation",
       "empty": {
         "title": "Keine Karten"
       },
       "emptyDescription": "Karten legen fest, wie dieser Agent strukturierte Ergebnisse formatiert (Hotels, E-Mails, Produkte usw.)",
-      "emptyHint": "Erstellen Sie eine, um loszulegen.",
       "emptyLabel": "Noch keine Karten",
       "errors": {
         "loadFailed": "Karten konnten nicht geladen werden"
       },
-      "field": {
-        "displayType": "Anzeigetyp",
-        "format": "Format",
-        "formatPlaceholder": "z. B. Währung, Datum",
-        "hidden": "Ausgeblendet",
-        "highlightColor": "Hervorhebungsfarbe",
-        "icon": "Symbol",
-        "iconPlaceholder": "Lucide-Symbolname",
-        "key": "Schlüssel",
-        "label": "Bezeichnung",
-        "labelPlaceholder": "Anzeigebezeichnung",
-        "link": "Link",
-        "remove": "Feld entfernen"
-      },
       "fieldCount_one": "{{count}} Feld",
       "fieldCount_other": "{{count}} Felder",
       "fieldsWithCount": "Felder ({{count}})",
-      "fields_one": "{{count}} Feld",
-      "fields_other": "{{count}} Felder",
       "filterAll_one": "Alle ({{count}})",
       "filterAll_other": "Alle ({{count}})",
       "gallery": "Kartengalerie",
       "loading": "Karten werden geladen…",
-      "name": "Kartenname",
-      "nameHint": "Verwenden Sie snake_case. Dies identifiziert die Karte in API-Aufrufen.",
-      "new": "Neue Karte",
-      "newTitle": "Neue Karte",
-      "noFields": "Noch keine Felder definiert. Fügen Sie eines hinzu, um loszulegen.",
       "noMatches": "Keine passenden Karten.",
-      "noSampleData": "Keine Beispieldaten für diese Karte. Das weiter unten gerenderte HTML nutzt trotzdem die Vorschau-Pipeline des Servers.",
-      "notFound": "Karte nicht gefunden",
       "previewAll": "Alle Karten ansehen",
-      "previewFailed": "Vorschau konnte nicht erstellt werden",
-      "previewLabel": "Karte, wie sie an die Unterhaltung übermittelt wird",
       "removeFromAgent": "Vom Agenten entfernen",
-      "resizeList": "Größe der Kartenliste ändern",
-      "resultTypeLabel": "Ergebnistyp",
-      "resultTypes": {
-        "contact": "Kontakt",
-        "email": "E-Mail",
-        "event": "Veranstaltung",
-        "finance": "Finanzen",
-        "flight": "Flug",
-        "generic": "Allgemein",
-        "hotel": "Hotel",
-        "product": "Produkt",
-        "restaurant": "Restaurant"
-      },
       "sampleData": "Beispieldaten",
-      "saveChanges": "Änderungen speichern",
       "searchPlaceholder": "Karten durchsuchen...",
       "sections": {
-        "cardPreview": "Kartenvorschau",
-        "details": "Details",
-        "fields": "Felder ({{count}})",
-        "rawJson": "Roh-JSON",
-        "renderedHtml": "Gerendertes HTML"
+        "fields": "Felder ({{count}})"
       },
-      "select": "Karte auswählen",
-      "selectHint": "Wählen Sie links eine aus, um Vorschau, Felder und Roh-JSON zu sehen.",
       "selectToPreview": "Karte zur Vorschau auswählen",
-      "setNameForPreview": "Legen Sie oben einen Kartennamen fest, um eine Vorschau zu erstellen.",
       "surface": {
         "carousel": "Karussell",
         "done": {
@@ -20293,8 +20083,7 @@ export const resources = {
       "settings": "Paramètres",
       "signOut": "Se déconnecter",
       "tasks": "Actions",
-      "team": "Équipe",
-      "templates": "Cartes de réponse"
+      "team": "Équipe"
     },
     "onboarding": {
       "cards": {
@@ -22013,106 +21802,37 @@ export const resources = {
     },
     "templates": {
       "add": "Ajouter une carte",
-      "addField": "Ajouter un champ",
       "addTemplate": "Ajouter une carte",
       "addToAgent": "Ajouter à l'agent",
       "allAssigned": "Toutes les cartes disponibles sont déjà assignées.",
       "assigned": "Assigné",
       "cardPreview": "Aperçu de la carte",
-      "colors": {
-        "blue": "Bleu",
-        "green": "Vert",
-        "red": "Rouge",
-        "yellow": "Jaune"
-      },
-      "copyId": "Copier l'ID de la carte",
       "count_one": "{{count}} carte",
       "count_other": "{{count}} cartes",
-      "create": "Créer une carte",
-      "createTemplate": "Créer une carte",
-      "createTooltip": "Créer une carte",
-      "deleteConfirm": "Supprimer la carte « {{name}} » ? Cette action est irréversible.",
-      "descriptionPlaceholder": "Que doit afficher cette carte ?",
-      "displayTypes": {
-        "body": "body",
-        "change": "change",
-        "chip": "chip",
-        "highlight": "highlight",
-        "row": "row",
-        "sparkline": "sparkline"
-      },
-      "docs": "Documentation",
       "empty": {
         "title": "Aucune carte"
       },
       "emptyDescription": "Les cartes définissent comment cet agent formate les résultats structurés (hôtels, e-mails, produits, etc.)",
-      "emptyHint": "Créez-en une pour commencer.",
       "emptyLabel": "Aucune carte pour le moment",
       "errors": {
         "loadFailed": "Échec du chargement des cartes"
       },
-      "field": {
-        "displayType": "Type d'affichage",
-        "format": "Format",
-        "formatPlaceholder": "ex. devise, date",
-        "hidden": "Masqué",
-        "highlightColor": "Couleur de mise en évidence",
-        "icon": "Icône",
-        "iconPlaceholder": "nom d'icône lucide",
-        "key": "Clé",
-        "label": "Libellé",
-        "labelPlaceholder": "Libellé d'affichage",
-        "link": "Lien",
-        "remove": "Supprimer le champ"
-      },
       "fieldCount_one": "{{count}} champ",
       "fieldCount_other": "{{count}} champs",
       "fieldsWithCount": "Champs ({{count}})",
-      "fields_one": "{{count}} champ",
-      "fields_other": "{{count}} champs",
       "filterAll_one": "Tous ({{count}})",
       "filterAll_other": "Tous ({{count}})",
       "gallery": "Galerie de cartes",
       "loading": "Chargement des cartes…",
-      "name": "Nom de la carte",
-      "nameHint": "Utilisez le snake_case. Cela identifie la carte dans les appels API.",
-      "new": "Nouvelle carte",
-      "newTitle": "Nouvelle carte",
-      "noFields": "Aucun champ défini pour le moment. Ajoutez-en un pour commencer.",
       "noMatches": "Aucune carte correspondante.",
-      "noSampleData": "Aucune donnée d'exemple sur cette carte. Le HTML rendu ci-dessous utilise malgré tout le pipeline de prévisualisation du serveur.",
-      "notFound": "Carte introuvable",
       "previewAll": "Voir toutes les cartes",
-      "previewFailed": "Échec de la génération de l'aperçu",
-      "previewLabel": "Carte telle que livrée à la conversation",
       "removeFromAgent": "Retirer de l'agent",
-      "resizeList": "Redimensionner la liste des cartes",
-      "resultTypeLabel": "Type de résultat",
-      "resultTypes": {
-        "contact": "Contact",
-        "email": "E-mail",
-        "event": "Événement",
-        "finance": "Finance",
-        "flight": "Vol",
-        "generic": "Générique",
-        "hotel": "Hôtel",
-        "product": "Produit",
-        "restaurant": "Restaurant"
-      },
       "sampleData": "Données d'exemple",
-      "saveChanges": "Enregistrer les modifications",
       "searchPlaceholder": "Rechercher des cartes...",
       "sections": {
-        "cardPreview": "Aperçu de la carte",
-        "details": "Détails",
-        "fields": "Champs ({{count}})",
-        "rawJson": "JSON brut",
-        "renderedHtml": "HTML rendu"
+        "fields": "Champs ({{count}})"
       },
-      "select": "Sélectionner une carte",
-      "selectHint": "Choisissez-en une à gauche pour voir son aperçu, ses champs et son JSON brut.",
       "selectToPreview": "Sélectionnez une carte à prévisualiser",
-      "setNameForPreview": "Définissez un nom de carte ci-dessus pour générer un aperçu.",
       "surface": {
         "carousel": "carrousel",
         "done": {
@@ -25823,8 +25543,7 @@ export const resources = {
       "settings": "Configurações",
       "signOut": "Sair",
       "tasks": "Ações",
-      "team": "Equipe",
-      "templates": "Cartões de resposta"
+      "team": "Equipe"
     },
     "onboarding": {
       "cards": {
@@ -27543,106 +27262,37 @@ export const resources = {
     },
     "templates": {
       "add": "Adicionar cartão",
-      "addField": "Adicionar campo",
       "addTemplate": "Adicionar cartão",
       "addToAgent": "Adicionar ao agente",
       "allAssigned": "Todos os cartões disponíveis já foram atribuídos.",
       "assigned": "Atribuído",
       "cardPreview": "Prévia do card",
-      "colors": {
-        "blue": "Azul",
-        "green": "Verde",
-        "red": "Vermelho",
-        "yellow": "Amarelo"
-      },
-      "copyId": "Copiar ID do cartão",
       "count_one": "{{count}} cartão",
       "count_other": "{{count}} cartões",
-      "create": "Criar cartão",
-      "createTemplate": "Criar cartão",
-      "createTooltip": "Criar cartão",
-      "deleteConfirm": "Excluir o cartão \"{{name}}\"? Isso não pode ser desfeito.",
-      "descriptionPlaceholder": "O que este cartão exibe?",
-      "displayTypes": {
-        "body": "corpo",
-        "change": "variação",
-        "chip": "chip",
-        "highlight": "destaque",
-        "row": "linha",
-        "sparkline": "sparkline"
-      },
-      "docs": "Documentação",
       "empty": {
         "title": "Nenhum cartão"
       },
       "emptyDescription": "Os cartões definem como este agente formata resultados estruturados (hotéis, e-mails, produtos etc.)",
-      "emptyHint": "Crie um para começar.",
       "emptyLabel": "Nenhum cartão ainda",
       "errors": {
         "loadFailed": "Falha ao carregar cartões"
       },
-      "field": {
-        "displayType": "Tipo de exibição",
-        "format": "Formato",
-        "formatPlaceholder": "ex.: moeda, data",
-        "hidden": "Oculto",
-        "highlightColor": "Cor de destaque",
-        "icon": "Ícone",
-        "iconPlaceholder": "nome do ícone lucide",
-        "key": "Chave",
-        "label": "Rótulo",
-        "labelPlaceholder": "Rótulo de exibição",
-        "link": "Link",
-        "remove": "Remover campo"
-      },
       "fieldCount_one": "{{count}} campo",
       "fieldCount_other": "{{count}} campos",
       "fieldsWithCount": "Campos ({{count}})",
-      "fields_one": "{{count}} campo",
-      "fields_other": "{{count}} campos",
       "filterAll_one": "Todos ({{count}})",
       "filterAll_other": "Todos ({{count}})",
       "gallery": "Galeria de cartões",
       "loading": "Carregando cartões…",
-      "name": "Nome do cartão",
-      "nameHint": "Use snake_case. Isso identifica o cartão nas chamadas de API.",
-      "new": "Novo cartão",
-      "newTitle": "Novo cartão",
-      "noFields": "Nenhum campo definido ainda. Adicione um para começar.",
       "noMatches": "Nenhum cartão correspondente.",
-      "noSampleData": "Nenhum dado de exemplo neste cartão. O HTML renderizado logo abaixo usa o pipeline de prévia do servidor de qualquer forma.",
-      "notFound": "Cartão não encontrado",
       "previewAll": "Ver todos os cartões",
-      "previewFailed": "Falha ao gerar a prévia",
-      "previewLabel": "Card como é entregue na conversa",
       "removeFromAgent": "Remover do agente",
-      "resizeList": "Redimensionar lista de cartões",
-      "resultTypeLabel": "Tipo de resultado",
-      "resultTypes": {
-        "contact": "Contato",
-        "email": "E-mail",
-        "event": "Evento",
-        "finance": "Finanças",
-        "flight": "Voo",
-        "generic": "Genérico",
-        "hotel": "Hotel",
-        "product": "Produto",
-        "restaurant": "Restaurante"
-      },
       "sampleData": "Dados de exemplo",
-      "saveChanges": "Salvar alterações",
       "searchPlaceholder": "Pesquisar cartões...",
       "sections": {
-        "cardPreview": "Prévia do card",
-        "details": "Detalhes",
-        "fields": "Campos ({{count}})",
-        "rawJson": "JSON bruto",
-        "renderedHtml": "HTML renderizado"
+        "fields": "Campos ({{count}})"
       },
-      "select": "Selecione um cartão",
-      "selectHint": "Escolha um à esquerda para ver sua prévia, campos e JSON bruto.",
       "selectToPreview": "Selecione um cartão para pré-visualizar",
-      "setNameForPreview": "Defina um nome de cartão acima para gerar uma prévia.",
       "surface": {
         "carousel": "carrossel",
         "done": {
@@ -31353,8 +31003,7 @@ export const resources = {
       "settings": "設定",
       "signOut": "ログアウト",
       "tasks": "アクション",
-      "team": "チーム",
-      "templates": "レスポンスカード"
+      "team": "チーム"
     },
     "onboarding": {
       "cards": {
@@ -33073,106 +32722,37 @@ export const resources = {
     },
     "templates": {
       "add": "カードを追加",
-      "addField": "フィールドを追加",
       "addTemplate": "カードを追加",
       "addToAgent": "エージェントに追加",
       "allAssigned": "利用可能なカードはすべて割り当て済みです。",
       "assigned": "割り当て済み",
       "cardPreview": "カードプレビュー",
-      "colors": {
-        "blue": "青",
-        "green": "緑",
-        "red": "赤",
-        "yellow": "黄"
-      },
-      "copyId": "カードIDをコピー",
       "count_one": "{{count}}件のカード",
       "count_other": "{{count}}件のカード",
-      "create": "カードを作成",
-      "createTemplate": "カードを作成",
-      "createTooltip": "カードを作成",
-      "deleteConfirm": "カード「{{name}}」を削除しますか？この操作は元に戻せません。",
-      "descriptionPlaceholder": "このカードは何を表示しますか？",
-      "displayTypes": {
-        "body": "本文",
-        "change": "変化",
-        "chip": "チップ",
-        "highlight": "ハイライト",
-        "row": "行",
-        "sparkline": "スパークライン"
-      },
-      "docs": "ドキュメント",
       "empty": {
         "title": "カードがありません"
       },
       "emptyDescription": "カードは、このエージェントが構造化された結果（ホテル、メール、商品など）をどのように整形するかを定義します",
-      "emptyHint": "作成して始めましょう。",
       "emptyLabel": "カードがまだありません",
       "errors": {
         "loadFailed": "カードの読み込みに失敗しました"
       },
-      "field": {
-        "displayType": "表示タイプ",
-        "format": "フォーマット",
-        "formatPlaceholder": "例: currency、date",
-        "hidden": "非表示",
-        "highlightColor": "ハイライトカラー",
-        "icon": "アイコン",
-        "iconPlaceholder": "lucideアイコン名",
-        "key": "キー",
-        "label": "ラベル",
-        "labelPlaceholder": "表示ラベル",
-        "link": "リンク",
-        "remove": "フィールドを削除"
-      },
       "fieldCount_one": "{{count}}件のフィールド",
       "fieldCount_other": "{{count}}件のフィールド",
       "fieldsWithCount": "フィールド（{{count}}）",
-      "fields_one": "{{count}}件のフィールド",
-      "fields_other": "{{count}}件のフィールド",
       "filterAll_one": "すべて（{{count}}）",
       "filterAll_other": "すべて（{{count}}）",
       "gallery": "カードギャラリー",
       "loading": "カードを読み込み中…",
-      "name": "カード名",
-      "nameHint": "snake_caseを使用してください。API呼び出しでこのカードを識別するために使用されます。",
-      "new": "新しいカード",
-      "newTitle": "新しいカード",
-      "noFields": "フィールドがまだ定義されていません。追加して始めましょう。",
       "noMatches": "一致するカードがありません。",
-      "noSampleData": "このカードにはサンプルデータがありません。以下のレンダリング済みHTMLは、サーバーのプレビューパイプラインを使用して生成されています。",
-      "notFound": "カードが見つかりません",
       "previewAll": "すべてのカードをプレビュー",
-      "previewFailed": "プレビューの生成に失敗しました",
-      "previewLabel": "会話に配信されるカードの表示",
       "removeFromAgent": "エージェントから削除",
-      "resizeList": "カードリストのサイズを変更",
-      "resultTypeLabel": "結果タイプ",
-      "resultTypes": {
-        "contact": "連絡先",
-        "email": "メール",
-        "event": "イベント",
-        "finance": "金融",
-        "flight": "フライト",
-        "generic": "汎用",
-        "hotel": "ホテル",
-        "product": "商品",
-        "restaurant": "レストラン"
-      },
       "sampleData": "サンプルデータ",
-      "saveChanges": "変更を保存",
       "searchPlaceholder": "カードを検索...",
       "sections": {
-        "cardPreview": "カードプレビュー",
-        "details": "詳細",
-        "fields": "フィールド（{{count}}）",
-        "rawJson": "生のJSON",
-        "renderedHtml": "レンダリング済みHTML"
+        "fields": "フィールド（{{count}}）"
       },
-      "select": "カードを選択",
-      "selectHint": "左側から1つ選択すると、プレビュー、フィールド、生のJSONを確認できます。",
       "selectToPreview": "プレビューするカードを選択してください",
-      "setNameForPreview": "上でカード名を設定するとプレビューが生成されます。",
       "surface": {
         "carousel": "カルーセル",
         "done": {
@@ -36883,8 +36463,7 @@ export const resources = {
       "settings": "设置",
       "signOut": "退出登录",
       "tasks": "操作",
-      "team": "团队",
-      "templates": "响应卡片"
+      "team": "团队"
     },
     "onboarding": {
       "cards": {
@@ -38603,106 +38182,37 @@ export const resources = {
     },
     "templates": {
       "add": "添加卡片",
-      "addField": "添加字段",
       "addTemplate": "添加卡片",
       "addToAgent": "添加到智能体",
       "allAssigned": "所有可用卡片均已分配。",
       "assigned": "已分配",
       "cardPreview": "卡片预览",
-      "colors": {
-        "blue": "蓝色",
-        "green": "绿色",
-        "red": "红色",
-        "yellow": "黄色"
-      },
-      "copyId": "复制卡片 ID",
       "count_one": "{{count}} 张卡片",
       "count_other": "{{count}} 张卡片",
-      "create": "创建卡片",
-      "createTemplate": "创建卡片",
-      "createTooltip": "创建卡片",
-      "deleteConfirm": "删除卡片“{{name}}”？此操作无法撤销。",
-      "descriptionPlaceholder": "此卡片用于展示什么内容？",
-      "displayTypes": {
-        "body": "body",
-        "change": "change",
-        "chip": "chip",
-        "highlight": "highlight",
-        "row": "row",
-        "sparkline": "sparkline"
-      },
-      "docs": "文档",
       "empty": {
         "title": "暂无卡片"
       },
       "emptyDescription": "卡片定义了此智能体如何格式化结构化结果（酒店、邮件、产品等）",
-      "emptyHint": "创建一个以开始使用。",
       "emptyLabel": "暂无卡片",
       "errors": {
         "loadFailed": "加载卡片失败"
       },
-      "field": {
-        "displayType": "显示类型",
-        "format": "格式",
-        "formatPlaceholder": "例如：货币、日期",
-        "hidden": "隐藏",
-        "highlightColor": "高亮颜色",
-        "icon": "图标",
-        "iconPlaceholder": "lucide 图标名称",
-        "key": "键",
-        "label": "标签",
-        "labelPlaceholder": "显示标签",
-        "link": "链接",
-        "remove": "移除字段"
-      },
       "fieldCount_one": "{{count}} 个字段",
       "fieldCount_other": "{{count}} 个字段",
       "fieldsWithCount": "字段（{{count}}）",
-      "fields_one": "{{count}} 个字段",
-      "fields_other": "{{count}} 个字段",
       "filterAll_one": "全部（{{count}}）",
       "filterAll_other": "全部（{{count}}）",
       "gallery": "卡片库",
       "loading": "正在加载卡片…",
-      "name": "卡片名称",
-      "nameHint": "使用 snake_case 格式。此名称用于在 API 调用中标识卡片。",
-      "new": "新建卡片",
-      "newTitle": "新建卡片",
-      "noFields": "尚未定义任何字段。添加一个以开始使用。",
       "noMatches": "没有匹配的卡片。",
-      "noSampleData": "此卡片没有示例数据。下方渲染的 HTML 仍会使用服务器的预览流程生成。",
-      "notFound": "未找到卡片",
       "previewAll": "预览所有卡片",
-      "previewFailed": "生成预览失败",
-      "previewLabel": "卡片在对话中的实际展示效果",
       "removeFromAgent": "从智能体中移除",
-      "resizeList": "调整卡片列表大小",
-      "resultTypeLabel": "结果类型",
-      "resultTypes": {
-        "contact": "联系人",
-        "email": "邮件",
-        "event": "活动",
-        "finance": "财务",
-        "flight": "航班",
-        "generic": "通用",
-        "hotel": "酒店",
-        "product": "产品",
-        "restaurant": "餐厅"
-      },
       "sampleData": "示例数据",
-      "saveChanges": "保存更改",
       "searchPlaceholder": "搜索卡片…",
       "sections": {
-        "cardPreview": "卡片预览",
-        "details": "详情",
-        "fields": "字段（{{count}}）",
-        "rawJson": "原始 JSON",
-        "renderedHtml": "渲染后的 HTML"
+        "fields": "字段（{{count}}）"
       },
-      "select": "选择一张卡片",
-      "selectHint": "从左侧选择一张卡片以查看其预览、字段和原始 JSON。",
       "selectToPreview": "选择一张卡片以预览",
-      "setNameForPreview": "在上方设置卡片名称以生成预览。",
       "surface": {
         "carousel": "轮播",
         "done": {
@@ -42413,8 +41923,7 @@ export const resources = {
       "settings": "설정",
       "signOut": "로그아웃",
       "tasks": "작업",
-      "team": "팀",
-      "templates": "응답 카드"
+      "team": "팀"
     },
     "onboarding": {
       "cards": {
@@ -44133,106 +43642,37 @@ export const resources = {
     },
     "templates": {
       "add": "카드 추가",
-      "addField": "필드 추가",
       "addTemplate": "카드 추가",
       "addToAgent": "에이전트에 추가",
       "allAssigned": "사용 가능한 모든 카드가 이미 할당되었습니다.",
       "assigned": "할당됨",
       "cardPreview": "카드 미리보기",
-      "colors": {
-        "blue": "파랑",
-        "green": "초록",
-        "red": "빨강",
-        "yellow": "노랑"
-      },
-      "copyId": "카드 ID 복사",
       "count_one": "카드 {{count}}개",
       "count_other": "카드 {{count}}개",
-      "create": "카드 만들기",
-      "createTemplate": "카드 만들기",
-      "createTooltip": "카드 만들기",
-      "deleteConfirm": "카드 \"{{name}}\"을(를) 삭제하시겠습니까? 이 작업은 되돌릴 수 없습니다.",
-      "descriptionPlaceholder": "이 카드는 무엇을 표시하나요?",
-      "displayTypes": {
-        "body": "body",
-        "change": "change",
-        "chip": "chip",
-        "highlight": "highlight",
-        "row": "row",
-        "sparkline": "sparkline"
-      },
-      "docs": "문서",
       "empty": {
         "title": "카드 없음"
       },
       "emptyDescription": "카드는 이 에이전트가 구조화된 결과(호텔, 이메일, 제품 등)를 표시하는 방식을 정의합니다",
-      "emptyHint": "시작하려면 하나 만드세요.",
       "emptyLabel": "아직 카드가 없습니다",
       "errors": {
         "loadFailed": "카드 로드 실패"
       },
-      "field": {
-        "displayType": "표시 유형",
-        "format": "형식",
-        "formatPlaceholder": "예: currency, date",
-        "hidden": "숨김",
-        "highlightColor": "강조 색상",
-        "icon": "아이콘",
-        "iconPlaceholder": "lucide 아이콘 이름",
-        "key": "키",
-        "label": "라벨",
-        "labelPlaceholder": "표시 라벨",
-        "link": "링크",
-        "remove": "필드 제거"
-      },
       "fieldCount_one": "필드 {{count}}개",
       "fieldCount_other": "필드 {{count}}개",
       "fieldsWithCount": "필드 ({{count}}개)",
-      "fields_one": "필드 {{count}}개",
-      "fields_other": "필드 {{count}}개",
       "filterAll_one": "전체 ({{count}})",
       "filterAll_other": "전체 ({{count}})",
       "gallery": "카드 갤러리",
       "loading": "카드 불러오는 중…",
-      "name": "카드 이름",
-      "nameHint": "snake_case를 사용하세요. API 호출에서 카드를 식별하는 데 사용됩니다.",
-      "new": "새 카드",
-      "newTitle": "새 카드",
-      "noFields": "아직 정의된 필드가 없습니다. 시작하려면 하나 추가하세요.",
       "noMatches": "일치하는 카드가 없습니다.",
-      "noSampleData": "이 카드에는 샘플 데이터가 없습니다. 아래의 렌더링된 HTML은 그와 상관없이 서버의 미리보기 파이프라인을 사용합니다.",
-      "notFound": "카드를 찾을 수 없습니다",
       "previewAll": "모든 카드 미리보기",
-      "previewFailed": "미리보기 생성 실패",
-      "previewLabel": "대화에 전달되는 카드",
       "removeFromAgent": "에이전트에서 제거",
-      "resizeList": "카드 목록 크기 조정",
-      "resultTypeLabel": "결과 유형",
-      "resultTypes": {
-        "contact": "연락처",
-        "email": "이메일",
-        "event": "이벤트",
-        "finance": "금융",
-        "flight": "항공편",
-        "generic": "일반",
-        "hotel": "호텔",
-        "product": "제품",
-        "restaurant": "레스토랑"
-      },
       "sampleData": "샘플 데이터",
-      "saveChanges": "변경 사항 저장",
       "searchPlaceholder": "카드 검색...",
       "sections": {
-        "cardPreview": "카드 미리보기",
-        "details": "세부 정보",
-        "fields": "필드 ({{count}}개)",
-        "rawJson": "원본 JSON",
-        "renderedHtml": "렌더링된 HTML"
+        "fields": "필드 ({{count}}개)"
       },
-      "select": "카드를 선택하세요",
-      "selectHint": "왼쪽에서 하나를 선택하면 미리보기, 필드, 원본 JSON을 볼 수 있습니다.",
       "selectToPreview": "미리보려면 카드를 선택하세요",
-      "setNameForPreview": "미리보기를 생성하려면 위에 카드 이름을 입력하세요.",
       "surface": {
         "carousel": "캐러셀",
         "done": {
@@ -47943,8 +47383,7 @@ export const resources = {
       "settings": "Impostazioni",
       "signOut": "Esci",
       "tasks": "Azioni",
-      "team": "Team",
-      "templates": "Schede di risposta"
+      "team": "Team"
     },
     "onboarding": {
       "cards": {
@@ -49663,106 +49102,37 @@ export const resources = {
     },
     "templates": {
       "add": "Aggiungi scheda",
-      "addField": "Aggiungi campo",
       "addTemplate": "Aggiungi scheda",
       "addToAgent": "Aggiungi all'agente",
       "allAssigned": "Tutte le schede disponibili sono già assegnate.",
       "assigned": "Assegnato",
       "cardPreview": "Anteprima scheda",
-      "colors": {
-        "blue": "Blu",
-        "green": "Verde",
-        "red": "Rosso",
-        "yellow": "Giallo"
-      },
-      "copyId": "Copia ID scheda",
       "count_one": "{{count}} scheda",
       "count_other": "{{count}} schede",
-      "create": "Crea scheda",
-      "createTemplate": "Crea scheda",
-      "createTooltip": "Crea scheda",
-      "deleteConfirm": "Eliminare la scheda \"{{name}}\"? Questa azione non può essere annullata.",
-      "descriptionPlaceholder": "Cosa mostra questa scheda?",
-      "displayTypes": {
-        "body": "body",
-        "change": "change",
-        "chip": "chip",
-        "highlight": "highlight",
-        "row": "row",
-        "sparkline": "sparkline"
-      },
-      "docs": "Documentazione",
       "empty": {
         "title": "Nessuna scheda"
       },
       "emptyDescription": "Le schede definiscono come questo agente formatta i risultati strutturati (hotel, email, prodotti, ecc.)",
-      "emptyHint": "Creane una per iniziare.",
       "emptyLabel": "Ancora nessuna scheda",
       "errors": {
         "loadFailed": "Impossibile caricare le schede"
       },
-      "field": {
-        "displayType": "Tipo di visualizzazione",
-        "format": "Formato",
-        "formatPlaceholder": "es. valuta, data",
-        "hidden": "Nascosto",
-        "highlightColor": "Colore evidenziazione",
-        "icon": "Icona",
-        "iconPlaceholder": "nome icona lucide",
-        "key": "Chiave",
-        "label": "Etichetta",
-        "labelPlaceholder": "Etichetta visualizzata",
-        "link": "Collegamento",
-        "remove": "Rimuovi campo"
-      },
       "fieldCount_one": "{{count}} campo",
       "fieldCount_other": "{{count}} campi",
       "fieldsWithCount": "Campi ({{count}})",
-      "fields_one": "{{count}} campo",
-      "fields_other": "{{count}} campi",
       "filterAll_one": "Tutti ({{count}})",
       "filterAll_other": "Tutti ({{count}})",
       "gallery": "Galleria schede",
       "loading": "Caricamento delle schede…",
-      "name": "Nome scheda",
-      "nameHint": "Usa snake_case. Identifica la scheda nelle chiamate API.",
-      "new": "Nuova scheda",
-      "newTitle": "Nuova scheda",
-      "noFields": "Nessun campo ancora definito. Aggiungine uno per iniziare.",
       "noMatches": "Nessuna scheda corrispondente.",
-      "noSampleData": "Nessun dato di esempio su questa scheda. L'HTML renderizzato più sotto usa comunque la pipeline di anteprima del server.",
-      "notFound": "Scheda non trovata",
       "previewAll": "Vedi tutte le schede",
-      "previewFailed": "Impossibile generare l'anteprima",
-      "previewLabel": "Scheda come consegnata alla conversazione",
       "removeFromAgent": "Rimuovi dall'agente",
-      "resizeList": "Ridimensiona elenco schede",
-      "resultTypeLabel": "Tipo di risultato",
-      "resultTypes": {
-        "contact": "Contatto",
-        "email": "Email",
-        "event": "Evento",
-        "finance": "Finanza",
-        "flight": "Volo",
-        "generic": "Generico",
-        "hotel": "Hotel",
-        "product": "Prodotto",
-        "restaurant": "Ristorante"
-      },
       "sampleData": "Dati di esempio",
-      "saveChanges": "Salva modifiche",
       "searchPlaceholder": "Cerca schede...",
       "sections": {
-        "cardPreview": "Anteprima scheda",
-        "details": "Dettagli",
-        "fields": "Campi ({{count}})",
-        "rawJson": "JSON grezzo",
-        "renderedHtml": "HTML renderizzato"
+        "fields": "Campi ({{count}})"
       },
-      "select": "Seleziona una scheda",
-      "selectHint": "Scegline una a sinistra per vedere l'anteprima, i campi e il JSON grezzo.",
       "selectToPreview": "Seleziona una scheda per l'anteprima",
-      "setNameForPreview": "Imposta un nome scheda sopra per generare un'anteprima.",
       "surface": {
         "carousel": "carosello",
         "done": {
@@ -53473,8 +52843,7 @@ export const resources = {
       "settings": "सेटिंग्स",
       "signOut": "साइन आउट",
       "tasks": "कार्रवाइयाँ",
-      "team": "टीम",
-      "templates": "रिस्पॉन्स कार्ड"
+      "team": "टीम"
     },
     "onboarding": {
       "cards": {
@@ -55193,106 +54562,37 @@ export const resources = {
     },
     "templates": {
       "add": "कार्ड जोड़ें",
-      "addField": "फ़ील्ड जोड़ें",
       "addTemplate": "कार्ड जोड़ें",
       "addToAgent": "एजेंट में जोड़ें",
       "allAssigned": "सभी उपलब्ध कार्ड पहले से असाइन किए जा चुके हैं।",
       "assigned": "असाइन किया गया",
       "cardPreview": "कार्ड पूर्वावलोकन",
-      "colors": {
-        "blue": "नीला",
-        "green": "हरा",
-        "red": "लाल",
-        "yellow": "पीला"
-      },
-      "copyId": "कार्ड ID कॉपी करें",
       "count_one": "{{count}} कार्ड",
       "count_other": "{{count}} कार्ड",
-      "create": "कार्ड बनाएँ",
-      "createTemplate": "कार्ड बनाएँ",
-      "createTooltip": "कार्ड बनाएँ",
-      "deleteConfirm": "कार्ड \"{{name}}\" हटाएँ? इसे पूर्ववत नहीं किया जा सकता।",
-      "descriptionPlaceholder": "यह कार्ड क्या प्रदर्शित करता है?",
-      "displayTypes": {
-        "body": "बॉडी",
-        "change": "बदलाव",
-        "chip": "चिप",
-        "highlight": "हाइलाइट",
-        "row": "पंक्ति",
-        "sparkline": "स्पार्कलाइन"
-      },
-      "docs": "दस्तावेज़",
       "empty": {
         "title": "कोई कार्ड नहीं"
       },
       "emptyDescription": "कार्ड तय करते हैं कि यह एजेंट संरचित परिणामों (होटल, ईमेल, उत्पाद, आदि) को कैसे फ़ॉर्मेट करे",
-      "emptyHint": "शुरू करने के लिए एक बनाएँ।",
       "emptyLabel": "अभी तक कोई कार्ड नहीं",
       "errors": {
         "loadFailed": "कार्ड लोड करना विफल"
       },
-      "field": {
-        "displayType": "डिस्प्ले प्रकार",
-        "format": "फ़ॉर्मेट",
-        "formatPlaceholder": "जैसे मुद्रा, तारीख",
-        "hidden": "छिपा हुआ",
-        "highlightColor": "हाइलाइट रंग",
-        "icon": "आइकन",
-        "iconPlaceholder": "lucide आइकन नाम",
-        "key": "की",
-        "label": "लेबल",
-        "labelPlaceholder": "डिस्प्ले लेबल",
-        "link": "लिंक",
-        "remove": "फ़ील्ड हटाएँ"
-      },
       "fieldCount_one": "{{count}} फ़ील्ड",
       "fieldCount_other": "{{count}} फ़ील्ड",
       "fieldsWithCount": "फ़ील्ड ({{count}})",
-      "fields_one": "{{count}} फ़ील्ड",
-      "fields_other": "{{count}} फ़ील्ड",
       "filterAll_one": "सभी ({{count}})",
       "filterAll_other": "सभी ({{count}})",
       "gallery": "कार्ड गैलरी",
       "loading": "कार्ड लोड हो रहे हैं…",
-      "name": "कार्ड नाम",
-      "nameHint": "snake_case उपयोग करें। यह API कॉल में कार्ड की पहचान करता है।",
-      "new": "नया कार्ड",
-      "newTitle": "नया कार्ड",
-      "noFields": "अभी तक कोई फ़ील्ड परिभाषित नहीं। शुरू करने के लिए एक जोड़ें।",
       "noMatches": "कोई मेल खाता कार्ड नहीं।",
-      "noSampleData": "इस कार्ड पर कोई सैंपल डेटा नहीं है। नीचे दिया गया रेंडर किया गया HTML फिर भी सर्वर की पूर्वावलोकन पाइपलाइन का उपयोग करता है।",
-      "notFound": "कार्ड नहीं मिला",
       "previewAll": "सभी कार्ड देखें",
-      "previewFailed": "पूर्वावलोकन बनाना विफल",
-      "previewLabel": "बातचीत में भेजे गए अनुसार कार्ड",
       "removeFromAgent": "एजेंट से हटाएँ",
-      "resizeList": "कार्ड सूची का आकार बदलें",
-      "resultTypeLabel": "परिणाम प्रकार",
-      "resultTypes": {
-        "contact": "संपर्क",
-        "email": "ईमेल",
-        "event": "आयोजन",
-        "finance": "वित्त",
-        "flight": "फ़्लाइट",
-        "generic": "सामान्य",
-        "hotel": "होटल",
-        "product": "उत्पाद",
-        "restaurant": "रेस्तरां"
-      },
       "sampleData": "सैंपल डेटा",
-      "saveChanges": "बदलाव सहेजें",
       "searchPlaceholder": "कार्ड खोजें...",
       "sections": {
-        "cardPreview": "कार्ड पूर्वावलोकन",
-        "details": "विवरण",
-        "fields": "फ़ील्ड ({{count}})",
-        "rawJson": "रॉ JSON",
-        "renderedHtml": "रेंडर किया गया HTML"
+        "fields": "फ़ील्ड ({{count}})"
       },
-      "select": "एक कार्ड चुनें",
-      "selectHint": "इसका पूर्वावलोकन, फ़ील्ड और रॉ JSON देखने के लिए बाएँ से एक चुनें।",
       "selectToPreview": "पूर्वावलोकन के लिए एक कार्ड चुनें",
-      "setNameForPreview": "पूर्वावलोकन बनाने के लिए ऊपर कार्ड नाम सेट करें।",
       "surface": {
         "carousel": "कैरोसेल",
         "done": {

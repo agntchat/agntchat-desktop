@@ -8,7 +8,6 @@ export type View =
   | "friends"
   | "files"
   | "hosts"
-  | "templates"
   | "previews"
   | "canvas"
   | "fleet"

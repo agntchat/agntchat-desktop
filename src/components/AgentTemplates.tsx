@@ -7,7 +7,7 @@ import {
   updateAgent,
 } from "../lib/api";
 import { useAgentStore, type ManagedAgent } from "../stores/agentStore";
-import { TemplateCardPreview } from "./TemplateCardPreview";
+import { TemplateSurfacePreview } from "./TemplateSurfacePreview";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
@@ -189,7 +189,7 @@ export function AgentTemplates({ managed }: AgentTemplatesProps) {
         </>
       )}
 
-      {/* View Template Dialog — rendered card preview only */}
+      {/* View Template Dialog — the template rendered as a chat surface */}
       <Dialog
         open={!!viewTemplate}
         onOpenChange={() => setViewTemplate(null)}
@@ -204,8 +204,8 @@ export function AgentTemplates({ managed }: AgentTemplatesProps) {
             )}
           </DialogHeader>
           {viewTemplate && (
-            <div className="flex justify-center rounded-xl border border-border bg-muted/20 p-4">
-              <TemplateCardPreview template={viewTemplate} />
+            <div className="rounded-xl border border-border bg-muted/20 p-4">
+              <TemplateSurfacePreview templateId={viewTemplate.id} />
             </div>
           )}
         </DialogContent>

@@ -19,7 +19,7 @@ import {
  * create/edit; it exists so the platform's cards can be reviewed in one place
  * instead of having to drive a real task/artifact/thread to see them.
  *
- * Layout mirrors TemplatesView: a category list on the left, a scrolling
+ * Layout: a category list on the left, a scrolling
  * gallery of that category's states on the right.
  */
 export function PreviewsView() {
