@@ -2931,9 +2931,13 @@ export async function previewCanvasDefinition(
     return { operations: Array.isArray(data.operations) ? data.operations : [], errors: [] };
   } catch (e) {
     const err = e as Error & { status?: number; body?: unknown };
-    if (err.status === 400) {
-      const errors = (err.body as { errors?: unknown } | undefined)?.errors;
-      if (Array.isArray(errors) && errors.length > 0) {
+    // A definition that does not compile is a 422
+    // `{error: {code: "invalid_definition", message, details: [...]}}`.
+    if (err.status === 422) {
+      const err422 = (err.body as { error?: { message?: unknown; details?: unknown } } | undefined)?.error;
+      const details = Array.isArray(err422?.details) ? err422.details : [];
+      const errors = details.length > 0 ? details : typeof err422?.message === "string" ? [err422.message] : [];
+      if (errors.length > 0) {
         return { operations: [], errors: errors.map((x) => (typeof x === "string" ? x : JSON.stringify(x))) };
       }
     }
