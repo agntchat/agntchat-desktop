@@ -2,7 +2,7 @@ import { z } from "zod";
 import { CommonSchemas } from "@a2ui/web_core/v0_9";
 import { createComponentImplementation } from "@a2ui/react/v0_9";
 import { Check } from "lucide-react";
-import { WeightSchema, asArray, asRecord, asString, orBinding, resolveDeep, weightStyle } from "../shared";
+import { VisibleSchema, WeightSchema, asArray, asRecord, asString, orBinding, resolveDeep, weightStyle } from "../shared";
 
 const StateSchema = z.enum(["pending", "current", "done", "failed"]);
 
@@ -19,6 +19,7 @@ export const StepsApi = {
     items: orBinding(z.array(StepSchema).min(2).max(12)),
     variant: z.enum(["timeline", "progress"]).optional(),
     weight: WeightSchema,
+    visible: VisibleSchema,
   }),
 };
 

@@ -1,7 +1,7 @@
 import { z } from "zod";
 import { CommonSchemas } from "@a2ui/web_core/v0_9";
 import { createComponentImplementation } from "@a2ui/react/v0_9";
-import { Children, GapSchema, WeightSchema, weightStyle, type ChildRef } from "../shared";
+import { Children, GapSchema, VisibleSchema, WeightSchema, weightStyle, type ChildRef } from "../shared";
 
 export const RowApi = {
   name: "Row",
@@ -12,6 +12,7 @@ export const RowApi = {
     justify: z.enum(["start", "between", "end"]).optional(),
     wrap: z.boolean().optional(),
     weight: WeightSchema,
+    visible: VisibleSchema,
   }),
 };
 

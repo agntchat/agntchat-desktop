@@ -3,10 +3,11 @@ import { useTranslation } from "../host";
 import { z } from "zod";
 import { CommonSchemas } from "@a2ui/web_core/v0_9";
 import { createComponentImplementation } from "@a2ui/react/v0_9";
-import { WeightSchema, childKey, renderChild, weightStyle, type ChildRef } from "../shared";
+import { VisibleSchema, WeightSchema, childKey, renderChild, weightStyle, type ChildRef } from "../shared";
 
-/** Bubble width below which `cards` is a carousel — keep equal to the
- *  `@container bubble (max-width: 479px)` rule in surface.css. */
+/** Bubble width below which a `grid` degrades to the carousel and the cards
+ *  go full-bleed — keep equal to the `@container bubble (max-width: 479px)`
+ *  rule in surface.css. */
 const PHONE_MAX = 480;
 
 export const ListApi = {
@@ -17,15 +18,18 @@ export const ListApi = {
     emptyText: CommonSchemas.DynamicString.optional(),
     maxVisible: z.number().int().min(1).max(10).optional(),
     weight: WeightSchema,
+    visible: VisibleSchema,
   }),
 };
 
 /**
- * A collection of like items from a template binding. `cards` is a vertical
- * stack on pane/wide bubbles and a horizontal snap carousel with dots below
- * 480px (container query in surface.css); `rows` is the compact 72px row
- * list; `grid` goes two-up at 720px and degrades to `cards`. Beyond
- * `maxVisible` a localized "Show N more" button reveals the rest.
+ * A collection of like items from a template binding. `cards` is a
+ * horizontal snap carousel at every width (full-bleed cards with a peek on
+ * phones, ~380px cards with a peek on panes — the same idiom mobile uses,
+ * so results can be compared side by side instead of read as a stack);
+ * `rows` is the compact 72px row list; `grid` goes two-up at 720px and
+ * degrades to the carousel below 480px. Beyond `maxVisible` a localized
+ * "Show N more" button reveals the rest.
  */
 export const List = createComponentImplementation(ListApi, ({ props, buildChild }) => {
   const { t } = useTranslation("templates");
@@ -36,9 +40,9 @@ export const List = createComponentImplementation(ListApi, ({ props, buildChild 
   const [active, setActive] = useState(0);
   const scroller = useRef<HTMLUListElement>(null);
   const root = useRef<HTMLDivElement>(null);
-  // The stylesheet turns `cards` into a carousel below 480px (container
-  // query on the bubble); the ARIA (roledescription, dots, live region)
-  // must follow the same measurement, so it is taken here on the list root.
+  // The stylesheet degrades `grid` to the carousel below 480px (container
+  // query on the bubble); the ARIA must follow the same measurement, so it
+  // is taken here on the list root.
   const [phone, setPhone] = useState(false);
   useEffect(() => {
     const el = root.current;
@@ -53,8 +57,7 @@ export const List = createComponentImplementation(ListApi, ({ props, buildChild 
   const visible = expanded ? refs : refs.slice(0, maxVisible);
   const hidden = refs.length - visible.length;
 
-  // Carousel position (phone only; the scroller is a plain column elsewhere,
-  // where scrollLeft stays 0 and the dots are hidden by CSS anyway).
+  // Carousel position, from the scroller's own geometry.
   const onScroll = useCallback(() => {
     const el = scroller.current;
     if (!el) return;
@@ -89,7 +92,7 @@ export const List = createComponentImplementation(ListApi, ({ props, buildChild 
     );
   }
 
-  const isCarousel = phone && (variant === "cards" || variant === "grid");
+  const isCarousel = variant === "cards" || (variant === "grid" && phone);
   const items = (
     <ul
       ref={scroller}
@@ -123,6 +126,28 @@ export const List = createComponentImplementation(ListApi, ({ props, buildChild 
   return (
     <div ref={root} className={`a2ui-list a2ui-list--${variant}`} style={weightStyle(props.weight)}>
       {items}
+      {isCarousel && visible.length > 1 && (
+        <div className="a2ui-carousel-nav">
+          <button
+            type="button"
+            className="a2ui-carousel-nav__btn"
+            aria-label={t("surface.previous")}
+            disabled={active === 0}
+            onClick={() => scrollTo(Math.max(0, active - 1))}
+          >
+            ‹
+          </button>
+          <button
+            type="button"
+            className="a2ui-carousel-nav__btn"
+            aria-label={t("surface.next")}
+            disabled={active >= visible.length - 1}
+            onClick={() => scrollTo(Math.min(visible.length - 1, active + 1))}
+          >
+            ›
+          </button>
+        </div>
+      )}
       {isCarousel && visible.length > 1 && (
         <ul className="a2ui-dots" aria-hidden="true">
           {visible.map((ref, i) => (

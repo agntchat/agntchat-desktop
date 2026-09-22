@@ -10,8 +10,17 @@ export { currentLocale };
 // Host context — what SurfaceMessage hands every component of a surface.
 // ---------------------------------------------------------------------------
 
+/** What a surface's return leg posts against: a chat card lives on a
+ *  message (`POST /api/messages/:id/actions`), a long-lived canvas on a
+ *  surface row (`POST /api/surfaces/:id/actions`). Absent = nothing posts
+ *  (a fixture, a preview without a compiled surface). */
+export interface SurfaceTarget {
+  kind: "message" | "surface";
+  id: string;
+}
+
 export interface SurfaceHost {
-  messageId?: string;
+  target?: SurfaceTarget;
   conversationId?: string;
   /** Feed operations the server just returned (`POST …/actions` → its
    *  `operation`) into this message's surface right away, so the presser
@@ -33,6 +42,23 @@ export function useSurfaceHost(): SurfaceHost {
 export const CardLabelContext = createContext<string | undefined>(undefined);
 
 // ---------------------------------------------------------------------------
+// Slots — host-rendered regions inside a long-lived surface (a canvas).
+// ---------------------------------------------------------------------------
+
+export const SLOT_NAMES = ["message_list", "composer", "typing_indicator"] as const;
+export type SlotName = (typeof SLOT_NAMES)[number];
+
+/** What the host renders in each `Slot`. A name without a renderer draws the
+ *  labelled placeholder (the studio preview, a client without that feature). */
+export type SlotRenderers = Partial<Record<SlotName, () => React.ReactNode>>;
+
+export const SlotContext = createContext<SlotRenderers>({});
+
+export function useSlotRenderers(): SlotRenderers {
+  return useContext(SlotContext);
+}
+
+// ---------------------------------------------------------------------------
 // Schema fragments shared by the catalog components. Mirrors the enums in
 // docs/feature-proposals/a2ui/chat-catalog.v1.json.
 // ---------------------------------------------------------------------------
@@ -43,6 +69,11 @@ export const GapSchema = z.enum(["none", "sm", "md", "lg"]);
 export const WeightSchema = z.number().optional();
 export const IconNameSchema = z.string();
 export const LinkSchema = z.object({ url: CommonSchemas.DynamicString });
+/** Every catalog component takes `visible`: bound and false → the renderer
+ *  omits it (`withVisibility` in catalog/index.ts). Declared on every schema
+ *  so the node layer resolves the binding; the server owns the values it
+ *  binds to (`/_visible/<id>`), clients never evaluate conditions. */
+export const VisibleSchema = CommonSchemas.DynamicBoolean.optional();
 /** A prop that is a literal array/object OR a `{path}` to one. The binder
  *  treats the union as dynamic (resolves the path); a literal passes through
  *  raw, so components run `resolveDeep` over it for nested bindings. */
@@ -141,10 +172,58 @@ export function itemIndexOf(dataPath: string | undefined, componentId?: string):
  * The data-model path of a component's action stamps: RELATIVE
  * (`actions`) when the component sits in an item scope — the data context
  * resolves it per item, exactly as the binder resolves `{path: "title"}` —
- * and absolute `/items/<n>/actions` from the root scope.
+ * and absolute `/items/<n>/actions` from the root scope of a chat card. A
+ * canvas surface has no items: its stamps live at `/_actions/<action_id>`.
  */
-export function actionStampsPath(dataPath: string | undefined, itemIndex: number): string {
-  return ITEM_SCOPE.test(dataPath ?? "") ? "actions" : `/items/${itemIndex}/actions`;
+export function actionStampsPath(
+  dataPath: string | undefined,
+  itemIndex: number,
+  targetKind: SurfaceTarget["kind"] = "message"
+): string {
+  if (ITEM_SCOPE.test(dataPath ?? "")) return "actions";
+  return targetKind === "surface" ? "/_actions" : `/items/${itemIndex}/actions`;
+}
+
+/** A binding path made absolute against the component's data scope, so a
+ *  write can be posted to the server as a JSON Pointer into the model. */
+export function absoluteDataPath(dataPath: string | undefined, path: string): string {
+  if (path.startsWith("/")) return path;
+  const base = (dataPath ?? "/").replace(/\/+$/, "");
+  return `${base}/${path}`;
+}
+
+/** The raw `{path}` of a component property as authored (before the binder
+ *  resolved it), or undefined for a literal. */
+export function bindingPathOf(raw: unknown): string | undefined {
+  const rec = asRecord(raw);
+  return rec && typeof rec.path === "string" ? rec.path : undefined;
+}
+
+/**
+ * A DynamicBoolean as authored — a literal, or a `{path}` kept live through
+ * the data context. Unconditional hooks: a literal subscribes to nothing.
+ */
+export function useDynamicBoolean(ctx: DataContext, raw: unknown): boolean | undefined {
+  const path = bindingPathOf(raw);
+  const subRef = useRef<DataSubscription<unknown> | null>(null);
+  const subscribe = useCallback(
+    (notify: () => void) => {
+      if (path === undefined) return () => {};
+      const sub = ctx.subscribeDynamicValue<unknown>({ path }, () => notify());
+      subRef.current = sub;
+      return () => {
+        sub.unsubscribe();
+        if (subRef.current === sub) subRef.current = null;
+      };
+    },
+    [ctx, path]
+  );
+  const getSnapshot = useCallback(() => {
+    if (path === undefined) return raw;
+    return subRef.current ? subRef.current.value : ctx.resolveDynamicValue<unknown>({ path });
+  }, [ctx, path, raw]);
+  const value = useSyncExternalStore(subscribe, getSnapshot);
+  return typeof value === "boolean" ? value : undefined;
 }
 
 /**

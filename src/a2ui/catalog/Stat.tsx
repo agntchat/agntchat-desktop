@@ -5,7 +5,7 @@ import { createComponentImplementation } from "@a2ui/react/v0_9";
 import { ArrowDownRight, ArrowUpRight, Minus } from "lucide-react";
 import {
   SizeSchema,
-  WeightSchema,
+  VisibleSchema, WeightSchema,
   asArray,
   asNumber,
   asRecord,
@@ -37,6 +37,7 @@ export const StatApi = {
     progress: orBinding(z.object({ value: CommonSchemas.DynamicNumber, max: CommonSchemas.DynamicNumber })).optional(),
     size: SizeSchema.optional(),
     weight: WeightSchema,
+    visible: VisibleSchema,
   }),
 };
 

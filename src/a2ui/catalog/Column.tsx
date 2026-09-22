@@ -1,7 +1,7 @@
 import { z } from "zod";
 import { CommonSchemas } from "@a2ui/web_core/v0_9";
 import { createComponentImplementation } from "@a2ui/react/v0_9";
-import { Children, GapSchema, WeightSchema, weightStyle } from "../shared";
+import { Children, GapSchema, VisibleSchema, WeightSchema, weightStyle } from "../shared";
 
 export const ColumnApi = {
   name: "Column",
@@ -10,6 +10,7 @@ export const ColumnApi = {
     gap: GapSchema.optional(),
     align: z.enum(["start", "center", "end", "stretch"]).optional(),
     weight: WeightSchema,
+    visible: VisibleSchema,
   }),
 };
 

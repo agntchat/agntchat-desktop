@@ -4,7 +4,7 @@ import { CommonSchemas } from "@a2ui/web_core/v0_9";
 import { createComponentImplementation } from "@a2ui/react/v0_9";
 import { ChevronDown } from "lucide-react";
 import { resolveIcon } from "../host";
-import { IconNameSchema, WeightSchema, asString, renderChild, weightStyle, type ChildRef } from "../shared";
+import { IconNameSchema, VisibleSchema, WeightSchema, asString, renderChild, weightStyle, type ChildRef } from "../shared";
 
 export const SectionApi = {
   name: "Section",
@@ -15,6 +15,7 @@ export const SectionApi = {
     collapsible: z.boolean().optional(),
     collapsed: z.boolean().optional(),
     weight: WeightSchema,
+    visible: VisibleSchema,
   }),
 };
 

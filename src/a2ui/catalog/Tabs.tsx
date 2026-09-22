@@ -2,7 +2,7 @@ import { useId, useState } from "react";
 import { z } from "zod";
 import { CommonSchemas } from "@a2ui/web_core/v0_9";
 import { createComponentImplementation } from "@a2ui/react/v0_9";
-import { WeightSchema, asString, renderChild, weightStyle, type ChildRef } from "../shared";
+import { VisibleSchema, WeightSchema, asString, renderChild, weightStyle, type ChildRef } from "../shared";
 
 export const TabsApi = {
   name: "Tabs",
@@ -12,6 +12,7 @@ export const TabsApi = {
       .min(2)
       .max(5),
     weight: WeightSchema,
+    visible: VisibleSchema,
   }),
 };
 

@@ -1,10 +1,12 @@
 import { postJson } from "./host";
+import type { SurfaceTarget } from "./shared";
 
 /**
  * The typed action return leg of an A2UI surface:
- * `POST /api/messages/:id/actions` (docs/reference/a2ui-surfaces.md § Actions).
- * Completions live in the surface's own data model, never in
- * `metadata.cta_completions`.
+ * `POST /api/messages/:id/actions` for a chat card, the mirror
+ * `POST /api/surfaces/:id/actions` for a canvas surface
+ * (docs/reference/a2ui-surfaces.md § Actions). Completions live in the
+ * surface's own data model, never in `metadata.cta_completions`.
  */
 
 /** The completion the server stamps into a surface's data model at
@@ -17,7 +19,7 @@ export interface SurfaceActionStamp {
   result?: string;
 }
 
-/** Body of `POST /api/messages/:id/actions`, one of three forms:
+/** Body of the actions endpoint, one of three forms:
  *  - `name` — an `event` the server relays to the agent as a UserAction;
  *  - `invoke` — a `functionCall` this client does not run itself
  *    (`sendEmail`, `saveDraft`, a device function it lacks): the server runs
@@ -55,6 +57,18 @@ export interface SurfaceActionResponse {
   result?: { ok: boolean; text?: string } | null;
 }
 
-export function postSurfaceAction(messageId: string, body: SurfaceActionBody): Promise<SurfaceActionResponse> {
-  return postJson<SurfaceActionResponse>(`/api/messages/${messageId}/actions`, body);
+export function surfaceActionsPath(target: SurfaceTarget): string {
+  return target.kind === "surface" ? `/api/surfaces/${target.id}/actions` : `/api/messages/${target.id}/actions`;
+}
+
+export function postSurfaceAction(target: SurfaceTarget, body: SurfaceActionBody): Promise<SurfaceActionResponse> {
+  return postJson<SurfaceActionResponse>(surfaceActionsPath(target), body);
+}
+
+/** A two-way input's write on a canvas surface: `invoke updateSurfaceData`
+ *  under the component's id, one `{path, value}` per changed binding. The
+ *  server applies it through `Canvases.write`, recomputes derived
+ *  visibility and broadcasts `surface_update`. */
+export function surfaceWriteBody(componentId: string, writes: { path: string; value: unknown }[]): SurfaceActionBody {
+  return { action_id: componentId, item_index: 0, invoke: { function: "updateSurfaceData", args: { writes } } };
 }

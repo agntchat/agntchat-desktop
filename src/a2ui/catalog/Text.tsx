@@ -3,7 +3,7 @@ import { z } from "zod";
 import { CommonSchemas } from "@a2ui/web_core/v0_9";
 import { createComponentImplementation } from "@a2ui/react/v0_9";
 import { MarkdownContent, useTranslation } from "../host";
-import { WeightSchema, asString, weightStyle } from "../shared";
+import { VisibleSchema, WeightSchema, asString, weightStyle } from "../shared";
 
 export const TextApi = {
   name: "Text",
@@ -13,6 +13,7 @@ export const TextApi = {
     maxLines: z.number().int().min(1).max(12).optional(),
     mono: z.boolean().optional(),
     weight: WeightSchema,
+    visible: VisibleSchema,
   }),
 };
 

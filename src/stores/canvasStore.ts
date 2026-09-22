@@ -6,8 +6,9 @@ import {
   updateCanvasDefinition,
   deleteCanvasDefinition,
   validateCanvasDefinition,
+  previewCanvasDefinition,
 } from "../lib/api";
-import type { CanvasDefinitionSummary } from "../lib/api";
+import type { CanvasDefinitionSummary, CanvasPreview } from "../lib/api";
 
 /**
  * Canvases store with full CRUD. `selectedId === "new"` is the sentinel for
@@ -52,6 +53,7 @@ interface CanvasState {
   validateDefinition: (
     definition: Record<string, unknown>
   ) => Promise<{ valid: boolean; errors: string[] }>;
+  previewDefinition: (definition: Record<string, unknown>) => Promise<CanvasPreview>;
 }
 
 export const useCanvasStore = create<CanvasState>((set, get) => ({
@@ -130,4 +132,5 @@ export const useCanvasStore = create<CanvasState>((set, get) => ({
   },
 
   validateDefinition: (definition) => validateCanvasDefinition(definition),
+  previewDefinition: (definition) => previewCanvasDefinition(definition),
 }));

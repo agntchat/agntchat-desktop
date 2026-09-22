@@ -3,7 +3,7 @@ import { z } from "zod";
 import { CommonSchemas } from "@a2ui/web_core/v0_9";
 import { createComponentImplementation } from "@a2ui/react/v0_9";
 import { ImageGalleryLightbox, useTranslation } from "../host";
-import { WeightSchema, asArray, asString, orBinding, renderChild, weightStyle, type ChildRef } from "../shared";
+import { VisibleSchema, WeightSchema, asArray, asString, orBinding, renderChild, weightStyle, type ChildRef } from "../shared";
 
 export const HeroApi = {
   name: "Hero",
@@ -13,6 +13,7 @@ export const HeroApi = {
     ratio: z.enum(["wide", "square"]).optional(),
     overlay: CommonSchemas.ComponentId.optional(),
     weight: WeightSchema,
+    visible: VisibleSchema,
   }),
 };
 

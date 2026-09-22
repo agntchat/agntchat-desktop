@@ -6,7 +6,7 @@ import { getInitials, resolveIcon } from "../host";
 import {
   CardLabelContext,
   IconNameSchema,
-  WeightSchema,
+  VisibleSchema, WeightSchema,
   asRecord,
   asString,
   renderChild,
@@ -29,6 +29,7 @@ export const HeaderApi = {
       .optional(),
     trailing: CommonSchemas.ComponentId.optional(),
     weight: WeightSchema,
+    visible: VisibleSchema,
   }),
 };
 

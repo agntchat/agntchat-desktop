@@ -3,7 +3,7 @@ import { z } from "zod";
 import { CommonSchemas } from "@a2ui/web_core/v0_9";
 import { createComponentImplementation } from "@a2ui/react/v0_9";
 import { getInitials } from "../host";
-import { LinkSchema, WeightSchema, asRecord, asString, isExternalUrl, resolveDeep, safeUrl, weightStyle } from "../shared";
+import { LinkSchema, VisibleSchema, WeightSchema, asRecord, asString, isExternalUrl, resolveDeep, safeUrl, weightStyle } from "../shared";
 
 export const ImageApi = {
   name: "Image",
@@ -13,6 +13,7 @@ export const ImageApi = {
     variant: z.enum(["thumbnail", "avatar", "logo"]).optional(),
     link: LinkSchema.optional(),
     weight: WeightSchema,
+    visible: VisibleSchema,
   }),
 };
 

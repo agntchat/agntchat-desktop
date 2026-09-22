@@ -7,7 +7,7 @@ import { openExternal, resolveIcon, useTranslation } from "../host";
 import { postSurfaceAction, type SurfaceActionBody, type SurfaceActionStamp } from "../actions";
 import {
   IconNameSchema,
-  WeightSchema,
+  VisibleSchema, WeightSchema,
   actionStampsPath,
   asRecord,
   asString,
@@ -28,6 +28,9 @@ const ActionItemSchema = z.object({
   icon: IconNameSchema.optional(),
   confirm: CommonSchemas.DynamicString.optional(),
   action: CommonSchemas.Action,
+  /** A data-model write the SERVER applies to the surface after the action
+   *  succeeds (switch the active tab). Accepted here, never run here. */
+  then: z.object({ path: z.string(), value: z.unknown() }).optional(),
 });
 
 export const ActionBarApi = {
@@ -35,6 +38,7 @@ export const ActionBarApi = {
   schema: z.object({
     actions: z.array(ActionItemSchema).min(1).max(5),
     weight: WeightSchema,
+    visible: VisibleSchema,
   }),
 };
 
@@ -77,9 +81,11 @@ interface ActionState {
  * `functionCall` (`sendEmail`, `saveDraft`, the device functions) is posted
  * as an `invoke` with the args resolved from the data model, and the server
  * runs backend tools as the presser or relays the rest to the agent; an
- * `event` is posted by name. Done state is the stamp the server writes into
- * the data model at `actions/<id>` under the item — read live through the
- * data context, so the presser, every other client and a cold load agree.
+ * `event` is posted by name — to the message or the surface the host names
+ * as its target. Done state is the stamp the server writes into the data
+ * model at `actions/<id>` under the item (`/_actions/<id>` on a canvas) —
+ * read live through the data context, so the presser, every other client
+ * and a cold load agree.
  * The client never re-implements Gmail for surfaces.
  */
 export const ActionBar = createBinderlessComponentImplementation(ActionBarApi, ({ context }) => {
@@ -124,7 +130,7 @@ export const ActionBar = createBinderlessComponentImplementation(ActionBarApi, (
   const itemIndex = itemIndexOf(dataContext.path, context.componentModel.id);
   const stamps = useDataValue<Record<string, SurfaceActionStamp>>(
     dataContext,
-    actionStampsPath(dataContext.path, itemIndex)
+    actionStampsPath(dataContext.path, itemIndex, host.target?.kind)
   );
   const raw = context.componentModel.properties as { actions?: unknown[]; weight?: unknown };
   const actions: ResolvedAction[] = (Array.isArray(raw.actions) ? raw.actions : [])
@@ -235,8 +241,8 @@ export const ActionBar = createBinderlessComponentImplementation(ActionBarApi, (
 
     patch(action.id, { busy: true });
     try {
-      if (!host.messageId) throw new Error("No message for surface action");
-      const res = await postSurfaceAction(host.messageId, body);
+      if (!host.target) throw new Error("No target for surface action");
+      const res = await postSurfaceAction(host.target, body);
       // The stamp lands on this surface at once; the server's
       // `surface_update` for the same path is then a no-op.
       if (res.operation) host.applyOperations([res.operation]);

@@ -6,7 +6,7 @@ import {
   IconNameSchema,
   LinkSchema,
   ToneSchema,
-  WeightSchema,
+  VisibleSchema, WeightSchema,
   asRecord,
   asString,
   isExternalUrl,
@@ -23,6 +23,7 @@ export const CalloutApi = {
     tone: ToneSchema.optional(),
     link: LinkSchema.optional(),
     weight: WeightSchema,
+    visible: VisibleSchema,
   }),
 };
 

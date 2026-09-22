@@ -2,7 +2,7 @@ import { useTranslation } from "../host";
 import { z } from "zod";
 import { CommonSchemas } from "@a2ui/web_core/v0_9";
 import { createComponentImplementation } from "@a2ui/react/v0_9";
-import { WeightSchema, asArray, asNumber, asRecord, asString, orBinding, resolveDeep, safeUrl, weightStyle } from "../shared";
+import { VisibleSchema, WeightSchema, asArray, asNumber, asRecord, asString, orBinding, resolveDeep, safeUrl, weightStyle } from "../shared";
 
 const CitationSchema = z.object({
   name: CommonSchemas.DynamicString,
@@ -15,6 +15,7 @@ export const CitationsApi = {
   schema: z.object({
     items: orBinding(z.array(CitationSchema).min(1).max(8)),
     weight: WeightSchema,
+    visible: VisibleSchema,
   }),
 };
 

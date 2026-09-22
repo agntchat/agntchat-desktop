@@ -61,9 +61,13 @@ export async function request<T>(
     const err = new Error(message) as Error & {
       status?: number;
       code?: string;
+      body?: unknown;
     };
     err.status = res.status;
     if (body?.error?.code) err.code = body.error.code;
+    // The parsed error body, for endpoints whose failure carries structure
+    // beyond `error` (a validation `errors` list).
+    err.body = body;
     throw err;
   }
 
@@ -2905,6 +2909,36 @@ export async function validateCanvasDefinition(
     method: "POST",
     body: JSON.stringify({ definition }),
   });
+}
+
+/** What the studio preview renders: the compiled surface's operations, or
+ *  the compiler's validation errors when the definition does not compile. */
+export interface CanvasPreview {
+  operations: Record<string, unknown>[];
+  errors: string[];
+}
+
+/** `POST /api/canvas-definitions/preview` — the definition compiled to A2UI
+ *  operations for the studio. A 400 `{errors}` is a result, not a failure. */
+export async function previewCanvasDefinition(
+  definition: Record<string, unknown>
+): Promise<CanvasPreview> {
+  try {
+    const data = await request<{ operations: Record<string, unknown>[] }>(
+      "/api/canvas-definitions/preview",
+      { method: "POST", body: JSON.stringify({ definition }) }
+    );
+    return { operations: Array.isArray(data.operations) ? data.operations : [], errors: [] };
+  } catch (e) {
+    const err = e as Error & { status?: number; body?: unknown };
+    if (err.status === 400) {
+      const errors = (err.body as { errors?: unknown } | undefined)?.errors;
+      if (Array.isArray(errors) && errors.length > 0) {
+        return { operations: [], errors: errors.map((x) => (typeof x === "string" ? x : JSON.stringify(x))) };
+      }
+    }
+    throw e;
+  }
 }
 
 // Types

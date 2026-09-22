@@ -2,7 +2,7 @@ import { useId } from "react";
 import { z } from "zod";
 import { CommonSchemas } from "@a2ui/web_core/v0_9";
 import { createComponentImplementation } from "@a2ui/react/v0_9";
-import { WeightSchema, asString, weightStyle } from "../shared";
+import { VisibleSchema, WeightSchema, asString, weightStyle } from "../shared";
 
 export const TextFieldApi = {
   name: "TextField",
@@ -13,6 +13,7 @@ export const TextFieldApi = {
     variant: z.enum(["shortText", "longText", "number"]).optional(),
     checks: CommonSchemas.Checkable.shape.checks,
     weight: WeightSchema,
+    visible: VisibleSchema,
   }),
 };
 

@@ -370,20 +370,43 @@ a.a2ui-cite:hover { color: var(--color-foreground); border-color: var(--color-bo
 .a2ui-list__items { display: flex; flex-direction: column; gap: var(--space-2); list-style: none; margin: 0; padding: 0; }
 .a2ui-list__items > li { min-width: 0; }
 /* Phone: cards become a snap carousel with a 28px peek. */
+/* `cards` is a snap carousel at every width: full-bleed cards with a 28px
+ * peek on phones, ~380px cards with a peek on panes — the mobile idiom, so
+ * several results compare side by side instead of stacking. */
+.a2ui-list--cards > .a2ui-list__items {
+  flex-direction: row;
+  overflow-x: auto;
+  scroll-snap-type: x mandatory;
+  scrollbar-width: none;
+  gap: var(--space-2);
+  padding-bottom: var(--space-1);
+  scroll-padding-inline: 0;
+}
+.a2ui-list--cards > .a2ui-list__items::-webkit-scrollbar { display: none; }
+.a2ui-list--cards > .a2ui-list__items > li { flex: 0 0 min(380px, calc(100% - 28px)); scroll-snap-align: start; }
+.a2ui-list--cards > .a2ui-list__items > li > .a2ui-card { height: 100%; }
 @container bubble (max-width: 479px) {
-  .a2ui-list--cards > .a2ui-list__items {
-    flex-direction: row; overflow-x: auto; scroll-snap-type: x mandatory; scrollbar-width: none;
-    margin: 0 calc(-1 * var(--space-2)); padding: 0 var(--space-2) var(--space-1);
+  .a2ui-list--cards > .a2ui-list__items > li { flex-basis: calc(100% - 28px); }
+  .a2ui-list--grid > .a2ui-list__items {
+    flex-direction: row; overflow-x: auto; scroll-snap-type: x mandatory; scrollbar-width: none; gap: var(--space-2); padding-bottom: var(--space-1);
   }
-  .a2ui-list--cards > .a2ui-list__items::-webkit-scrollbar { display: none; }
-  .a2ui-list--cards > .a2ui-list__items > li { flex: 0 0 calc(100% - 28px); scroll-snap-align: start; }
-  .a2ui-list--cards > .a2ui-list__items > li > .a2ui-card { height: 100%; }
+  .a2ui-list--grid > .a2ui-list__items::-webkit-scrollbar { display: none; }
+  .a2ui-list--grid > .a2ui-list__items > li { flex: 0 0 calc(100% - 28px); scroll-snap-align: start; }
+  .a2ui-list--grid > .a2ui-list__items > li > .a2ui-card { height: 100%; }
 }
 @container bubble (min-width: 720px) {
   .a2ui-list--grid > .a2ui-list__items { display: grid; grid-template-columns: 1fr 1fr; }
 }
-.a2ui-dots { display: none; justify-content: center; align-items: center; gap: var(--space-1_5); padding: 0; margin: 0; list-style: none; }
-@container bubble (max-width: 479px) { .a2ui-list--cards > .a2ui-dots { display: flex; } }
+.a2ui-dots { display: flex; justify-content: center; align-items: center; gap: var(--space-1_5); padding: 0; margin: 0; list-style: none; }
+.a2ui-carousel-nav { display: none; justify-content: flex-end; gap: var(--space-1_5); }
+@container bubble (min-width: 480px) { .a2ui-carousel-nav { display: flex; } }
+.a2ui-carousel-nav__btn {
+  width: 28px; height: 28px; border-radius: var(--radius-full); border: 1px solid var(--color-border);
+  background: var(--color-card); color: var(--color-foreground); font-size: var(--font-size-lg); line-height: 1;
+  display: inline-flex; align-items: center; justify-content: center; cursor: pointer; padding: 0;
+}
+.a2ui-carousel-nav__btn:hover:not(:disabled) { background: var(--color-surface-hover); }
+.a2ui-carousel-nav__btn:disabled { opacity: .4; cursor: default; }
 .a2ui-dot { width: 6px; height: 6px; border-radius: var(--radius-full); background: var(--color-border-strong); border: 0; padding: 0; cursor: pointer; }
 .a2ui-dot--active { width: 8px; height: 8px; background: var(--color-primary); }
 .a2ui-rows { display: flex; flex-direction: column; background: var(--color-card); border: 1px solid var(--color-border); border-radius: var(--radius-lg); box-shadow: var(--shadow-sm); overflow: hidden; }

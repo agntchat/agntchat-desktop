@@ -1,7 +1,7 @@
 import { z } from "zod";
 import { CommonSchemas } from "@a2ui/web_core/v0_9";
 import { createComponentImplementation } from "@a2ui/react/v0_9";
-import { WeightSchema, asArray, asNumber, asRecord, asString, formatNumberValue, orBinding, resolveDeep, weightStyle } from "../shared";
+import { VisibleSchema, WeightSchema, asArray, asNumber, asRecord, asString, formatNumberValue, orBinding, resolveDeep, weightStyle } from "../shared";
 
 const ColumnSchema = z.object({
   key: z.string(),
@@ -17,6 +17,7 @@ export const TableApi = {
     rows: orBinding(z.array(z.record(z.any())).min(1).max(20)),
     compact: z.boolean().optional(),
     weight: WeightSchema,
+    visible: VisibleSchema,
   }),
 };
 

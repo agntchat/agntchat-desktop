@@ -1,7 +1,7 @@
 import { z } from "zod";
 import { CommonSchemas } from "@a2ui/web_core/v0_9";
 import { createComponentImplementation } from "@a2ui/react/v0_9";
-import { SizeSchema, WeightSchema, asNumber, asRecord, asString, currentLocale, orBinding, resolveDeep, weightStyle } from "../shared";
+import { SizeSchema, VisibleSchema, WeightSchema, asNumber, asRecord, asString, currentLocale, orBinding, resolveDeep, weightStyle } from "../shared";
 
 const MoneySchema = z.object({
   amount: CommonSchemas.DynamicNumber,
@@ -19,6 +19,7 @@ export const PriceApi = {
     money: orBinding(MoneySchema),
     size: SizeSchema.optional(),
     weight: WeightSchema,
+    visible: VisibleSchema,
   }),
 };
 

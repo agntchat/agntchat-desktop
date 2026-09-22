@@ -5,7 +5,7 @@ import { resolveIcon } from "../host";
 import {
   IconNameSchema,
   LinkSchema,
-  WeightSchema,
+  VisibleSchema, WeightSchema,
   asArray,
   asRecord,
   asString,
@@ -30,6 +30,7 @@ export const KeyValueApi = {
     items: orBinding(z.array(ItemSchema).min(1).max(12)),
     layout: z.enum(["rows", "grid"]).optional(),
     weight: WeightSchema,
+    visible: VisibleSchema,
   }),
 };
 

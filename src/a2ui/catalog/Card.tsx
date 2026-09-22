@@ -2,7 +2,7 @@ import { useId } from "react";
 import { z } from "zod";
 import { CommonSchemas } from "@a2ui/web_core/v0_9";
 import { createComponentImplementation } from "@a2ui/react/v0_9";
-import { CardLabelContext, ToneSchema, WeightSchema, renderChild, weightStyle, type ChildRef } from "../shared";
+import { CardLabelContext, ToneSchema, VisibleSchema, WeightSchema, renderChild, weightStyle, type ChildRef } from "../shared";
 
 export const CardApi = {
   name: "Card",
@@ -11,6 +11,7 @@ export const CardApi = {
     tone: ToneSchema.optional(),
     density: z.enum(["comfortable", "compact"]).optional(),
     weight: WeightSchema,
+    visible: VisibleSchema,
   }),
 };
 

@@ -22,7 +22,7 @@ import { Badge } from "@/components/ui/badge";
 import { Textarea } from "@/components/ui/textarea";
 import { cn, formatRelativeShort } from "../../lib/utils";
 import { useCanvasStore } from "../../stores/canvasStore";
-import { CanvasRenderer } from "./CanvasRenderer";
+import { CanvasSurfacePreview } from "./CanvasSurfacePreview";
 import { CanvasInspector } from "./CanvasInspector";
 import type { CanvasDefinitionSummary } from "../../lib/api";
 import { confirmDialog } from "../../stores/confirmStore";
@@ -139,6 +139,9 @@ export function CanvasEditor({ canvas, isNew }: Props) {
     valid: boolean;
     errors: string[];
   } | null>(null);
+  // The compiler's verdict on the live preview — shown in the same errors
+  // area as an explicit Validate, which takes precedence while present.
+  const [previewErrors, setPreviewErrors] = useState<string[] | null>(null);
   const [saving, setSaving] = useState(false);
   const [saved, setSaved] = useState(false);
   const [deleting, setDeleting] = useState(false);
@@ -274,6 +277,8 @@ export function CanvasEditor({ canvas, isNew }: Props) {
     }
   }, [t, canvas, isBuiltin, deleteDefinition, selectCanvas]);
 
+  const banner = validation ?? (previewErrors ? { valid: false, errors: previewErrors } : null);
+
   return (
     <div className="flex flex-1 flex-col overflow-hidden">
       <div className="flex items-center gap-3 border-b border-border px-6 py-3">
@@ -405,22 +410,23 @@ export function CanvasEditor({ canvas, isNew }: Props) {
             </span>
           </div>
           <div className="flex-1 min-h-0 overflow-hidden">
-            <CanvasRenderer json={debouncedJson} />
+            <CanvasSurfacePreview json={json} onErrors={setPreviewErrors} />
           </div>
           <CanvasInspector json={debouncedJson} />
         </div>
       </div>
 
-      {validation && (
+      {/* Validation banner — an explicit Validate, else the preview compiler's errors */}
+      {banner && (
         <div
           className={cn(
             "flex items-start gap-2 border-t px-6 py-2",
-            validation.valid
+            banner.valid
               ? "border-success/20 bg-success/5"
               : "border-destructive/20 bg-destructive/5"
           )}
         >
-          {validation.valid ? (
+          {banner.valid ? (
             <>
               <CheckCircle2 className="mt-0.5 h-4 w-4 shrink-0 text-success" />
               <p className="text-xs text-success">{t("definitionValid")}</p>
@@ -429,7 +435,7 @@ export function CanvasEditor({ canvas, isNew }: Props) {
             <>
               <AlertCircle className="mt-0.5 h-4 w-4 shrink-0 text-destructive" />
               <div className="space-y-0.5">
-                {validation.errors.map((err, i) => (
+                {banner.errors.map((err, i) => (
                   <p key={i} className="text-xs text-destructive">
                     {err}
                   </p>

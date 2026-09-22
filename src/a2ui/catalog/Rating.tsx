@@ -3,7 +3,7 @@ import { useTranslation } from "../host";
 import { z } from "zod";
 import { CommonSchemas } from "@a2ui/web_core/v0_9";
 import { createComponentImplementation } from "@a2ui/react/v0_9";
-import { WeightSchema, asNumber, asString, currentLocale, weightStyle } from "../shared";
+import { VisibleSchema, WeightSchema, asNumber, asString, currentLocale, weightStyle } from "../shared";
 
 export const RatingApi = {
   name: "Rating",
@@ -13,6 +13,7 @@ export const RatingApi = {
     count: CommonSchemas.DynamicNumber.optional(),
     source: CommonSchemas.DynamicString.optional(),
     weight: WeightSchema,
+    visible: VisibleSchema,
   }),
 };
 

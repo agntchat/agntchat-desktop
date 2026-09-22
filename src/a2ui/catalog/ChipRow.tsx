@@ -6,7 +6,7 @@ import { resolveIcon, useTranslation } from "../host";
 import {
   IconNameSchema,
   ToneSchema,
-  WeightSchema,
+  VisibleSchema, WeightSchema,
   asArray,
   asRecord,
   asString,
@@ -27,6 +27,7 @@ export const ChipRowApi = {
     items: orBinding(z.array(ChipSchema).min(1).max(12)),
     max: z.number().int().min(1).max(8).optional(),
     weight: WeightSchema,
+    visible: VisibleSchema,
   }),
 };
 

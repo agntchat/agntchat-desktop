@@ -2,7 +2,7 @@ import { useId } from "react";
 import { z } from "zod";
 import { CommonSchemas } from "@a2ui/web_core/v0_9";
 import { createComponentImplementation } from "@a2ui/react/v0_9";
-import { WeightSchema, asArray, asRecord, asString, weightStyle } from "../shared";
+import { VisibleSchema, WeightSchema, asArray, asRecord, asString, weightStyle } from "../shared";
 
 export const ChoicePickerApi = {
   name: "ChoicePicker",
@@ -14,6 +14,7 @@ export const ChoicePickerApi = {
     displayStyle: z.enum(["chips", "list"]).optional(),
     checks: CommonSchemas.Checkable.shape.checks,
     weight: WeightSchema,
+    visible: VisibleSchema,
   }),
 };
 

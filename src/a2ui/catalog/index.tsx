@@ -1,6 +1,8 @@
-import { Catalog, createBasicCatalogFunctions } from "@a2ui/web_core/v0_9";
-import type { ReactComponentImplementation } from "@a2ui/react/v0_9";
+import type React from "react";
+import { Catalog, ResolvedBinding, createBasicCatalogFunctions } from "@a2ui/web_core/v0_9";
+import { useSignalValue, type NodeViewProps, type ReactComponentImplementation } from "@a2ui/react/v0_9";
 import { currentLocale } from "../host";
+import { useDynamicBoolean } from "../shared";
 import { ActionBar } from "./ActionBar";
 import { Callout } from "./Callout";
 import { Card } from "./Card";
@@ -17,18 +19,51 @@ import { Price } from "./Price";
 import { Rating } from "./Rating";
 import { Row } from "./Row";
 import { Section } from "./Section";
+import { Slot } from "./Slot";
 import { Stat } from "./Stat";
 import { Steps } from "./Steps";
 import { Table } from "./Table";
 import { Tabs } from "./Tabs";
 import { Text } from "./Text";
 import { TextField } from "./TextField";
+import { Toggle } from "./Toggle";
 
 /** Must equal `catalogId` in every `createSurface` the backend emits
  *  (`backend/priv/a2ui/chat-catalog.v1.json` → `$id`). */
 export const CATALOG_ID = "https://app.agntchat.com/a2ui/catalogs/chat/v1/catalog.json";
 
-/** The 22 components of chat-catalog.v1.json. */
+/**
+ * Every component honours `visible` (a DynamicBoolean on every schema in
+ * chat-catalog.v1.json): bound and false → the node renders nothing. Done
+ * once here rather than in 24 render functions. The node layer (`view`) has
+ * already resolved the binding; the legacy `render` path resolves it live
+ * through the data context.
+ */
+function withVisibility(impl: ReactComponentImplementation): ReactComponentImplementation {
+  const InnerView = impl.view;
+  const InnerRender = impl.render;
+  const view: React.FC<NodeViewProps> | undefined = InnerView
+    ? ({ node, buildChild }) => {
+        const resolved = useSignalValue(node.props) as Record<string, unknown> | undefined;
+        const raw = resolved?.visible;
+        const visible = raw instanceof ResolvedBinding ? raw.value : raw;
+        if (visible === false) return null;
+        return <InnerView node={node} buildChild={buildChild} />;
+      }
+    : undefined;
+  if (view) view.displayName = `${impl.name}.visible`;
+  const render: ReactComponentImplementation["render"] = ({ context, buildChild }) => {
+    const visible = useDynamicBoolean(
+      context.dataContext,
+      (context.componentModel.properties as { visible?: unknown }).visible
+    );
+    if (visible === false) return null;
+    return <InnerRender context={context} buildChild={buildChild} />;
+  };
+  return { ...impl, render, view };
+}
+
+/** The 24 components of chat-catalog.v1.json. */
 export const agntchatComponents: ReactComponentImplementation[] = [
   Card,
   Column,
@@ -52,7 +87,9 @@ export const agntchatComponents: ReactComponentImplementation[] = [
   Citations,
   TextField,
   ChoicePicker,
-];
+  Toggle,
+  Slot,
+].map(withVisibility);
 
 /** The basic-catalog functions the chat catalog declares. Host functions
  *  (openUrl, sendEmail, saveDraft, copyText, enableNotifications, …) are
