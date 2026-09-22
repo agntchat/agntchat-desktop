@@ -8,8 +8,13 @@
 .a2ui-surface {
   container-type: inline-size;
   container-name: bubble;
+  /* An inline-size container contributes NO intrinsic width to a fit-content
+   * parent (the chat bubble is `w-fit`), so without an explicit width the
+   * whole card collapses to a few pixels. Ask for the pane width and let the
+   * bubble's max-width cap it. */
+  width: 720px;
   min-width: 0;
-  max-width: 720px;
+  max-width: 100%;
   font-family: var(--font-sans);
   font-size: var(--font-size-base);
   line-height: var(--line-height-normal);
@@ -417,3 +422,30 @@ a.a2ui-cite:hover { color: var(--color-foreground); border-color: var(--color-bo
 .a2ui-notice { display: flex; gap: var(--space-2); align-items: flex-start; font-size: var(--font-size-sm); }
 .a2ui-notice--warning { color: var(--color-warning-foreground); background: var(--color-warning-light); border-radius: var(--radius-md); padding: var(--space-1_5) var(--space-2); }
 .a2ui-notice--destructive { color: var(--color-destructive); background: var(--color-danger-light); border-radius: var(--radius-md); padding: var(--space-1_5) var(--space-2); }
+
+/* Toggle ------------------------------------------------------------------ */
+.a2ui-toggle { display: flex; align-items: flex-start; gap: var(--space-3); min-width: 0; }
+.a2ui-toggle__switch {
+  flex: none; position: relative; width: 36px; height: 20px; margin-top: 1px; padding: 0; border: 0; border-radius: var(--radius-full);
+  background: var(--color-border-strong); cursor: pointer; transition: background var(--duration-fast) var(--ease-standard);
+}
+.a2ui-toggle__switch:focus-visible { outline: 2px solid var(--color-ring); outline-offset: 2px; }
+.a2ui-toggle__switch[aria-checked="true"] { background: var(--color-primary); }
+.a2ui-toggle__thumb {
+  position: absolute; top: 2px; left: 2px; width: 16px; height: 16px; border-radius: var(--radius-full); background: var(--color-card);
+  box-shadow: var(--shadow-sm); transition: transform var(--duration-fast) var(--ease-standard);
+}
+.a2ui-toggle__switch[aria-checked="true"] .a2ui-toggle__thumb { transform: translateX(16px); }
+@media (prefers-reduced-motion: reduce) { .a2ui-toggle__switch, .a2ui-toggle__thumb { transition: none; } }
+.a2ui-toggle__text { display: flex; flex-direction: column; gap: var(--space-0_5); min-width: 0; }
+.a2ui-toggle__label { font-size: var(--font-size-base); font-weight: 500; cursor: pointer; }
+.a2ui-toggle__desc { font-size: var(--font-size-sm); color: var(--color-muted-foreground); line-height: var(--line-height-snug); }
+
+/* Slot — a host-rendered region without a host renderer (placeholder) ----- */
+.a2ui-slot {
+  display: grid; place-items: center; min-height: 56px; padding: var(--space-3); border: 1px dashed var(--color-border-strong);
+  border-radius: var(--radius-md); background: var(--color-muted); color: var(--color-muted-foreground);
+}
+.a2ui-slot--message_list { min-height: 120px; }
+.a2ui-slot--typing_indicator { min-height: 32px; padding: var(--space-1_5) var(--space-3); }
+.a2ui-slot__label { font-size: var(--font-size-sm); font-weight: 500; letter-spacing: .04em; text-transform: uppercase; }
