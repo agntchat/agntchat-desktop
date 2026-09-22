@@ -3,8 +3,9 @@ import { z } from "zod";
 import { CommonSchemas } from "@a2ui/web_core/v0_9";
 import { createBinderlessComponentImplementation } from "@a2ui/react/v0_9";
 import { CheckCircle, ExternalLink, MoreHorizontal } from "lucide-react";
-import { openExternal, resolveIcon, useTranslation } from "../host";
+import { openExternal, resolveIcon, saveContactFile, useTranslation } from "../host";
 import { postSurfaceAction, type SurfaceActionBody, type SurfaceActionStamp } from "../actions";
+import { buildVCard, vcardFilename } from "../vcard";
 import {
   IconNameSchema,
   VisibleSchema, WeightSchema,
@@ -216,6 +217,34 @@ export const ActionBar = createBinderlessComponentImplementation(ActionBarApi, (
         return;
       }
       openExternal(action.url);
+      return;
+    }
+
+    // The device takes the contact (a vCard here, the native form on
+    // mobile); the stamp then records `executed` so every client shows the
+    // same done state.
+    if (action.fn === "saveContact") {
+      const name = asString(action.args.name)?.trim();
+      if (!name) {
+        patch(action.id, { notice: { tone: "destructive", text: tChat("results.actionFailed") } });
+        return;
+      }
+      patch(action.id, { busy: true });
+      try {
+        await saveContactFile(vcardFilename(name), buildVCard(action.args));
+        if (host.target) {
+          const res = await postSurfaceAction(host.target, {
+            action_id: action.id,
+            item_index: itemIndex,
+            executed: { function: "saveContact", result: "saved" },
+          });
+          if (res.operation) host.applyOperations([res.operation]);
+        }
+        patch(action.id, { busy: false });
+      } catch (e) {
+        console.error("A2UI saveContact failed:", e);
+        patch(action.id, { busy: false, notice: { tone: "destructive", text: tChat("results.actionFailed") } });
+      }
       return;
     }
 

@@ -6,6 +6,7 @@
  * web copy of this file exports exactly the same names with web's
  * implementations; keep the two signatures equal.
  */
+import { invoke } from "@tauri-apps/api/core";
 import i18n from "../i18n";
 import { request } from "../lib/api";
 import { openExternal as tauriOpenExternal } from "../lib/openExternal";
@@ -31,4 +32,11 @@ export function postJson<T>(path: string, body: unknown): Promise<T> {
 /** Open an http(s)/mailto/tel URL outside the app (the system browser). */
 export function openExternal(url: string): void {
   tauriOpenExternal(url);
+}
+
+/** Hand a vCard to the device: written to Downloads and opened with the
+ *  OS handler (`save_and_open_vcard`), so Contacts on macOS / Windows
+ *  offers to add it. */
+export async function saveContactFile(filename: string, contents: string): Promise<void> {
+  await invoke<string>("save_and_open_vcard", { filename, contents });
 }
