@@ -11,6 +11,7 @@ import {
   AttachmentTrigger,
 } from "@/components/ui/attachment";
 import * as api from "../../lib/api";
+import { openExternal } from "../../lib/openExternal";
 import { formatFileSize, attachmentDisplayName } from "../../services/fileUpload";
 import type { Message } from "../../lib/api";
 
@@ -42,6 +43,31 @@ const IMAGE_FRAME_HEIGHT = 240;
  *  loading, loaded and error states on one footprint instead of snapping
  *  from a sliver to the real aspect once the photo decodes. */
 const IMAGE_FRAME_FALLBACK_WIDTH = 320;
+
+/**
+ * Resolve a FRESH signed download URL and open it, on click — never navigate
+ * to a URL that rode along in the message payload. That URL was signed once
+ * (at message-send or channel-join time) and expires after a few minutes;
+ * trusting it for a click that might happen much later is exactly what
+ * produced stale-JWT opens from the inline preview while the Files panel
+ * (which always re-signs via this same endpoint) kept working. `fallbackUrl`
+ * only covers the rare case where the message has no attachment id to
+ * re-resolve from.
+ */
+async function openAttachment(attachmentId: string | undefined, fallbackUrl: string | null) {
+  if (attachmentId) {
+    try {
+      const { url } = await api.getFileDownloadUrl(attachmentId);
+      openExternal(url);
+      return;
+    } catch (e) {
+      console.warn("[FileMessage] failed to resolve fresh download URL, falling back to cached URL", e);
+    }
+  }
+  if (fallbackUrl) {
+    openExternal(fallbackUrl);
+  }
+}
 
 function safeParseJson<T>(str: string, fallback: T): T {
   try {
@@ -316,11 +342,10 @@ export function AttachmentChip({
         aria-label={`Open ${displayName}`}
         render={
           <a
-            href={url ?? "#"}
-            target="_blank"
-            rel="noopener noreferrer"
+            href="#"
             onClick={(e) => {
-              if (!url) e.preventDefault();
+              e.preventDefault();
+              void openAttachment(attachmentId, url);
             }}
           />
         }
@@ -414,7 +439,14 @@ export function FileMessage({ message }: { message: Message }) {
               <Loader2 className="h-5 w-5 animate-spin text-muted-foreground" />
             </div>
           ) : url ? (
-            <a href={url} target="_blank" rel="noopener noreferrer" className="block h-full">
+            <a
+              href="#"
+              className="block h-full"
+              onClick={(e) => {
+                e.preventDefault();
+                void openAttachment(attachmentId, url);
+              }}
+            >
               <img
                 // ref fires on mount (a cached image is already `complete`),
                 // onLoad covers the fetch-then-decode case.
@@ -465,11 +497,10 @@ export function FileMessage({ message }: { message: Message }) {
           aria-label={`Open ${filename}`}
           render={
             <a
-              href={url ?? "#"}
-              target="_blank"
-              rel="noopener noreferrer"
+              href="#"
               onClick={(e) => {
-                if (!url) e.preventDefault();
+                e.preventDefault();
+                void openAttachment(attachmentId, url);
               }}
             />
           }
