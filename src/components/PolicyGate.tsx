@@ -5,7 +5,7 @@ import { open as tauriOpen } from "@tauri-apps/plugin-shell";
 import { useAuthStore } from "../stores/authStore";
 import * as api from "../lib/api";
 import { identifyAnalytics } from "../lib/analytics";
-import { LEGAL_URLS } from "../lib/legal";
+import { legalUrl } from "../lib/legal";
 import { Button } from "@/components/ui/button";
 
 function openExternal(url: string) {
@@ -21,7 +21,7 @@ function openExternal(url: string) {
  * puts every existing user back behind this screen on their next load.
  */
 export function PolicyGate({ children }: { children: ReactNode }) {
-  const { t } = useTranslation("auth");
+  const { t, i18n } = useTranslation("auth");
   const participant = useAuthStore((s) => s.participant);
   const logout = useAuthStore((s) => s.logout);
   const [checked, setChecked] = useState(false);
@@ -72,7 +72,7 @@ export function PolicyGate({ children }: { children: ReactNode }) {
             {t("consent.label")}{" "}
             <button
               type="button"
-              onClick={() => openExternal(LEGAL_URLS.terms)}
+              onClick={() => openExternal(legalUrl("terms", i18n.resolvedLanguage))}
               className="text-primary underline hover:text-primary/80"
             >
               {t("consent.terms")}
@@ -80,7 +80,7 @@ export function PolicyGate({ children }: { children: ReactNode }) {
             <span className="text-text-secondary"> · </span>
             <button
               type="button"
-              onClick={() => openExternal(LEGAL_URLS.privacy)}
+              onClick={() => openExternal(legalUrl("privacy", i18n.resolvedLanguage))}
               className="text-primary underline hover:text-primary/80"
             >
               {t("consent.privacy")}

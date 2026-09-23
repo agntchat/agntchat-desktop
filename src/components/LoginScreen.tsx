@@ -9,7 +9,7 @@ import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import { Card } from "@/components/ui/card";
 import { open as tauriOpen } from "@tauri-apps/plugin-shell";
-import { LEGAL_URLS } from "../lib/legal";
+import { legalUrl } from "../lib/legal";
 import { BetaBadge } from "./BetaBadge";
 import { PasswordStrengthMeter } from "./PasswordStrengthMeter";
 import { assessPassword, PASSWORD_MIN_LENGTH } from "../lib/passwordStrength";
@@ -47,7 +47,7 @@ function isAtLeast16(isoDate: string): boolean {
 }
 
 export function LoginScreen() {
-  const { t } = useTranslation("auth");
+  const { t, i18n } = useTranslation("auth");
   const { login, signup, loading, error, confirmationMessage } = useAuthStore();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -465,7 +465,7 @@ export function LoginScreen() {
                   {t("consent.label")}{" "}
                   <button
                     type="button"
-                    onClick={() => openExternal(LEGAL_URLS.terms)}
+                    onClick={() => openExternal(legalUrl("terms", i18n.resolvedLanguage))}
                     className="text-primary underline hover:text-primary/80"
                   >
                     {t("consent.terms")}
@@ -473,7 +473,7 @@ export function LoginScreen() {
                   <span className="text-text-secondary"> · </span>
                   <button
                     type="button"
-                    onClick={() => openExternal(LEGAL_URLS.privacy)}
+                    onClick={() => openExternal(legalUrl("privacy", i18n.resolvedLanguage))}
                     className="text-primary underline hover:text-primary/80"
                   >
                     {t("consent.privacy")}
