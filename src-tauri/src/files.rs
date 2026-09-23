@@ -40,3 +40,84 @@ pub fn save_and_open_vcard(
         .map_err(|e| e.to_string())?;
     Ok(path_str)
 }
+
+/// Hard ceiling on a saved attachment, so a bad URL can't fill the disk.
+/// Well above the backend's upload limit; this is a backstop, not a policy.
+const MAX_DOWNLOAD_BYTES: u64 = 512 * 1024 * 1024;
+
+/// Reduce a server-supplied filename to something safe to join onto a
+/// directory: no separators, no traversal, no leading dot.
+fn safe_download_name(filename: &str) -> String {
+    let base = filename
+        .rsplit(['/', '\\'])
+        .next()
+        .unwrap_or("")
+        .trim()
+        .trim_start_matches('.');
+    let cleaned: String = base
+        .chars()
+        .filter(|c| !matches!(c, ':' | '*' | '?' | '"' | '<' | '>' | '|' | '\0'))
+        .collect();
+    if cleaned.is_empty() {
+        "download".to_string()
+    } else {
+        cleaned
+    }
+}
+
+/// `report.pdf` → `report (1).pdf` when the name is taken, so a second
+/// download never silently overwrites the first.
+fn unique_path(dir: &std::path::Path, name: &str) -> std::path::PathBuf {
+    let candidate = dir.join(name);
+    if !candidate.exists() {
+        return candidate;
+    }
+    let path = std::path::Path::new(name);
+    let stem = path
+        .file_stem()
+        .map(|s| s.to_string_lossy().to_string())
+        .unwrap_or_default();
+    let ext = path
+        .extension()
+        .map(|s| format!(".{}", s.to_string_lossy()))
+        .unwrap_or_default();
+    for n in 1..1000 {
+        let next = dir.join(format!("{stem} ({n}){ext}"));
+        if !next.exists() {
+            return next;
+        }
+    }
+    candidate
+}
+
+/// Save a signed attachment URL straight into the OS Downloads folder and
+/// return the absolute path written.
+///
+/// The webview can't download on its own — Tauri gives it no download
+/// handler, and routing the click to the system browser would make grabbing
+/// a file from a chat bounce through Safari/Edge. Fetching here puts the
+/// file where the user expects it with one click.
+#[tauri::command]
+pub async fn download_to_downloads(
+    app: tauri::AppHandle,
+    url: String,
+    filename: String,
+) -> Result<String, String> {
+    if !url.starts_with("https://") {
+        return Err("only https downloads are allowed".into());
+    }
+    let dir = app.path().download_dir().map_err(|e| e.to_string())?;
+
+    // ureq is blocking; keep it off the async runtime's worker threads.
+    tauri::async_runtime::spawn_blocking(move || {
+        let resp = ureq::get(&url).call().map_err(|e| e.to_string())?;
+        std::fs::create_dir_all(&dir).map_err(|e| e.to_string())?;
+        let path = unique_path(&dir, &safe_download_name(&filename));
+        let mut reader = std::io::Read::take(resp.into_reader(), MAX_DOWNLOAD_BYTES);
+        let mut file = std::fs::File::create(&path).map_err(|e| e.to_string())?;
+        std::io::copy(&mut reader, &mut file).map_err(|e| e.to_string())?;
+        Ok(dunce::simplified(&path).to_string_lossy().to_string())
+    })
+    .await
+    .map_err(|e| e.to_string())?
+}

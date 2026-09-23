@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
-import { FileIcon, ImageIcon, Download, Loader2, ExternalLink, Play, Pause } from "lucide-react";
+import { FileIcon, ImageIcon, Loader2, ExternalLink, Play, Pause } from "lucide-react";
 import { cn } from "@/lib/utils";
 import {
   Attachment,
@@ -13,6 +13,7 @@ import {
 import * as api from "../../lib/api";
 import { openExternal } from "../../lib/openExternal";
 import { formatFileSize, attachmentDisplayName } from "../../services/fileUpload";
+import { DownloadButton } from "./DownloadButton";
 import type { Message } from "../../lib/api";
 
 interface FileContent {
@@ -97,6 +98,8 @@ function formatTime(seconds: number): string {
 function AudioMessage({
   url,
   loading,
+  attachmentId,
+  filename,
   transcript,
   transcriptStatus,
   durationMs,
@@ -104,6 +107,8 @@ function AudioMessage({
 }: {
   url: string | null;
   loading: boolean;
+  attachmentId?: string;
+  filename?: string;
   transcript?: string;
   transcriptStatus?: "no_key" | "failed";
   durationMs?: number;
@@ -211,6 +216,11 @@ function AudioMessage({
               : formatTime(position)}
           </p>
         </div>
+        <DownloadButton
+          attachmentId={attachmentId}
+          filename={filename}
+          className="self-start opacity-70 hover:opacity-100"
+        />
       </div>
       {url && (
         <audio
@@ -329,14 +339,13 @@ export function AttachmentChip({
           <AttachmentDescription>{formatFileSize(sizeBytes)}</AttachmentDescription>
         ) : null}
       </AttachmentContent>
-      <div className="relative z-20 flex shrink-0 items-center pr-1 text-muted-foreground">
+      <div className="relative z-20 flex shrink-0 items-center gap-0.5 pr-1 text-muted-foreground">
         {loading ? (
           <Loader2 className="h-4 w-4 animate-spin" />
-        ) : url ? (
-          <ExternalLink className="h-4 w-4" />
         ) : (
-          <Download className="h-4 w-4" />
+          <ExternalLink className="h-4 w-4" />
         )}
+        <DownloadButton attachmentId={attachmentId} filename={displayName} />
       </div>
       <AttachmentTrigger
         aria-label={`Open ${displayName}`}
@@ -416,6 +425,8 @@ export function FileMessage({ message }: { message: Message }) {
       <AudioMessage
         url={url}
         loading={loading}
+        attachmentId={attachmentId}
+        filename={filename}
         transcript={file.transcript}
         transcriptStatus={file.transcriptStatus}
         durationMs={file.durationMs}
@@ -433,7 +444,18 @@ export function FileMessage({ message }: { message: Message }) {
       <div className="space-y-1">
         {/* max-w-full still clamps a panorama to the bubble's cap; the img
             below is object-contain, so it letterboxes rather than overflow. */}
-        <div className="h-60 max-w-full" style={{ width: frameWidth }}>
+        <div className="group/image relative h-60 max-w-full" style={{ width: frameWidth }}>
+          {/* Top-right download affordance. Sits above the full-bleed open
+              link (z-20 vs the anchor's z-auto) so grabbing the file never
+              also opens it in a tab. */}
+          {!loading && url && (
+            <DownloadButton
+              attachmentId={attachmentId}
+              filename={filename}
+              variant="overlay"
+              className="absolute right-2 top-2 opacity-80 transition-opacity group-hover/image:opacity-100"
+            />
+          )}
           {loading ? (
             <div className="flex h-full w-full items-center justify-center rounded-lg bg-muted/30">
               <Loader2 className="h-5 w-5 animate-spin text-muted-foreground" />
@@ -484,14 +506,13 @@ export function FileMessage({ message }: { message: Message }) {
             <AttachmentDescription>{formatFileSize(size)}</AttachmentDescription>
           ) : null}
         </AttachmentContent>
-        <div className="relative z-20 flex shrink-0 items-center pr-1 text-muted-foreground">
+        <div className="relative z-20 flex shrink-0 items-center gap-0.5 pr-1 text-muted-foreground">
           {loading ? (
             <Loader2 className="h-4 w-4 animate-spin" />
-          ) : url ? (
-            <ExternalLink className="h-4 w-4" />
           ) : (
-            <Download className="h-4 w-4" />
+            <ExternalLink className="h-4 w-4" />
           )}
+          <DownloadButton attachmentId={attachmentId} filename={filename} />
         </div>
         <AttachmentTrigger
           aria-label={`Open ${filename}`}

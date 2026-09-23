@@ -15,6 +15,7 @@ import {
 } from "../../lib/api";
 import { formatConversationTime } from "../../lib/utils";
 import { formatFileSize } from "../../services/fileUpload";
+import { DownloadButton } from "./DownloadButton";
 
 interface Props {
   files: ConversationFile[];
@@ -128,27 +129,34 @@ export function FilesPanel({ files, open, onClose, onRefresh }: Props) {
           </div>
         ) : (
           files.map((file) => (
-            <button
+            // Row is a flex container, not a <button>: the download action
+            // is a button of its own and cannot nest inside one.
+            <div
               key={file.id}
-              type="button"
-              onClick={() => openFile(file)}
-              disabled={opening !== null}
-              className="flex w-full items-center gap-3 px-3 py-2 text-left hover:bg-accent disabled:opacity-50"
+              className="flex w-full items-center gap-1 pr-2 hover:bg-accent"
             >
-              <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-md bg-muted text-primary">
-                {iconFor(file.contentType)}
-              </span>
-              <span className="min-w-0 flex-1">
-                <span className="block truncate text-sm font-medium text-foreground">
-                  {file.filename}
+              <button
+                type="button"
+                onClick={() => openFile(file)}
+                disabled={opening !== null}
+                className="flex min-w-0 flex-1 items-center gap-3 px-3 py-2 text-left disabled:opacity-50"
+              >
+                <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-md bg-muted text-primary">
+                  {iconFor(file.contentType)}
                 </span>
-                <span className="block truncate text-xs text-muted-foreground">
-                  {formatFileSize(file.sizeBytes)} ·{" "}
-                  {file.uploader?.displayName ?? t("common:unknown")} ·{" "}
-                  {formatConversationTime(file.insertedAt)}
+                <span className="min-w-0 flex-1">
+                  <span className="block truncate text-sm font-medium text-foreground">
+                    {file.filename}
+                  </span>
+                  <span className="block truncate text-xs text-muted-foreground">
+                    {formatFileSize(file.sizeBytes)} ·{" "}
+                    {file.uploader?.displayName ?? t("common:unknown")} ·{" "}
+                    {formatConversationTime(file.insertedAt)}
+                  </span>
                 </span>
-              </span>
-            </button>
+              </button>
+              <DownloadButton attachmentId={file.id} filename={file.filename} />
+            </div>
           ))
         )}
       </div>
