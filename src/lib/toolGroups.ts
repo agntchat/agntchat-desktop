@@ -15,6 +15,7 @@ export interface ToolGroup {
     | "calendar"
     | "drive"
     | "docs"
+    | "slides"
     | "sheets"
     | "github"
     | "x"
@@ -66,6 +67,12 @@ const GROUP_DEFS: Array<{
     labelKey: "toolsTab.groups.docs",
     credentialProvider: "google",
     matches: (tags) => tags.includes("docs"),
+  },
+  {
+    key: "slides",
+    labelKey: "toolsTab.groups.slides",
+    credentialProvider: "google",
+    matches: (tags) => tags.includes("slides"),
   },
   {
     key: "sheets",

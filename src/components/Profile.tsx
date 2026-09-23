@@ -86,6 +86,7 @@ import {
   Bot,
   Languages,
   HardDrive,
+  FolderPlus,
 } from "lucide-react";
 import { deviceTimezone, filterTimezones, formatTimezoneLabel } from "../lib/timezones";
 import { getInitials } from "../lib/utils";
@@ -288,6 +289,7 @@ export function Profile({ onClose }: { onClose: () => void }) {
   const [integrationError, setIntegrationError] = useState<string | null>(null);
 
   // ---- OAuth polling state ----
+  const [openingDrivePicker, setOpeningDrivePicker] = useState(false);
   const [connectingProvider, setConnectingProvider] = useState<string | null>(
     null
   );
@@ -591,6 +593,21 @@ export function Profile({ onClose }: { onClose: () => void }) {
       setIntegrationError(
         e instanceof Error ? e.message : t("connections.errors.authorizeFailed")
       );
+    }
+  };
+
+  const handleAddDriveFiles = async () => {
+    setOpeningDrivePicker(true);
+    setIntegrationError(null);
+    try {
+      const { url } = await api.createGooglePickerLink();
+      await openExternal(url);
+    } catch (e) {
+      setIntegrationError(
+        e instanceof Error ? e.message : t("connections.googlePicker.failed")
+      );
+    } finally {
+      setOpeningDrivePicker(false);
     }
   };
 
@@ -1395,6 +1412,12 @@ export function Profile({ onClose }: { onClose: () => void }) {
                         onDisconnect={() =>
                           setDisconnectProvider(provider.name)
                         }
+                        onAddDriveFiles={
+                          provider.name === "google" && provider.filePicker
+                            ? handleAddDriveFiles
+                            : undefined
+                        }
+                        openingDrivePicker={openingDrivePicker}
                       />
                     );
                   })}
@@ -4214,6 +4237,8 @@ function ProviderRow({
   onEditAccess,
   onReconnect,
   onDisconnect,
+  onAddDriveFiles,
+  openingDrivePicker = false,
 }: {
   provider: api.ProviderInfo;
   credential?: api.UserCredential;
@@ -4226,6 +4251,9 @@ function ProviderRow({
   // credentials, e.g. to toggle DMs. Absent on one-click providers.
   onReconnect?: () => void;
   onDisconnect: () => void;
+  // Google only: open the Picker so agents can reach existing Drive files.
+  onAddDriveFiles?: () => void;
+  openingDrivePicker?: boolean;
 }) {
   const { t } = useTranslation("settings");
   const isConnected = !!credential;
@@ -4366,6 +4394,8 @@ function ProviderRow({
         <GoogleServicesDetail
           credential={credential}
           onReconnect={onConnectOAuth}
+          onAddDriveFiles={onAddDriveFiles}
+          openingDrivePicker={openingDrivePicker}
         />
       )}
 
@@ -4409,9 +4439,13 @@ function ProviderRow({
 function GoogleServicesDetail({
   credential,
   onReconnect,
+  onAddDriveFiles,
+  openingDrivePicker,
 }: {
   credential: api.UserCredential;
   onReconnect: () => void;
+  onAddDriveFiles?: () => void;
+  openingDrivePicker?: boolean;
 }) {
   const { t } = useTranslation("settings");
   const scopeStr = credential.scopes.join(" ");
@@ -4420,40 +4454,64 @@ function GoogleServicesDetail({
     connected: scopeStr.includes(svc.scope),
   }));
   const hasMissing = services.some((s) => !s.connected);
+  const driveGranted = scopeStr.includes("drive.file");
 
   return (
-    <div className="ml-11 mt-2 flex flex-wrap items-center gap-1.5">
-      {services.map((svc) => {
-        const SvcIcon = svc.icon;
-        return (
-          <span
-            key={svc.scope}
-            className={cn(
-              "inline-flex items-center gap-1.5 rounded-md px-2 py-0.5 text-[11px] border",
-              svc.connected
-                ? "bg-muted/60 border-transparent text-foreground"
-                : "border-dashed border-border text-muted-foreground/60"
-            )}
+    <>
+      <div className="ml-11 mt-2 flex flex-wrap items-center gap-1.5">
+        {services.map((svc) => {
+          const SvcIcon = svc.icon;
+          return (
+            <span
+              key={svc.scope}
+              className={cn(
+                "inline-flex items-center gap-1.5 rounded-md px-2 py-0.5 text-[11px] border",
+                svc.connected
+                  ? "bg-muted/60 border-transparent text-foreground"
+                  : "border-dashed border-border text-muted-foreground/60"
+              )}
+            >
+              <SvcIcon className="w-3 h-3" />
+              {svc.label}
+              {svc.connected ? (
+                <Check className="w-3 h-3 text-success" />
+              ) : (
+                <AlertCircle className="w-3 h-3 text-warning" />
+              )}
+            </span>
+          );
+        })}
+        {hasMissing && (
+          <button
+            onClick={onReconnect}
+            className="flex items-center gap-1 text-[11px] text-primary hover:underline cursor-pointer"
           >
-            <SvcIcon className="w-3 h-3" />
-            {svc.label}
-            {svc.connected ? (
-              <Check className="w-3 h-3 text-success" />
+            <RefreshCw className="w-3 h-3" />
+            {t("connections.reconnectAll")}
+          </button>
+        )}
+      </div>
+      {/* drive.file: agents see only app-made or picked files, so picking
+          is how an existing deck or doc reaches them. */}
+      {onAddDriveFiles && driveGranted && (
+        <div className="ml-11 mt-1.5 flex flex-wrap items-center gap-x-2 gap-y-1">
+          <p className="text-[11px] text-muted-foreground">
+            {t("connections.googlePicker.hint")}
+          </p>
+          <button
+            onClick={onAddDriveFiles}
+            disabled={openingDrivePicker}
+            className="flex items-center gap-1 text-[11px] text-primary hover:underline cursor-pointer disabled:opacity-60 disabled:cursor-default"
+          >
+            {openingDrivePicker ? (
+              <Loader2 className="w-3 h-3 animate-spin" />
             ) : (
-              <AlertCircle className="w-3 h-3 text-warning" />
+              <FolderPlus className="w-3 h-3" />
             )}
-          </span>
-        );
-      })}
-      {hasMissing && (
-        <button
-          onClick={onReconnect}
-          className="flex items-center gap-1 text-[11px] text-primary hover:underline cursor-pointer"
-        >
-          <RefreshCw className="w-3 h-3" />
-          {t("connections.reconnectAll")}
-        </button>
+            {t("connections.googlePicker.button")}
+          </button>
+        </div>
       )}
-    </div>
+    </>
   );
 }

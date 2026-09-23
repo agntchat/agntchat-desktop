@@ -1911,6 +1911,7 @@ export const resources = {
           "other": "Other",
           "payments": "Payments",
           "sheets": "Google Sheets",
+          "slides": "Google Slides",
           "x": "X"
         },
         "integrations": "Integrations",
@@ -4492,6 +4493,11 @@ export const resources = {
           "saveFailed": "Failed to save",
           "storeTokenFailed": "Failed to store token",
           "tokenFailed": "Failed to store token"
+        },
+        "googlePicker": {
+          "button": "Add from Drive",
+          "failed": "Couldn't open Google Drive.",
+          "hint": "Agents see only the Drive files they created or that you add here."
         },
         "none": "No integrations available.",
         "notConnected": "Not connected",
@@ -7410,6 +7416,7 @@ export const resources = {
           "other": "Otros",
           "payments": "Pagos",
           "sheets": "Google Sheets",
+          "slides": "Google Slides",
           "x": "X"
         },
         "integrations": "Integraciones",
@@ -9991,6 +9998,11 @@ export const resources = {
           "saveFailed": "No se pudo guardar",
           "storeTokenFailed": "No se pudo guardar el token",
           "tokenFailed": "No se pudo guardar el token"
+        },
+        "googlePicker": {
+          "button": "Añadir desde Drive",
+          "failed": "No se pudo abrir Google Drive.",
+          "hint": "Los agentes solo ven los archivos de Drive que crearon ellos o que añades aquí."
         },
         "none": "No hay integraciones disponibles.",
         "notConnected": "No conectado",
@@ -12909,6 +12921,7 @@ export const resources = {
           "other": "Sonstige",
           "payments": "Zahlungen",
           "sheets": "Google Sheets",
+          "slides": "Google Slides",
           "x": "X"
         },
         "integrations": "Integrationen",
@@ -15490,6 +15503,11 @@ export const resources = {
           "saveFailed": "Speichern fehlgeschlagen",
           "storeTokenFailed": "Token konnte nicht gespeichert werden",
           "tokenFailed": "Token konnte nicht gespeichert werden"
+        },
+        "googlePicker": {
+          "button": "Aus Drive hinzufügen",
+          "failed": "Google Drive konnte nicht geöffnet werden.",
+          "hint": "Agenten sehen nur Drive-Dateien, die sie selbst erstellt haben oder die du hier hinzufügst."
         },
         "none": "Keine Integrationen verfügbar.",
         "notConnected": "Nicht verbunden",
@@ -18408,6 +18426,7 @@ export const resources = {
           "other": "Autres",
           "payments": "Paiements",
           "sheets": "Google Sheets",
+          "slides": "Google Slides",
           "x": "X"
         },
         "integrations": "Intégrations",
@@ -20989,6 +21008,11 @@ export const resources = {
           "saveFailed": "Échec de l'enregistrement",
           "storeTokenFailed": "Échec de l'enregistrement du jeton",
           "tokenFailed": "Échec de l'enregistrement du jeton"
+        },
+        "googlePicker": {
+          "button": "Ajouter depuis Drive",
+          "failed": "Impossible d'ouvrir Google Drive.",
+          "hint": "Les agents ne voient que les fichiers Drive qu'ils ont créés ou que vous ajoutez ici."
         },
         "none": "Aucune intégration disponible.",
         "notConnected": "Non connecté",
@@ -23907,6 +23931,7 @@ export const resources = {
           "other": "Outros",
           "payments": "Pagamentos",
           "sheets": "Google Sheets",
+          "slides": "Google Slides",
           "x": "X"
         },
         "integrations": "Integrações",
@@ -26488,6 +26513,11 @@ export const resources = {
           "saveFailed": "Falha ao salvar",
           "storeTokenFailed": "Falha ao armazenar o token",
           "tokenFailed": "Falha ao armazenar o token"
+        },
+        "googlePicker": {
+          "button": "Adicionar do Drive",
+          "failed": "Não foi possível abrir o Google Drive.",
+          "hint": "Os agentes só veem os arquivos do Drive que criaram ou que você adiciona aqui."
         },
         "none": "Nenhuma integração disponível.",
         "notConnected": "Não conectado",
@@ -29406,6 +29436,7 @@ export const resources = {
           "other": "その他",
           "payments": "決済",
           "sheets": "Google スプレッドシート",
+          "slides": "Google Slides",
           "x": "X"
         },
         "integrations": "連携",
@@ -31987,6 +32018,11 @@ export const resources = {
           "saveFailed": "保存に失敗しました",
           "storeTokenFailed": "トークンの保存に失敗しました",
           "tokenFailed": "トークンの保存に失敗しました"
+        },
+        "googlePicker": {
+          "button": "Driveから追加",
+          "failed": "Google ドライブを開けませんでした。",
+          "hint": "エージェントが見られるのは、自分で作成したDriveファイルと、ここで追加したファイルだけです。"
         },
         "none": "利用可能な連携はありません。",
         "notConnected": "未接続",
@@ -34905,6 +34941,7 @@ export const resources = {
           "other": "其他",
           "payments": "支付",
           "sheets": "Google 表格",
+          "slides": "Google Slides",
           "x": "X"
         },
         "integrations": "集成",
@@ -37486,6 +37523,11 @@ export const resources = {
           "saveFailed": "保存失败",
           "storeTokenFailed": "存储令牌失败",
           "tokenFailed": "存储令牌失败"
+        },
+        "googlePicker": {
+          "button": "从 Drive 添加",
+          "failed": "无法打开 Google Drive。",
+          "hint": "智能体只能看到它们自己创建的 Drive 文件，或你在这里添加的文件。"
         },
         "none": "暂无可用集成。",
         "notConnected": "未连接",
@@ -40404,6 +40446,7 @@ export const resources = {
           "other": "기타",
           "payments": "결제",
           "sheets": "Google 스프레드시트",
+          "slides": "Google Slides",
           "x": "X"
         },
         "integrations": "통합",
@@ -42985,6 +43028,11 @@ export const resources = {
           "saveFailed": "저장하지 못했습니다",
           "storeTokenFailed": "토큰 저장 실패",
           "tokenFailed": "토큰 저장 실패"
+        },
+        "googlePicker": {
+          "button": "Drive에서 추가",
+          "failed": "Google Drive를 열 수 없습니다.",
+          "hint": "에이전트는 직접 만든 Drive 파일과 여기에서 추가한 파일만 볼 수 있습니다."
         },
         "none": "사용 가능한 통합이 없습니다.",
         "notConnected": "연결되지 않음",
@@ -45903,6 +45951,7 @@ export const resources = {
           "other": "Altri",
           "payments": "Pagamenti",
           "sheets": "Google Sheets",
+          "slides": "Google Slides",
           "x": "X"
         },
         "integrations": "Integrazioni",
@@ -48484,6 +48533,11 @@ export const resources = {
           "saveFailed": "Salvataggio non riuscito",
           "storeTokenFailed": "Impossibile salvare il token",
           "tokenFailed": "Impossibile salvare il token"
+        },
+        "googlePicker": {
+          "button": "Aggiungi da Drive",
+          "failed": "Impossibile aprire Google Drive.",
+          "hint": "Gli agenti vedono solo i file di Drive che hanno creato o che aggiungi qui."
         },
         "none": "Nessuna integrazione disponibile.",
         "notConnected": "Non connesso",
@@ -51402,6 +51456,7 @@ export const resources = {
           "other": "अन्य",
           "payments": "भुगतान",
           "sheets": "Google Sheets",
+          "slides": "Google Slides",
           "x": "X"
         },
         "integrations": "इंटीग्रेशन",
@@ -53983,6 +54038,11 @@ export const resources = {
           "saveFailed": "सहेजने में विफल",
           "storeTokenFailed": "टोकन सहेजना विफल",
           "tokenFailed": "टोकन सहेजना विफल"
+        },
+        "googlePicker": {
+          "button": "Drive से जोड़ें",
+          "failed": "Google Drive नहीं खुल सका।",
+          "hint": "एजेंट केवल वही Drive फ़ाइलें देखते हैं जो उन्होंने बनाई हैं या जो आप यहाँ जोड़ते हैं।"
         },
         "none": "कोई इंटीग्रेशन उपलब्ध नहीं है।",
         "notConnected": "कनेक्ट नहीं है",
