@@ -4538,6 +4538,27 @@ function GoogleServicesDetail({
             </span>
           );
         })}
+        {/* Picker: constant badge (same pattern as X's DM pill) so the
+            extra "Add from Drive" capability's on/off state is always
+            visible, not just surfaced while the setup prompt is open. */}
+        {driveGranted && (
+          <span
+            role={filePickerAvailable ? undefined : "button"}
+            tabIndex={filePickerAvailable ? undefined : 0}
+            onClick={filePickerAvailable ? undefined : () => setPickerKeyOpen(true)}
+            className={cn(
+              "inline-flex items-center gap-1.5 rounded-md px-2 py-0.5 text-[11px] border",
+              filePickerAvailable
+                ? "bg-muted/60 border-transparent text-foreground"
+                : "border-dashed border-border text-muted-foreground/60 cursor-pointer hover:text-foreground"
+            )}
+          >
+            <FolderPlus className="w-3 h-3" />
+            {filePickerAvailable
+              ? t("connections.googlePicker.pickerOn")
+              : t("connections.googlePicker.pickerOff")}
+          </span>
+        )}
         {hasMissing && (
           <button
             onClick={onReconnect}
@@ -4572,55 +4593,47 @@ function GoogleServicesDetail({
 
       {/* No Picker key set anywhere (no global secret, no per-user field):
           let the user paste their own browser API key from their Google
-          Cloud project's Picker API, same pattern as a Custom API field. */}
-      {driveGranted && !filePickerAvailable && (
+          Cloud project's Picker API, same pattern as a Custom API field.
+          Opened via the "Picker off" badge above, not a separate trigger. */}
+      {driveGranted && !filePickerAvailable && pickerKeyOpen && (
         <div className="ml-11 mt-1.5">
-          {pickerKeyOpen ? (
-            <div className="flex flex-wrap items-center gap-1.5">
-              <Input
-                type="text"
-                value={pickerKeyValue}
-                onChange={(e) => setPickerKeyValue(e.target.value)}
-                placeholder={t("connections.googlePicker.keyPlaceholder")}
-                className="h-7 text-[11px] w-56"
-                disabled={savingPickerKey}
-              />
-              <Button
-                size="sm"
-                className="h-7 text-[11px] px-2"
-                onClick={savePickerKey}
-                disabled={savingPickerKey || !pickerKeyValue.trim()}
-              >
-                {savingPickerKey ? (
-                  <Loader2 className="w-3 h-3 animate-spin" />
-                ) : (
-                  t("common:save")
-                )}
-              </Button>
-              <button
-                onClick={() => {
-                  setPickerKeyOpen(false);
-                  setPickerKeyValue("");
-                  setPickerKeyError(null);
-                }}
-                disabled={savingPickerKey}
-                className="text-[11px] text-muted-foreground hover:text-foreground cursor-pointer"
-              >
-                {t("common:cancel")}
-              </button>
-              {pickerKeyError && (
-                <p className="w-full text-[11px] text-destructive">{pickerKeyError}</p>
-              )}
-            </div>
-          ) : (
-            <button
-              onClick={() => setPickerKeyOpen(true)}
-              className="flex items-center gap-1 text-[11px] text-muted-foreground hover:text-foreground cursor-pointer"
+          <div className="flex flex-wrap items-center gap-1.5">
+            <Input
+              type="text"
+              value={pickerKeyValue}
+              onChange={(e) => setPickerKeyValue(e.target.value)}
+              placeholder={t("connections.googlePicker.keyPlaceholder")}
+              className="h-7 text-[11px] w-56"
+              disabled={savingPickerKey}
+              autoFocus
+            />
+            <Button
+              size="sm"
+              className="h-7 text-[11px] px-2"
+              onClick={savePickerKey}
+              disabled={savingPickerKey || !pickerKeyValue.trim()}
             >
-              <Key className="w-3 h-3" />
-              {t("connections.googlePicker.addKeyButton")}
+              {savingPickerKey ? (
+                <Loader2 className="w-3 h-3 animate-spin" />
+              ) : (
+                t("common:save")
+              )}
+            </Button>
+            <button
+              onClick={() => {
+                setPickerKeyOpen(false);
+                setPickerKeyValue("");
+                setPickerKeyError(null);
+              }}
+              disabled={savingPickerKey}
+              className="text-[11px] text-muted-foreground hover:text-foreground cursor-pointer"
+            >
+              {t("common:cancel")}
             </button>
-          )}
+            {pickerKeyError && (
+              <p className="w-full text-[11px] text-destructive">{pickerKeyError}</p>
+            )}
+          </div>
         </div>
       )}
     </>

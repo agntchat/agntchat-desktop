@@ -4500,6 +4500,8 @@ export const resources = {
           "failed": "Couldn't open Google Drive.",
           "hint": "Agents see only the Drive files they created or that you add here.",
           "keyPlaceholder": "Google Picker API key",
+          "pickerOff": "Picker off",
+          "pickerOn": "Picker on",
           "saveKeyFailed": "Couldn't save the Picker key."
         },
         "none": "No integrations available.",
@@ -10008,6 +10010,8 @@ export const resources = {
           "failed": "No se pudo abrir Google Drive.",
           "hint": "Los agentes solo ven los archivos de Drive que crearon ellos o que añades aquí.",
           "keyPlaceholder": "Clave de API de Google Picker",
+          "pickerOff": "Selector de Drive desactivado",
+          "pickerOn": "Selector de Drive activado",
           "saveKeyFailed": "No se pudo guardar la clave del Picker."
         },
         "none": "No hay integraciones disponibles.",
@@ -15516,6 +15520,8 @@ export const resources = {
           "failed": "Google Drive konnte nicht geöffnet werden.",
           "hint": "Agenten sehen nur Drive-Dateien, die sie selbst erstellt haben oder die du hier hinzufügst.",
           "keyPlaceholder": "Google Picker API-Schlüssel",
+          "pickerOff": "Picker aus",
+          "pickerOn": "Picker an",
           "saveKeyFailed": "Der Picker-Schlüssel konnte nicht gespeichert werden."
         },
         "none": "Keine Integrationen verfügbar.",
@@ -21024,6 +21030,8 @@ export const resources = {
           "failed": "Impossible d'ouvrir Google Drive.",
           "hint": "Les agents ne voient que les fichiers Drive qu'ils ont créés ou que vous ajoutez ici.",
           "keyPlaceholder": "Clé API Google Picker",
+          "pickerOff": "Sélecteur Drive désactivé",
+          "pickerOn": "Sélecteur Drive activé",
           "saveKeyFailed": "Impossible d'enregistrer la clé du Picker."
         },
         "none": "Aucune intégration disponible.",
@@ -26532,6 +26540,8 @@ export const resources = {
           "failed": "Não foi possível abrir o Google Drive.",
           "hint": "Os agentes só veem os arquivos do Drive que criaram ou que você adiciona aqui.",
           "keyPlaceholder": "Chave de API do Google Picker",
+          "pickerOff": "Seletor do Drive desativado",
+          "pickerOn": "Seletor do Drive ativado",
           "saveKeyFailed": "Não foi possível salvar a chave do Picker."
         },
         "none": "Nenhuma integração disponível.",
@@ -32040,6 +32050,8 @@ export const resources = {
           "failed": "Google ドライブを開けませんでした。",
           "hint": "エージェントが見られるのは、自分で作成したDriveファイルと、ここで追加したファイルだけです。",
           "keyPlaceholder": "Google Picker APIキー",
+          "pickerOff": "Picker: オフ",
+          "pickerOn": "Picker: オン",
           "saveKeyFailed": "Pickerキーを保存できませんでした。"
         },
         "none": "利用可能な連携はありません。",
@@ -37548,6 +37560,8 @@ export const resources = {
           "failed": "无法打开 Google Drive。",
           "hint": "智能体只能看到它们自己创建的 Drive 文件，或你在这里添加的文件。",
           "keyPlaceholder": "Google Picker API 密钥",
+          "pickerOff": "选择器已关闭",
+          "pickerOn": "选择器已开启",
           "saveKeyFailed": "无法保存 Picker 密钥。"
         },
         "none": "暂无可用集成。",
@@ -43056,6 +43070,8 @@ export const resources = {
           "failed": "Google Drive를 열 수 없습니다.",
           "hint": "에이전트는 직접 만든 Drive 파일과 여기에서 추가한 파일만 볼 수 있습니다.",
           "keyPlaceholder": "Google Picker API 키",
+          "pickerOff": "Picker 꺼짐",
+          "pickerOn": "Picker 켜짐",
           "saveKeyFailed": "Picker 키를 저장하지 못했습니다."
         },
         "none": "사용 가능한 통합이 없습니다.",
@@ -48564,6 +48580,8 @@ export const resources = {
           "failed": "Impossibile aprire Google Drive.",
           "hint": "Gli agenti vedono solo i file di Drive che hanno creato o che aggiungi qui.",
           "keyPlaceholder": "Chiave API Google Picker",
+          "pickerOff": "Picker disattivato",
+          "pickerOn": "Picker attivo",
           "saveKeyFailed": "Impossibile salvare la chiave del Picker."
         },
         "none": "Nessuna integrazione disponibile.",
@@ -54072,6 +54090,8 @@ export const resources = {
           "failed": "Google Drive नहीं खुल सका।",
           "hint": "एजेंट केवल वही Drive फ़ाइलें देखते हैं जो उन्होंने बनाई हैं या जो आप यहाँ जोड़ते हैं।",
           "keyPlaceholder": "Google Picker API कुंजी",
+          "pickerOff": "Picker बंद",
+          "pickerOn": "Picker चालू",
           "saveKeyFailed": "Picker कुंजी सहेजी नहीं जा सकी।"
         },
         "none": "कोई इंटीग्रेशन उपलब्ध नहीं है।",
