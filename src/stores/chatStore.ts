@@ -294,6 +294,9 @@ interface ChatState {
   }) => Promise<Conversation>;
   updateConversationTitle: (id: string, title: string) => Promise<void>;
   updateConversationAvatar: (id: string, avatarUrl: string | null) => Promise<void>;
+  /** Flip the room's "agents add agents without asking" switch. Optimistic;
+   *  rolled back (and rethrown) if the server refuses. */
+  setAgentsAddWithoutAsking: (conversationId: string, value: boolean) => Promise<void>;
   /** Answer the "Rename to group" prompt. `accept` commits `title` (possibly
    *  edited); `skip` leaves the group untitled. `autoAccept`, when set, also
    *  persists the per-user preference. Clears `pendingRename`. */
@@ -632,6 +635,24 @@ export const useChatStore = create<ChatState>((set, get) => ({
       conversations: update(s.conversations),
       agentConversations: update(s.agentConversations),
     }));
+  },
+
+  setAgentsAddWithoutAsking: async (conversationId, value) => {
+    const apply = (v: boolean) => {
+      const update = (convos: Conversation[]) =>
+        convos.map((c) => (c.id === conversationId ? { ...c, agentsAddWithoutAsking: v } : c));
+      set((s) => ({
+        conversations: update(s.conversations),
+        agentConversations: update(s.agentConversations),
+      }));
+    };
+    apply(value);
+    try {
+      await api.updateConversationAgentAddsRest(conversationId, value);
+    } catch (e) {
+      apply(!value);
+      throw e;
+    }
   },
 
   addMember: async (conversationId, participantId) => {

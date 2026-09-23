@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
-import { MessageSquare, MessagesSquare, Info, SquarePen, RefreshCw, X, CheckCircle2, Radio } from "lucide-react";
+import { MessageSquare, MessagesSquare, Info, SquarePen, RefreshCw, X, CheckCircle2, Radio, Settings2 } from "lucide-react";
 import { wakeAgent } from "../../lib/api";
 import { useResizableWidth, useRightPaneWidth } from "../../hooks/useResizableWidth";
 import { ResizeHandle } from "../ResizeHandle";
@@ -12,6 +12,7 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { cn } from "../../lib/utils";
 import {
+  agentConversationSourceId,
   isResolvedThread,
   threadStatus,
   threadTopic,
@@ -24,6 +25,7 @@ import { NewConversationDialog } from "./NewConversationDialog";
 import { ChatHeaderMenu } from "./ChatHeaderMenu";
 import { GroupAvatar } from "./GroupAvatar";
 import { AgentActivityIndicator } from "../AgentActivityIndicator";
+import { AgentAddsSetting, canEditAgentAdds } from "../AgentAddsSetting";
 import { PhaseOrb } from "../PhaseOrb";
 import { useConversationActivity } from "../../hooks/useConversationActivity";
 import { countActivity, hasLiveStream, type ActivityCounts } from "../../lib/conversation-activity";
@@ -658,6 +660,17 @@ function ThreadSidePane({ threadId }: { threadId: string }) {
       s.agentConversations.find((c) => c.id === threadId)
   );
   const isLive = useStreamingStore((s) => hasLiveStream(s.streams[threadId]));
+  // The room's agent-adds switch, revealed under the header. A thread's
+  // parent admins may flip it too, so resolve the parent for the gate.
+  const [showSettings, setShowSettings] = useState(false);
+  const parentId = conversation ? agentConversationSourceId(conversation) : undefined;
+  const parent = useChatStore((s) =>
+    parentId
+      ? s.conversations.find((c) => c.id === parentId) ??
+        s.agentConversations.find((c) => c.id === parentId)
+      : undefined
+  );
+  const userId = useAuthStore((s) => s.participant?.id);
 
   // Drag-to-resize from the pane's left (inner) edge. Shares its width with
   // the details pane (same storage key) so switching between them is seamless.
@@ -730,6 +743,21 @@ function ThreadSidePane({ threadId }: { threadId: string }) {
               {title}
             </p>
           </div>
+          {conversation && (
+            <button
+              type="button"
+              onClick={() => setShowSettings((v) => !v)}
+              title={t("details.agentAdds.label")}
+              aria-label={t("details.agentAdds.label")}
+              aria-expanded={showSettings}
+              className={cn(
+                "shrink-0 flex h-7 w-7 items-center justify-center rounded-md text-muted-foreground hover:bg-accent hover:text-foreground transition-colors",
+                showSettings && "bg-accent text-foreground"
+              )}
+            >
+              <Settings2 className="h-4 w-4" />
+            </button>
+          )}
           <button
             type="button"
             onClick={closeThread}
@@ -740,6 +768,14 @@ function ThreadSidePane({ threadId }: { threadId: string }) {
             <X className="h-4 w-4" />
           </button>
         </header>
+        {showSettings && conversation && (
+          <div className="relative shrink-0 px-4 py-3 after:absolute after:bottom-0 after:left-4 after:right-4 after:h-px after:bg-border">
+            <AgentAddsSetting
+              conversation={conversation}
+              canEdit={canEditAgentAdds(conversation, parent, userId)}
+            />
+          </div>
+        )}
 
         <div className="relative flex flex-1 min-h-0 flex-col">
           <ChatThread conversationId={threadId} />

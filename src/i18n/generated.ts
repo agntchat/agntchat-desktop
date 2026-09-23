@@ -2626,6 +2626,11 @@ export const resources = {
         "addCount": "Add ({{count}})",
         "addFailed": "Failed to add",
         "addMembers": "Add members",
+        "agentAdds": {
+          "hintOff": "When an agent names someone who isn't here, you're asked to approve before they join.",
+          "hintOn": "When an agent names another agent who isn't here, they join right away.",
+          "label": "Agents add agents without asking"
+        },
         "changePhoto": "Change photo",
         "close": "Close details",
         "deleteConfirmBody": "This removes it for everyone and cannot be undone.",
@@ -4422,6 +4427,16 @@ export const resources = {
         "testReminder": "Test Reminder",
         "testReminderDescription": "Fire a sample reminder in ~5 seconds to check the toast + push"
       },
+      "agentAdds": {
+        "description": "Where this is off, an agent that names someone new asks first and you approve. This is how new conversations start — each conversation can change it in its details.",
+        "kinds": {
+          "channel": "Channels",
+          "direct": "Direct messages",
+          "group": "Groups",
+          "thread": "Threads"
+        },
+        "title": "Let agents add agents without asking"
+      },
       "bugReport": {
         "detailsLabel": "Details",
         "detailsPlaceholder": "What did you expect, and what happened instead?",
@@ -4840,6 +4855,7 @@ export const resources = {
       },
       "sections": {
         "advanced": "Advanced",
+        "agentAdds": "Agents adding agents",
         "appearance": "Appearance",
         "cloudExecution": "Cloud Execution",
         "cloudHosts": "Cloud Hosts",
@@ -8107,6 +8123,11 @@ export const resources = {
         "addCount": "Añadir ({{count}})",
         "addFailed": "No se pudo añadir",
         "addMembers": "Añadir miembros",
+        "agentAdds": {
+          "hintOff": "Cuando un agente nombra a alguien que no está aquí, se te pide aprobarlo antes de que se una.",
+          "hintOn": "Cuando un agente nombra a otro agente que no está aquí, se une de inmediato.",
+          "label": "Los agentes añaden agentes sin preguntar"
+        },
         "changePhoto": "Cambiar la foto",
         "close": "Cerrar detalles",
         "deleteConfirmBody": "Se eliminará para todos y no se puede deshacer.",
@@ -9903,6 +9924,16 @@ export const resources = {
         "testReminder": "Probar recordatorio",
         "testReminderDescription": "Lanza un recordatorio de prueba en ~5 segundos para comprobar el aviso y la notificación push"
       },
+      "agentAdds": {
+        "description": "Donde esté desactivado, un agente que nombra a alguien nuevo pregunta primero y tú lo apruebas. Así empiezan las conversaciones nuevas; cada conversación puede cambiarlo en sus detalles.",
+        "kinds": {
+          "channel": "Canales",
+          "direct": "Mensajes directos",
+          "group": "Grupos",
+          "thread": "Hilos"
+        },
+        "title": "Permitir que los agentes añadan agentes sin preguntar"
+      },
       "bugReport": {
         "detailsLabel": "Detalles",
         "detailsPlaceholder": "¿Qué esperabas y qué ocurrió en su lugar?",
@@ -10321,6 +10352,7 @@ export const resources = {
       },
       "sections": {
         "advanced": "Avanzado",
+        "agentAdds": "Agentes que añaden agentes",
         "appearance": "Apariencia",
         "cloudExecution": "Ejecución en la nube",
         "cloudHosts": "Hosts en la nube",
@@ -13588,6 +13620,11 @@ export const resources = {
         "addCount": "Hinzufügen ({{count}})",
         "addFailed": "Hinzufügen fehlgeschlagen",
         "addMembers": "Mitglieder hinzufügen",
+        "agentAdds": {
+          "hintOff": "Wenn ein Agent jemanden nennt, der nicht hier ist, wirst du vor dem Beitritt um Zustimmung gebeten.",
+          "hintOn": "Wenn ein Agent einen anderen Agenten nennt, der nicht hier ist, tritt dieser sofort bei.",
+          "label": "Agenten fügen Agenten ohne Nachfrage hinzu"
+        },
         "changePhoto": "Foto ändern",
         "close": "Details schließen",
         "deleteConfirmBody": "Dies entfernt sie für alle und kann nicht rückgängig gemacht werden.",
@@ -15384,6 +15421,16 @@ export const resources = {
         "testReminder": "Test-Erinnerung",
         "testReminderDescription": "Löst in ca. 5 Sekunden eine Beispiel-Erinnerung aus, um Toast und Push-Benachrichtigung zu testen"
       },
+      "agentAdds": {
+        "description": "Wo dies aus ist, fragt ein Agent, der jemand Neues nennt, zuerst und du stimmst zu. So beginnen neue Unterhaltungen – jede Unterhaltung kann es in ihren Details ändern.",
+        "kinds": {
+          "channel": "Kanäle",
+          "direct": "Direktnachrichten",
+          "group": "Gruppen",
+          "thread": "Threads"
+        },
+        "title": "Agenten dürfen Agenten ohne Nachfrage hinzufügen"
+      },
       "bugReport": {
         "detailsLabel": "Details",
         "detailsPlaceholder": "Was hast du erwartet und was ist stattdessen passiert?",
@@ -15802,6 +15849,7 @@ export const resources = {
       },
       "sections": {
         "advanced": "Erweitert",
+        "agentAdds": "Agenten fügen Agenten hinzu",
         "appearance": "Darstellung",
         "cloudExecution": "Cloud-Ausführung",
         "cloudHosts": "Cloud-Hosts",
@@ -19069,6 +19117,11 @@ export const resources = {
         "addCount": "Ajouter ({{count}})",
         "addFailed": "Échec de l'ajout",
         "addMembers": "Ajouter des membres",
+        "agentAdds": {
+          "hintOff": "Quand un agent nomme quelqu'un d'absent, on vous demande d'approuver avant qu'il ne rejoigne.",
+          "hintOn": "Quand un agent nomme un autre agent absent d'ici, celui-ci rejoint immédiatement.",
+          "label": "Les agents ajoutent des agents sans demander"
+        },
         "changePhoto": "Changer la photo",
         "close": "Fermer les détails",
         "deleteConfirmBody": "Cela la supprime pour tout le monde et cette action est irréversible.",
@@ -20865,6 +20918,16 @@ export const resources = {
         "testReminder": "Tester un rappel",
         "testReminderDescription": "Déclenche un rappel d'exemple dans ~5 secondes pour vérifier la notification toast et push"
       },
+      "agentAdds": {
+        "description": "Là où c'est désactivé, un agent qui nomme quelqu'un de nouveau demande d'abord et vous approuvez. C'est ainsi que commencent les nouvelles conversations — chacune peut le modifier dans ses détails.",
+        "kinds": {
+          "channel": "Canaux",
+          "direct": "Messages directs",
+          "group": "Groupes",
+          "thread": "Fils"
+        },
+        "title": "Laisser les agents ajouter des agents sans demander"
+      },
       "bugReport": {
         "detailsLabel": "Détails",
         "detailsPlaceholder": "Qu'attendiez-vous et que s'est-il passé à la place ?",
@@ -21283,6 +21346,7 @@ export const resources = {
       },
       "sections": {
         "advanced": "Avancé",
+        "agentAdds": "Agents qui ajoutent des agents",
         "appearance": "Apparence",
         "cloudExecution": "Exécution cloud",
         "cloudHosts": "Hôtes cloud",
@@ -24550,6 +24614,11 @@ export const resources = {
         "addCount": "Adicionar ({{count}})",
         "addFailed": "Falha ao adicionar",
         "addMembers": "Adicionar membros",
+        "agentAdds": {
+          "hintOff": "Quando um agente menciona alguém que não está aqui, você precisa aprovar antes que ele entre.",
+          "hintOn": "Quando um agente menciona outro agente que não está aqui, ele entra na hora.",
+          "label": "Agentes adicionam agentes sem perguntar"
+        },
         "changePhoto": "Alterar foto",
         "close": "Fechar detalhes",
         "deleteConfirmBody": "Isso remove para todos e não pode ser desfeito.",
@@ -26346,6 +26415,16 @@ export const resources = {
         "testReminder": "Testar lembrete",
         "testReminderDescription": "Dispara um lembrete de exemplo em ~5 segundos para verificar o toast + notificação push"
       },
+      "agentAdds": {
+        "description": "Onde estiver desativado, um agente que menciona alguém novo pede primeiro e você aprova. É assim que novas conversas começam — cada conversa pode mudar isso nos detalhes.",
+        "kinds": {
+          "channel": "Canais",
+          "direct": "Mensagens diretas",
+          "group": "Grupos",
+          "thread": "Threads"
+        },
+        "title": "Permitir que agentes adicionem agentes sem perguntar"
+      },
       "bugReport": {
         "detailsLabel": "Detalhes",
         "detailsPlaceholder": "O que você esperava e o que aconteceu?",
@@ -26764,6 +26843,7 @@ export const resources = {
       },
       "sections": {
         "advanced": "Avançado",
+        "agentAdds": "Agentes adicionando agentes",
         "appearance": "Aparência",
         "cloudExecution": "Execução na nuvem",
         "cloudHosts": "Hosts na nuvem",
@@ -30031,6 +30111,11 @@ export const resources = {
         "addCount": "追加 ({{count}})",
         "addFailed": "追加に失敗しました",
         "addMembers": "メンバーを追加",
+        "agentAdds": {
+          "hintOff": "エージェントがここにいない相手の名前を挙げると、参加前にあなたの承認が求められます。",
+          "hintOn": "エージェントがここにいない別のエージェントの名前を挙げると、すぐに参加します。",
+          "label": "エージェントが確認なしでエージェントを追加"
+        },
         "changePhoto": "写真を変更",
         "close": "詳細を閉じる",
         "deleteConfirmBody": "これにより全員に対して削除され、元に戻せません。",
@@ -31827,6 +31912,16 @@ export const resources = {
         "testReminder": "テストリマインダー",
         "testReminderDescription": "約5秒後にサンプルのリマインダーを送信し、トースト通知とプッシュ通知を確認します"
       },
+      "agentAdds": {
+        "description": "オフの場合、新しい相手の名前を挙げたエージェントはまず確認を求め、あなたが承認します。新しい会話はこの設定で始まり、各会話の詳細で変更できます。",
+        "kinds": {
+          "channel": "チャンネル",
+          "direct": "ダイレクトメッセージ",
+          "group": "グループ",
+          "thread": "スレッド"
+        },
+        "title": "エージェントが確認なしでエージェントを追加できるようにする"
+      },
       "bugReport": {
         "detailsLabel": "詳細",
         "detailsPlaceholder": "期待した動作と、実際に起きたことを教えてください。",
@@ -32245,6 +32340,7 @@ export const resources = {
       },
       "sections": {
         "advanced": "詳細設定",
+        "agentAdds": "エージェントによる追加",
         "appearance": "外観",
         "cloudExecution": "クラウド実行",
         "cloudHosts": "クラウドホスト",
@@ -35512,6 +35608,11 @@ export const resources = {
         "addCount": "添加（{{count}}）",
         "addFailed": "添加失败",
         "addMembers": "添加成员",
+        "agentAdds": {
+          "hintOff": "当智能体提到不在此处的人时，会先请你批准，然后对方才能加入。",
+          "hintOn": "当智能体提到不在此处的另一个智能体时，对方会立即加入。",
+          "label": "智能体无需询问即可添加智能体"
+        },
         "changePhoto": "更换照片",
         "close": "关闭详情",
         "deleteConfirmBody": "此操作将为所有人移除该对话，且无法撤销。",
@@ -37308,6 +37409,16 @@ export const resources = {
         "testReminder": "测试提醒",
         "testReminderDescription": "约 5 秒后触发一条示例提醒，用于检查提示消息和推送通知"
       },
+      "agentAdds": {
+        "description": "关闭时，提到新成员的智能体会先请求，由你批准。新对话以此设置开始——每个对话都可以在详情中更改。",
+        "kinds": {
+          "channel": "频道",
+          "direct": "私信",
+          "group": "群组",
+          "thread": "话题"
+        },
+        "title": "允许智能体无需询问即可添加智能体"
+      },
       "bugReport": {
         "detailsLabel": "详细信息",
         "detailsPlaceholder": "您期望的结果是什么，实际发生了什么？",
@@ -37726,6 +37837,7 @@ export const resources = {
       },
       "sections": {
         "advanced": "高级",
+        "agentAdds": "智能体添加智能体",
         "appearance": "外观",
         "cloudExecution": "云端执行",
         "cloudHosts": "云端主机",
@@ -40993,6 +41105,11 @@ export const resources = {
         "addCount": "추가 ({{count}})",
         "addFailed": "추가 실패",
         "addMembers": "멤버 추가",
+        "agentAdds": {
+          "hintOff": "에이전트가 여기에 없는 사람을 언급하면 참여 전에 승인을 요청합니다.",
+          "hintOn": "에이전트가 여기에 없는 다른 에이전트를 언급하면 바로 참여합니다.",
+          "label": "에이전트가 묻지 않고 에이전트를 추가"
+        },
         "changePhoto": "사진 변경",
         "close": "상세 정보 닫기",
         "deleteConfirmBody": "모든 사용자에게서 삭제되며 되돌릴 수 없습니다.",
@@ -42789,6 +42906,16 @@ export const resources = {
         "testReminder": "테스트 알림",
         "testReminderDescription": "약 5초 후 샘플 알림을 실행하여 토스트와 푸시 알림을 확인합니다"
       },
+      "agentAdds": {
+        "description": "꺼져 있으면 새로운 사람을 언급한 에이전트가 먼저 요청하고 사용자가 승인합니다. 새 대화는 이 설정으로 시작하며, 각 대화의 세부 정보에서 변경할 수 있습니다.",
+        "kinds": {
+          "channel": "채널",
+          "direct": "다이렉트 메시지",
+          "group": "그룹",
+          "thread": "스레드"
+        },
+        "title": "에이전트가 묻지 않고 에이전트를 추가하도록 허용"
+      },
       "bugReport": {
         "detailsLabel": "세부 정보",
         "detailsPlaceholder": "무엇을 기대했고, 대신 어떤 일이 일어났나요?",
@@ -43207,6 +43334,7 @@ export const resources = {
       },
       "sections": {
         "advanced": "고급",
+        "agentAdds": "에이전트의 에이전트 추가",
         "appearance": "외관",
         "cloudExecution": "클라우드 실행",
         "cloudHosts": "클라우드 호스트",
@@ -46474,6 +46602,11 @@ export const resources = {
         "addCount": "Aggiungi ({{count}})",
         "addFailed": "Impossibile aggiungere",
         "addMembers": "Aggiungi membri",
+        "agentAdds": {
+          "hintOff": "Quando un agente nomina qualcuno che non è qui, ti viene chiesto di approvare prima che si unisca.",
+          "hintOn": "Quando un agente nomina un altro agente che non è qui, questo si unisce subito.",
+          "label": "Gli agenti aggiungono agenti senza chiedere"
+        },
         "changePhoto": "Cambia foto",
         "close": "Chiudi dettagli",
         "deleteConfirmBody": "Questo la rimuove per tutti e non può essere annullato.",
@@ -48270,6 +48403,16 @@ export const resources = {
         "testReminder": "Test promemoria",
         "testReminderDescription": "Genera un promemoria di prova tra ~5 secondi per verificare il toast e la push"
       },
+      "agentAdds": {
+        "description": "Dove è disattivato, un agente che nomina qualcuno di nuovo chiede prima e tu approvi. Così iniziano le nuove conversazioni: ognuna può cambiarlo nei propri dettagli.",
+        "kinds": {
+          "channel": "Canali",
+          "direct": "Messaggi diretti",
+          "group": "Gruppi",
+          "thread": "Thread"
+        },
+        "title": "Consenti agli agenti di aggiungere agenti senza chiedere"
+      },
       "bugReport": {
         "detailsLabel": "Dettagli",
         "detailsPlaceholder": "Cosa ti aspettavi e cosa è successo invece?",
@@ -48688,6 +48831,7 @@ export const resources = {
       },
       "sections": {
         "advanced": "Avanzate",
+        "agentAdds": "Agenti che aggiungono agenti",
         "appearance": "Aspetto",
         "cloudExecution": "Esecuzione cloud",
         "cloudHosts": "Host cloud",
@@ -51955,6 +52099,11 @@ export const resources = {
         "addCount": "जोड़ें ({{count}})",
         "addFailed": "जोड़ना विफल",
         "addMembers": "सदस्य जोड़ें",
+        "agentAdds": {
+          "hintOff": "जब कोई एजेंट किसी ऐसे व्यक्ति का नाम लेता है जो यहाँ नहीं है, तो जुड़ने से पहले आपसे मंज़ूरी माँगी जाती है।",
+          "hintOn": "जब कोई एजेंट किसी ऐसे एजेंट का नाम लेता है जो यहाँ नहीं है, तो वह तुरंत जुड़ जाता है।",
+          "label": "एजेंट बिना पूछे एजेंट जोड़ते हैं"
+        },
         "changePhoto": "फ़ोटो बदलें",
         "close": "विवरण बंद करें",
         "deleteConfirmBody": "यह इसे सभी के लिए हटा देगा और इसे पूर्ववत नहीं किया जा सकता।",
@@ -53751,6 +53900,16 @@ export const resources = {
         "testReminder": "टेस्ट रिमाइंडर",
         "testReminderDescription": "टोस्ट + पुश जाँचने के लिए ~5 सेकंड में एक सैंपल रिमाइंडर भेजें"
       },
+      "agentAdds": {
+        "description": "जहाँ यह बंद है, वहाँ किसी नए का नाम लेने वाला एजेंट पहले पूछता है और आप मंज़ूरी देते हैं। नई बातचीत इसी तरह शुरू होती है — हर बातचीत इसे अपने विवरण में बदल सकती है।",
+        "kinds": {
+          "channel": "चैनल",
+          "direct": "सीधे संदेश",
+          "group": "समूह",
+          "thread": "थ्रेड"
+        },
+        "title": "एजेंटों को बिना पूछे एजेंट जोड़ने दें"
+      },
       "bugReport": {
         "detailsLabel": "विवरण",
         "detailsPlaceholder": "आपने क्या अपेक्षा की थी, और इसके बजाय क्या हुआ?",
@@ -54169,6 +54328,7 @@ export const resources = {
       },
       "sections": {
         "advanced": "उन्नत",
+        "agentAdds": "एजेंटों द्वारा एजेंट जोड़ना",
         "appearance": "रूप",
         "cloudExecution": "क्लाउड निष्पादन",
         "cloudHosts": "क्लाउड होस्ट",

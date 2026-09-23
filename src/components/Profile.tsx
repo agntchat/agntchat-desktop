@@ -13,6 +13,7 @@ import * as api from "../lib/api";
 import { identifyAnalytics, track, ANALYTICS_EVENTS } from "../lib/analytics";
 import { cn } from "../lib/utils";
 import { PaymentWalletRow } from "./PaymentWalletRow";
+import { AgentAddsDefaults } from "./AgentAddsDefaults";
 import { ProfileTour } from "./ProfileTour";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -187,6 +188,7 @@ const SECTIONS = [
   { value: "language", labelKey: "language.label", icon: Languages },
   { value: "timezone", labelKey: "timezone.label", icon: Globe },
   { value: "notifications", labelKey: "sections.notifications", icon: Bell },
+  { value: "agent-adds", labelKey: "sections.agentAdds", icon: Bot },
   { value: "memory", labelKey: "sections.memory", icon: Brain },
   { value: "llm-keys", labelKey: "sections.llmKeys", icon: Key },
   { value: "connections", labelKey: "sections.connections", icon: Link2 },
@@ -1216,6 +1218,12 @@ export function Profile({ onClose }: { onClose: () => void }) {
         {activeSection === "notifications" && (
           <div className="flex-1 overflow-y-auto p-5">
             <NotificationsSection />
+          </div>
+        )}
+
+        {activeSection === "agent-adds" && (
+          <div className="flex-1 overflow-y-auto p-5">
+            <AgentAddsDefaults />
           </div>
         )}
 

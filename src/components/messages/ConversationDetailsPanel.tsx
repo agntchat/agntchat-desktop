@@ -16,6 +16,7 @@ import { uploadAvatar } from "../../lib/imageProcessor";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { AgentActivityIndicator } from "../AgentActivityIndicator";
+import { AgentAddsSetting } from "../AgentAddsSetting";
 import {
   X,
   Bot,
@@ -510,6 +511,17 @@ export function ConversationDetailsPanel({
               )}
             </div>
           )}
+        </div>
+
+        {/* Who decides when an agent pulls someone in. Editable by the
+            room's admins (member role, the server's rule — not createdBy). */}
+        <div className="relative px-4 py-3 before:absolute before:top-0 before:left-4 before:right-4 before:h-px before:bg-border">
+          <AgentAddsSetting
+            conversation={conversation}
+            canEdit={rawMembers.some(
+              (m) => m.participantId === currentUserId && m.role === "admin"
+            )}
+          />
         </div>
 
         {/* Memory — same summary agents see on entry; auto-refreshed by the

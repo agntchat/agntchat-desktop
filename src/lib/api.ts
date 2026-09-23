@@ -3512,6 +3512,9 @@ export interface Conversation {
   parentConversationId?: string;
   /** Workspace pin. Omit/`null` means personal (cross-workspace). */
   organizationId?: string | null;
+  /** Off: an agent @mentioning a non-member raises an approval card
+   *  instead of adding them (docs/reference/agent-member-adds.md). */
+  agentsAddWithoutAsking?: boolean;
 }
 
 export async function listConversations(
@@ -3571,6 +3574,18 @@ export async function updateConversationAvatarRest(
   return request(`/api/conversations/${conversationId}`, {
     method: "PATCH",
     body: JSON.stringify({ avatarUrl }),
+  });
+}
+
+/** Flip the room's "agents add agents without asking" switch. Server-side
+ *  check: room admins, or — for a thread — the parent's admins. */
+export async function updateConversationAgentAddsRest(
+  conversationId: string,
+  agentsAddWithoutAsking: boolean
+): Promise<Conversation> {
+  return request(`/api/conversations/${conversationId}`, {
+    method: "PATCH",
+    body: JSON.stringify({ agentsAddWithoutAsking }),
   });
 }
 
