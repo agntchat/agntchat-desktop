@@ -5,6 +5,7 @@ import { useAuthStore } from "./stores/authStore";
 import "./stores/themeStore";
 import { LoginScreen } from "./components/LoginScreen";
 import { AppShell } from "./components/AppShell";
+import { PolicyGate } from "./components/PolicyGate";
 import { ConfirmDialog } from "./components/ui/confirm-dialog";
 
 // Global error boundary to prevent white-screen crashes
@@ -60,7 +61,13 @@ function App() {
     return () => window.removeEventListener("auth:expired", handleExpired);
   }, [restoreSession]);
 
-  return token ? <AppShell /> : <LoginScreen />;
+  return token ? (
+    <PolicyGate>
+      <AppShell />
+    </PolicyGate>
+  ) : (
+    <LoginScreen />
+  );
 }
 
 export default function AppWithErrorBoundary() {

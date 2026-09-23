@@ -2103,7 +2103,7 @@ export const resources = {
       "confirmationSent": "We sent a confirmation link to your email. Please confirm your account, then sign in.",
       "consent": {
         "analytics": "Share anonymous usage data to help improve the app (optional)",
-        "label": "I agree to the Terms of Service and Privacy Policy",
+        "label": "I agree to the Terms of Service and Privacy Policy and understand agntchat is a beta that may lose data or have security issues",
         "marketing": "Email me occasional product updates (optional)",
         "privacy": "Privacy Policy",
         "required": "Please accept the Terms of Service and Privacy Policy to continue.",
@@ -2184,6 +2184,16 @@ export const resources = {
         "lastName": "Last name (optional)",
         "passwordMin": "Min. {{min}} characters",
         "yourName": "Your name"
+      },
+      "policyGate": {
+        "agents": "Agents make mistakes and can act through the accounts you connect. Check what they do.",
+        "body": "agntchat is an early beta run by an individual developer, not a company. Before you continue, please read and accept the updated Terms of Service and Privacy Policy.",
+        "cta": "Agree & continue",
+        "data": "Data can be lost. Keep your own copy of anything that matters.",
+        "failed": "Couldn't save your acceptance. Please try again.",
+        "security": "Security is not finished. Don't store passwords, financial or health data, or anything confidential.",
+        "signOut": "Sign out",
+        "title": "Please accept the updated terms"
       },
       "resetPassword": {
         "emailRequired": "Please enter your email address.",
@@ -4795,10 +4805,6 @@ export const resources = {
         "memoriesSearchFailed": "Search failed. Please try again.",
         "memoriesSearchPlaceholder": "Search remembered facts (e.g. a name)",
         "openDownload": "Open download",
-        "reacceptBody": "We've updated our Terms of Service and Privacy Policy. Please review and accept to continue.",
-        "reacceptCta": "Agree & continue",
-        "reacceptDone": "Thanks — your acceptance has been recorded.",
-        "reacceptTitle": "Our terms have changed",
         "title": "Privacy & data",
         "updateFailed": "Couldn't save your preference. Please try again.",
         "usageAnalytics": "Usage analytics",
@@ -7578,7 +7584,7 @@ export const resources = {
       "confirmationSent": "Te enviamos un enlace de confirmación a tu correo. Confirma tu cuenta y luego inicia sesión.",
       "consent": {
         "analytics": "Compartir datos de uso anónimos para ayudar a mejorar la aplicación (opcional)",
-        "label": "Acepto los Términos del servicio y la Política de privacidad",
+        "label": "Acepto los Términos del servicio y la Política de privacidad y entiendo que agntchat es una beta que puede perder datos o tener problemas de seguridad",
         "marketing": "Envíame novedades del producto de vez en cuando (opcional)",
         "privacy": "Política de privacidad",
         "required": "Acepta los Términos del servicio y la Política de privacidad para continuar.",
@@ -7659,6 +7665,16 @@ export const resources = {
         "lastName": "Apellidos (opcional)",
         "passwordMin": "Mín. {{min}} caracteres",
         "yourName": "Tu nombre"
+      },
+      "policyGate": {
+        "agents": "Los agentes cometen errores y pueden actuar a través de las cuentas que conectes. Revisa lo que hacen.",
+        "body": "agntchat es una beta temprana gestionada por un desarrollador individual, no por una empresa. Antes de continuar, lee y acepta los Términos del servicio y la Política de privacidad actualizados.",
+        "cta": "Aceptar y continuar",
+        "data": "Los datos pueden perderse. Guarda tu propia copia de todo lo importante.",
+        "failed": "No se pudo guardar tu aceptación. Inténtalo de nuevo.",
+        "security": "La seguridad aún no está terminada. No guardes contraseñas, datos financieros o de salud ni nada confidencial.",
+        "signOut": "Cerrar sesión",
+        "title": "Acepta los términos actualizados"
       },
       "resetPassword": {
         "emailRequired": "Por favor, introduce tu correo electrónico.",
@@ -10270,10 +10286,6 @@ export const resources = {
         "memoriesSearchFailed": "La búsqueda falló. Inténtalo de nuevo.",
         "memoriesSearchPlaceholder": "Busca datos recordados (p. ej., un nombre)",
         "openDownload": "Abrir descarga",
-        "reacceptBody": "Hemos actualizado nuestros Términos del servicio y Política de privacidad. Revísalos y acéptalos para continuar.",
-        "reacceptCta": "Aceptar y continuar",
-        "reacceptDone": "Gracias: tu aceptación ha quedado registrada.",
-        "reacceptTitle": "Nuestros términos han cambiado",
         "title": "Privacidad y datos",
         "updateFailed": "No se pudo guardar tu preferencia. Inténtalo de nuevo.",
         "usageAnalytics": "Analítica de uso",
@@ -13053,7 +13065,7 @@ export const resources = {
       "confirmationSent": "Wir haben einen Bestätigungslink an Ihre E-Mail-Adresse gesendet. Bitte bestätigen Sie Ihr Konto und melden Sie sich dann an.",
       "consent": {
         "analytics": "Anonyme Nutzungsdaten teilen, um die App zu verbessern (optional)",
-        "label": "Ich stimme den Nutzungsbedingungen und der Datenschutzerklärung zu",
+        "label": "Ich stimme den Nutzungsbedingungen und der Datenschutzerklärung zu und verstehe, dass agntchat eine Beta ist, bei der Daten verloren gehen oder Sicherheitslücken bestehen können",
         "marketing": "Gelegentliche Produkt-Updates per E-Mail senden (optional)",
         "privacy": "Datenschutzerklärung",
         "required": "Bitte akzeptieren Sie die Nutzungsbedingungen und die Datenschutzerklärung, um fortzufahren.",
@@ -13134,6 +13146,16 @@ export const resources = {
         "lastName": "Nachname (optional)",
         "passwordMin": "Mind. {{min}} Zeichen",
         "yourName": "Dein Name"
+      },
+      "policyGate": {
+        "agents": "Agenten machen Fehler und können über die verbundenen Konten handeln. Prüfen Sie, was sie tun.",
+        "body": "agntchat ist eine frühe Beta, die von einem einzelnen Entwickler betrieben wird, nicht von einem Unternehmen. Bitte lesen und akzeptieren Sie die aktualisierten Nutzungsbedingungen und die Datenschutzerklärung, bevor Sie fortfahren.",
+        "cta": "Zustimmen und fortfahren",
+        "data": "Daten können verloren gehen. Bewahren Sie von allem Wichtigen eine eigene Kopie auf.",
+        "failed": "Ihre Zustimmung konnte nicht gespeichert werden. Bitte versuchen Sie es erneut.",
+        "security": "Die Sicherheit ist noch nicht ausgereift. Speichern Sie keine Passwörter, Finanz- oder Gesundheitsdaten und nichts Vertrauliches.",
+        "signOut": "Abmelden",
+        "title": "Bitte akzeptieren Sie die aktualisierten Bedingungen"
       },
       "resetPassword": {
         "emailRequired": "Bitte geben Sie Ihre E-Mail-Adresse ein.",
@@ -15745,10 +15767,6 @@ export const resources = {
         "memoriesSearchFailed": "Die Suche ist fehlgeschlagen. Bitte versuchen Sie es erneut.",
         "memoriesSearchPlaceholder": "Gemerkte Fakten durchsuchen (z. B. einen Namen)",
         "openDownload": "Download öffnen",
-        "reacceptBody": "Wir haben unsere Nutzungsbedingungen und Datenschutzerklärung aktualisiert. Bitte prüfen und akzeptieren Sie diese, um fortzufahren.",
-        "reacceptCta": "Zustimmen und fortfahren",
-        "reacceptDone": "Vielen Dank — Ihre Zustimmung wurde gespeichert.",
-        "reacceptTitle": "Unsere Bedingungen haben sich geändert",
         "title": "Datenschutz & Daten",
         "updateFailed": "Ihre Einstellung konnte nicht gespeichert werden. Bitte versuchen Sie es erneut.",
         "usageAnalytics": "Nutzungsanalyse",
@@ -18528,7 +18546,7 @@ export const resources = {
       "confirmationSent": "Nous avons envoyé un lien de confirmation à votre adresse e-mail. Veuillez confirmer votre compte, puis vous connecter.",
       "consent": {
         "analytics": "Partager des données d'utilisation anonymes pour améliorer l'application (facultatif)",
-        "label": "J'accepte les Conditions d'utilisation et la Politique de confidentialité",
+        "label": "J'accepte les Conditions d'utilisation et la Politique de confidentialité et je comprends qu'agntchat est une bêta qui peut perdre des données ou présenter des failles de sécurité",
         "marketing": "Recevoir occasionnellement des nouveautés produit par e-mail (facultatif)",
         "privacy": "Politique de confidentialité",
         "required": "Veuillez accepter les Conditions d'utilisation et la Politique de confidentialité pour continuer.",
@@ -18609,6 +18627,16 @@ export const resources = {
         "lastName": "Nom (facultatif)",
         "passwordMin": "{{min}} caractères min.",
         "yourName": "Votre nom"
+      },
+      "policyGate": {
+        "agents": "Les agents font des erreurs et peuvent agir via les comptes que vous connectez. Vérifiez ce qu'ils font.",
+        "body": "agntchat est une bêta précoce gérée par un développeur indépendant, et non par une entreprise. Avant de continuer, veuillez lire et accepter les Conditions d'utilisation et la Politique de confidentialité mises à jour.",
+        "cta": "Accepter et continuer",
+        "data": "Des données peuvent être perdues. Gardez votre propre copie de tout ce qui compte.",
+        "failed": "Impossible d'enregistrer votre acceptation. Veuillez réessayer.",
+        "security": "La sécurité n'est pas finalisée. Ne stockez ni mots de passe, ni données financières ou de santé, ni rien de confidentiel.",
+        "signOut": "Se déconnecter",
+        "title": "Veuillez accepter les conditions mises à jour"
       },
       "resetPassword": {
         "emailRequired": "Veuillez saisir votre adresse e-mail.",
@@ -21220,10 +21248,6 @@ export const resources = {
         "memoriesSearchFailed": "La recherche a échoué. Veuillez réessayer.",
         "memoriesSearchPlaceholder": "Rechercher les informations retenues (p. ex. un nom)",
         "openDownload": "Ouvrir le téléchargement",
-        "reacceptBody": "Nous avons mis à jour nos Conditions d'utilisation et notre Politique de confidentialité. Veuillez les consulter et les accepter pour continuer.",
-        "reacceptCta": "Accepter et continuer",
-        "reacceptDone": "Merci — votre acceptation a bien été enregistrée.",
-        "reacceptTitle": "Nos conditions ont changé",
         "title": "Confidentialité et données",
         "updateFailed": "Impossible d'enregistrer votre préférence. Veuillez réessayer.",
         "usageAnalytics": "Statistiques d'utilisation",
@@ -24003,7 +24027,7 @@ export const resources = {
       "confirmationSent": "Enviamos um link de confirmação para seu e-mail. Confirme sua conta e, em seguida, faça login.",
       "consent": {
         "analytics": "Compartilhar dados de uso anônimos para ajudar a melhorar o app (opcional)",
-        "label": "Concordo com os Termos de Serviço e a Política de Privacidade",
+        "label": "Concordo com os Termos de Serviço e a Política de Privacidade e entendo que o agntchat é uma versão beta que pode perder dados ou ter problemas de segurança",
         "marketing": "Envie-me novidades do produto de vez em quando (opcional)",
         "privacy": "Política de Privacidade",
         "required": "Aceite os Termos de Serviço e a Política de Privacidade para continuar.",
@@ -24084,6 +24108,16 @@ export const resources = {
         "lastName": "Sobrenome (opcional)",
         "passwordMin": "Mín. {{min}} caracteres",
         "yourName": "Seu nome"
+      },
+      "policyGate": {
+        "agents": "Os agentes cometem erros e podem agir pelas contas que você conectar. Verifique o que eles fazem.",
+        "body": "O agntchat é uma versão beta inicial mantida por um desenvolvedor independente, não por uma empresa. Antes de continuar, leia e aceite os Termos de Serviço e a Política de Privacidade atualizados.",
+        "cta": "Concordar e continuar",
+        "data": "Dados podem ser perdidos. Guarde sua própria cópia de tudo o que for importante.",
+        "failed": "Não foi possível salvar sua aceitação. Tente novamente.",
+        "security": "A segurança ainda não está concluída. Não armazene senhas, dados financeiros ou de saúde, nem nada confidencial.",
+        "signOut": "Sair",
+        "title": "Aceite os termos atualizados"
       },
       "resetPassword": {
         "emailRequired": "Por favor, digite seu e-mail.",
@@ -26695,10 +26729,6 @@ export const resources = {
         "memoriesSearchFailed": "A pesquisa falhou. Tente novamente.",
         "memoriesSearchPlaceholder": "Pesquisar fatos lembrados (ex.: um nome)",
         "openDownload": "Abrir download",
-        "reacceptBody": "Atualizamos nossos Termos de Serviço e Política de Privacidade. Revise e aceite para continuar.",
-        "reacceptCta": "Aceitar e continuar",
-        "reacceptDone": "Obrigado — sua aceitação foi registrada.",
-        "reacceptTitle": "Nossos termos mudaram",
         "title": "Privacidade e dados",
         "updateFailed": "Não foi possível salvar sua preferência. Tente novamente.",
         "usageAnalytics": "Análise de uso",
@@ -29478,7 +29508,7 @@ export const resources = {
       "confirmationSent": "確認リンクをメールアドレスに送信しました。アカウントを確認してからログインしてください。",
       "consent": {
         "analytics": "匿名の利用データを共有してアプリの改善に協力する（任意）",
-        "label": "利用規約とプライバシーポリシーに同意します",
+        "label": "利用規約とプライバシーポリシーに同意し、agntchat がデータの消失やセキュリティ上の問題が起こりうるベータ版であることを理解しました",
         "marketing": "製品の最新情報をときどきメールで受け取る（任意）",
         "privacy": "プライバシーポリシー",
         "required": "続行するには、利用規約とプライバシーポリシーに同意してください。",
@@ -29559,6 +29589,16 @@ export const resources = {
         "lastName": "姓（任意）",
         "passwordMin": "{{min}}文字以上",
         "yourName": "お名前"
+      },
+      "policyGate": {
+        "agents": "エージェントは間違えることがあり、接続したアカウントを通じて操作を行えます。内容を確認してください。",
+        "body": "agntchat は企業ではなく個人の開発者が運営する初期ベータ版です。続行する前に、更新された利用規約とプライバシーポリシーをお読みのうえ同意してください。",
+        "cta": "同意して続行",
+        "data": "データが失われる可能性があります。大切なものはご自身でコピーを保管してください。",
+        "failed": "同意を保存できませんでした。もう一度お試しください。",
+        "security": "セキュリティはまだ完成していません。パスワード、金融・健康に関するデータ、機密情報は保存しないでください。",
+        "signOut": "サインアウト",
+        "title": "更新された規約に同意してください"
       },
       "resetPassword": {
         "emailRequired": "メールアドレスを入力してください。",
@@ -32170,10 +32210,6 @@ export const resources = {
         "memoriesSearchFailed": "検索に失敗しました。もう一度お試しください。",
         "memoriesSearchPlaceholder": "記憶された情報を検索（例：名前）",
         "openDownload": "ダウンロードを開く",
-        "reacceptBody": "利用規約とプライバシーポリシーを更新しました。続行するには内容をご確認のうえ同意してください。",
-        "reacceptCta": "同意して続行",
-        "reacceptDone": "ご同意ありがとうございました。記録しました。",
-        "reacceptTitle": "規約が変更されました",
         "title": "プライバシーとデータ",
         "updateFailed": "設定を保存できませんでした。もう一度お試しください。",
         "usageAnalytics": "利用状況の分析",
@@ -34953,7 +34989,7 @@ export const resources = {
       "confirmationSent": "我们已向你的邮箱发送了确认链接。请确认账号后登录。",
       "consent": {
         "analytics": "分享匿名使用数据以帮助改进应用（可选）",
-        "label": "我同意《服务条款》和《隐私政策》",
+        "label": "我同意服务条款和隐私政策，并了解 agntchat 是可能丢失数据或存在安全问题的测试版",
         "marketing": "偶尔通过电子邮件向我发送产品更新（可选）",
         "privacy": "隐私政策",
         "required": "请接受《服务条款》和《隐私政策》以继续。",
@@ -35034,6 +35070,16 @@ export const resources = {
         "lastName": "姓（可选）",
         "passwordMin": "至少 {{min}} 个字符",
         "yourName": "您的名字"
+      },
+      "policyGate": {
+        "agents": "智能体会出错，并且可以通过你连接的账户执行操作。请检查它们的行为。",
+        "body": "agntchat 是由个人开发者（而非公司）运营的早期测试版。继续之前，请阅读并接受更新后的服务条款和隐私政策。",
+        "cta": "同意并继续",
+        "data": "数据可能会丢失。重要内容请自行保留副本。",
+        "failed": "无法保存你的同意，请重试。",
+        "security": "安全性尚未完善。请勿存储密码、财务或健康数据以及任何机密信息。",
+        "signOut": "退出登录",
+        "title": "请接受更新后的条款"
       },
       "resetPassword": {
         "emailRequired": "请输入您的电子邮箱。",
@@ -37645,10 +37691,6 @@ export const resources = {
         "memoriesSearchFailed": "搜索失败。请重试。",
         "memoriesSearchPlaceholder": "搜索已记住的信息（例如某个名字）",
         "openDownload": "打开下载",
-        "reacceptBody": "我们已更新《服务条款》和《隐私政策》。请查看并接受以继续。",
-        "reacceptCta": "同意并继续",
-        "reacceptDone": "感谢您的同意，已记录。",
-        "reacceptTitle": "我们的条款已更新",
         "title": "隐私与数据",
         "updateFailed": "无法保存您的偏好设置。请重试。",
         "usageAnalytics": "使用情况分析",
@@ -40428,7 +40470,7 @@ export const resources = {
       "confirmationSent": "이메일로 확인 링크를 보냈습니다. 계정을 인증한 후 로그인하세요.",
       "consent": {
         "analytics": "익명 사용 데이터를 공유하여 앱 개선에 참여 (선택 사항)",
-        "label": "서비스 약관 및 개인정보 처리방침에 동의합니다",
+        "label": "서비스 약관 및 개인정보 처리방침에 동의하며, agntchat이 데이터 손실이나 보안 문제가 발생할 수 있는 베타 버전임을 이해합니다",
         "marketing": "가끔 제품 업데이트를 이메일로 받기 (선택 사항)",
         "privacy": "개인정보 처리방침",
         "required": "계속하려면 서비스 약관 및 개인정보 처리방침에 동의해 주세요.",
@@ -40509,6 +40551,16 @@ export const resources = {
         "lastName": "성(선택)",
         "passwordMin": "{{min}}자 이상",
         "yourName": "이름"
+      },
+      "policyGate": {
+        "agents": "에이전트는 실수를 할 수 있으며 연결한 계정을 통해 작업을 수행할 수 있습니다. 에이전트가 하는 일을 확인하세요.",
+        "body": "agntchat은 회사가 아닌 개인 개발자가 운영하는 초기 베타 버전입니다. 계속하기 전에 업데이트된 서비스 약관과 개인정보 처리방침을 읽고 동의해 주세요.",
+        "cta": "동의하고 계속",
+        "data": "데이터가 손실될 수 있습니다. 중요한 것은 직접 사본을 보관하세요.",
+        "failed": "동의를 저장하지 못했습니다. 다시 시도해 주세요.",
+        "security": "보안이 아직 완성되지 않았습니다. 비밀번호, 금융 또는 건강 데이터, 기밀 정보는 저장하지 마세요.",
+        "signOut": "로그아웃",
+        "title": "업데이트된 약관에 동의해 주세요"
       },
       "resetPassword": {
         "emailRequired": "이메일 주소를 입력해 주세요.",
@@ -43120,10 +43172,6 @@ export const resources = {
         "memoriesSearchFailed": "검색에 실패했습니다. 다시 시도해 주세요.",
         "memoriesSearchPlaceholder": "기억된 정보 검색 (예: 이름)",
         "openDownload": "다운로드 열기",
-        "reacceptBody": "서비스 약관 및 개인정보 처리방침을 업데이트했습니다. 계속하려면 검토 후 동의해 주세요.",
-        "reacceptCta": "동의하고 계속",
-        "reacceptDone": "감사합니다. 동의가 기록되었습니다.",
-        "reacceptTitle": "약관이 변경되었습니다",
         "title": "개인정보 및 데이터",
         "updateFailed": "설정을 저장하지 못했습니다. 다시 시도해 주세요.",
         "usageAnalytics": "사용 분석",
@@ -45903,7 +45951,7 @@ export const resources = {
       "confirmationSent": "Abbiamo inviato un link di conferma alla tua email. Conferma il tuo account, poi accedi.",
       "consent": {
         "analytics": "Condividi dati di utilizzo anonimi per aiutarci a migliorare l'app (facoltativo)",
-        "label": "Accetto i Termini di servizio e l'Informativa sulla privacy",
+        "label": "Accetto i Termini di servizio e l'Informativa sulla privacy e comprendo che agntchat è una beta che può perdere dati o avere problemi di sicurezza",
         "marketing": "Inviami occasionali aggiornamenti sul prodotto via e-mail (facoltativo)",
         "privacy": "Informativa sulla privacy",
         "required": "Per continuare, accetta i Termini di servizio e l'Informativa sulla privacy.",
@@ -45984,6 +46032,16 @@ export const resources = {
         "lastName": "Cognome (facoltativo)",
         "passwordMin": "Min. {{min}} caratteri",
         "yourName": "Il tuo nome"
+      },
+      "policyGate": {
+        "agents": "Gli agenti commettono errori e possono agire tramite gli account che colleghi. Controlla cosa fanno.",
+        "body": "agntchat è una beta iniziale gestita da uno sviluppatore indipendente, non da un'azienda. Prima di continuare, leggi e accetta i Termini di servizio e l'Informativa sulla privacy aggiornati.",
+        "cta": "Accetta e continua",
+        "data": "I dati possono andare persi. Conserva una tua copia di tutto ciò che è importante.",
+        "failed": "Impossibile salvare la tua accettazione. Riprova.",
+        "security": "La sicurezza non è ancora completa. Non salvare password, dati finanziari o sanitari o informazioni riservate.",
+        "signOut": "Esci",
+        "title": "Accetta i termini aggiornati"
       },
       "resetPassword": {
         "emailRequired": "Inserisci il tuo indirizzo email.",
@@ -48595,10 +48653,6 @@ export const resources = {
         "memoriesSearchFailed": "La ricerca non è riuscita. Riprova.",
         "memoriesSearchPlaceholder": "Cerca informazioni memorizzate (ad es. un nome)",
         "openDownload": "Apri il download",
-        "reacceptBody": "Abbiamo aggiornato i nostri Termini di servizio e l'Informativa sulla privacy. Esaminali e accettali per continuare.",
-        "reacceptCta": "Accetta e continua",
-        "reacceptDone": "Grazie: la tua accettazione è stata registrata.",
-        "reacceptTitle": "I nostri termini sono cambiati",
         "title": "Privacy e dati",
         "updateFailed": "Impossibile salvare la tua preferenza. Riprova.",
         "usageAnalytics": "Analisi dell'utilizzo",
@@ -51378,7 +51432,7 @@ export const resources = {
       "confirmationSent": "हमने आपके ईमेल पर एक पुष्टिकरण लिंक भेजा है। कृपया अपने खाते की पुष्टि करें, फिर साइन इन करें।",
       "consent": {
         "analytics": "ऐप को बेहतर बनाने के लिए गुमनाम उपयोग डेटा साझा करें (वैकल्पिक)",
-        "label": "मैं सेवा की शर्तों और गोपनीयता नीति से सहमत हूँ",
+        "label": "मैं सेवा की शर्तों और गोपनीयता नीति से सहमत हूँ और समझता/समझती हूँ कि agntchat एक बीटा है जिसमें डेटा खो सकता है या सुरक्षा समस्याएँ हो सकती हैं",
         "marketing": "मुझे कभी-कभी उत्पाद अपडेट ईमेल करें (वैकल्पिक)",
         "privacy": "गोपनीयता नीति",
         "required": "जारी रखने के लिए कृपया सेवा की शर्तें और गोपनीयता नीति स्वीकार करें।",
@@ -51459,6 +51513,16 @@ export const resources = {
         "lastName": "अंतिम नाम (वैकल्पिक)",
         "passwordMin": "कम से कम {{min}} अक्षर",
         "yourName": "आपका नाम"
+      },
+      "policyGate": {
+        "agents": "एजेंट गलतियाँ करते हैं और आपके जोड़े गए खातों के ज़रिए काम कर सकते हैं। जाँचें कि वे क्या करते हैं।",
+        "body": "agntchat एक शुरुआती बीटा है जिसे कोई कंपनी नहीं, बल्कि एक व्यक्तिगत डेवलपर चलाता है। आगे बढ़ने से पहले, कृपया अपडेट की गई सेवा की शर्तें और गोपनीयता नीति पढ़ें और स्वीकार करें।",
+        "cta": "सहमत हूँ और जारी रखें",
+        "data": "डेटा खो सकता है। जो कुछ भी महत्वपूर्ण है उसकी अपनी कॉपी रखें।",
+        "failed": "आपकी स्वीकृति सहेजी नहीं जा सकी। कृपया फिर से कोशिश करें।",
+        "security": "सुरक्षा अभी पूरी नहीं है। पासवर्ड, वित्तीय या स्वास्थ्य डेटा, या कुछ भी गोपनीय सेव न करें।",
+        "signOut": "साइन आउट",
+        "title": "कृपया अपडेट की गई शर्तें स्वीकार करें"
       },
       "resetPassword": {
         "emailRequired": "कृपया अपना ईमेल पता दर्ज करें।",
@@ -54070,10 +54134,6 @@ export const resources = {
         "memoriesSearchFailed": "खोज विफल रही। कृपया पुनः प्रयास करें।",
         "memoriesSearchPlaceholder": "याद रखे गए तथ्य खोजें (जैसे कोई नाम)",
         "openDownload": "डाउनलोड खोलें",
-        "reacceptBody": "हमने अपनी सेवा की शर्तें और गोपनीयता नीति अपडेट की है। जारी रखने के लिए कृपया समीक्षा करें और स्वीकार करें।",
-        "reacceptCta": "सहमत होकर जारी रखें",
-        "reacceptDone": "धन्यवाद — आपकी सहमति दर्ज कर ली गई है।",
-        "reacceptTitle": "हमारी शर्तें बदल गई हैं",
         "title": "गोपनीयता और डेटा",
         "updateFailed": "आपकी प्राथमिकता सहेजी नहीं जा सकी। कृपया पुनः प्रयास करें।",
         "usageAnalytics": "उपयोग विश्लेषण",

@@ -3447,23 +3447,6 @@ function PrivacyDataSection() {
     }
   };
 
-  // ---- Policy re-accept ----
-  const [reaccepting, setReaccepting] = useState(false);
-  const [reacceptError, setReacceptError] = useState(false);
-  const handleReaccept = async () => {
-    setReaccepting(true);
-    setReacceptError(false);
-    try {
-      const updated = await api.updateConsent({ reaccept: true });
-      persist(updated);
-    } catch {
-      // stay on the prompt so the user can retry
-      setReacceptError(true);
-    } finally {
-      setReaccepting(false);
-    }
-  };
-
   // ---- Start Fresh (account reset) ----
   const [freshOpen, setFreshOpen] = useState(false);
   const [freshRunning, setFreshRunning] = useState(false);
@@ -3516,35 +3499,6 @@ function PrivacyDataSection() {
 
   return (
     <div className="space-y-4">
-      {/* Re-consent prompt — only when the current policy version is newer
-          than what the user last accepted. */}
-      {participant?.policyReacceptRequired && (
-        <div className="rounded-xl border border-warning/40 bg-warning/10 p-4 space-y-3">
-          <div className="flex items-start gap-3">
-            <ShieldCheck className="w-5 h-5 text-warning flex-shrink-0 mt-0.5" />
-            <div className="min-w-0">
-              <p className="text-sm font-semibold">{t("privacy.reacceptTitle")}</p>
-              <p className="text-xs text-muted-foreground mt-0.5">
-                {t("privacy.reacceptBody")}
-              </p>
-            </div>
-          </div>
-          <Button size="sm" onClick={handleReaccept} disabled={reaccepting}>
-            {reaccepting ? (
-              <Loader2 className="w-3.5 h-3.5 animate-spin" />
-            ) : (
-              t("privacy.reacceptCta")
-            )}
-          </Button>
-          {reacceptError && (
-            <p className="text-xs text-destructive flex items-center gap-1.5">
-              <AlertCircle className="w-3.5 h-3.5" />
-              {t("privacy.updateFailed")}
-            </p>
-          )}
-        </div>
-      )}
-
       {/* Download my data */}
       <div className="rounded-xl border border-border bg-card p-4">
         <div className="flex items-start justify-between gap-4">
