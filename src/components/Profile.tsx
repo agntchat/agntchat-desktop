@@ -1418,6 +1418,7 @@ export function Profile({ onClose }: { onClose: () => void }) {
                             : undefined
                         }
                         openingDrivePicker={openingDrivePicker}
+                        onPickerKeySaved={fetchIntegrations}
                       />
                     );
                   })}
@@ -4239,6 +4240,7 @@ function ProviderRow({
   onDisconnect,
   onAddDriveFiles,
   openingDrivePicker = false,
+  onPickerKeySaved,
 }: {
   provider: api.ProviderInfo;
   credential?: api.UserCredential;
@@ -4254,6 +4256,9 @@ function ProviderRow({
   // Google only: open the Picker so agents can reach existing Drive files.
   onAddDriveFiles?: () => void;
   openingDrivePicker?: boolean;
+  // Google only: the user saved their own Picker API key — refetch so
+  // `provider.filePicker` flips on and the Add-from-Drive button appears.
+  onPickerKeySaved?: () => void;
 }) {
   const { t } = useTranslation("settings");
   const isConnected = !!credential;
@@ -4393,9 +4398,11 @@ function ProviderRow({
       {credential && provider.name === "google" && (
         <GoogleServicesDetail
           credential={credential}
+          filePickerAvailable={!!provider.filePicker}
           onReconnect={onConnectOAuth}
           onAddDriveFiles={onAddDriveFiles}
           openingDrivePicker={openingDrivePicker}
+          onPickerKeySaved={onPickerKeySaved}
         />
       )}
 
@@ -4438,14 +4445,20 @@ function ProviderRow({
 
 function GoogleServicesDetail({
   credential,
+  filePickerAvailable,
   onReconnect,
   onAddDriveFiles,
   openingDrivePicker,
+  onPickerKeySaved,
 }: {
   credential: api.UserCredential;
+  // Whether SOME Picker key (global secret or this user's own field) is
+  // already set — when false, and drive.file is granted, offer to paste one.
+  filePickerAvailable: boolean;
   onReconnect: () => void;
   onAddDriveFiles?: () => void;
   openingDrivePicker?: boolean;
+  onPickerKeySaved?: () => void;
 }) {
   const { t } = useTranslation("settings");
   const scopeStr = credential.scopes.join(" ");
@@ -4455,6 +4468,50 @@ function GoogleServicesDetail({
   }));
   const hasMissing = services.some((s) => !s.connected);
   const driveGranted = scopeStr.includes("drive.file");
+
+  const [pickerKeyOpen, setPickerKeyOpen] = useState(false);
+  const [pickerKeyValue, setPickerKeyValue] = useState("");
+  const [savingPickerKey, setSavingPickerKey] = useState(false);
+  const [pickerKeyError, setPickerKeyError] = useState<string | null>(null);
+
+  const savePickerKey = async () => {
+    const trimmed = pickerKeyValue.trim();
+    if (!trimmed) return;
+    setSavingPickerKey(true);
+    setPickerKeyError(null);
+    try {
+      // Preserve any other named fields already on this connection —
+      // `fields` replaces the whole set, it doesn't merge server-side.
+      const existing = (credential.fieldDefs ?? [])
+        .filter((f) => f.key !== "picker_api_key")
+        .map((f) => ({
+          key: f.key,
+          label: f.label,
+          secret: f.secret,
+          value: f.secret ? "" : (credential.publicFields?.[f.key] ?? ""),
+        }));
+      await api.updateProviderConnection("google", {
+        fields: [
+          ...existing,
+          {
+            key: "picker_api_key",
+            label: "Google Picker API key",
+            value: trimmed,
+            secret: false,
+          },
+        ],
+      });
+      setPickerKeyOpen(false);
+      setPickerKeyValue("");
+      onPickerKeySaved?.();
+    } catch (e) {
+      setPickerKeyError(
+        e instanceof Error ? e.message : t("connections.googlePicker.saveKeyFailed")
+      );
+    } finally {
+      setSavingPickerKey(false);
+    }
+  };
 
   return (
     <>
@@ -4510,6 +4567,60 @@ function GoogleServicesDetail({
             )}
             {t("connections.googlePicker.button")}
           </button>
+        </div>
+      )}
+
+      {/* No Picker key set anywhere (no global secret, no per-user field):
+          let the user paste their own browser API key from their Google
+          Cloud project's Picker API, same pattern as a Custom API field. */}
+      {driveGranted && !filePickerAvailable && (
+        <div className="ml-11 mt-1.5">
+          {pickerKeyOpen ? (
+            <div className="flex flex-wrap items-center gap-1.5">
+              <Input
+                type="text"
+                value={pickerKeyValue}
+                onChange={(e) => setPickerKeyValue(e.target.value)}
+                placeholder={t("connections.googlePicker.keyPlaceholder")}
+                className="h-7 text-[11px] w-56"
+                disabled={savingPickerKey}
+              />
+              <Button
+                size="sm"
+                className="h-7 text-[11px] px-2"
+                onClick={savePickerKey}
+                disabled={savingPickerKey || !pickerKeyValue.trim()}
+              >
+                {savingPickerKey ? (
+                  <Loader2 className="w-3 h-3 animate-spin" />
+                ) : (
+                  t("common:save")
+                )}
+              </Button>
+              <button
+                onClick={() => {
+                  setPickerKeyOpen(false);
+                  setPickerKeyValue("");
+                  setPickerKeyError(null);
+                }}
+                disabled={savingPickerKey}
+                className="text-[11px] text-muted-foreground hover:text-foreground cursor-pointer"
+              >
+                {t("common:cancel")}
+              </button>
+              {pickerKeyError && (
+                <p className="w-full text-[11px] text-destructive">{pickerKeyError}</p>
+              )}
+            </div>
+          ) : (
+            <button
+              onClick={() => setPickerKeyOpen(true)}
+              className="flex items-center gap-1 text-[11px] text-muted-foreground hover:text-foreground cursor-pointer"
+            >
+              <Key className="w-3 h-3" />
+              {t("connections.googlePicker.addKeyButton")}
+            </button>
+          )}
         </div>
       )}
     </>
