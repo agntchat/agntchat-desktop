@@ -2476,8 +2476,6 @@ export interface ProviderInfo {
   description?: string;
   scopes?: string[];
   setup?: ProviderSetup;
-  /** Google: "Add from Drive" (the Google Picker) is set up on the server. */
-  filePicker?: boolean;
 }
 
 // --- Agent tool catalog (platform integrations are per-agent opt-in) ---
@@ -2556,16 +2554,6 @@ export async function authorizeProvider(
   }
   const query = params.size > 0 ? `?${params.toString()}` : "";
   return request(`/api/integrations/${provider}/authorize${query}`);
-}
-
-// Short-lived link to the backend's Google Picker page. Picking files there
-// is what lets agents open Drive files the owner made outside the app
-// (the Google grant is drive.file). Opened in the system browser.
-export async function createGooglePickerLink(): Promise<{
-  url: string;
-  expiresIn: number;
-}> {
-  return request("/api/google/picker", { method: "POST" });
 }
 
 // First connection of a bring-your-own-app provider: the client credentials

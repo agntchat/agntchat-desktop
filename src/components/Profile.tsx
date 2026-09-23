@@ -86,7 +86,6 @@ import {
   Bot,
   Languages,
   HardDrive,
-  FolderPlus,
 } from "lucide-react";
 import { deviceTimezone, filterTimezones, formatTimezoneLabel } from "../lib/timezones";
 import { getInitials } from "../lib/utils";
@@ -289,7 +288,6 @@ export function Profile({ onClose }: { onClose: () => void }) {
   const [integrationError, setIntegrationError] = useState<string | null>(null);
 
   // ---- OAuth polling state ----
-  const [openingDrivePicker, setOpeningDrivePicker] = useState(false);
   const [connectingProvider, setConnectingProvider] = useState<string | null>(
     null
   );
@@ -593,21 +591,6 @@ export function Profile({ onClose }: { onClose: () => void }) {
       setIntegrationError(
         e instanceof Error ? e.message : t("connections.errors.authorizeFailed")
       );
-    }
-  };
-
-  const handleAddDriveFiles = async () => {
-    setOpeningDrivePicker(true);
-    setIntegrationError(null);
-    try {
-      const { url } = await api.createGooglePickerLink();
-      await openExternal(url);
-    } catch (e) {
-      setIntegrationError(
-        e instanceof Error ? e.message : t("connections.googlePicker.failed")
-      );
-    } finally {
-      setOpeningDrivePicker(false);
     }
   };
 
@@ -1412,13 +1395,6 @@ export function Profile({ onClose }: { onClose: () => void }) {
                         onDisconnect={() =>
                           setDisconnectProvider(provider.name)
                         }
-                        onAddDriveFiles={
-                          provider.name === "google" && provider.filePicker
-                            ? handleAddDriveFiles
-                            : undefined
-                        }
-                        openingDrivePicker={openingDrivePicker}
-                        onPickerKeySaved={fetchIntegrations}
                       />
                     );
                   })}
@@ -4238,9 +4214,6 @@ function ProviderRow({
   onEditAccess,
   onReconnect,
   onDisconnect,
-  onAddDriveFiles,
-  openingDrivePicker = false,
-  onPickerKeySaved,
 }: {
   provider: api.ProviderInfo;
   credential?: api.UserCredential;
@@ -4253,12 +4226,6 @@ function ProviderRow({
   // credentials, e.g. to toggle DMs. Absent on one-click providers.
   onReconnect?: () => void;
   onDisconnect: () => void;
-  // Google only: open the Picker so agents can reach existing Drive files.
-  onAddDriveFiles?: () => void;
-  openingDrivePicker?: boolean;
-  // Google only: the user saved their own Picker API key — refetch so
-  // `provider.filePicker` flips on and the Add-from-Drive button appears.
-  onPickerKeySaved?: () => void;
 }) {
   const { t } = useTranslation("settings");
   const isConnected = !!credential;
@@ -4398,11 +4365,7 @@ function ProviderRow({
       {credential && provider.name === "google" && (
         <GoogleServicesDetail
           credential={credential}
-          filePickerAvailable={!!provider.filePicker}
           onReconnect={onConnectOAuth}
-          onAddDriveFiles={onAddDriveFiles}
-          openingDrivePicker={openingDrivePicker}
-          onPickerKeySaved={onPickerKeySaved}
         />
       )}
 
@@ -4445,20 +4408,10 @@ function ProviderRow({
 
 function GoogleServicesDetail({
   credential,
-  filePickerAvailable,
   onReconnect,
-  onAddDriveFiles,
-  openingDrivePicker,
-  onPickerKeySaved,
 }: {
   credential: api.UserCredential;
-  // Whether SOME Picker key (global secret or this user's own field) is
-  // already set — when false, and drive.file is granted, offer to paste one.
-  filePickerAvailable: boolean;
   onReconnect: () => void;
-  onAddDriveFiles?: () => void;
-  openingDrivePicker?: boolean;
-  onPickerKeySaved?: () => void;
 }) {
   const { t } = useTranslation("settings");
   const scopeStr = credential.scopes.join(" ");
@@ -4467,175 +4420,40 @@ function GoogleServicesDetail({
     connected: scopeStr.includes(svc.scope),
   }));
   const hasMissing = services.some((s) => !s.connected);
-  const driveGranted = scopeStr.includes("drive.file");
-
-  const [pickerKeyOpen, setPickerKeyOpen] = useState(false);
-  const [pickerKeyValue, setPickerKeyValue] = useState("");
-  const [savingPickerKey, setSavingPickerKey] = useState(false);
-  const [pickerKeyError, setPickerKeyError] = useState<string | null>(null);
-
-  const savePickerKey = async () => {
-    const trimmed = pickerKeyValue.trim();
-    if (!trimmed) return;
-    setSavingPickerKey(true);
-    setPickerKeyError(null);
-    try {
-      // Preserve any other named fields already on this connection —
-      // `fields` replaces the whole set, it doesn't merge server-side.
-      const existing = (credential.fieldDefs ?? [])
-        .filter((f) => f.key !== "picker_api_key")
-        .map((f) => ({
-          key: f.key,
-          label: f.label,
-          secret: f.secret,
-          value: f.secret ? "" : (credential.publicFields?.[f.key] ?? ""),
-        }));
-      await api.updateProviderConnection("google", {
-        fields: [
-          ...existing,
-          {
-            key: "picker_api_key",
-            label: "Google Picker API key",
-            value: trimmed,
-            secret: false,
-          },
-        ],
-      });
-      setPickerKeyOpen(false);
-      setPickerKeyValue("");
-      onPickerKeySaved?.();
-    } catch (e) {
-      setPickerKeyError(
-        e instanceof Error ? e.message : t("connections.googlePicker.saveKeyFailed")
-      );
-    } finally {
-      setSavingPickerKey(false);
-    }
-  };
 
   return (
-    <>
-      <div className="ml-11 mt-2 flex flex-wrap items-center gap-1.5">
-        {services.map((svc) => {
-          const SvcIcon = svc.icon;
-          return (
-            <span
-              key={svc.scope}
-              className={cn(
-                "inline-flex items-center gap-1.5 rounded-md px-2 py-0.5 text-[11px] border",
-                svc.connected
-                  ? "bg-muted/60 border-transparent text-foreground"
-                  : "border-dashed border-border text-muted-foreground/60"
-              )}
-            >
-              <SvcIcon className="w-3 h-3" />
-              {svc.label}
-              {svc.connected ? (
-                <Check className="w-3 h-3 text-success" />
-              ) : (
-                <AlertCircle className="w-3 h-3 text-warning" />
-              )}
-            </span>
-          );
-        })}
-        {/* Picker: constant badge (same pattern as X's DM pill) so the
-            extra "Add from Drive" capability's on/off state is always
-            visible, not just surfaced while the setup prompt is open. */}
-        {driveGranted && (
+    <div className="ml-11 mt-2 flex flex-wrap items-center gap-1.5">
+      {services.map((svc) => {
+        const SvcIcon = svc.icon;
+        return (
           <span
-            role={filePickerAvailable ? undefined : "button"}
-            tabIndex={filePickerAvailable ? undefined : 0}
-            onClick={filePickerAvailable ? undefined : () => setPickerKeyOpen(true)}
+            key={svc.scope}
             className={cn(
               "inline-flex items-center gap-1.5 rounded-md px-2 py-0.5 text-[11px] border",
-              filePickerAvailable
+              svc.connected
                 ? "bg-muted/60 border-transparent text-foreground"
-                : "border-dashed border-border text-muted-foreground/60 cursor-pointer hover:text-foreground"
+                : "border-dashed border-border text-muted-foreground/60"
             )}
           >
-            <FolderPlus className="w-3 h-3" />
-            {filePickerAvailable
-              ? t("connections.googlePicker.pickerOn")
-              : t("connections.googlePicker.pickerOff")}
-          </span>
-        )}
-        {hasMissing && (
-          <button
-            onClick={onReconnect}
-            className="flex items-center gap-1 text-[11px] text-primary hover:underline cursor-pointer"
-          >
-            <RefreshCw className="w-3 h-3" />
-            {t("connections.reconnectAll")}
-          </button>
-        )}
-      </div>
-      {/* drive.file: agents see only app-made or picked files, so picking
-          is how an existing deck or doc reaches them. */}
-      {onAddDriveFiles && driveGranted && (
-        <div className="ml-11 mt-1.5 flex flex-wrap items-center gap-x-2 gap-y-1">
-          <p className="text-[11px] text-muted-foreground">
-            {t("connections.googlePicker.hint")}
-          </p>
-          <button
-            onClick={onAddDriveFiles}
-            disabled={openingDrivePicker}
-            className="flex items-center gap-1 text-[11px] text-primary hover:underline cursor-pointer disabled:opacity-60 disabled:cursor-default"
-          >
-            {openingDrivePicker ? (
-              <Loader2 className="w-3 h-3 animate-spin" />
+            <SvcIcon className="w-3 h-3" />
+            {svc.label}
+            {svc.connected ? (
+              <Check className="w-3 h-3 text-success" />
             ) : (
-              <FolderPlus className="w-3 h-3" />
+              <AlertCircle className="w-3 h-3 text-warning" />
             )}
-            {t("connections.googlePicker.button")}
-          </button>
-        </div>
+          </span>
+        );
+      })}
+      {hasMissing && (
+        <button
+          onClick={onReconnect}
+          className="flex items-center gap-1 text-[11px] text-primary hover:underline cursor-pointer"
+        >
+          <RefreshCw className="w-3 h-3" />
+          {t("connections.reconnectAll")}
+        </button>
       )}
-
-      {/* No Picker key set anywhere (no global secret, no per-user field):
-          let the user paste their own browser API key from their Google
-          Cloud project's Picker API, same pattern as a Custom API field.
-          Opened via the "Picker off" badge above, not a separate trigger. */}
-      {driveGranted && !filePickerAvailable && pickerKeyOpen && (
-        <div className="ml-11 mt-1.5">
-          <div className="flex flex-wrap items-center gap-1.5">
-            <Input
-              type="text"
-              value={pickerKeyValue}
-              onChange={(e) => setPickerKeyValue(e.target.value)}
-              placeholder={t("connections.googlePicker.keyPlaceholder")}
-              className="h-7 text-[11px] w-56"
-              disabled={savingPickerKey}
-              autoFocus
-            />
-            <Button
-              size="sm"
-              className="h-7 text-[11px] px-2"
-              onClick={savePickerKey}
-              disabled={savingPickerKey || !pickerKeyValue.trim()}
-            >
-              {savingPickerKey ? (
-                <Loader2 className="w-3 h-3 animate-spin" />
-              ) : (
-                t("common:save")
-              )}
-            </Button>
-            <button
-              onClick={() => {
-                setPickerKeyOpen(false);
-                setPickerKeyValue("");
-                setPickerKeyError(null);
-              }}
-              disabled={savingPickerKey}
-              className="text-[11px] text-muted-foreground hover:text-foreground cursor-pointer"
-            >
-              {t("common:cancel")}
-            </button>
-            {pickerKeyError && (
-              <p className="w-full text-[11px] text-destructive">{pickerKeyError}</p>
-            )}
-          </div>
-        </div>
-      )}
-    </>
+    </div>
   );
 }
