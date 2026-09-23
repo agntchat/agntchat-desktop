@@ -53,8 +53,9 @@ import type {
  *     override, no progress ticker).
  *   - File / image cards carry an inline data-URI download URL, so the
  *     FileMessage never fetches a signed URL.
- *   - Result cards use link (`url`) CTAs only — never `send_email` — so a
- *     click can't fire a real Gmail send.
+ *   - Result cards are A2UI Surfaces whose actions are A2UI calls: only
+ *     `openUrl` function calls, plus one `event` action already stamped
+ *     complete in the data model, so nothing can post to the action endpoint.
  *   - Cards whose primary click navigates or mutates (open artifact viewer,
  *     open a thread, stop a task) are flagged `interactive: false`; the
  *     gallery wraps those so a stray click is swallowed. Cards whose only

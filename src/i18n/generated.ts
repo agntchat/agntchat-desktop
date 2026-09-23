@@ -2653,10 +2653,6 @@ export const resources = {
         "sendTimeout": "Message send timed out",
         "startFailed": "Failed to start conversation."
       },
-      "experience": {
-        "customCanvas": "Custom Canvas",
-        "noContent": "No content"
-      },
       "goToConversation": "Go to conversation",
       "group": "Group",
       "groupConversation": "Group conversation",
@@ -8131,10 +8127,6 @@ export const resources = {
         "selectParticipant": "Selecciona al menos un participante",
         "sendTimeout": "Se agotó el tiempo al enviar el mensaje",
         "startFailed": "No se pudo iniciar la conversación."
-      },
-      "experience": {
-        "customCanvas": "Lienzo personalizado",
-        "noContent": "Sin contenido"
       },
       "goToConversation": "Ir a la conversación",
       "group": "Grupo",
@@ -13611,10 +13603,6 @@ export const resources = {
         "sendTimeout": "Zeitüberschreitung beim Senden der Nachricht",
         "startFailed": "Starten der Unterhaltung fehlgeschlagen."
       },
-      "experience": {
-        "customCanvas": "Eigenes Canvas",
-        "noContent": "Kein Inhalt"
-      },
       "goToConversation": "Zur Unterhaltung gehen",
       "group": "Gruppe",
       "groupConversation": "Gruppenunterhaltung",
@@ -19089,10 +19077,6 @@ export const resources = {
         "selectParticipant": "Sélectionnez au moins un participant",
         "sendTimeout": "Délai d'attente dépassé pour l'envoi du message",
         "startFailed": "Échec du démarrage de la conversation."
-      },
-      "experience": {
-        "customCanvas": "Canevas personnalisé",
-        "noContent": "Aucun contenu"
       },
       "goToConversation": "Aller à la conversation",
       "group": "Groupe",
@@ -24569,10 +24553,6 @@ export const resources = {
         "sendTimeout": "Tempo esgotado ao enviar mensagem",
         "startFailed": "Falha ao iniciar conversa."
       },
-      "experience": {
-        "customCanvas": "Canvas Personalizado",
-        "noContent": "Sem conteúdo"
-      },
       "goToConversation": "Ir para a conversa",
       "group": "Grupo",
       "groupConversation": "Conversa em grupo",
@@ -30047,10 +30027,6 @@ export const resources = {
         "selectParticipant": "参加者を1人以上選択してください",
         "sendTimeout": "メッセージの送信がタイムアウトしました",
         "startFailed": "会話の開始に失敗しました。"
-      },
-      "experience": {
-        "customCanvas": "カスタムキャンバス",
-        "noContent": "コンテンツがありません"
       },
       "goToConversation": "会話に移動",
       "group": "グループ",
@@ -35527,10 +35503,6 @@ export const resources = {
         "sendTimeout": "发送消息超时",
         "startFailed": "创建对话失败。"
       },
-      "experience": {
-        "customCanvas": "自定义画布",
-        "noContent": "无内容"
-      },
       "goToConversation": "前往对话",
       "group": "群组",
       "groupConversation": "群组对话",
@@ -41005,10 +40977,6 @@ export const resources = {
         "selectParticipant": "참가자를 한 명 이상 선택하세요",
         "sendTimeout": "메시지 전송 시간 초과",
         "startFailed": "대화 시작 실패"
-      },
-      "experience": {
-        "customCanvas": "커스텀 캔버스",
-        "noContent": "내용 없음"
       },
       "goToConversation": "대화로 이동",
       "group": "그룹",
@@ -46485,10 +46453,6 @@ export const resources = {
         "sendTimeout": "Invio del messaggio scaduto",
         "startFailed": "Impossibile avviare la conversazione."
       },
-      "experience": {
-        "customCanvas": "Canvas personalizzato",
-        "noContent": "Nessun contenuto"
-      },
       "goToConversation": "Vai alla conversazione",
       "group": "Gruppo",
       "groupConversation": "Conversazione di gruppo",
@@ -51963,10 +51927,6 @@ export const resources = {
         "selectParticipant": "कम से कम एक प्रतिभागी चुनें",
         "sendTimeout": "संदेश भेजने का समय समाप्त",
         "startFailed": "बातचीत शुरू करना विफल।"
-      },
-      "experience": {
-        "customCanvas": "कस्टम कैनवास",
-        "noContent": "कोई सामग्री नहीं"
       },
       "goToConversation": "बातचीत पर जाएँ",
       "group": "समूह",
