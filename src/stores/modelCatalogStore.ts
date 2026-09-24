@@ -11,6 +11,24 @@ export interface CatalogModel {
    *  Used by the org config UI for picking which runtimes a model is
    *  available on. The model dropdown is filtered server-side. */
   runtimes?: Record<string, string>;
+  /** An older model the server still offers but no longer leads with.
+   *  Omitted on current models. The server orders each provider's list
+   *  current-first, so pickers show the current ones up front and file
+   *  these under "Other models" (see `splitModels`). The `auto` entry is
+   *  never legacy. */
+  legacy?: boolean;
+}
+
+/** Partition a provider's models into current and legacy ("Other models"),
+ *  preserving the server's order within each group. */
+export function splitModels(models: CatalogModel[]): {
+  current: CatalogModel[];
+  other: CatalogModel[];
+} {
+  const current: CatalogModel[] = [];
+  const other: CatalogModel[] = [];
+  for (const m of models) (m.legacy ? other : current).push(m);
+  return { current, other };
 }
 
 export interface CatalogProvider {

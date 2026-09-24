@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useMemo, useRef, useState, type ReactNode } from "react";
+import { Fragment, useCallback, useEffect, useMemo, useRef, useState, type ReactNode } from "react";
 import { useNavStore } from "../stores/navStore";
 import { useTranslation } from "react-i18next";
 import {
@@ -35,7 +35,7 @@ import { openExternal } from "../lib/openExternal";
 import { useAgentPresets, usePersonaVocab, type AgentPreset } from "../lib/agentPresets";
 import { groupIntegrationTools, anyGoogleTool } from "../lib/toolGroups";
 import { useLlmKeyStore } from "../stores/llmKeyStore";
-import { useModelCatalog } from "../stores/modelCatalogStore";
+import { splitModels, useModelCatalog, type CatalogModel } from "../stores/modelCatalogStore";
 import { useAgentTypes } from "../lib/agentTypes";
 import { useFieldLimits } from "../lib/fieldLimits";
 import { uploadProcessedBlob } from "../lib/imageProcessor";
@@ -1490,24 +1490,42 @@ export function CreateAgentModal({ onClose }: { onClose: () => void }) {
                       <SelectContent>
                         {PROVIDERS.map((p) => {
                           const blocked = providerBlock(p.id);
+                          const blockedSuffix = blocked
+                            ? ` · ${t(`create.modelUnavailable.${blocked}`)}`
+                            : "";
+                          // Current models lead; legacy ones get their own
+                          // "Other models" group per provider.
+                          const { current, other } = splitModels(
+                            catalog.modelsFor(p.id)
+                          );
+                          const item = (m: CatalogModel) => (
+                            <SelectItem
+                              key={m.id}
+                              value={brainValue(p.id, m.id)}
+                              disabled={blocked !== null}
+                            >
+                              {m.label}
+                            </SelectItem>
+                          );
                           return (
-                            <SelectGroup key={p.id}>
-                              <SelectLabel>
-                                {p.label}
-                                {blocked
-                                  ? ` · ${t(`create.modelUnavailable.${blocked}`)}`
-                                  : ""}
-                              </SelectLabel>
-                              {catalog.modelsFor(p.id).map((m) => (
-                                <SelectItem
-                                  key={m.id}
-                                  value={brainValue(p.id, m.id)}
-                                  disabled={blocked !== null}
-                                >
-                                  {m.label}
-                                </SelectItem>
-                              ))}
-                            </SelectGroup>
+                            <Fragment key={p.id}>
+                              <SelectGroup>
+                                <SelectLabel>
+                                  {p.label}
+                                  {blockedSuffix}
+                                </SelectLabel>
+                                {current.map(item)}
+                              </SelectGroup>
+                              {other.length > 0 && (
+                                <SelectGroup>
+                                  <SelectLabel>
+                                    {`${p.label} · ${t("common:otherModels")}`}
+                                    {blockedSuffix}
+                                  </SelectLabel>
+                                  {other.map(item)}
+                                </SelectGroup>
+                              )}
+                            </Fragment>
                           );
                         })}
                       </SelectContent>

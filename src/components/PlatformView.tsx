@@ -20,7 +20,7 @@ import * as api from "../lib/api";
 import i18n from "../i18n";
 import { cn } from "../lib/utils";
 import { useAuthStore } from "../stores/authStore";
-import { useModelCatalog, type CatalogProvider } from "../stores/modelCatalogStore";
+import { splitModels, useModelCatalog, type CatalogProvider } from "../stores/modelCatalogStore";
 import { useWorkspaces } from "../stores/workspaceStore";
 import { ConnectAnthropicDialog, ConnectHostDialog } from "./FleetView";
 import { HostRow, type HostRowDetailContext } from "./hosts/HostRow";
@@ -2055,12 +2055,15 @@ function AgentManageDialog({
     [providers, effectiveBackend]
   );
   // Keep the agent's current model selectable even if it's not in the list.
-  const modelOptions = useMemo(() => {
-    const opts = catalogModels.map((m) => ({ id: m.id, label: m.label }));
-    if (model && !opts.some((o) => o.id === model)) {
-      return [{ id: model, label: t("currentModel", { model }) }, ...opts];
+  // Current models lead; legacy ones render under an "Other models" optgroup.
+  const { modelOptions, otherModelOptions } = useMemo(() => {
+    const { current, other } = splitModels(catalogModels);
+    const opts = current.map((m) => ({ id: m.id, label: m.label }));
+    const others = other.map((m) => ({ id: m.id, label: m.label }));
+    if (model && !catalogModels.some((m) => m.id === model)) {
+      opts.unshift({ id: model, label: t("currentModel", { model }) });
     }
-    return opts;
+    return { modelOptions: opts, otherModelOptions: others };
   }, [catalogModels, model, t]);
 
   // Hosted targets: agent's own-org hosts + any shared host (matches the
@@ -2164,15 +2167,26 @@ function AgentManageDialog({
               id="agent-model"
               value={model}
               onChange={(e) => setModel(e.target.value)}
-              disabled={modelOptions.length === 0}
+              disabled={modelOptions.length + otherModelOptions.length === 0}
               className="flex h-9 w-full rounded-md border border-input bg-transparent px-3 py-1 text-sm shadow-sm focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:opacity-50"
             >
-              {modelOptions.length === 0 && <option value="">{t("pickBackendFirst")}</option>}
+              {modelOptions.length + otherModelOptions.length === 0 && (
+                <option value="">{t("pickBackendFirst")}</option>
+              )}
               {modelOptions.map((m) => (
                 <option key={m.id} value={m.id}>
                   {m.label}
                 </option>
               ))}
+              {otherModelOptions.length > 0 && (
+                <optgroup label={t("common:otherModels")}>
+                  {otherModelOptions.map((m) => (
+                    <option key={m.id} value={m.id}>
+                      {m.label}
+                    </option>
+                  ))}
+                </optgroup>
+              )}
             </select>
           </div>
           <div className="space-y-1">

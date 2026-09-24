@@ -4,7 +4,12 @@ import { useTranslation } from "react-i18next";
 
 import * as api from "../lib/api";
 import type { OrganizationProviderConfig } from "../lib/api";
-import { useModelCatalog, type CatalogProvider } from "../stores/modelCatalogStore";
+import {
+  splitModels,
+  useModelCatalog,
+  type CatalogModel,
+  type CatalogProvider,
+} from "../stores/modelCatalogStore";
 
 import { Button } from "./ui/button";
 import {
@@ -185,6 +190,26 @@ function ProviderRow({ provider, config, onUpsert, onReset }: ProviderRowProps) 
     });
   };
 
+  // Legacy models sit under a sub-heading, after the current ones —
+  // display only; the allow-list logic is the same for both.
+  const { current: currentModels, other: otherModels } = splitModels(provider.models);
+  const renderModel = (model: CatalogModel) => {
+    const allowed = allowedModels === null || allowedModels.includes(model.id);
+    return (
+      <label
+        key={model.id}
+        className="flex items-center gap-2 text-sm cursor-pointer"
+      >
+        <Switch
+          size="sm"
+          checked={allowed}
+          onCheckedChange={(v: boolean) => toggleModel(model.id, v)}
+        />
+        <span className="truncate">{model.label}</span>
+      </label>
+    );
+  };
+
   return (
     <div className="rounded-md border border-border px-3 py-3">
       <div className="flex items-center justify-between">
@@ -235,23 +260,13 @@ function ProviderRow({ provider, config, onUpsert, onReset }: ProviderRowProps) 
 
       {enabled && (
         <div className="mt-3 grid grid-cols-1 sm:grid-cols-2 gap-1.5">
-          {provider.models.map((model) => {
-            const allowed =
-              allowedModels === null || allowedModels.includes(model.id);
-            return (
-              <label
-                key={model.id}
-                className="flex items-center gap-2 text-sm cursor-pointer"
-              >
-                <Switch
-                  size="sm"
-                  checked={allowed}
-                  onCheckedChange={(v: boolean) => toggleModel(model.id, v)}
-                />
-                <span className="truncate">{model.label}</span>
-              </label>
-            );
-          })}
+          {currentModels.map(renderModel)}
+          {otherModels.length > 0 && (
+            <div className="col-span-full mt-1.5 text-xs text-muted-foreground">
+              {t("common:otherModels")}
+            </div>
+          )}
+          {otherModels.map(renderModel)}
         </div>
       )}
     </div>

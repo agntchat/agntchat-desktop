@@ -4,13 +4,16 @@ import { Label } from "@/components/ui/label";
 import {
   Select,
   SelectContent,
+  SelectGroup,
   SelectItem,
+  SelectLabel,
+  SelectSeparator,
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
 import { getAgentRuntimeOptions } from "../lib/api";
 import { useAgentStore } from "../stores/agentStore";
-import { useModelCatalog } from "../stores/modelCatalogStore";
+import { splitModels, useModelCatalog } from "../stores/modelCatalogStore";
 
 // Select-safe stand-in for "" (shadcn items can't hold an empty value).
 const AGENT_DEFAULT = "__default__";
@@ -69,6 +72,7 @@ export function ModelOverrideField({
   // Keep a stored value selectable even when it's no longer in the catalog
   // (renamed/retired model) so opening the editor doesn't silently clear it.
   const orphaned = !!value && !models.some((m) => m.id === value);
+  const { current, other } = splitModels(models);
   return (
     <div className="space-y-1.5">
       <Label className="text-xs">{t("modelOverride.label")}</Label>
@@ -94,11 +98,24 @@ export function ModelOverrideField({
             {t("modelOverride.agentDefault")}
           </SelectItem>
           {orphaned && <SelectItem value={value}>{value}</SelectItem>}
-          {models.map((m) => (
+          {current.map((m) => (
             <SelectItem key={m.id} value={m.id}>
               {m.label}
             </SelectItem>
           ))}
+          {other.length > 0 && (
+            <>
+              <SelectSeparator />
+              <SelectGroup>
+                <SelectLabel>{t("common:otherModels")}</SelectLabel>
+                {other.map((m) => (
+                  <SelectItem key={m.id} value={m.id}>
+                    {m.label}
+                  </SelectItem>
+                ))}
+              </SelectGroup>
+            </>
+          )}
         </SelectContent>
       </Select>
       <p className="text-[11px] text-muted-foreground">

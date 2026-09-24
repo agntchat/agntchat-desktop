@@ -142,6 +142,7 @@ const BACKEND_DISPLAY_NAMES: Record<string, string> = {
   openclaw: "OpenClaw",
   anthropic: "Anthropic API",
   openai: "OpenAI API",
+  openrouter: "OpenRouter",
   google: "Google AI",
 };
 

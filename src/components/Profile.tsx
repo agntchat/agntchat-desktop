@@ -970,7 +970,7 @@ export function Profile({ onClose }: { onClose: () => void }) {
   // Also exclude LLM-key providers — they live in the dedicated LLM Keys tab
   // so users have a single home for them. Connections is for service
   // integrations (Gmail/Calendar/Drive/GitHub/etc.), not raw model keys.
-  const LLM_PROVIDER_NAMES = new Set(["anthropic", "openai"]);
+  const LLM_PROVIDER_NAMES = new Set(["anthropic", "openai", "openrouter"]);
   const standardProviders = providers.filter(
     (p) =>
       p.name !== "custom" &&
@@ -2701,6 +2701,7 @@ function LlmApiKeysSection() {
     switch (providerId) {
       case "anthropic": return "sk-ant-...";
       case "openai": return "sk-...";
+      case "openrouter": return "sk-or-...";
       default: return t("common:apiKey");
     }
   };

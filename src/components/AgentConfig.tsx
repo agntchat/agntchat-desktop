@@ -60,7 +60,7 @@ import {
   EFFORT_LEVELS,
   normalizeModelName,
 } from "../lib/models";
-import { useModelCatalog } from "../stores/modelCatalogStore";
+import { splitModels, useModelCatalog } from "../stores/modelCatalogStore";
 import { useLlmKeyStore } from "../stores/llmKeyStore";
 import { useChatStore } from "../stores/chatStore";
 import { useNavStore } from "../stores/navStore";
@@ -75,7 +75,10 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import {
   Select,
   SelectContent,
+  SelectGroup,
   SelectItem,
+  SelectLabel,
+  SelectSeparator,
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
@@ -528,6 +531,8 @@ export function AgentConfig({
     .modelsFor(backend)
     .filter((m) => !m.runtimes || m.runtimes[connectionRuntime] != null);
   const currentModelInList = availableModels.some((m) => m.id === model);
+  // Current models lead the picker; legacy ones sit under "Other models".
+  const { current: currentModels, other: otherModels } = splitModels(availableModels);
 
   // Reconcile a hosted agent's stored backend/model with the host's seat.
   // An agent flipped local→hosted keeps its old local provider (e.g. an
@@ -1253,11 +1258,24 @@ export function AgentConfig({
                           })}
                         </SelectItem>
                       )}
-                      {availableModels.map((m) => (
+                      {currentModels.map((m) => (
                         <SelectItem key={m.id} value={m.id}>
                           {m.label}
                         </SelectItem>
                       ))}
+                      {otherModels.length > 0 && (
+                        <>
+                          <SelectSeparator />
+                          <SelectGroup>
+                            <SelectLabel>{t("common:otherModels")}</SelectLabel>
+                            {otherModels.map((m) => (
+                              <SelectItem key={m.id} value={m.id}>
+                                {m.label}
+                              </SelectItem>
+                            ))}
+                          </SelectGroup>
+                        </>
+                      )}
                     </SelectContent>
                   </Select>
                 </div>
