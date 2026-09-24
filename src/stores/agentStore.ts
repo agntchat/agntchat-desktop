@@ -17,6 +17,9 @@ interface AgentConfig {
   /** "auto" when the owner picked Auto (server `model_config.model_mode`) —
    *  the platform picks the model per turn. null for a fixed model. */
   modelMode: string | null;
+  /** Models this agent's auto mode must never pick (server
+   *  `model_config.auto_excluded_models`). Kept while a model is pinned. */
+  autoExcludedModels: string[];
   llmApiKey: string | null;
   /** Reference to a named key in llmKeyStore — takes precedence over provider default */
   llmApiKeyId: string | null;
@@ -98,6 +101,7 @@ function parseServerModelConfig(
     "vertex_project",
     "llm_api_key_id",
     "model_mode",
+    "auto_excluded_models",
     // Server-injected for CLI cloud connections; consumed by the bridge via
     // the agent profile, not the local --model arg, so we don't surface it
     // in AgentConfig — but list it as "known" so it doesn't warn.
@@ -143,6 +147,9 @@ function parseServerModelConfig(
   takeString("model", "model");
   // Always set, so a server that dropped auto clears a cached "auto".
   out.modelMode = mc.model_mode === "auto" ? "auto" : null;
+  out.autoExcludedModels = Array.isArray(mc.auto_excluded_models)
+    ? mc.auto_excluded_models.filter((id): id is string => typeof id === "string")
+    : [];
   takeNumber("max_tokens", "maxTokens");
   takeString("execution_mode", "executionMode");
   // No history_limit read: it is NOT a model_config key (the backend rejects
@@ -392,6 +399,7 @@ const DEFAULT_CONFIG: AgentConfig = {
   backend: "anthropic",
   model: "claude-sonnet-4-5-20250929",
   modelMode: null,
+  autoExcludedModels: [],
   llmApiKey: null,
   llmApiKeyId: null,
   maxTokens: 16384,
@@ -432,6 +440,7 @@ const SERVER_OWNED_CONFIG_KEYS: readonly (keyof AgentConfig)[] = [
   "backend",
   "model",
   "modelMode",
+  "autoExcludedModels",
   // maxTokens has no desktop control, but mobile writes model_config.max_tokens
   // from its agent-detail Model section. Left device-local, the blob's default
   // (DEFAULT_CONFIG.maxTokens) shadowed that value forever — and since Tauri
@@ -1175,6 +1184,8 @@ export const useAgentStore = create<AgentState>((set, get) => ({
       const mcPatch: Record<string, unknown> = {};
       if (partial.backend) mcPatch.backend = partial.backend;
       if (partialIn.model) mcPatch.model = partialIn.model;
+      if ("autoExcludedModels" in partial)
+        mcPatch.auto_excluded_models = partial.autoExcludedModels;
       if (partial.executionMode) mcPatch.execution_mode = partial.executionMode;
       // `"in" partial` semantics, not truthiness: the Effort picker's
       // "Default" option writes null to clear the override, and a truthy

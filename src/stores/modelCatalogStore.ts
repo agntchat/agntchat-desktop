@@ -17,6 +17,10 @@ export interface CatalogModel {
    *  these under "Other models" (see `splitModels`). The `auto` entry is
    *  never legacy. */
   legacy?: boolean;
+  /** On the `auto` entry only: the models auto may pick on this provider,
+   *  with their tier (1 light / 2 standard / 3 heavy), in pick order — what
+   *  the per-agent exclusion checklist offers. */
+  tierModels?: { id: string; tier: number }[];
 }
 
 /** Partition a provider's models into current and legacy ("Other models"),

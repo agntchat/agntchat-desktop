@@ -126,6 +126,14 @@ export const resources = {
           "placeholder": "sk-...",
           "providerDefault": "Provider Default"
         },
+        "autoModels": {
+          "hint": "Switch a model off and Auto never runs this agent on it. Turns it would have taken go to the next model up.",
+          "lastOne": "Auto needs at least one model.",
+          "tier1": "Light",
+          "tier2": "Standard",
+          "tier3": "Heavy",
+          "title": "Models Auto can use"
+        },
         "awsRegionPlaceholder": "AWS region (e.g. us-east-1)",
         "behavior": {
           "autoRestart": "Auto-restart on crash or stall",
@@ -5636,6 +5644,14 @@ export const resources = {
           "noneSetInSettings": "Ninguna (configúrala en Ajustes)",
           "placeholder": "sk-...",
           "providerDefault": "Proveedor predeterminado"
+        },
+        "autoModels": {
+          "hint": "Desactiva un modelo y Auto nunca lo usará para este agente. Sus turnos pasan al siguiente modelo superior.",
+          "lastOne": "Auto necesita al menos un modelo.",
+          "tier1": "Ligero",
+          "tier2": "Estándar",
+          "tier3": "Exigente",
+          "title": "Modelos que Auto puede usar"
         },
         "awsRegionPlaceholder": "Región de AWS (p. ej. us-east-1)",
         "behavior": {
@@ -11148,6 +11164,14 @@ export const resources = {
           "placeholder": "sk-...",
           "providerDefault": "Anbieter-Standard"
         },
+        "autoModels": {
+          "hint": "Schalte ein Modell aus, und Auto setzt es für diesen Agenten nie ein. Seine Züge übernimmt das nächststärkere Modell.",
+          "lastOne": "Auto braucht mindestens ein Modell.",
+          "tier1": "Leicht",
+          "tier2": "Standard",
+          "tier3": "Anspruchsvoll",
+          "title": "Modelle, die Auto nutzen darf"
+        },
         "awsRegionPlaceholder": "AWS-Region (z. B. us-east-1)",
         "behavior": {
           "autoRestart": "Automatischer Neustart bei Absturz oder Blockade",
@@ -16658,6 +16682,14 @@ export const resources = {
           "noneSetInSettings": "Aucune (définie dans les Paramètres)",
           "placeholder": "sk-...",
           "providerDefault": "Fournisseur par défaut"
+        },
+        "autoModels": {
+          "hint": "Désactivez un modèle et Auto ne l'utilisera jamais pour cet agent. Ses tours passent au modèle supérieur suivant.",
+          "lastOne": "Auto a besoin d'au moins un modèle.",
+          "tier1": "Léger",
+          "tier2": "Standard",
+          "tier3": "Exigeant",
+          "title": "Modèles utilisables par Auto"
         },
         "awsRegionPlaceholder": "Région AWS (ex. us-east-1)",
         "behavior": {
@@ -22170,6 +22202,14 @@ export const resources = {
           "placeholder": "sk-...",
           "providerDefault": "Padrão do Provedor"
         },
+        "autoModels": {
+          "hint": "Desative um modelo e o Auto nunca o usará para este agente. Os turnos dele passam para o próximo modelo acima.",
+          "lastOne": "O Auto precisa de pelo menos um modelo.",
+          "tier1": "Leve",
+          "tier2": "Padrão",
+          "tier3": "Exigente",
+          "title": "Modelos que o Auto pode usar"
+        },
         "awsRegionPlaceholder": "Região da AWS (ex.: us-east-1)",
         "behavior": {
           "autoRestart": "Reiniciar automaticamente após falha ou travamento",
@@ -27680,6 +27720,14 @@ export const resources = {
           "noneSetInSettings": "なし（設定で指定）",
           "placeholder": "sk-…",
           "providerDefault": "プロバイダーの既定値"
+        },
+        "autoModels": {
+          "hint": "モデルをオフにすると、Auto はこのエージェントでそのモデルを使いません。そのターンは一つ上のモデルが担当します。",
+          "lastOne": "Auto には少なくとも 1 つのモデルが必要です。",
+          "tier1": "軽量",
+          "tier2": "標準",
+          "tier3": "高負荷",
+          "title": "Auto が使えるモデル"
         },
         "awsRegionPlaceholder": "AWSリージョン（例：us-east-1）",
         "behavior": {
@@ -33192,6 +33240,14 @@ export const resources = {
           "placeholder": "sk-...",
           "providerDefault": "提供商默认值"
         },
+        "autoModels": {
+          "hint": "关闭某个模型后，Auto 不会再用它运行此智能体。原本由它处理的轮次会交给上一级模型。",
+          "lastOne": "Auto 至少需要一个模型。",
+          "tier1": "轻量",
+          "tier2": "标准",
+          "tier3": "高强度",
+          "title": "Auto 可使用的模型"
+        },
         "awsRegionPlaceholder": "AWS 区域（例如 us-east-1）",
         "behavior": {
           "autoRestart": "崩溃或卡住时自动重启",
@@ -38702,6 +38758,14 @@ export const resources = {
           "noneSetInSettings": "없음(설정에서 지정)",
           "placeholder": "sk-...",
           "providerDefault": "제공업체 기본값"
+        },
+        "autoModels": {
+          "hint": "모델을 끄면 Auto는 이 에이전트에서 그 모델을 절대 사용하지 않습니다. 해당 턴은 한 단계 위 모델이 맡습니다.",
+          "lastOne": "Auto에는 최소 한 개의 모델이 필요합니다.",
+          "tier1": "가벼움",
+          "tier2": "표준",
+          "tier3": "고강도",
+          "title": "Auto가 사용할 수 있는 모델"
         },
         "awsRegionPlaceholder": "AWS 리전(예: us-east-1)",
         "behavior": {
@@ -44214,6 +44278,14 @@ export const resources = {
           "placeholder": "sk-...",
           "providerDefault": "Predefinito del provider"
         },
+        "autoModels": {
+          "hint": "Disattiva un modello e Auto non lo userà mai per questo agente. I suoi turni passano al modello superiore successivo.",
+          "lastOne": "Auto ha bisogno di almeno un modello.",
+          "tier1": "Leggero",
+          "tier2": "Standard",
+          "tier3": "Impegnativo",
+          "title": "Modelli che Auto può usare"
+        },
         "awsRegionPlaceholder": "Regione AWS (es. us-east-1)",
         "behavior": {
           "autoRestart": "Riavvio automatico in caso di crash o blocco",
@@ -49724,6 +49796,14 @@ export const resources = {
           "noneSetInSettings": "कोई नहीं (सेटिंग्स में सेट करें)",
           "placeholder": "sk-...",
           "providerDefault": "प्रोवाइडर डिफ़ॉल्ट"
+        },
+        "autoModels": {
+          "hint": "किसी मॉडल को बंद करें और Auto इस एजेंट के लिए उसका कभी उपयोग नहीं करेगा। उसके टर्न अगले बड़े मॉडल को मिलेंगे।",
+          "lastOne": "Auto को कम से कम एक मॉडल चाहिए।",
+          "tier1": "हल्का",
+          "tier2": "मानक",
+          "tier3": "भारी",
+          "title": "Auto जिन मॉडलों का उपयोग कर सकता है"
         },
         "awsRegionPlaceholder": "AWS क्षेत्र (जैसे, us-east-1)",
         "behavior": {

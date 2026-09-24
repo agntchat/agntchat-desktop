@@ -61,6 +61,7 @@ import {
   normalizeModelName,
 } from "../lib/models";
 import { splitModels, useModelCatalog } from "../stores/modelCatalogStore";
+import { AutoModelExclusions } from "./AutoModelExclusions";
 import { useLlmKeyStore } from "../stores/llmKeyStore";
 import { useChatStore } from "../stores/chatStore";
 import { useNavStore } from "../stores/navStore";
@@ -1279,6 +1280,19 @@ export function AgentConfig({
                     </SelectContent>
                   </Select>
                 </div>
+
+                {config.modelMode === AUTO_MODEL && (
+                  <AutoModelExclusions
+                    tierModels={
+                      availableModels.find((m) => m.id === AUTO_MODEL)?.tierModels ?? []
+                    }
+                    excluded={config.autoExcludedModels}
+                    labelFor={(id) =>
+                      catalog.modelLabel(id, backend) || normalizeModelName(id) || id
+                    }
+                    onChange={(ids) => updateConfig(agent.id, { autoExcludedModels: ids })}
+                  />
+                )}
 
                 {requiresLlmKey && (
                 <div className="space-y-1.5">
