@@ -460,7 +460,7 @@ export function AgentRow({
 
         <div className="relative shrink-0">
           <Avatar className="h-9 w-9 rounded-lg">
-            {managed.agent.avatarUrl && <AvatarImage src={managed.agent.avatarUrl} className="rounded-lg" displaySize={36} />}
+            {managed.agent.avatarUrl && <AvatarImage src={managed.agent.avatarUrl} className="rounded-lg" />}
             <AvatarFallback className="rounded-lg bg-primary/10 text-primary text-xs font-semibold">
               {managed.agent.displayName.charAt(0).toUpperCase()}
             </AvatarFallback>

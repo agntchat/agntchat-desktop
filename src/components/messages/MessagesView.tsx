@@ -435,7 +435,7 @@ function ConversationPane({
         <div className="flex items-center gap-3 min-w-0">
           {conversation?.avatarUrl ? (
             <Avatar className="h-9 w-9 shrink-0">
-              <AvatarImage src={conversation.avatarUrl} alt={headerTitle} displaySize={36} />
+              <AvatarImage src={conversation.avatarUrl} alt={headerTitle} />
               <AvatarFallback className="bg-primary/10 text-primary text-xs font-semibold">
                 {headerTitle.charAt(0).toUpperCase()}
               </AvatarFallback>
@@ -445,7 +445,7 @@ function ConversationPane({
           ) : (
             <Avatar className="h-9 w-9 shrink-0">
               {otherParticipant?.avatarUrl ? (
-                <AvatarImage src={otherParticipant.avatarUrl} alt={headerTitle} displaySize={36} />
+                <AvatarImage src={otherParticipant.avatarUrl} alt={headerTitle} />
               ) : null}
               <AvatarFallback className="bg-primary/10 text-primary text-xs font-semibold">
                 {headerTitle.charAt(0).toUpperCase()}

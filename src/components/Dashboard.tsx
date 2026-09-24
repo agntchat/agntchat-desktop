@@ -74,7 +74,7 @@ function DirectoryItem({
       )}
     >
       <Avatar className="h-10 w-10 shrink-0">
-        {agent?.avatarUrl && <AvatarImage src={agent.avatarUrl} displaySize={40} />}
+        {agent?.avatarUrl && <AvatarImage src={agent.avatarUrl} />}
         <AvatarFallback className="text-xs">
           <Bot className="h-4 w-4" />
         </AvatarFallback>
@@ -183,7 +183,7 @@ function DirectoryAgentDetail({
     <div className="flex h-full flex-col bg-card">
       <div className="flex items-center gap-3 border-b border-border px-6 py-4">
         <Avatar className="h-12 w-12">
-          {agent?.avatarUrl && <AvatarImage src={agent.avatarUrl} displaySize={48} />}
+          {agent?.avatarUrl && <AvatarImage src={agent.avatarUrl} />}
           <AvatarFallback>
             <Bot className="h-5 w-5" />
           </AvatarFallback>

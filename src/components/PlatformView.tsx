@@ -1069,7 +1069,7 @@ function UsersTab() {
                     <div className="flex items-center gap-2.5">
                       <Avatar className="h-7 w-7 shrink-0">
                         {u.avatarUrl ? (
-                          <AvatarImage src={u.avatarUrl} alt={u.displayName} displaySize={28} />
+                          <AvatarImage src={u.avatarUrl} alt={u.displayName} />
                         ) : null}
                         <AvatarFallback className="text-[10px]">
                           {initials(u.displayName, u.email)}
@@ -1809,7 +1809,7 @@ function FeatureFlagRow({
                 >
                   <Avatar className="h-4 w-4">
                     {u.avatarUrl ? (
-                      <AvatarImage src={u.avatarUrl} alt={u.displayName} displaySize={16} />
+                      <AvatarImage src={u.avatarUrl} alt={u.displayName} />
                     ) : null}
                     <AvatarFallback className="text-[8px]">
                       {initials(u.displayName, u.email)}
@@ -1862,7 +1862,7 @@ function FeatureFlagRow({
                     >
                       <Avatar className="h-6 w-6">
                         {u.avatarUrl ? (
-                          <AvatarImage src={u.avatarUrl} alt={u.displayName} displaySize={24} />
+                          <AvatarImage src={u.avatarUrl} alt={u.displayName} />
                         ) : null}
                         <AvatarFallback className="text-[9px]">
                           {initials(u.displayName, u.email)}

@@ -635,7 +635,7 @@ function PersonSearchRow({
     <div className="flex items-center gap-3 border-b border-border px-4 py-3 last:border-b-0">
       <div className="relative">
         <Avatar className="h-9 w-9">
-          {person.avatarUrl && <AvatarImage src={person.avatarUrl} displaySize={36} />}
+          {person.avatarUrl && <AvatarImage src={person.avatarUrl} />}
           <AvatarFallback><User className="h-4 w-4" /></AvatarFallback>
         </Avatar>
         {online && <PresenceDot online className="h-2.5 w-2.5" />}
@@ -742,7 +742,7 @@ function FriendCard({
       <div className="flex items-start gap-3">
         <div className="relative shrink-0">
           <Avatar className="h-11 w-11">
-            {person?.avatarUrl && <AvatarImage src={person.avatarUrl} displaySize={44} />}
+            {person?.avatarUrl && <AvatarImage src={person.avatarUrl} />}
             <AvatarFallback className="text-sm font-semibold">
               {initials(person?.displayName)}
             </AvatarFallback>
@@ -944,7 +944,7 @@ function FriendProfileBody({
           <div className="rounded-full bg-background p-1 shadow-lg">
             <Avatar className="h-24 w-24">
               {person.avatarUrl && (
-                <AvatarImage src={person.avatarUrl} displaySize={96} className="rounded-full" />
+                <AvatarImage src={person.avatarUrl} className="rounded-full" />
               )}
               <AvatarFallback className="text-2xl font-semibold">
                 {initials(person.displayName)}
@@ -1024,7 +1024,7 @@ function FriendProfileBody({
                   style={{ marginLeft: idx === 0 ? 0 : -10, zIndex: 3 - idx }}
                 >
                   <Avatar className="h-6 w-6">
-                    {m.avatarUrl && <AvatarImage src={m.avatarUrl} displaySize={24} />}
+                    {m.avatarUrl && <AvatarImage src={m.avatarUrl} />}
                     <AvatarFallback className="text-[9px]">{initials(m.displayName)}</AvatarFallback>
                   </Avatar>
                 </div>
@@ -1111,7 +1111,7 @@ function FriendProfileBody({
                   >
                     <Avatar className="h-11 w-11 rounded-lg">
                       {listing.agent?.avatarUrl && (
-                        <AvatarImage src={listing.agent.avatarUrl} className="rounded-lg" displaySize={44} />
+                        <AvatarImage src={listing.agent.avatarUrl} className="rounded-lg" />
                       )}
                       <AvatarFallback className="rounded-lg bg-primary/10 text-primary">
                         <Bot className="h-4 w-4" />
@@ -1221,7 +1221,7 @@ function ConnectionCard({
       <div className="flex items-center gap-3">
         <div className="relative shrink-0">
           <Avatar className="h-11 w-11">
-            {person?.avatarUrl && <AvatarImage src={person.avatarUrl} displaySize={44} />}
+            {person?.avatarUrl && <AvatarImage src={person.avatarUrl} />}
             <AvatarFallback>{initials(person?.displayName)}</AvatarFallback>
           </Avatar>
           {online && <PresenceDot online />}
@@ -1278,7 +1278,7 @@ function BlockedUserRow({
   return (
     <div className="flex items-center gap-3 rounded-xl border border-border bg-card px-4 py-3">
       <Avatar className="h-9 w-9">
-        {person?.avatarUrl && <AvatarImage src={person.avatarUrl} displaySize={36} />}
+        {person?.avatarUrl && <AvatarImage src={person.avatarUrl} />}
         <AvatarFallback>{initials(person?.displayName)}</AvatarFallback>
       </Avatar>
       <div className="min-w-0 flex-1">
@@ -1593,7 +1593,7 @@ function MemberRow({
     <div className="flex items-center gap-3 rounded-xl border border-border bg-card p-4 transition-all hover:border-border-strong hover:shadow-sm">
       <div className="relative shrink-0">
         <Avatar className="h-11 w-11">
-          {p?.avatarUrl && <AvatarImage src={p.avatarUrl} alt="" displaySize={44} />}
+          {p?.avatarUrl && <AvatarImage src={p.avatarUrl} alt="" />}
           <AvatarFallback className="text-sm font-semibold">
             {(displayName.charAt(0) || "?").toUpperCase()}
           </AvatarFallback>

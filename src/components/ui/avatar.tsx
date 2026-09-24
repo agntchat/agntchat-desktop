@@ -2,7 +2,6 @@ import * as React from "react"
 import { Avatar as AvatarPrimitive } from "@base-ui/react/avatar"
 
 import { cn } from "@/lib/utils"
-import { avatarUrl } from "@/lib/avatarUrl"
 
 function Avatar({
   className,
@@ -28,25 +27,17 @@ function Avatar({
 }
 
 /**
- * `displaySize` (CSS px) opts into Supabase Storage's render-image transform
- * so we don't ship a full-size original to a 32px slot. We request 2× to
- * stay sharp on retina. Pass-through for non-Supabase URLs.
+ * Avatars are stored at MediaPolicy's upload target (512px WebP) and
+ * served as-is — never through Supabase's image transformer, which is
+ * billed per origin image.
  */
 function AvatarImage({
   className,
-  src,
-  displaySize,
   ...props
-}: AvatarPrimitive.Image.Props & { displaySize?: number }) {
-  const resolvedSrc =
-    typeof src === "string" && displaySize
-      ? avatarUrl(src, displaySize * 2)
-      : src
-
+}: AvatarPrimitive.Image.Props) {
   return (
     <AvatarPrimitive.Image
       data-slot="avatar-image"
-      src={resolvedSrc}
       className={cn(
         "aspect-square size-full rounded-full object-cover",
         className

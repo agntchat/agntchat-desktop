@@ -558,7 +558,6 @@ function LeftRail({
               <AvatarImage
                 src={participant.avatarUrl}
                 alt={participant.displayName}
-                displaySize={expanded ? 20 : 28}
               />
             ) : null}
             <AvatarFallback>

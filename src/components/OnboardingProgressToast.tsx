@@ -170,7 +170,7 @@ function ToastAvatar({ name, avatarUrl }: { name?: string; avatarUrl?: string | 
   return (
     <span className="flex h-11 w-11 shrink-0 items-center justify-center">
       <Avatar className="h-7 w-7 rounded-lg">
-        {avatarUrl && <AvatarImage src={avatarUrl} className="rounded-lg" displaySize={28} />}
+        {avatarUrl && <AvatarImage src={avatarUrl} className="rounded-lg" />}
         <AvatarFallback className="rounded-lg bg-primary/20 text-primary text-[11px] font-semibold">
           {(name ?? "?").charAt(0).toUpperCase()}
         </AvatarFallback>

@@ -522,7 +522,6 @@ function FileRow({
             <AvatarImage
               src={file.uploader.avatarUrl}
               alt={file.uploader.displayName}
-              displaySize={20}
             />
           ) : null}
           <AvatarFallback className="text-[9px]">
@@ -613,7 +612,6 @@ function ArtifactRow({
             <AvatarImage
               src={artifact.author.avatarUrl}
               alt={artifact.author.displayName}
-              displaySize={20}
             />
           ) : null}
           <AvatarFallback className="text-[9px]">
@@ -827,7 +825,7 @@ function ForwardDialog({
               >
                 <Avatar className="h-7 w-7">
                   {conv.avatarUrl ? (
-                    <AvatarImage src={conv.avatarUrl} alt={label} displaySize={28} />
+                    <AvatarImage src={conv.avatarUrl} alt={label} />
                   ) : null}
                   <AvatarFallback className="text-[10px]">
                     {label.charAt(0).toUpperCase()}

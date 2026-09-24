@@ -3928,7 +3928,7 @@ function ProfileSection({
           >
             <Avatar className="h-16 w-16 rounded-lg">
               {agent.avatarUrl && (
-                <AvatarImage src={agent.avatarUrl} className="rounded-lg" displaySize={64} />
+                <AvatarImage src={agent.avatarUrl} className="rounded-lg" />
               )}
               <AvatarFallback className="rounded-lg bg-primary/10 text-primary text-lg font-semibold">
                 {agent.displayName.charAt(0).toUpperCase()}

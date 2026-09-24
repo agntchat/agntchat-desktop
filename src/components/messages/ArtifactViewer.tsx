@@ -429,7 +429,7 @@ export function ArtifactViewer() {
                     <div key={c.id} className="mt-3 flex gap-2.5">
                       <Avatar size="sm" className="mt-0.5">
                         {cAuthor?.avatarUrl && (
-                          <AvatarImage src={cAuthor.avatarUrl} displaySize={24} />
+                          <AvatarImage src={cAuthor.avatarUrl} />
                         )}
                         <AvatarFallback className="text-[10px]">
                           {(cAuthor?.name || "?").slice(0, 2).toUpperCase()}
