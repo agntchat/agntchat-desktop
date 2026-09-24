@@ -1,6 +1,6 @@
 import { Fragment, useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
-import { useAgentStore, type ManagedAgent, type ActivityType } from "../stores/agentStore";
+import { useAgentStore, AUTO_MODEL, type ManagedAgent, type ActivityType } from "../stores/agentStore";
 import { usePresenceStore } from "../stores/presenceStore";
 import { AgentActivityIndicator } from "./AgentActivityIndicator";
 import { PhaseOrb } from "./PhaseOrb";
@@ -391,9 +391,11 @@ export function AgentRow({
   // Model label comes from the backend catalog (single source of truth) so it
   // never drifts from what the model dropdown offers; fall back to the raw id.
   const catalogModelLabel = useModelCatalog((s) => s.modelLabel);
+  // An auto agent shows "Auto" — config.model is only its startup model.
+  const shownModel =
+    managed.config.modelMode === AUTO_MODEL ? AUTO_MODEL : managed.config.model;
   const modelLabel =
-    catalogModelLabel(managed.config.model, managed.config.backend) ||
-    managed.config.model;
+    catalogModelLabel(shownModel, managed.config.backend) || shownModel;
   // Provider/engine label (Claude Code, Anthropic API, OpenAI Codex, …) shown
   // in the row meta line beside the runtime + model.
   const backendLabel = formatBackendLabel(managed.config.backend);

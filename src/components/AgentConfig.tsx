@@ -2,7 +2,7 @@ import { useState, useMemo, useCallback, useEffect, useRef } from "react";
 import { invoke } from "@tauri-apps/api/core";
 import { useTranslation } from "react-i18next";
 import i18n from "../i18n";
-import { useAgentStore, type ManagedAgent } from "../stores/agentStore";
+import { useAgentStore, AUTO_MODEL, type ManagedAgent } from "../stores/agentStore";
 import { usePresenceStore } from "../stores/presenceStore";
 import { useAuthStore } from "../stores/authStore";
 import { useActiveWorkspace, useWorkspaces, useWorkspacesEnabled } from "../stores/workspaceStore";
@@ -1230,7 +1230,7 @@ export function AgentConfig({
                 <div className="space-y-1.5">
                   <Label className="text-xs">{t("model.model")}</Label>
                   <Select
-                    value={model}
+                    value={config.modelMode === AUTO_MODEL ? AUTO_MODEL : model}
                     onValueChange={(val: string | null) => {
                       if (val) updateConfig(agent.id, { model: val });
                     }

@@ -10,7 +10,13 @@ import { useAuthStore } from "./authStore";
 
 interface AgentConfig {
   backend: string;
+  /** The concrete model the bridge is spawned with. For an auto agent the
+   *  server serves the default tier's model here (the per-turn pick rides on
+   *  each message), so the picker reads `modelMode`, not this. */
   model: string;
+  /** "auto" when the owner picked Auto (server `model_config.model_mode`) —
+   *  the platform picks the model per turn. null for a fixed model. */
+  modelMode: string | null;
   llmApiKey: string | null;
   /** Reference to a named key in llmKeyStore — takes precedence over provider default */
   llmApiKeyId: string | null;
@@ -91,6 +97,7 @@ function parseServerModelConfig(
     "vertex_region",
     "vertex_project",
     "llm_api_key_id",
+    "model_mode",
     // Server-injected for CLI cloud connections; consumed by the bridge via
     // the agent profile, not the local --model arg, so we don't surface it
     // in AgentConfig — but list it as "known" so it doesn't warn.
@@ -134,6 +141,8 @@ function parseServerModelConfig(
 
   takeString("backend", "backend");
   takeString("model", "model");
+  // Always set, so a server that dropped auto clears a cached "auto".
+  out.modelMode = mc.model_mode === "auto" ? "auto" : null;
   takeNumber("max_tokens", "maxTokens");
   takeString("execution_mode", "executionMode");
   // No history_limit read: it is NOT a model_config key (the backend rejects
@@ -376,9 +385,13 @@ interface AgentState {
   reconcileStaleExecutors: () => Promise<void>;
 }
 
+/** The model sentinel for auto mode (backend `Agentchat.Models.auto_model/0`). */
+export const AUTO_MODEL = "auto";
+
 const DEFAULT_CONFIG: AgentConfig = {
   backend: "anthropic",
   model: "claude-sonnet-4-5-20250929",
+  modelMode: null,
   llmApiKey: null,
   llmApiKeyId: null,
   maxTokens: 16384,
@@ -418,6 +431,7 @@ const ORPHAN_LOCAL_CONFIG_KEYS = ["computerUseEnabled"] as const;
 const SERVER_OWNED_CONFIG_KEYS: readonly (keyof AgentConfig)[] = [
   "backend",
   "model",
+  "modelMode",
   // maxTokens has no desktop control, but mobile writes model_config.max_tokens
   // from its agent-detail Model section. Left device-local, the blob's default
   // (DEFAULT_CONFIG.maxTokens) shadowed that value forever — and since Tauri
@@ -1137,9 +1151,18 @@ export const useAgentStore = create<AgentState>((set, get) => ({
     }
   },
 
-  updateConfig: (id, partial) => {
+  updateConfig: (id, partialIn) => {
     const managed = get().agents[id];
     if (managed) {
+      // Picking Auto flips the mode but keeps the concrete spawn model — the
+      // bridge can't run `--model auto`; the server swaps in the default
+      // tier's model on the next fetch. Any concrete pick leaves auto mode.
+      const partial: Partial<AgentConfig> =
+        partialIn.model === AUTO_MODEL
+          ? { ...partialIn, model: managed.config.model, modelMode: AUTO_MODEL }
+          : partialIn.model
+            ? { ...partialIn, modelMode: null }
+            : partialIn;
       const config = { ...managed.config, ...partial };
       set({ agents: { ...get().agents, [id]: { ...managed, config } } });
       saveLocalConfig(id, config);
@@ -1151,7 +1174,7 @@ export const useAgentStore = create<AgentState>((set, get) => ({
       // picked in the dropdown. `null` clears the override.
       const mcPatch: Record<string, unknown> = {};
       if (partial.backend) mcPatch.backend = partial.backend;
-      if (partial.model) mcPatch.model = partial.model;
+      if (partialIn.model) mcPatch.model = partialIn.model;
       if (partial.executionMode) mcPatch.execution_mode = partial.executionMode;
       // `"in" partial` semantics, not truthiness: the Effort picker's
       // "Default" option writes null to clear the override, and a truthy
