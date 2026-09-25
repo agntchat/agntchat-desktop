@@ -5276,6 +5276,7 @@ export const resources = {
       "openWorkRoomTooltip": "Open the task's work sub-conversation",
       "parameters": "Parameters",
       "partialResult": "Partial Result",
+      "partialWorkDelivered": "Partial work from this task is shown above.",
       "participantCount_one": "{{count}} participant",
       "participantCount_other": "{{count}} participants",
       "placeholders": {
@@ -10795,6 +10796,7 @@ export const resources = {
       "openWorkRoomTooltip": "Abrir la subconversación de trabajo de la tarea",
       "parameters": "Parámetros",
       "partialResult": "Resultado parcial",
+      "partialWorkDelivered": "El trabajo parcial de esta tarea aparece arriba.",
       "participantCount_one": "{{count}} participante",
       "participantCount_other": "{{count}} participantes",
       "placeholders": {
@@ -16314,6 +16316,7 @@ export const resources = {
       "openWorkRoomTooltip": "Die Arbeits-Unterhaltung der Aufgabe öffnen",
       "parameters": "Parameter",
       "partialResult": "Teilergebnis",
+      "partialWorkDelivered": "Teilergebnisse dieser Aufgabe stehen oben.",
       "participantCount_one": "{{count}} Teilnehmer",
       "participantCount_other": "{{count}} Teilnehmer",
       "placeholders": {
@@ -21833,6 +21836,7 @@ export const resources = {
       "openWorkRoomTooltip": "Ouvrir la sous-conversation de travail de la tâche",
       "parameters": "Paramètres",
       "partialResult": "Résultat partiel",
+      "partialWorkDelivered": "Le travail partiel de cette tâche figure ci-dessus.",
       "participantCount_one": "{{count}} participant",
       "participantCount_other": "{{count}} participants",
       "placeholders": {
@@ -27352,6 +27356,7 @@ export const resources = {
       "openWorkRoomTooltip": "Abrir a subconversa de trabalho da tarefa",
       "parameters": "Parâmetros",
       "partialResult": "Resultado Parcial",
+      "partialWorkDelivered": "O trabalho parcial desta tarefa aparece acima.",
       "participantCount_one": "{{count}} participante",
       "participantCount_other": "{{count}} participantes",
       "placeholders": {
@@ -32871,6 +32876,7 @@ export const resources = {
       "openWorkRoomTooltip": "タスクの作業用サブ会話を開く",
       "parameters": "パラメータ",
       "partialResult": "部分的な結果",
+      "partialWorkDelivered": "このタスクの途中までの成果は上に表示されています。",
       "participantCount_one": "{{count}}人の参加者",
       "participantCount_other": "{{count}}人の参加者",
       "placeholders": {
@@ -38390,6 +38396,7 @@ export const resources = {
       "openWorkRoomTooltip": "打开该任务的工作子对话",
       "parameters": "参数",
       "partialResult": "部分结果",
+      "partialWorkDelivered": "此任务的部分成果显示在上方。",
       "participantCount_one": "{{count}} 位参与者",
       "participantCount_other": "{{count}} 位参与者",
       "placeholders": {
@@ -43909,6 +43916,7 @@ export const resources = {
       "openWorkRoomTooltip": "작업의 하위 작업방 대화 열기",
       "parameters": "매개변수",
       "partialResult": "부분 결과",
+      "partialWorkDelivered": "이 작업의 부분 결과는 위에 표시되어 있습니다.",
       "participantCount_one": "참가자 {{count}}명",
       "participantCount_other": "참가자 {{count}}명",
       "placeholders": {
@@ -49428,6 +49436,7 @@ export const resources = {
       "openWorkRoomTooltip": "Apri la sotto-conversazione di lavoro dell'attività",
       "parameters": "Parametri",
       "partialResult": "Risultato parziale",
+      "partialWorkDelivered": "Il lavoro parziale di questa attività è mostrato sopra.",
       "participantCount_one": "{{count}} partecipante",
       "participantCount_other": "{{count}} partecipanti",
       "placeholders": {
@@ -54947,6 +54956,7 @@ export const resources = {
       "openWorkRoomTooltip": "कार्य की वर्क सब-बातचीत खोलें",
       "parameters": "पैरामीटर",
       "partialResult": "आंशिक परिणाम",
+      "partialWorkDelivered": "इस कार्य का आंशिक काम ऊपर दिखाया गया है।",
       "participantCount_one": "{{count}} प्रतिभागी",
       "participantCount_other": "{{count}} प्रतिभागी",
       "placeholders": {

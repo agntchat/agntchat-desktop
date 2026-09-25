@@ -43,6 +43,8 @@ import { Marker, MarkerContent } from "@/components/ui/marker";
  */
 
 interface StatusPayload {
+  /** Cancelled card: the task's partial work was delivered just above it. */
+  partial_work?: boolean;
   task_id?: string;
   status?: string;
   /** Some payloads use `type` as the lifecycle tag instead of `lifecycle_type` */
@@ -624,6 +626,11 @@ function CancelledCard({
           {title} · {agentName}
         </span>
       </div>
+      {payload.partial_work && (
+        <p className="border-t border-border px-3 py-1.5 text-xs text-muted-foreground">
+          {t("partialWorkDelivered")}
+        </p>
+      )}
     </Card>
   );
 }
