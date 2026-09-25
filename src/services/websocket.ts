@@ -243,6 +243,7 @@ class WebSocketService {
       "task_progress",
       "conversation_memory",
       "memory_updated",
+      "room_goals",
       "sub_conversation_created",
       "artifact_created",
       "artifact_updated",

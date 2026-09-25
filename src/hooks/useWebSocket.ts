@@ -7,6 +7,7 @@ import { useTaskStore } from "../stores/taskStore";
 import { useTodoStore } from "../stores/todoStore";
 import { useAgentStore, getLocalDeviceName } from "../stores/agentStore";
 import { useMemoryStore } from "../stores/memoryStore";
+import { useRoomGoalsStore } from "../stores/roomGoalsStore";
 import { useFriendStore } from "../stores/friendStore";
 import { useWorkspaceStore } from "../stores/workspaceStore";
 import { useArtifactStore } from "../stores/artifactStore";
@@ -39,6 +40,7 @@ export function useWebSocket() {
     const unsubTodos = useTodoStore.getState().initWsListeners();
     const unsubAgents = useAgentStore.getState().initWsListeners();
     const unsubMemory = useMemoryStore.getState().initWsListeners();
+    const unsubRoomGoals = useRoomGoalsStore.getState().initWsListeners();
     const unsubFriends = useFriendStore.getState().initWsListeners();
     const unsubWorkspace = useWorkspaceStore.getState().initWsListeners();
     const unsubArtifacts = useArtifactStore.getState().initWsListeners();
@@ -158,6 +160,7 @@ export function useWebSocket() {
       unsubTodos();
       unsubAgents();
       unsubMemory();
+      unsubRoomGoals();
       unsubFriends();
       unsubWorkspace();
       unsubArtifacts();

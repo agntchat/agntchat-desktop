@@ -42,6 +42,7 @@ import { useCanCompose } from "../../hooks/useCanCompose";
 import { ThreadsBar } from "./ThreadsBar";
 import { FilesBar } from "./FilesBar";
 import { ArtifactsBar } from "./ArtifactsBar";
+import { GoalsBar } from "./GoalsBar";
 import { ArtifactViewer } from "./ArtifactViewer";
 import { useArtifactStore } from "../../stores/artifactStore";
 import { ConversationTour } from "./ConversationTour";
@@ -580,6 +581,7 @@ function ConversationPane({
           className="flex items-center gap-3 shrink-0"
           onClick={(e) => e.stopPropagation()}
         >
+          <GoalsBar conversationId={conversationId} />
           <ThreadsBar conversationId={conversationId} />
           <FilesBar conversationId={conversationId} />
           <ArtifactsBar conversationId={conversationId} />
