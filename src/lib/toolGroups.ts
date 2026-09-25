@@ -24,6 +24,7 @@ export interface ToolGroup {
     | "marketData"
     | "a2a"
     | "credentials"
+    | "jev"
     | "customApis"
     | "other";
   /** i18n key under the agents namespace */
@@ -118,6 +119,14 @@ const GROUP_DEFS: Array<{
     labelKey: "toolsTab.groups.credentials",
     credentialProvider: null,
     matches: (tags) => tags.includes("credentials"),
+  },
+  {
+    // Ask Jev — typed judgments on the owner's TypeSafe key (Settings ->
+    // LLM Keys, not a Connected Account, so no connect button).
+    key: "jev",
+    labelKey: "toolsTab.groups.jev",
+    credentialProvider: null,
+    matches: (tags) => tags.includes("jev"),
   },
   {
     // Write side of the profile's Custom APIs section — same feature, same
