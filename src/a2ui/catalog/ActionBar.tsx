@@ -29,6 +29,9 @@ const ActionItemSchema = z.object({
   icon: IconNameSchema.optional(),
   confirm: CommonSchemas.DynamicString.optional(),
   action: CommonSchemas.Action,
+  /** Completing it closes the item: every other action goes unavailable
+   *  (and the server refuses them) — a sent or deleted draft. */
+  final: z.boolean().optional(),
   /** A data-model write the SERVER applies to the surface after the action
    *  succeeds (switch the active tab). Accepted here, never run here. */
   then: z.object({ path: z.string(), value: z.unknown() }).optional(),
@@ -51,6 +54,7 @@ interface ResolvedAction {
   kind: Kind;
   Icon: ReturnType<typeof resolveIcon>;
   confirm?: string;
+  final: boolean;
   /** Resolved http(s)/mailto/tel URL when the action is `openUrl`. */
   url: string | null;
   fn?: string;
@@ -151,6 +155,7 @@ export const ActionBar = createBinderlessComponentImplementation(ActionBarApi, (
         kind,
         Icon: resolveIcon(asString(item.icon)),
         confirm: item.confirm !== undefined ? asString(dataContext.resolveDynamicValue(item.confirm as never)) : undefined,
+        final: item.final === true,
         url: fn === "openUrl" ? safeUrl(args.url) : null,
         fn,
         args,
@@ -177,14 +182,22 @@ export const ActionBar = createBinderlessComponentImplementation(ActionBarApi, (
     if (action.fn === "saveDraft" && (outcome === undefined || outcome === "ok" || outcome === "saved")) {
       return { short: t("surface.done.saved"), caption: t("surface.savedDraft") };
     }
+    if (action.fn === "deleteDraft" && (outcome === undefined || outcome === "ok")) {
+      return { short: t("surface.done.deleted"), caption: t("surface.deletedDraft") };
+    }
     // Anything else keeps its own label under the check mark — "✓ Watch"
     // says what happened, a bare "Done" does not.
     return { short: action.label };
   };
 
+  /** A done `final` action (Send, Delete draft) closes the item: the other
+   *  actions stay visible but can no longer run. */
+  const closed = actions.some((a) => a.final && recordedDone(a) !== undefined);
+  const unavailable = (action: ResolvedAction) => closed && !recordedDone(action);
+
   const run = async (action: ResolvedAction) => {
     const state = states[action.id] ?? {};
-    if (state.busy || recordedDone(action)) return;
+    if (state.busy || recordedDone(action) || unavailable(action)) return;
     setMenuOpen(false);
 
     if (action.kind === "destructive" && action.confirm && !state.confirming) {
@@ -328,7 +341,7 @@ export const ActionBar = createBinderlessComponentImplementation(ActionBarApi, (
         className={cls}
         aria-busy={busy || undefined}
         aria-disabled={done ? true : undefined}
-        disabled={busy}
+        disabled={busy || unavailable(action)}
         title={done?.caption}
         onClick={() => void run(action)}
       >
@@ -393,7 +406,8 @@ export const ActionBar = createBinderlessComponentImplementation(ActionBarApi, (
                       type="button"
                       role="menuitem"
                       className={`a2ui-menu__item${action.kind === "destructive" ? " a2ui-menu__item--destructive" : ""}`}
-                      aria-disabled={done ? true : undefined}
+                      aria-disabled={done || unavailable(action) ? true : undefined}
+                      disabled={unavailable(action)}
                       onClick={() => void run(action)}
                     >
                       {item}
