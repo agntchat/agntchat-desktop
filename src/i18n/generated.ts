@@ -129,6 +129,7 @@ export const resources = {
         "autoModels": {
           "hint": "Switch a model off and Auto never runs this agent on it. Turns it would have taken go to the next model up.",
           "lastOne": "Auto needs at least one model.",
+          "otherHint": "Fallbacks only: Auto uses these when a current model can't take the turn.",
           "tier1": "Light",
           "tier2": "Standard",
           "tier3": "Heavy",
@@ -5515,8 +5516,10 @@ export const resources = {
       "selectToPreview": "Select a card to preview",
       "surface": {
         "carousel": "carousel",
+        "deletedDraft": "Draft deleted from Gmail",
         "done": {
           "copied": "Copied",
+          "deleted": "Deleted",
           "done": "Done",
           "saved": "Saved",
           "sent": "Sent"
@@ -5649,6 +5652,7 @@ export const resources = {
         "autoModels": {
           "hint": "Desactiva un modelo y Auto nunca lo usará para este agente. Sus turnos pasan al siguiente modelo superior.",
           "lastOne": "Auto necesita al menos un modelo.",
+          "otherHint": "Solo de respaldo: Auto los usa cuando un modelo actual no puede atender el turno.",
           "tier1": "Ligero",
           "tier2": "Estándar",
           "tier3": "Exigente",
@@ -11035,8 +11039,10 @@ export const resources = {
       "selectToPreview": "Selecciona una tarjeta para previsualizarla",
       "surface": {
         "carousel": "carrusel",
+        "deletedDraft": "Borrador eliminado de Gmail",
         "done": {
           "copied": "Copiado",
+          "deleted": "Eliminado",
           "done": "Hecho",
           "saved": "Guardado",
           "sent": "Enviado"
@@ -11169,6 +11175,7 @@ export const resources = {
         "autoModels": {
           "hint": "Schalte ein Modell aus, und Auto setzt es für diesen Agenten nie ein. Seine Züge übernimmt das nächststärkere Modell.",
           "lastOne": "Auto braucht mindestens ein Modell.",
+          "otherHint": "Nur als Ersatz: Auto nutzt sie, wenn ein aktuelles Modell den Zug nicht übernehmen kann.",
           "tier1": "Leicht",
           "tier2": "Standard",
           "tier3": "Anspruchsvoll",
@@ -16555,8 +16562,10 @@ export const resources = {
       "selectToPreview": "Karte zur Vorschau auswählen",
       "surface": {
         "carousel": "Karussell",
+        "deletedDraft": "Entwurf aus Gmail gelöscht",
         "done": {
           "copied": "Kopiert",
+          "deleted": "Gelöscht",
           "done": "Erledigt",
           "saved": "Gespeichert",
           "sent": "Gesendet"
@@ -16689,6 +16698,7 @@ export const resources = {
         "autoModels": {
           "hint": "Désactivez un modèle et Auto ne l'utilisera jamais pour cet agent. Ses tours passent au modèle supérieur suivant.",
           "lastOne": "Auto a besoin d'au moins un modèle.",
+          "otherHint": "Solutions de repli uniquement : Auto les utilise quand un modèle actuel ne peut pas prendre le tour.",
           "tier1": "Léger",
           "tier2": "Standard",
           "tier3": "Exigeant",
@@ -22075,8 +22085,10 @@ export const resources = {
       "selectToPreview": "Sélectionnez une carte à prévisualiser",
       "surface": {
         "carousel": "carrousel",
+        "deletedDraft": "Brouillon supprimé de Gmail",
         "done": {
           "copied": "Copié",
+          "deleted": "Supprimé",
           "done": "Terminé",
           "saved": "Enregistré",
           "sent": "Envoyé"
@@ -22209,6 +22221,7 @@ export const resources = {
         "autoModels": {
           "hint": "Desative um modelo e o Auto nunca o usará para este agente. Os turnos dele passam para o próximo modelo acima.",
           "lastOne": "O Auto precisa de pelo menos um modelo.",
+          "otherHint": "Apenas reserva: o Auto usa-os quando um modelo atual não consegue assumir o turno.",
           "tier1": "Leve",
           "tier2": "Padrão",
           "tier3": "Exigente",
@@ -27595,8 +27608,10 @@ export const resources = {
       "selectToPreview": "Selecione um cartão para pré-visualizar",
       "surface": {
         "carousel": "carrossel",
+        "deletedDraft": "Rascunho excluído do Gmail",
         "done": {
           "copied": "Copiado",
+          "deleted": "Excluído",
           "done": "Concluído",
           "saved": "Salvo",
           "sent": "Enviado"
@@ -27729,6 +27744,7 @@ export const resources = {
         "autoModels": {
           "hint": "モデルをオフにすると、Auto はこのエージェントでそのモデルを使いません。そのターンは一つ上のモデルが担当します。",
           "lastOne": "Auto には少なくとも 1 つのモデルが必要です。",
+          "otherHint": "予備のみ: 現行モデルがターンを処理できないときに Auto が使用します。",
           "tier1": "軽量",
           "tier2": "標準",
           "tier3": "高負荷",
@@ -33115,8 +33131,10 @@ export const resources = {
       "selectToPreview": "プレビューするカードを選択してください",
       "surface": {
         "carousel": "カルーセル",
+        "deletedDraft": "下書きをGmailから削除しました",
         "done": {
           "copied": "コピー済み",
+          "deleted": "削除済み",
           "done": "完了",
           "saved": "保存済み",
           "sent": "送信済み"
@@ -33249,6 +33267,7 @@ export const resources = {
         "autoModels": {
           "hint": "关闭某个模型后，Auto 不会再用它运行此智能体。原本由它处理的轮次会交给上一级模型。",
           "lastOne": "Auto 至少需要一个模型。",
+          "otherHint": "仅作备用：当前模型无法处理该轮时，Auto 才会使用它们。",
           "tier1": "轻量",
           "tier2": "标准",
           "tier3": "高强度",
@@ -38635,8 +38654,10 @@ export const resources = {
       "selectToPreview": "选择一张卡片以预览",
       "surface": {
         "carousel": "轮播",
+        "deletedDraft": "草稿已从 Gmail 删除",
         "done": {
           "copied": "已复制",
+          "deleted": "已删除",
           "done": "已完成",
           "saved": "已保存",
           "sent": "已发送"
@@ -38769,6 +38790,7 @@ export const resources = {
         "autoModels": {
           "hint": "모델을 끄면 Auto는 이 에이전트에서 그 모델을 절대 사용하지 않습니다. 해당 턴은 한 단계 위 모델이 맡습니다.",
           "lastOne": "Auto에는 최소 한 개의 모델이 필요합니다.",
+          "otherHint": "대체용: 현재 모델이 턴을 처리할 수 없을 때만 Auto가 사용합니다.",
           "tier1": "가벼움",
           "tier2": "표준",
           "tier3": "고강도",
@@ -44155,8 +44177,10 @@ export const resources = {
       "selectToPreview": "미리보려면 카드를 선택하세요",
       "surface": {
         "carousel": "캐러셀",
+        "deletedDraft": "Gmail에서 임시보관 메일을 삭제함",
         "done": {
           "copied": "복사됨",
+          "deleted": "삭제됨",
           "done": "완료",
           "saved": "저장됨",
           "sent": "전송됨"
@@ -44289,6 +44313,7 @@ export const resources = {
         "autoModels": {
           "hint": "Disattiva un modello e Auto non lo userà mai per questo agente. I suoi turni passano al modello superiore successivo.",
           "lastOne": "Auto ha bisogno di almeno un modello.",
+          "otherHint": "Solo di riserva: Auto li usa quando un modello attuale non può gestire il turno.",
           "tier1": "Leggero",
           "tier2": "Standard",
           "tier3": "Impegnativo",
@@ -49675,8 +49700,10 @@ export const resources = {
       "selectToPreview": "Seleziona una scheda per l'anteprima",
       "surface": {
         "carousel": "carosello",
+        "deletedDraft": "Bozza eliminata da Gmail",
         "done": {
           "copied": "Copiato",
+          "deleted": "Eliminata",
           "done": "Fatto",
           "saved": "Salvato",
           "sent": "Inviato"
@@ -49809,6 +49836,7 @@ export const resources = {
         "autoModels": {
           "hint": "किसी मॉडल को बंद करें और Auto इस एजेंट के लिए उसका कभी उपयोग नहीं करेगा। उसके टर्न अगले बड़े मॉडल को मिलेंगे।",
           "lastOne": "Auto को कम से कम एक मॉडल चाहिए।",
+          "otherHint": "केवल बैकअप: जब कोई मौजूदा मॉडल बारी नहीं ले पाता, तब Auto इनका उपयोग करता है।",
           "tier1": "हल्का",
           "tier2": "मानक",
           "tier3": "भारी",
@@ -55195,8 +55223,10 @@ export const resources = {
       "selectToPreview": "पूर्वावलोकन के लिए एक कार्ड चुनें",
       "surface": {
         "carousel": "कैरोसेल",
+        "deletedDraft": "ड्राफ़्ट Gmail से हटाया गया",
         "done": {
           "copied": "कॉपी हो गया",
+          "deleted": "हटाया गया",
           "done": "हो गया",
           "saved": "सहेजा गया",
           "sent": "भेजा गया"
