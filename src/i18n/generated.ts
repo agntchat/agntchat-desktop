@@ -1737,6 +1737,15 @@ export const resources = {
         "importSkill": "Import Skill",
         "importUrlHint": "Link to a skill folder or SKILL.md file on GitHub.",
         "importing": "Importing...",
+        "inactive": {
+          "hint": "Attached, but kept out of this agent's instructions until it qualifies.",
+          "reason": {
+            "agent_type": "For a different agent role",
+            "domains": "Needs a matching capability",
+            "tools": "Needs its tools turned on"
+          },
+          "title": "Not active for this agent"
+        },
         "installShared": "Install Shared",
         "installSharedDialog": {
           "description": "Paste a skill ID shared by another user to install it.",
@@ -7278,6 +7287,15 @@ export const resources = {
         "importSkill": "Importar habilidad",
         "importUrlHint": "Enlace a una carpeta de habilidad o a un archivo SKILL.md en GitHub.",
         "importing": "Importando...",
+        "inactive": {
+          "hint": "Asignada, pero fuera de las instrucciones de este agente hasta que cumpla los requisitos.",
+          "reason": {
+            "agent_type": "Para otro rol de agente",
+            "domains": "Necesita una capacidad compatible",
+            "tools": "Necesita sus herramientas activadas"
+          },
+          "title": "No activa para este agente"
+        },
         "installShared": "Instalar compartida",
         "installSharedDialog": {
           "description": "Pega un ID de habilidad compartido por otro usuario para instalarla.",
@@ -12819,6 +12837,15 @@ export const resources = {
         "importSkill": "Fähigkeit importieren",
         "importUrlHint": "Link zu einem Fähigkeitsordner oder einer SKILL.md-Datei auf GitHub.",
         "importing": "Wird importiert...",
+        "inactive": {
+          "hint": "Zugeordnet, aber nicht in den Anweisungen dieses Agenten, bis er die Voraussetzungen erfüllt.",
+          "reason": {
+            "agent_type": "Für eine andere Agentenrolle",
+            "domains": "Benötigt eine passende Fähigkeit",
+            "tools": "Benötigt aktivierte Tools"
+          },
+          "title": "Für diesen Agenten nicht aktiv"
+        },
         "installShared": "Geteilte installieren",
         "installSharedDialog": {
           "description": "Fügen Sie eine von einem anderen Nutzer geteilte Fähigkeits-ID ein, um sie zu installieren.",
@@ -18360,6 +18387,15 @@ export const resources = {
         "importSkill": "Importer une compétence",
         "importUrlHint": "Lien vers un dossier de compétence ou un fichier SKILL.md sur GitHub.",
         "importing": "Importation en cours...",
+        "inactive": {
+          "hint": "Attachée, mais absente des instructions de cet agent tant qu'il ne remplit pas les conditions.",
+          "reason": {
+            "agent_type": "Pour un autre rôle d'agent",
+            "domains": "Nécessite une capacité correspondante",
+            "tools": "Nécessite ses outils activés"
+          },
+          "title": "Inactive pour cet agent"
+        },
         "installShared": "Installer une compétence partagée",
         "installSharedDialog": {
           "description": "Collez un ID de compétence partagé par un autre utilisateur pour l'installer.",
@@ -23901,6 +23937,15 @@ export const resources = {
         "importSkill": "Importar Habilidade",
         "importUrlHint": "Link para uma pasta de habilidade ou arquivo SKILL.md no GitHub.",
         "importing": "Importando...",
+        "inactive": {
+          "hint": "Associada, mas fora das instruções deste agente até que ele se qualifique.",
+          "reason": {
+            "agent_type": "Para outra função de agente",
+            "domains": "Precisa de uma capacidade correspondente",
+            "tools": "Precisa das ferramentas ativadas"
+          },
+          "title": "Não ativa para este agente"
+        },
         "installShared": "Instalar Compartilhada",
         "installSharedDialog": {
           "description": "Cole um ID de habilidade compartilhado por outro usuário para instalá-la.",
@@ -29442,6 +29487,15 @@ export const resources = {
         "importSkill": "スキルをインポート",
         "importUrlHint": "GitHub上のスキルフォルダまたはSKILL.mdファイルへのリンク。",
         "importing": "インポートしています…",
+        "inactive": {
+          "hint": "割り当て済みですが、条件を満たすまでこのエージェントの指示には含まれません。",
+          "reason": {
+            "agent_type": "別のエージェントロール向け",
+            "domains": "対応する能力が必要です",
+            "tools": "対応するツールを有効にする必要があります"
+          },
+          "title": "このエージェントでは無効"
+        },
         "installShared": "共有スキルをインストール",
         "installSharedDialog": {
           "description": "他のユーザーが共有したスキルIDを貼り付けてインストールします。",
@@ -34983,6 +35037,15 @@ export const resources = {
         "importSkill": "导入技能",
         "importUrlHint": "指向 GitHub 上技能文件夹或 SKILL.md 文件的链接。",
         "importing": "正在导入……",
+        "inactive": {
+          "hint": "已关联，但在满足条件前不会进入此代理的指令。",
+          "reason": {
+            "agent_type": "适用于其他代理角色",
+            "domains": "需要匹配的能力",
+            "tools": "需要开启相应工具"
+          },
+          "title": "对此代理未启用"
+        },
         "installShared": "安装共享技能",
         "installSharedDialog": {
           "description": "粘贴其他用户分享的技能 ID 以进行安装。",
@@ -40524,6 +40587,15 @@ export const resources = {
         "importSkill": "스킬 가져오기",
         "importUrlHint": "GitHub의 스킬 폴더 또는 SKILL.md 파일 링크입니다.",
         "importing": "가져오는 중...",
+        "inactive": {
+          "hint": "연결되어 있지만 조건을 충족할 때까지 이 에이전트의 지침에서 제외됩니다.",
+          "reason": {
+            "agent_type": "다른 에이전트 역할용",
+            "domains": "일치하는 역량이 필요합니다",
+            "tools": "관련 도구를 켜야 합니다"
+          },
+          "title": "이 에이전트에서 비활성"
+        },
         "installShared": "공유된 스킬 설치",
         "installSharedDialog": {
           "description": "다른 사용자가 공유한 스킬 ID를 붙여넣어 설치하세요.",
@@ -46065,6 +46137,15 @@ export const resources = {
         "importSkill": "Importa competenza",
         "importUrlHint": "Link a una cartella di competenza o a un file SKILL.md su GitHub.",
         "importing": "Importazione in corso...",
+        "inactive": {
+          "hint": "Associata, ma esclusa dalle istruzioni di questo agente finché non soddisfa i requisiti.",
+          "reason": {
+            "agent_type": "Per un altro ruolo di agente",
+            "domains": "Richiede una capacità corrispondente",
+            "tools": "Richiede i suoi strumenti attivi"
+          },
+          "title": "Non attiva per questo agente"
+        },
         "installShared": "Installa condivisa",
         "installSharedDialog": {
           "description": "Incolla un ID competenza condiviso da un altro utente per installarla.",
@@ -51606,6 +51687,15 @@ export const resources = {
         "importSkill": "कौशल आयात करें",
         "importUrlHint": "GitHub पर किसी कौशल फ़ोल्डर या SKILL.md फ़ाइल का लिंक।",
         "importing": "आयात किया जा रहा है...",
+        "inactive": {
+          "hint": "जुड़ी हुई है, पर योग्य होने तक इस एजेंट के निर्देशों से बाहर रहती है।",
+          "reason": {
+            "agent_type": "किसी अन्य एजेंट भूमिका के लिए",
+            "domains": "मेल खाती क्षमता चाहिए",
+            "tools": "इसके टूल चालू होने चाहिए"
+          },
+          "title": "इस एजेंट के लिए सक्रिय नहीं"
+        },
         "installShared": "साझा किया गया इंस्टॉल करें",
         "installSharedDialog": {
           "description": "इसे इंस्टॉल करने के लिए किसी अन्य उपयोगकर्ता द्वारा साझा किया गया कौशल ID पेस्ट करें।",

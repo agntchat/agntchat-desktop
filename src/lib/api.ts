@@ -2949,6 +2949,8 @@ export interface CanvasDefinitionSummary {
    *  omitted from the list endpoint's payload. */
   definition?: Record<string, unknown>;
 }
+export type SkillInactiveReason = "tools" | "domains" | "agent_type";
+
 export interface Skill {
   id: string;
   name: string;
@@ -2969,6 +2971,10 @@ export interface Skill {
   importedAt?: string;
   version: number;
   enabled: boolean;
+  /** Only on GET /api/agents/:id/skills: whether the agent's prompt carries
+   *  this skill right now (its activationRules pass). Absent = unknown. */
+  active?: boolean;
+  inactiveReason?: SkillInactiveReason;
   // Marketplace fields
   visibility?: "private" | "public" | "unlisted";
   installCount?: number;

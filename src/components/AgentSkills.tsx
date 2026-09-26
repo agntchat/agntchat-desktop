@@ -45,6 +45,7 @@ import {
   Pencil,
   Unlink,
   Trash2,
+  CircleOff,
 } from "lucide-react";
 
 interface AgentSkillsProps {
@@ -77,7 +78,7 @@ export function AgentSkills({ agentId, onCount }: AgentSkillsProps) {
       ]);
       setResolvedSkills(resolved.skills || []);
       setAllSkills(available.skills || []);
-      onCount?.((resolved.skills || []).length);
+      onCount?.((resolved.skills || []).filter((s) => s.active !== false).length);
     } catch (e) {
       console.error("Failed to fetch skills:", e);
     } finally {
@@ -92,10 +93,15 @@ export function AgentSkills({ agentId, onCount }: AgentSkillsProps) {
   const resolvedNames = new Set(resolvedSkills.map((s) => s.name));
   const unassignedSkills = allSkills.filter((s) => !resolvedNames.has(s.name));
 
-  // Group resolved skills by source
-  const globalSkills = resolvedSkills.filter((s) => s.scope === "global");
-  const ownerSkills = resolvedSkills.filter((s) => s.scope === "owner");
-  const agentSkills = resolvedSkills.filter((s) => s.scope === "agent");
+  // Skills whose activationRules fail (integration tools switched off, wrong
+  // role) never reach the agent's prompt — list them apart, not as running.
+  const activeSkills = resolvedSkills.filter((s) => s.active !== false);
+  const inactiveSkills = resolvedSkills.filter((s) => s.active === false);
+
+  // Group active skills by source
+  const globalSkills = activeSkills.filter((s) => s.scope === "global");
+  const ownerSkills = activeSkills.filter((s) => s.scope === "owner");
+  const agentSkills = activeSkills.filter((s) => s.scope === "agent");
 
   const [assignError, setAssignError] = useState<string | null>(null);
   const [assigning, setAssigning] = useState<string | null>(null);
@@ -214,6 +220,16 @@ export function AgentSkills({ agentId, onCount }: AgentSkillsProps) {
 
             />
           )}
+          {inactiveSkills.length > 0 && (
+            <SkillGroup
+              label={t("skills.inactive.title")}
+              hint={t("skills.inactive.hint")}
+              icon={<CircleOff className="w-3 h-3 text-muted-foreground" />}
+              skills={inactiveSkills}
+              onView={setViewSkill}
+              inactive
+            />
+          )}
         </>
       )}
 
@@ -228,6 +244,13 @@ export function AgentSkills({ agentId, onCount }: AgentSkillsProps) {
               <p className="text-sm text-muted-foreground">{viewSkill.description}</p>
               <div className="flex gap-2 flex-wrap">
                 <Badge variant="secondary">{t(`skills.scope.${viewSkill.scope}`, viewSkill.scope)}</Badge>
+                {viewSkill.active === false && (
+                  <Badge variant="outline" className="text-muted-foreground">
+                    {viewSkill.inactiveReason
+                      ? t(`skills.inactive.reason.${viewSkill.inactiveReason}`)
+                      : t("skills.inactive.title")}
+                  </Badge>
+                )}
                 {viewSkill.category && (
                   <Badge variant="outline">
                     {t(`skills.category.${viewSkill.category}`, viewSkill.category)}
@@ -395,14 +418,18 @@ export function AgentSkills({ agentId, onCount }: AgentSkillsProps) {
 
 function SkillGroup({
   label,
+  hint,
   icon,
   skills,
   onView,
+  inactive = false,
 }: {
   label: string;
+  hint?: string;
   icon: React.ReactNode;
   skills: Skill[];
   onView: (s: Skill) => void;
+  inactive?: boolean;
 }) {
   const { t } = useTranslation("agents");
   return (
@@ -413,7 +440,8 @@ function SkillGroup({
           {label}
         </span>
       </div>
-      <div className="space-y-1">
+      {hint && <p className="text-xs text-muted-foreground -mt-1 mb-2">{hint}</p>}
+      <div className={`space-y-1 ${inactive ? "opacity-60" : ""}`}>
         {skills.map((skill) => (
           <div
             key={skill.id}
@@ -430,7 +458,9 @@ function SkillGroup({
                 )}
               </div>
               <p className="text-xs text-muted-foreground truncate mt-0.5">
-                {skill.description.slice(0, 80)}{skill.description.length > 80 ? "..." : ""}
+                {inactive && skill.inactiveReason
+                  ? t(`skills.inactive.reason.${skill.inactiveReason}`)
+                  : <>{skill.description.slice(0, 80)}{skill.description.length > 80 ? "..." : ""}</>}
               </p>
             </div>
             <div className="flex items-center gap-2 ml-2">

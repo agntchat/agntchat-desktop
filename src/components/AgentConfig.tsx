@@ -197,7 +197,8 @@ type SectionBadge =
 // the agent runs with. Templates is absent on purpose — the assigned set
 // already rides along on the agent record, so it needs no fetch.
 const SECTION_BADGES: Record<string, (agentId: string) => Promise<SectionBadge>> = {
-  skills: (id) => getAgentSkills(id).then((r) => (r.skills ?? []).length),
+  skills: (id) =>
+    getAgentSkills(id).then((r) => (r.skills ?? []).filter((s) => s.active !== false).length),
   tools: (id) =>
     getAgentTools(id).then((tools) => tools.filter((tl) => tl.scope === "agent").length),
   memory: (id) =>
