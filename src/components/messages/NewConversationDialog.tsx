@@ -50,6 +50,7 @@ export function NewConversationDialog({ onClose }: Props) {
   const conversations = useChatStore((s) => s.conversations);
   const createConversation = useChatStore((s) => s.createConversation);
   const setActiveConversation = useChatStore((s) => s.setActiveConversation);
+  const promptNameNewGroup = useChatStore((s) => s.promptNameNewGroup);
   const currentUserId = useAuthStore((s) => s.participant?.id);
   const friendConnections = useFriendStore((s) => s.connections);
   const fetchFriendConnections = useFriendStore((s) => s.fetchConnections);
@@ -185,8 +186,6 @@ export function NewConversationDialog({ onClose }: Props) {
     );
   }, [activeAgents, search]);
 
-  const isGroup = selected.size > 1;
-
   const getPersonConnection = useCallback(
     (person: Participant) =>
       friendConnections.find((c) => c.id === person.connectionId) ??
@@ -283,19 +282,15 @@ export function NewConversationDialog({ onClose }: Props) {
         return;
       }
 
-      if (!groupTitle.trim()) {
-        setError(t("newDialog.groupNeedsName"));
-        setCreating(false);
-        return;
-      }
-
+      // Create untitled, then ask for a name — the same modal a DM gets
+      // when it becomes a group. Skipping keeps the member-name fallback.
       const conv = await createConversation({
         type: "group",
-        title: groupTitle.trim(),
         memberIds: [...selected],
       });
       setActiveConversation(conv.id);
       onClose();
+      promptNameNewGroup(conv.id);
     } catch (e) {
       setError(e instanceof Error ? e.message : t("newDialog.createFailed"));
     } finally {
@@ -308,6 +303,7 @@ export function NewConversationDialog({ onClose }: Props) {
     findExistingDm,
     createConversation,
     setActiveConversation,
+    promptNameNewGroup,
     onClose,
   ]);
 
@@ -449,18 +445,6 @@ export function NewConversationDialog({ onClose }: Props) {
                     </button>
                   );
                 })}
-              </div>
-            )}
-
-            {isGroup && (
-              <div className="border-b border-border px-4 py-2 shrink-0">
-                <Label className="text-xs text-muted-foreground">{t("newDialog.groupName")}</Label>
-                <Input
-                  placeholder={t("newDialog.groupNamePlaceholder")}
-                  value={groupTitle}
-                  onChange={(e) => setGroupTitle(e.target.value)}
-                  className="mt-1 h-8 text-xs"
-                />
               </div>
             )}
 

@@ -243,7 +243,13 @@ interface ChatState {
    *  user's confirm/edit/skip via the "Rename to group" modal. Set by the
    *  `conversation_rename_suggested` WS event, cleared on
    *  `conversation_rename_resolved` or once answered. */
-  pendingRename: { conversationId: string; suggestedTitle: string } | null;
+  pendingRename: {
+    conversationId: string;
+    suggestedTitle: string;
+    /** `transition`: a DM just became a group (server suggestion).
+     *  `created`: the user just created an unnamed group. */
+    origin: "transition" | "created";
+  } | null;
 
   // Messages (per conversation)
   messages: Record<string, Message[]>;
@@ -307,6 +313,8 @@ interface ChatState {
     autoAccept?: boolean
   ) => Promise<void>;
   clearPendingRename: (conversationId: string) => void;
+  /** Open the naming modal for a group the user just created untitled. */
+  promptNameNewGroup: (conversationId: string) => void;
   addMember: (conversationId: string, participantId: string) => Promise<void>;
   removeMember: (conversationId: string, participantId: string) => Promise<void>;
   deleteConversation: (conversationId: string) => Promise<void>;
@@ -615,6 +623,19 @@ export const useChatStore = create<ChatState>((set, get) => ({
       action === "accept" ? title?.trim() : undefined,
       autoAccept
     );
+    // Apply locally too: a just-created group is still `pendingConversation`
+    // (not in the list until its first message), which the title WS events
+    // don't reach.
+    const committed = action === "accept" ? title?.trim() : undefined;
+    if (committed) {
+      const rename = (c: Conversation) =>
+        c.id === conversationId ? { ...c, title: committed } : c;
+      set((s) => ({
+        conversations: s.conversations.map(rename),
+        agentConversations: s.agentConversations.map(rename),
+        pendingConversation: s.pendingConversation && rename(s.pendingConversation),
+      }));
+    }
   },
 
   clearPendingRename: (conversationId) => {
@@ -623,6 +644,10 @@ export const useChatStore = create<ChatState>((set, get) => ({
         ? { pendingRename: null }
         : {}
     );
+  },
+
+  promptNameNewGroup: (conversationId) => {
+    set({ pendingRename: { conversationId, suggestedTitle: "", origin: "created" } });
   },
 
   updateConversationAvatar: async (id, avatarUrl) => {
@@ -1467,7 +1492,7 @@ export const useChatStore = create<ChatState>((set, get) => ({
         const convId = payload.conversationId as string;
         const suggestedTitle = payload.suggestedTitle as string;
         if (!convId || !suggestedTitle) return;
-        set({ pendingRename: { conversationId: convId, suggestedTitle } });
+        set({ pendingRename: { conversationId: convId, suggestedTitle, origin: "transition" } });
       })
     );
 
