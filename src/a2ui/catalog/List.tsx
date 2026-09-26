@@ -4,7 +4,16 @@ import { z } from "zod";
 import { CommonSchemas } from "@a2ui/web_core/v0_9";
 import { createComponentImplementation } from "@a2ui/react/v0_9";
 import { summarizeCard, templateIdOf } from "../rowSummary";
-import { VisibleSchema, WeightSchema, childKey, renderChild, weightStyle, type ChildRef } from "../shared";
+import {
+  VisibleSchema,
+  WeightSchema,
+  bindingPathOf,
+  childKey,
+  renderChild,
+  useDataValue,
+  weightStyle,
+  type ChildRef,
+} from "../shared";
 import { RowSummary } from "./RowSummary";
 
 /** Bubble width below which a `grid` degrades to the carousel and the cards
@@ -37,7 +46,7 @@ export const ListApi = {
  */
 export const List = createComponentImplementation(ListApi, ({ props, buildChild, context }) => {
   const { t } = useTranslation("templates");
-  const refs = (Array.isArray(props.children) ? props.children : []) as ChildRef[];
+  const allRefs = (Array.isArray(props.children) ? props.children : []) as ChildRef[];
   const variant = props.variant ?? "cards";
   const maxVisible = props.maxVisible ?? 5;
   const [expanded, setExpanded] = useState(false);
@@ -47,8 +56,23 @@ export const List = createComponentImplementation(ListApi, ({ props, buildChild,
   const [visited, setVisited] = useState<Set<string>>(() => new Set());
   // The node layer hands template instances synthesized ids (`item_card-[/items/0]`);
   // the component model is keyed by the authored id.
-  const templateId = templateIdOf(refs.find((r): r is { id: string; basePath: string } => typeof r !== "string")?.id);
+  const templateId = templateIdOf(allRefs.find((r): r is { id: string; basePath: string } => typeof r !== "string")?.id);
   const components = context.surfaceComponents;
+  // An item whose card resolves hidden (its `visible` bound false — an item
+  // an action consumed) is not an item any more: skipped outright, so the
+  // carousel, its dots and "Show N more" count only what is there.
+  // Subscribing to the list's data path re-renders when one goes.
+  const listPath = bindingPathOf((context.componentModel.properties as { children?: unknown }).children);
+  useDataValue(context.dataContext, listPath ?? "/");
+  const templateVisible = templateId ? components.get(templateId)?.properties.visible : undefined;
+  const refs =
+    templateVisible === undefined
+      ? allRefs
+      : allRefs.filter(
+          (ref) =>
+            typeof ref === "string" ||
+            context.dataContext.nested(ref.basePath).resolveDynamicValue(templateVisible as never) !== false
+        );
   const summary = useMemo(
     () => (variant === "rows" && templateId ? summarizeCard(components, templateId) : null),
     [variant, templateId, components]

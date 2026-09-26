@@ -5538,9 +5538,13 @@ export const resources = {
         "carousel": "carousel",
         "deletedDraft": "Draft deleted from Gmail",
         "done": {
+          "approved": "Approved",
           "copied": "Copied",
+          "created": "Created",
           "deleted": "Deleted",
+          "denied": "Denied",
           "done": "Done",
+          "invited": "Invited",
           "saved": "Saved",
           "sent": "Sent"
         },
@@ -11081,9 +11085,13 @@ export const resources = {
         "carousel": "carrusel",
         "deletedDraft": "Borrador eliminado de Gmail",
         "done": {
+          "approved": "Aprobado",
           "copied": "Copiado",
+          "created": "Creado",
           "deleted": "Eliminado",
+          "denied": "Rechazado",
           "done": "Hecho",
+          "invited": "Invitado",
           "saved": "Guardado",
           "sent": "Enviado"
         },
@@ -16624,9 +16632,13 @@ export const resources = {
         "carousel": "Karussell",
         "deletedDraft": "Entwurf aus Gmail gelöscht",
         "done": {
+          "approved": "Genehmigt",
           "copied": "Kopiert",
+          "created": "Erstellt",
           "deleted": "Gelöscht",
+          "denied": "Abgelehnt",
           "done": "Erledigt",
+          "invited": "Eingeladen",
           "saved": "Gespeichert",
           "sent": "Gesendet"
         },
@@ -22167,9 +22179,13 @@ export const resources = {
         "carousel": "carrousel",
         "deletedDraft": "Brouillon supprimé de Gmail",
         "done": {
+          "approved": "Approuvé",
           "copied": "Copié",
+          "created": "Créé",
           "deleted": "Supprimé",
+          "denied": "Refusé",
           "done": "Terminé",
+          "invited": "Invité",
           "saved": "Enregistré",
           "sent": "Envoyé"
         },
@@ -27710,9 +27726,13 @@ export const resources = {
         "carousel": "carrossel",
         "deletedDraft": "Rascunho excluído do Gmail",
         "done": {
+          "approved": "Aprovado",
           "copied": "Copiado",
+          "created": "Criado",
           "deleted": "Excluído",
+          "denied": "Recusado",
           "done": "Concluído",
+          "invited": "Convidado",
           "saved": "Salvo",
           "sent": "Enviado"
         },
@@ -33253,9 +33273,13 @@ export const resources = {
         "carousel": "カルーセル",
         "deletedDraft": "下書きをGmailから削除しました",
         "done": {
+          "approved": "承認済み",
           "copied": "コピー済み",
+          "created": "作成済み",
           "deleted": "削除済み",
+          "denied": "却下済み",
           "done": "完了",
+          "invited": "招待済み",
           "saved": "保存済み",
           "sent": "送信済み"
         },
@@ -38796,9 +38820,13 @@ export const resources = {
         "carousel": "轮播",
         "deletedDraft": "草稿已从 Gmail 删除",
         "done": {
+          "approved": "已批准",
           "copied": "已复制",
+          "created": "已创建",
           "deleted": "已删除",
+          "denied": "已拒绝",
           "done": "已完成",
+          "invited": "已邀请",
           "saved": "已保存",
           "sent": "已发送"
         },
@@ -44339,9 +44367,13 @@ export const resources = {
         "carousel": "캐러셀",
         "deletedDraft": "Gmail에서 임시보관 메일을 삭제함",
         "done": {
+          "approved": "승인됨",
           "copied": "복사됨",
+          "created": "생성됨",
           "deleted": "삭제됨",
+          "denied": "거절됨",
           "done": "완료",
+          "invited": "초대됨",
           "saved": "저장됨",
           "sent": "전송됨"
         },
@@ -49882,9 +49914,13 @@ export const resources = {
         "carousel": "carosello",
         "deletedDraft": "Bozza eliminata da Gmail",
         "done": {
+          "approved": "Approvato",
           "copied": "Copiato",
+          "created": "Creato",
           "deleted": "Eliminata",
+          "denied": "Rifiutato",
           "done": "Fatto",
+          "invited": "Invitato",
           "saved": "Salvato",
           "sent": "Inviato"
         },
@@ -55425,9 +55461,13 @@ export const resources = {
         "carousel": "कैरोसेल",
         "deletedDraft": "ड्राफ़्ट Gmail से हटाया गया",
         "done": {
+          "approved": "स्वीकृत",
           "copied": "कॉपी हो गया",
+          "created": "बनाया गया",
           "deleted": "हटाया गया",
+          "denied": "अस्वीकृत",
           "done": "हो गया",
+          "invited": "आमंत्रित",
           "saved": "सहेजा गया",
           "sent": "भेजा गया"
         },

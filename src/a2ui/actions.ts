@@ -9,15 +9,31 @@ import type { SurfaceTarget } from "./shared";
  * surface's own data model, never in `metadata.cta_completions`.
  */
 
-/** The completion the server stamps into a surface's data model at
- *  `/items/<item_index>/actions/<action_id>` (first press wins). `result` is
- *  the executed function's outcome (`sent`, `saved`) or `relayed` for an
- *  event the agent received. */
+/** An action's state, stamped by the server into the surface's data model
+ *  at `/items/<item_index>/actions/<action_id>`; the newest stamp at a path
+ *  is the state. `result`: `pending` (running — on every device), `ok` (a
+ *  backend function succeeded; `outcome` / `caption` are what its tool
+ *  declares), `error` (failed; `error` says why, pressable again),
+ *  `relayed` (an event the agent received), or a client-executed
+ *  function's own result (`saved`). */
 export interface SurfaceActionStamp {
   participant_id?: string;
   completed_at?: string;
+  started_at?: string;
   result?: string;
+  /** The done state's key: `surface.done.<outcome>`. */
+  outcome?: string;
+  /** A `surface.<caption>` line, interpolated with the action's args. */
+  caption?: string;
+  error?: string;
 }
+
+/** Results that are not a completion. */
+export const OPEN_RESULTS = new Set(["pending", "error"]);
+
+/** A `pending` stamp older than this is a run that died; the server lets
+ *  the action run again, so the client stops showing it as running. */
+export const PENDING_TTL_MS = 120_000;
 
 /** Body of the actions endpoint, one of three forms:
  *  - `name` — an `event` the server relays to the agent as a UserAction;

@@ -4,7 +4,7 @@ import { CommonSchemas } from "@a2ui/web_core/v0_9";
 import { createBinderlessComponentImplementation } from "@a2ui/react/v0_9";
 import { CheckCircle, ExternalLink, MoreHorizontal } from "lucide-react";
 import { openExternal, resolveIcon, saveContactFile, useTranslation } from "../host";
-import { postSurfaceAction, type SurfaceActionBody, type SurfaceActionStamp } from "../actions";
+import { OPEN_RESULTS, PENDING_TTL_MS, postSurfaceAction, type SurfaceActionBody, type SurfaceActionStamp } from "../actions";
 import { buildVCard, vcardFilename } from "../vcard";
 import {
   IconNameSchema,
@@ -166,38 +166,52 @@ export const ActionBar = createBinderlessComponentImplementation(ActionBarApi, (
     })
     .filter((a): a is ResolvedAction => a !== null);
 
-  /** Done stamped in the data model — rendered identically on every client
-   *  and after reload. Short label from the stamp's result (or the action
-   *  kind); long sentence beneath. */
+  /** The action's stamp: its state, written by the server into the data
+   *  model and read live, so the presser, every other client and a cold
+   *  load agree. */
+  const stampOf = (action: ResolvedAction): SurfaceActionStamp | undefined =>
+    asRecord(stamps?.[action.id]) as SurfaceActionStamp | undefined;
+
+  /** Running on some device: a fresh `pending` stamp. */
+  const runningElsewhere = (action: ResolvedAction): boolean => {
+    const stamp = stampOf(action);
+    if (stamp?.result !== "pending") return false;
+    const started = stamp.started_at ? Date.parse(stamp.started_at) : NaN;
+    return Number.isFinite(started) && Date.now() - started < PENDING_TTL_MS;
+  };
+
+  /** The failure the last run stamped — shown on every device. */
+  const recordedError = (action: ResolvedAction): string | undefined => {
+    const stamp = stampOf(action);
+    return stamp?.result === "error" ? asString(stamp.error)?.trim() || tChat("results.actionFailed") : undefined;
+  };
+
+  /** Done: the label is the outcome the function's tool declares
+   *  (`surface.done.<outcome>`), the caption its declared line — no
+   *  function is named here. Anything without an outcome keeps its own
+   *  label under the check mark: "✓ Watch" says what happened. */
   const recordedDone = (action: ResolvedAction): DoneState | undefined => {
-    const stamp = asRecord(stamps?.[action.id]);
-    if (!stamp) return undefined;
-    const result = asString(stamp.result);
-    // A backend invoke stamps `ok`; the wording follows the function.
-    const outcome = result === "relayed" ? undefined : result;
-    if (action.fn === "sendEmail" && (outcome === undefined || outcome === "ok" || outcome === "sent")) {
-      const to = asString(action.args.to);
-      return { short: t("surface.done.sent"), caption: to ? t("surface.sentTo", { to }) : undefined };
-    }
-    if (action.fn === "saveDraft" && (outcome === undefined || outcome === "ok" || outcome === "saved")) {
-      return { short: t("surface.done.saved"), caption: t("surface.savedDraft") };
-    }
-    if (action.fn === "deleteDraft" && (outcome === undefined || outcome === "ok")) {
-      return { short: t("surface.done.deleted"), caption: t("surface.deletedDraft") };
-    }
-    // Anything else keeps its own label under the check mark — "✓ Watch"
-    // says what happened, a bare "Done" does not.
-    return { short: action.label };
+    const stamp = stampOf(action);
+    const result = asString(stamp?.result);
+    if (!stamp || !result || OPEN_RESULTS.has(result)) return undefined;
+    const outcome = asString(stamp.outcome) ?? (["ok", "relayed", "executed"].includes(result) ? undefined : result);
+    const short = outcome ? t(`surface.done.${outcome}`, { defaultValue: action.label }) : action.label;
+    const captionKey = asString(stamp.caption);
+    const caption = captionKey ? t(`surface.${captionKey}`, { ...stringArgs(action.args), defaultValue: "" }) : "";
+    return { short, caption: caption || undefined };
   };
 
   /** A done `final` action (Send, Delete draft) closes the item: the other
    *  actions stay visible but can no longer run. */
-  const closed = actions.some((a) => a.final && recordedDone(a) !== undefined);
-  const unavailable = (action: ResolvedAction) => closed && !recordedDone(action);
+  const closed = actions.some(
+    (a) => a.final && (recordedDone(a) !== undefined || runningElsewhere(a) || states[a.id]?.busy === true)
+  );
+  const unavailable = (action: ResolvedAction) =>
+    closed && !recordedDone(action) && !runningElsewhere(action) && states[action.id]?.busy !== true;
 
   const run = async (action: ResolvedAction) => {
     const state = states[action.id] ?? {};
-    if (state.busy || recordedDone(action) || unavailable(action)) return;
+    if (state.busy || runningElsewhere(action) || recordedDone(action) || unavailable(action)) return;
     setMenuOpen(false);
 
     if (action.kind === "destructive" && action.confirm && !state.confirming) {
@@ -290,16 +304,16 @@ export const ActionBar = createBinderlessComponentImplementation(ActionBarApi, (
       // The stamp lands on this surface at once; the server's
       // `surface_update` for the same path is then a no-op.
       if (res.operation) host.applyOperations([res.operation]);
-      if (res.result && res.result.ok === false) {
-        // A failed backend invoke is not a completion: show why, stay pressable.
-        patch(action.id, {
-          busy: false,
-          notice: { tone: "warning", text: res.result.text?.trim() || tChat("results.actionFailed") },
-        });
-        return;
-      }
+      // A failure is stamped too (`error`), so every device shows why and
+      // the button stays pressable; nothing more to do here.
       patch(action.id, { busy: false });
     } catch (e) {
+      // 409: already running on another device, or the item is closed — the
+      // stamps say which, and they are already on their way.
+      if ((e as { status?: number }).status === 409) {
+        patch(action.id, { busy: false });
+        return;
+      }
       console.error("A2UI action failed:", e);
       patch(action.id, { busy: false, notice: { tone: "destructive", text: tChat("results.actionFailed") } });
     }
@@ -315,7 +329,7 @@ export const ActionBar = createBinderlessComponentImplementation(ActionBarApi, (
   const renderButton = (action: ResolvedAction) => {
     const state = states[action.id] ?? {};
     const done = recordedDone(action);
-    const busy = state.busy === true;
+    const busy = state.busy === true || runningElsewhere(action);
     const kindClass = action.kind === "link" ? "link" : action.kind === "destructive" ? "destructive" : action.kind;
     const cls = ["a2ui-btn", `a2ui-btn--${kindClass}`, done || state.flash ? "a2ui-btn--done" : "", state.confirming ? "a2ui-btn--confirm" : ""]
       .filter(Boolean)
@@ -357,7 +371,14 @@ export const ActionBar = createBinderlessComponentImplementation(ActionBarApi, (
     );
   };
 
-  const notices = actions.map((a) => states[a.id]?.notice).filter((n): n is NonNullable<typeof n> => !!n);
+  const notices = actions
+    .map((a) => {
+      const local = states[a.id]?.notice;
+      if (local) return local;
+      const error = recordedError(a);
+      return error ? { tone: "warning" as const, text: error } : undefined;
+    })
+    .filter((n): n is NonNullable<typeof n> => !!n);
   const captions = actions
     .map((a) => recordedDone(a)?.caption)
     .filter((c): c is string => !!c);
@@ -427,3 +448,12 @@ export const ActionBar = createBinderlessComponentImplementation(ActionBarApi, (
     </div>
   );
 });
+
+/** An action's args as i18n interpolation values: scalars only. */
+function stringArgs(args: Record<string, unknown>): Record<string, string> {
+  const out: Record<string, string> = {};
+  for (const [k, v] of Object.entries(args)) {
+    if (typeof v === "string" || typeof v === "number") out[k] = String(v);
+  }
+  return out;
+}
