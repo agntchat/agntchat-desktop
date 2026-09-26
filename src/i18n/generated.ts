@@ -2606,7 +2606,6 @@ export const resources = {
       "copyId": "Copy ID",
       "createChannel": "Create Channel",
       "createChannelHint": "Open a shared channel for your agents",
-      "createGroup": "Create Group",
       "credentialPrompt": {
         "askedBy": "Asked by {{agent}}",
         "decline": "Decline",
@@ -2673,7 +2672,6 @@ export const resources = {
         "createChannelFailed": "Failed to create channel",
         "createFailed": "Failed to create conversation",
         "deleteTimeout": "Message delete timed out",
-        "groupNameRequired": "Please enter a group name",
         "notJoined": "Not joined to conversation",
         "selectParticipant": "Select at least one participant",
         "sendTimeout": "Message send timed out",
@@ -2824,8 +2822,6 @@ export const resources = {
       "model": "Model",
       "msgCount_one": "{{count}} msg",
       "msgCount_other": "{{count}} msgs",
-      "nameGroupSubtitle": "Give this group conversation a name so it's easy to find.",
-      "nameGroupTitle": "Name Your Group",
       "newChat": "New Chat",
       "newConversation": "New Conversation",
       "newDialog": {
@@ -8151,7 +8147,6 @@ export const resources = {
       "copyId": "Copiar ID",
       "createChannel": "Crear canal",
       "createChannelHint": "Abre un canal compartido para tus agentes",
-      "createGroup": "Crear grupo",
       "credentialPrompt": {
         "askedBy": "Solicitado por {{agent}}",
         "decline": "Rechazar",
@@ -8218,7 +8213,6 @@ export const resources = {
         "createChannelFailed": "No se pudo crear el canal",
         "createFailed": "No se pudo crear la conversación",
         "deleteTimeout": "Se agotó el tiempo al eliminar el mensaje",
-        "groupNameRequired": "Introduce un nombre para el grupo",
         "notJoined": "No estás unido a la conversación",
         "selectParticipant": "Selecciona al menos un participante",
         "sendTimeout": "Se agotó el tiempo al enviar el mensaje",
@@ -8369,8 +8363,6 @@ export const resources = {
       "model": "Modelo",
       "msgCount_one": "{{count}} msj.",
       "msgCount_other": "{{count}} msjs.",
-      "nameGroupSubtitle": "Dale un nombre a esta conversación de grupo para que sea fácil de encontrar.",
-      "nameGroupTitle": "Ponle nombre a tu grupo",
       "newChat": "Nuevo chat",
       "newConversation": "Nueva conversación",
       "newDialog": {
@@ -13696,7 +13688,6 @@ export const resources = {
       "copyId": "ID kopieren",
       "createChannel": "Kanal erstellen",
       "createChannelHint": "Einen gemeinsamen Kanal für Ihre Agenten öffnen",
-      "createGroup": "Gruppe erstellen",
       "credentialPrompt": {
         "askedBy": "Angefragt von {{agent}}",
         "decline": "Ablehnen",
@@ -13763,7 +13754,6 @@ export const resources = {
         "createChannelFailed": "Erstellen des Kanals fehlgeschlagen",
         "createFailed": "Erstellen der Unterhaltung fehlgeschlagen",
         "deleteTimeout": "Zeitüberschreitung beim Löschen der Nachricht",
-        "groupNameRequired": "Bitte geben Sie einen Gruppennamen ein",
         "notJoined": "Der Unterhaltung nicht beigetreten",
         "selectParticipant": "Wählen Sie mindestens einen Teilnehmer aus",
         "sendTimeout": "Zeitüberschreitung beim Senden der Nachricht",
@@ -13914,8 +13904,6 @@ export const resources = {
       "model": "Modell",
       "msgCount_one": "{{count}} Nachr.",
       "msgCount_other": "{{count}} Nachr.",
-      "nameGroupSubtitle": "Geben Sie dieser Gruppenunterhaltung einen Namen, damit sie leicht zu finden ist.",
-      "nameGroupTitle": "Benennen Sie Ihre Gruppe",
       "newChat": "Neuer Chat",
       "newConversation": "Neue Unterhaltung",
       "newDialog": {
@@ -19241,7 +19229,6 @@ export const resources = {
       "copyId": "Copier l'ID",
       "createChannel": "Créer un canal",
       "createChannelHint": "Ouvrez un canal partagé pour vos agents",
-      "createGroup": "Créer un groupe",
       "credentialPrompt": {
         "askedBy": "Demandé par {{agent}}",
         "decline": "Refuser",
@@ -19308,7 +19295,6 @@ export const resources = {
         "createChannelFailed": "Échec de la création du canal",
         "createFailed": "Échec de la création de la conversation",
         "deleteTimeout": "Délai d'attente dépassé pour la suppression du message",
-        "groupNameRequired": "Veuillez saisir un nom de groupe",
         "notJoined": "Vous n'avez pas rejoint cette conversation",
         "selectParticipant": "Sélectionnez au moins un participant",
         "sendTimeout": "Délai d'attente dépassé pour l'envoi du message",
@@ -19459,8 +19445,6 @@ export const resources = {
       "model": "Modèle",
       "msgCount_one": "{{count}} msg",
       "msgCount_other": "{{count}} msgs",
-      "nameGroupSubtitle": "Donnez un nom à cette conversation de groupe pour la retrouver facilement.",
-      "nameGroupTitle": "Nommez votre groupe",
       "newChat": "Nouvelle conversation",
       "newConversation": "Nouvelle conversation",
       "newDialog": {
@@ -24786,7 +24770,6 @@ export const resources = {
       "copyId": "Copiar ID",
       "createChannel": "Criar canal",
       "createChannelHint": "Abra um canal compartilhado para seus agentes",
-      "createGroup": "Criar grupo",
       "credentialPrompt": {
         "askedBy": "Pedido por {{agent}}",
         "decline": "Recusar",
@@ -24853,7 +24836,6 @@ export const resources = {
         "createChannelFailed": "Falha ao criar canal",
         "createFailed": "Falha ao criar conversa",
         "deleteTimeout": "Tempo esgotado ao excluir mensagem",
-        "groupNameRequired": "Digite um nome para o grupo",
         "notJoined": "Não conectado à conversa",
         "selectParticipant": "Selecione pelo menos um participante",
         "sendTimeout": "Tempo esgotado ao enviar mensagem",
@@ -25004,8 +24986,6 @@ export const resources = {
       "model": "Modelo",
       "msgCount_one": "{{count}} msg",
       "msgCount_other": "{{count}} msgs",
-      "nameGroupSubtitle": "Dê um nome a esta conversa em grupo para encontrá-la facilmente.",
-      "nameGroupTitle": "Nomeie seu grupo",
       "newChat": "Nova conversa",
       "newConversation": "Nova conversa",
       "newDialog": {
@@ -30331,7 +30311,6 @@ export const resources = {
       "copyId": "IDをコピー",
       "createChannel": "チャンネルを作成",
       "createChannelHint": "エージェント用の共有チャンネルを開きます",
-      "createGroup": "グループを作成",
       "credentialPrompt": {
         "askedBy": "{{agent}} からのリクエスト",
         "decline": "拒否",
@@ -30398,7 +30377,6 @@ export const resources = {
         "createChannelFailed": "チャンネルの作成に失敗しました",
         "createFailed": "会話の作成に失敗しました",
         "deleteTimeout": "メッセージの削除がタイムアウトしました",
-        "groupNameRequired": "グループ名を入力してください",
         "notJoined": "会話に参加していません",
         "selectParticipant": "参加者を1人以上選択してください",
         "sendTimeout": "メッセージの送信がタイムアウトしました",
@@ -30549,8 +30527,6 @@ export const resources = {
       "model": "モデル",
       "msgCount_one": "メッセージ{{count}}件",
       "msgCount_other": "メッセージ{{count}}件",
-      "nameGroupSubtitle": "このグループ会話に名前を付けると見つけやすくなります。",
-      "nameGroupTitle": "グループに名前を付ける",
       "newChat": "新しいチャット",
       "newConversation": "新しい会話",
       "newDialog": {
@@ -35876,7 +35852,6 @@ export const resources = {
       "copyId": "复制 ID",
       "createChannel": "创建频道",
       "createChannelHint": "为你的智能体开一个共享频道",
-      "createGroup": "创建群组",
       "credentialPrompt": {
         "askedBy": "{{agent}} 请求",
         "decline": "拒绝",
@@ -35943,7 +35918,6 @@ export const resources = {
         "createChannelFailed": "创建频道失败",
         "createFailed": "创建对话失败",
         "deleteTimeout": "删除消息超时",
-        "groupNameRequired": "请输入群组名称",
         "notJoined": "尚未加入该对话",
         "selectParticipant": "请至少选择一位参与者",
         "sendTimeout": "发送消息超时",
@@ -36094,8 +36068,6 @@ export const resources = {
       "model": "模型",
       "msgCount_one": "{{count}} 条消息",
       "msgCount_other": "{{count}} 条消息",
-      "nameGroupSubtitle": "为此群组对话命名，方便查找。",
-      "nameGroupTitle": "为你的群组命名",
       "newChat": "新聊天",
       "newConversation": "新建对话",
       "newDialog": {
@@ -41421,7 +41393,6 @@ export const resources = {
       "copyId": "ID 복사",
       "createChannel": "채널 만들기",
       "createChannelHint": "에이전트를 위한 공유 채널을 엽니다",
-      "createGroup": "그룹 만들기",
       "credentialPrompt": {
         "askedBy": "{{agent}}의 요청",
         "decline": "거절",
@@ -41488,7 +41459,6 @@ export const resources = {
         "createChannelFailed": "채널 생성 실패",
         "createFailed": "대화 생성 실패",
         "deleteTimeout": "메시지 삭제 시간 초과",
-        "groupNameRequired": "그룹 이름을 입력하세요",
         "notJoined": "대화에 참여하지 않음",
         "selectParticipant": "참가자를 한 명 이상 선택하세요",
         "sendTimeout": "메시지 전송 시간 초과",
@@ -41639,8 +41609,6 @@ export const resources = {
       "model": "모델",
       "msgCount_one": "메시지 {{count}}개",
       "msgCount_other": "메시지 {{count}}개",
-      "nameGroupSubtitle": "찾기 쉽도록 이 그룹 대화의 이름을 지정하세요.",
-      "nameGroupTitle": "그룹 이름 짓기",
       "newChat": "새 채팅",
       "newConversation": "새 대화",
       "newDialog": {
@@ -46966,7 +46934,6 @@ export const resources = {
       "copyId": "Copia ID",
       "createChannel": "Crea canale",
       "createChannelHint": "Apri un canale condiviso per i tuoi agenti",
-      "createGroup": "Crea gruppo",
       "credentialPrompt": {
         "askedBy": "Richiesto da {{agent}}",
         "decline": "Rifiuta",
@@ -47033,7 +47000,6 @@ export const resources = {
         "createChannelFailed": "Impossibile creare il canale",
         "createFailed": "Impossibile creare la conversazione",
         "deleteTimeout": "Eliminazione del messaggio scaduta",
-        "groupNameRequired": "Inserisci un nome per il gruppo",
         "notJoined": "Non hai effettuato l'accesso alla conversazione",
         "selectParticipant": "Seleziona almeno un partecipante",
         "sendTimeout": "Invio del messaggio scaduto",
@@ -47184,8 +47150,6 @@ export const resources = {
       "model": "Modello",
       "msgCount_one": "{{count}} msg",
       "msgCount_other": "{{count}} msg",
-      "nameGroupSubtitle": "Assegna un nome a questa conversazione di gruppo per trovarla facilmente.",
-      "nameGroupTitle": "Assegna un nome al tuo gruppo",
       "newChat": "Nuova chat",
       "newConversation": "Nuova conversazione",
       "newDialog": {
@@ -52511,7 +52475,6 @@ export const resources = {
       "copyId": "ID कॉपी करें",
       "createChannel": "चैनल बनाएँ",
       "createChannelHint": "अपने एजेंटों के लिए एक साझा चैनल खोलें",
-      "createGroup": "समूह बनाएँ",
       "credentialPrompt": {
         "askedBy": "{{agent}} द्वारा अनुरोधित",
         "decline": "अस्वीकार करें",
@@ -52578,7 +52541,6 @@ export const resources = {
         "createChannelFailed": "चैनल बनाना विफल",
         "createFailed": "बातचीत बनाना विफल",
         "deleteTimeout": "संदेश हटाने का समय समाप्त",
-        "groupNameRequired": "कृपया समूह का नाम दर्ज करें",
         "notJoined": "बातचीत में शामिल नहीं",
         "selectParticipant": "कम से कम एक प्रतिभागी चुनें",
         "sendTimeout": "संदेश भेजने का समय समाप्त",
@@ -52729,8 +52691,6 @@ export const resources = {
       "model": "मॉडल",
       "msgCount_one": "{{count}} संदेश",
       "msgCount_other": "{{count}} संदेश",
-      "nameGroupSubtitle": "इस समूह बातचीत को खोजना आसान बनाने के लिए एक नाम दें।",
-      "nameGroupTitle": "अपने समूह को नाम दें",
       "newChat": "नई चैट",
       "newConversation": "नई बातचीत",
       "newDialog": {
