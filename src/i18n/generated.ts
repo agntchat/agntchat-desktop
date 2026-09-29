@@ -2867,6 +2867,12 @@ export const resources = {
       "noConversationsNoPeersHint": "Add an agent or invite a teammate to start a conversation",
       "noMessages": "No messages yet",
       "noneAvailableToAdd": "Nobody available to add",
+      "notAnswered": {
+        "expired": "Not seen in time by {{names}}",
+        "expiredNoName": "Not seen in time",
+        "hint": "This message will not get an answer. Send it again if you still need one.",
+        "stopped": "Stopped — won't be answered"
+      },
       "observing_one": "You're observing · {{count}} agent active",
       "observing_other": "You're observing · {{count}} agents active",
       "onlineCount_one": "{{count}} online",
@@ -8417,6 +8423,12 @@ export const resources = {
       "noConversationsNoPeersHint": "Agrega un agente o invita a un compañero para iniciar una conversación",
       "noMessages": "Aún no hay mensajes",
       "noneAvailableToAdd": "No hay nadie disponible para añadir",
+      "notAnswered": {
+        "expired": "{{names}} no lo vio a tiempo",
+        "expiredNoName": "No se vio a tiempo",
+        "hint": "Este mensaje no recibirá respuesta. Vuelve a enviarlo si aún la necesitas.",
+        "stopped": "Detenido — no se responderá"
+      },
       "observing_one": "Estás observando · {{count}} agente activo",
       "observing_other": "Estás observando · {{count}} agentes activos",
       "onlineCount_one": "{{count}} en línea",
@@ -13967,6 +13979,12 @@ export const resources = {
       "noConversationsNoPeersHint": "Fügen Sie einen Agenten hinzu oder laden Sie ein Teammitglied ein, um eine Unterhaltung zu starten",
       "noMessages": "Noch keine Nachrichten",
       "noneAvailableToAdd": "Niemand zum Hinzufügen verfügbar",
+      "notAnswered": {
+        "expired": "Nicht rechtzeitig gesehen von {{names}}",
+        "expiredNoName": "Nicht rechtzeitig gesehen",
+        "hint": "Diese Nachricht wird nicht beantwortet. Sende sie erneut, wenn du noch eine Antwort brauchst.",
+        "stopped": "Gestoppt — wird nicht beantwortet"
+      },
       "observing_one": "Sie beobachten · {{count}} Agent aktiv",
       "observing_other": "Sie beobachten · {{count}} Agenten aktiv",
       "onlineCount_one": "{{count}} online",
@@ -19517,6 +19535,12 @@ export const resources = {
       "noConversationsNoPeersHint": "Ajoutez un agent ou invitez un coéquipier pour démarrer une conversation",
       "noMessages": "Aucun message pour l'instant",
       "noneAvailableToAdd": "Personne à ajouter",
+      "notAnswered": {
+        "expired": "Pas vu à temps par {{names}}",
+        "expiredNoName": "Pas vu à temps",
+        "hint": "Ce message ne recevra pas de réponse. Renvoie-le si tu en as encore besoin.",
+        "stopped": "Arrêté — ne recevra pas de réponse"
+      },
       "observing_one": "Vous observez · {{count}} agent actif",
       "observing_other": "Vous observez · {{count}} agents actifs",
       "onlineCount_one": "{{count}} en ligne",
@@ -25067,6 +25091,12 @@ export const resources = {
       "noConversationsNoPeersHint": "Adicione um agente ou convide um colega para iniciar uma conversa",
       "noMessages": "Ainda não há mensagens",
       "noneAvailableToAdd": "Ninguém disponível para adicionar",
+      "notAnswered": {
+        "expired": "{{names}} não viu a tempo",
+        "expiredNoName": "Não visto a tempo",
+        "hint": "Esta mensagem não receberá resposta. Envie de novo se ainda precisar.",
+        "stopped": "Interrompido — não será respondido"
+      },
       "observing_one": "Você está observando · {{count}} agente ativo",
       "observing_other": "Você está observando · {{count}} agentes ativos",
       "onlineCount_one": "{{count}} online",
@@ -30617,6 +30647,12 @@ export const resources = {
       "noConversationsNoPeersHint": "エージェントを追加するか、メンバーを招待して会話を始めましょう",
       "noMessages": "まだメッセージがありません",
       "noneAvailableToAdd": "追加できる相手がいません",
+      "notAnswered": {
+        "expired": "{{names}} が時間内に確認できませんでした",
+        "expiredNoName": "時間内に確認されませんでした",
+        "hint": "このメッセージには返信がありません。まだ必要な場合はもう一度送信してください。",
+        "stopped": "停止しました — 返信されません"
+      },
       "observing_one": "観察中 · アクティブなエージェント{{count}}人",
       "observing_other": "観察中 · アクティブなエージェント{{count}}人",
       "onlineCount_one": "{{count}}人がオンライン",
@@ -36167,6 +36203,12 @@ export const resources = {
       "noConversationsNoPeersHint": "添加智能体或邀请同事以开始对话",
       "noMessages": "暂无消息",
       "noneAvailableToAdd": "没有可添加的成员",
+      "notAnswered": {
+        "expired": "{{names}} 未能及时看到",
+        "expiredNoName": "未能及时看到",
+        "hint": "这条消息不会得到回复。如果仍然需要，请重新发送。",
+        "stopped": "已停止 — 不会得到回复"
+      },
       "observing_one": "你正在观察 · {{count}} 个智能体活跃中",
       "observing_other": "你正在观察 · {{count}} 个智能体活跃中",
       "onlineCount_one": "{{count}} 位在线",
@@ -41717,6 +41759,12 @@ export const resources = {
       "noConversationsNoPeersHint": "에이전트를 추가하거나 팀원을 초대해 대화를 시작하세요",
       "noMessages": "아직 메시지가 없습니다",
       "noneAvailableToAdd": "추가할 수 있는 대상이 없습니다",
+      "notAnswered": {
+        "expired": "{{names}}이(가) 제때 확인하지 못했습니다",
+        "expiredNoName": "제때 확인되지 않았습니다",
+        "hint": "이 메시지에는 답변이 오지 않습니다. 아직 필요하면 다시 보내 주세요.",
+        "stopped": "중지됨 — 답변되지 않습니다"
+      },
       "observing_one": "관찰 중 · 에이전트 {{count}}개 활성",
       "observing_other": "관찰 중 · 에이전트 {{count}}개 활성",
       "onlineCount_one": "{{count}}명 온라인",
@@ -47267,6 +47315,12 @@ export const resources = {
       "noConversationsNoPeersHint": "Aggiungi un agente o invita un collega per avviare una conversazione",
       "noMessages": "Ancora nessun messaggio",
       "noneAvailableToAdd": "Nessuno disponibile da aggiungere",
+      "notAnswered": {
+        "expired": "Non visto in tempo da {{names}}",
+        "expiredNoName": "Non visto in tempo",
+        "hint": "Questo messaggio non riceverà risposta. Invialo di nuovo se ti serve ancora.",
+        "stopped": "Interrotto — non riceverà risposta"
+      },
       "observing_one": "Stai osservando · {{count}} agente attivo",
       "observing_other": "Stai osservando · {{count}} agenti attivi",
       "onlineCount_one": "{{count}} online",
@@ -52817,6 +52871,12 @@ export const resources = {
       "noConversationsNoPeersHint": "बातचीत शुरू करने के लिए एजेंट जोड़ें या किसी साथी को आमंत्रित करें",
       "noMessages": "अभी तक कोई संदेश नहीं",
       "noneAvailableToAdd": "जोड़ने के लिए कोई उपलब्ध नहीं है",
+      "notAnswered": {
+        "expired": "{{names}} ने समय पर नहीं देखा",
+        "expiredNoName": "समय पर नहीं देखा गया",
+        "hint": "इस संदेश का जवाब नहीं मिलेगा। अगर अब भी ज़रूरत है तो इसे दोबारा भेजें।",
+        "stopped": "रोका गया — इसका जवाब नहीं मिलेगा"
+      },
       "observing_one": "आप देख रहे हैं · {{count}} एजेंट सक्रिय",
       "observing_other": "आप देख रहे हैं · {{count}} एजेंट सक्रिय",
       "onlineCount_one": "{{count}} ऑनलाइन",

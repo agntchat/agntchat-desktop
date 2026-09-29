@@ -15,7 +15,7 @@ import {
   MessageFooter,
   MessageHeader,
 } from "@/components/ui/message";
-import { Bot, Hourglass, LogIn, Reply as ReplyIcon, Terminal } from "lucide-react";
+import { Bot, CircleSlash, Hourglass, LogIn, Reply as ReplyIcon, Terminal } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useModelCatalog } from "../../stores/modelCatalogStore";
 import { MarkdownContent } from "./MarkdownContent";
@@ -36,6 +36,7 @@ import {
 } from "./CompactionSummaryMessage";
 import type { Message } from "../../lib/api";
 import { awaitingAgent } from "../../lib/awaitingAgent";
+import { notAnswered } from "../../lib/notAnswered";
 
 /** Sender name + Agent pill + model label shown above the first bubble of a run.
  *  `viaTerminal` tags a message mirrored from an external CLI session (#148):
@@ -165,6 +166,8 @@ export const MessageBubble = memo(function MessageBubble({
   // the stamp (and this note) when the task closes and the message is
   // actually delivered. See lib/awaitingAgent.ts.
   const awaiting = awaitingAgent(message);
+  // Stopped or expired before an agent took it (lib/notAnswered.ts).
+  const unanswered = notAnswered(message);
   const showClaudeSignIn =
     message.metadata?.errorKind === "auth_failure" &&
     isAgent &&
@@ -379,6 +382,19 @@ export const MessageBubble = memo(function MessageBubble({
               {t("chat:awaitingAgent.label", {
                 name: awaiting.agent_name ?? t("chat:agentBusy.defaultAgentName"),
               })}
+            </span>
+          )}
+          {unanswered && (
+            <span
+              className="ml-1.5 inline-flex items-center gap-1"
+              title={t("chat:notAnswered.hint")}
+            >
+              <CircleSlash className="h-2.5 w-2.5" aria-hidden />
+              {unanswered.reason === "stopped"
+                ? t("chat:notAnswered.stopped")
+                : unanswered.agents.length > 0
+                  ? t("chat:notAnswered.expired", { names: unanswered.agents.join(", ") })
+                  : t("chat:notAnswered.expiredNoName")}
             </span>
           )}
         </MessageFooter>
