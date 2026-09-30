@@ -3,18 +3,17 @@ import { useTranslation } from "react-i18next";
 import { type ResponseTemplate, listResponseTemplates } from "../lib/api";
 import { TemplateSurfacePreview } from "./TemplateSurfacePreview";
 import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
 import {
   LayoutTemplate,
-  X,
   ChevronRight,
 } from "lucide-react";
 
-interface Props {
-  onClose: () => void;
-}
-
-export function TemplateGallery({ onClose }: Props) {
+/**
+ * The response-template library, read-only. The library is global: every
+ * agent can use any template, and a card is used when the message calls for
+ * one — templates are never assigned to an agent.
+ */
+export function TemplateGallery() {
   const { t } = useTranslation("templates");
   const [templates, setTemplates] = useState<ResponseTemplate[]>([]);
   const [loading, setLoading] = useState(true);
@@ -53,17 +52,12 @@ export function TemplateGallery({ onClose }: Props) {
   return (
     <div className="flex flex-col h-full">
       {/* Header */}
-      <div className="flex items-center justify-between px-4 py-2.5 border-b bg-muted/30">
-        <div className="flex items-center gap-2.5">
-          <LayoutTemplate className="w-4 h-4 text-primary" />
-          <h2 className="text-sm font-semibold">{t("gallery")}</h2>
-          <span className="text-xs text-muted-foreground">
-            {t("count", { count: templates.length })}
-          </span>
-        </div>
-        <Button variant="ghost" size="icon" className="h-7 w-7" onClick={onClose}>
-          <X className="w-4 h-4" />
-        </Button>
+      <div className="flex items-center gap-2.5 px-4 py-2.5 border-b bg-muted/30">
+        <LayoutTemplate className="w-4 h-4 text-primary" />
+        <h2 className="text-sm font-semibold">{t("gallery")}</h2>
+        <span className="text-xs text-muted-foreground">
+          {t("count", { count: templates.length })}
+        </span>
       </div>
 
       {/* Type filter tabs */}

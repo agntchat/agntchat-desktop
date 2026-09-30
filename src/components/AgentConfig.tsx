@@ -142,7 +142,6 @@ import { AgentTools } from "./AgentTools";
 import { AgentMemory } from "./AgentMemory";
 import { AgentOnboarding } from "./AgentOnboarding";
 import { OnboardingChip, isOnboarding, onboardingPct } from "./OnboardingChip";
-import { AgentTemplates } from "./AgentTemplates";
 import { AgentRoutines } from "./AgentRoutines";
 import { AgentReminders } from "./AgentReminders";
 import { ModelOverrideField } from "./ModelOverrideField";
@@ -194,8 +193,8 @@ type SectionBadge =
 // its own panel shows: tools counts only agent-scoped assignments (globals are
 // always-on, not a per-agent number), memory counts the agent's own rows
 // (family memory is shared, not this agent's), skills counts the resolved set
-// the agent runs with. Templates is absent on purpose — the assigned set
-// already rides along on the agent record, so it needs no fetch.
+// the agent runs with. Templates has no badge: the library is global, not a
+// per-agent number.
 const SECTION_BADGES: Record<string, (agentId: string) => Promise<SectionBadge>> = {
   skills: (id) =>
     getAgentSkills(id).then((r) => (r.skills ?? []).filter((s) => s.active !== false).length),
@@ -242,8 +241,7 @@ const sameBadge = (a: SectionBadge | undefined, b: SectionBadge) =>
 /**
  * Onboarding rail badge: the percent settled while the agent is a new hire,
  * nothing once established. Read straight off the agent record (which
- * `agent_updated` keeps live on every review) rather than fetched — same
- * reason Templates isn't in SECTION_BADGES.
+ * `agent_updated` keeps live on every review) rather than fetched.
  */
 function onboardingBadge(agent: Pick<Agent, "lifecycleStage" | "onboarding">): SectionBadge {
   if (!isOnboarding(agent)) return null;
@@ -657,7 +655,6 @@ export function AgentConfig({
     : config.llmApiKeyId || "__default__";
 
   const [activeSection, setActiveSection] = useState(initialSection ?? "config");
-  const [showGallery, setShowGallery] = useState(false);
 
   // Rejected or missing agent API key. Drives both the crash banner's
   // one-click fix below and the warning dot on the Model rail row — the key
@@ -690,8 +687,7 @@ export function AgentConfig({
     return () => setAgentConfigSection(null);
   }, [activeSection, setAgentConfigSection]);
 
-  // Rail badges. Templates isn't fetched — the assigned set is already
-  // on the agent record, so it stays live for free.
+  // Rail badges.
   const { badges, setBadge } = useSectionBadges(agent.id, activeSection);
   // Stable per-section reporters. The panels take these as props and call them
   // from inside their own fetch callbacks, so an identity that changed every
@@ -708,9 +704,6 @@ export function AgentConfig({
     }),
     [setBadge]
   );
-  const templateCount = Object.keys(
-    agent.structuredCapabilities?.detail_templates ?? {}
-  ).length;
 
   // ---- First-run orientation tour ----
   // Refs to each sidebar group wrapper, keyed by `group.key`, so a tour step
@@ -863,11 +856,10 @@ export function AgentConfig({
         { value: "reminders", label: t("sections.reminders"), icon: Bell, badge: badges.reminders },
         {
           value: "templates",
-          // "Response Cards" — the shared feature name across all three
-          // clients; the rail is sized to fit it in every locale.
+          // "Response Cards" — the global template library, read-only;
+          // the rail is sized to fit the label in every locale.
           label: t("settings:manage.templates"),
           icon: LayoutTemplate,
-          badge: templateCount,
         },
         { value: "routines", label: t("routines.title"), icon: Timer, badge: badges.routines },
         { value: "loops", label: t("loops.title"), icon: Repeat, badge: badges.loops },
@@ -1813,24 +1805,9 @@ export function AgentConfig({
           </div>
         )}
 
-        {activeSection === "templates" && !showGallery && (
-          <div className="flex-1 overflow-y-auto">
-            <AgentTemplates managed={managed} />
-            <div className="px-5 pb-5">
-              <button
-                onClick={() => setShowGallery(true)}
-                className="w-full py-3 rounded-lg bg-primary/10 text-sm font-semibold text-primary hover:bg-primary/20 transition-colors flex items-center justify-center gap-2"
-              >
-                <LayoutTemplate className="w-4 h-4" />
-                {t("templates:previewAll")}
-              </button>
-            </div>
-          </div>
-        )}
-
-        {activeSection === "templates" && showGallery && (
+        {activeSection === "templates" && (
           <div className="flex-1 overflow-hidden">
-            <TemplateGallery onClose={() => setShowGallery(false)} />
+            <TemplateGallery />
           </div>
         )}
 

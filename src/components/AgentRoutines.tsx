@@ -17,6 +17,7 @@ import {
   deleteRoutine,
   pauseRoutine,
   resumeRoutine,
+  listResponseTemplates,
 } from "../lib/api";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -49,6 +50,25 @@ import {
   AlertTriangle,
 } from "lucide-react";
 import { alertDialog } from "../stores/confirmStore";
+
+/** Names from the response-template library, for the routine's card picker.
+ *  The library is global — any agent can format a routine's output with any
+ *  template, so the choice is not narrowed per agent. */
+function useLibraryTemplateNames(): string[] {
+  const [names, setNames] = useState<string[]>([]);
+  useEffect(() => {
+    let alive = true;
+    listResponseTemplates()
+      .then(({ templates }) => {
+        if (alive) setNames((templates ?? []).map((tpl) => tpl.name).sort());
+      })
+      .catch((e) => console.error("Failed to fetch templates:", e));
+    return () => {
+      alive = false;
+    };
+  }, []);
+  return names;
+}
 
 const HOURS = Array.from({ length: 24 }, (_, i) => ({ value: String(i) }));
 
@@ -972,11 +992,7 @@ function CreateRoutineDialog({
     () => Object.values(agents).find((m) => m.agent.id === agentId)?.agent.displayName,
     [agents, agentId],
   );
-  const templateNames = useMemo(() => {
-    const managed = Object.values(agents).find((m) => m.agent.id === agentId);
-    const templates = managed?.agent.structuredCapabilities?.detail_templates;
-    return templates ? Object.keys(templates).sort() : [];
-  }, [agents, agentId]);
+  const templateNames = useLibraryTemplateNames();
 
   const scheduleValid =
     schedule.mode !== "datetime" || schedule.selectedDays.length > 0;
@@ -1224,11 +1240,7 @@ export function RoutineForm({ routine, variant, onDone, onSaved }: RoutineFormPr
   const { agents } = useAgentStore();
   const agentName = Object.values(agents).find((m) => m.agent.id === routine.participantId)
     ?.agent.displayName;
-  const templateNames = useMemo(() => {
-    const managed = Object.values(agents).find((m) => m.agent.id === routine.participantId);
-    const templates = managed?.agent.structuredCapabilities?.detail_templates;
-    return templates ? Object.keys(templates).sort() : [];
-  }, [agents, routine.participantId]);
+  const templateNames = useLibraryTemplateNames();
 
   // Re-seed when the pane switches to a different routine. Keyed on the id
   // rather than the object so a store refresh doesn't wipe in-progress edits.

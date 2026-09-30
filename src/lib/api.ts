@@ -4057,7 +4057,6 @@ export interface Agent {
   onboarding?: OnboardingRollup;
   capabilities?: string[];
   structuredCapabilities?: {
-    detail_templates?: Record<string, DetailField[]>;
     tools?: Array<{ name: string; description?: string }>;
     [key: string]: unknown;
   };

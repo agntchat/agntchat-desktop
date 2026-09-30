@@ -1893,11 +1893,6 @@ export const resources = {
       },
       "tasksPerMonth_one": "{{count}} task/mo",
       "tasksPerMonth_other": "{{count}} tasks/mo",
-      "templates": {
-        "addFailed": "Failed to add card",
-        "assignedTemplatesHeader": "Assigned Cards",
-        "removeFailed": "Failed to remove card"
-      },
       "thisAgent": "this agent",
       "tones": {
         "casual": "Casual",
@@ -5511,22 +5506,9 @@ export const resources = {
       "workRoom": "Work room"
     },
     "templates": {
-      "add": "Add Card",
-      "addTemplate": "Add Card",
-      "addToAgent": "Add to Agent",
-      "allAssigned": "All available cards are already assigned.",
-      "assigned": "Assigned",
       "cardPreview": "Card Preview",
       "count_one": "{{count}} card",
       "count_other": "{{count}} cards",
-      "empty": {
-        "title": "No Cards"
-      },
-      "emptyDescription": "Cards define how this agent formats structured results (hotels, emails, products, etc.)",
-      "emptyLabel": "No cards yet",
-      "errors": {
-        "loadFailed": "Failed to load cards"
-      },
       "fieldCount_one": "{{count}} field",
       "fieldCount_other": "{{count}} fields",
       "fieldsWithCount": "Fields ({{count}})",
@@ -5534,14 +5516,7 @@ export const resources = {
       "filterAll_other": "All ({{count}})",
       "gallery": "Card Gallery",
       "loading": "Loading cards…",
-      "noMatches": "No matching cards.",
-      "previewAll": "Preview all cards",
-      "removeFromAgent": "Remove from Agent",
       "sampleData": "Sample Data",
-      "searchPlaceholder": "Search cards...",
-      "sections": {
-        "fields": "Fields ({{count}})"
-      },
       "selectToPreview": "Select a card to preview",
       "surface": {
         "carousel": "carousel",
@@ -7449,11 +7424,6 @@ export const resources = {
       },
       "tasksPerMonth_one": "{{count}} tarea/mes",
       "tasksPerMonth_other": "{{count}} tareas/mes",
-      "templates": {
-        "addFailed": "Error al añadir la tarjeta",
-        "assignedTemplatesHeader": "Tarjetas asignadas",
-        "removeFailed": "Error al quitar la tarjeta"
-      },
       "thisAgent": "este agente",
       "tones": {
         "casual": "Informal",
@@ -11067,22 +11037,9 @@ export const resources = {
       "workRoom": "Sala de trabajo"
     },
     "templates": {
-      "add": "Añadir tarjeta",
-      "addTemplate": "Añadir tarjeta",
-      "addToAgent": "Añadir al agente",
-      "allAssigned": "Todas las tarjetas disponibles ya están asignadas.",
-      "assigned": "Asignadas",
       "cardPreview": "Vista previa de la tarjeta",
       "count_one": "{{count}} tarjeta",
       "count_other": "{{count}} tarjetas",
-      "empty": {
-        "title": "No hay tarjetas"
-      },
-      "emptyDescription": "Las tarjetas definen cómo este agente da formato a los resultados estructurados (hoteles, correos, productos, etc.)",
-      "emptyLabel": "Aún no hay tarjetas",
-      "errors": {
-        "loadFailed": "No se pudieron cargar las tarjetas"
-      },
       "fieldCount_one": "{{count}} campo",
       "fieldCount_other": "{{count}} campos",
       "fieldsWithCount": "Campos ({{count}})",
@@ -11090,14 +11047,7 @@ export const resources = {
       "filterAll_other": "Todas ({{count}})",
       "gallery": "Galería de tarjetas",
       "loading": "Cargando tarjetas…",
-      "noMatches": "No hay tarjetas que coincidan.",
-      "previewAll": "Ver todas las tarjetas",
-      "removeFromAgent": "Quitar del agente",
       "sampleData": "Datos de ejemplo",
-      "searchPlaceholder": "Buscar tarjetas...",
-      "sections": {
-        "fields": "Campos ({{count}})"
-      },
       "selectToPreview": "Selecciona una tarjeta para previsualizarla",
       "surface": {
         "carousel": "carrusel",
@@ -13005,11 +12955,6 @@ export const resources = {
       },
       "tasksPerMonth_one": "{{count}} Aufgabe/Monat",
       "tasksPerMonth_other": "{{count}} Aufgaben/Monat",
-      "templates": {
-        "addFailed": "Hinzufügen der Karte fehlgeschlagen",
-        "assignedTemplatesHeader": "Zugewiesene Karten",
-        "removeFailed": "Entfernen der Karte fehlgeschlagen"
-      },
       "thisAgent": "dieser Agent",
       "tones": {
         "casual": "Locker",
@@ -16623,22 +16568,9 @@ export const resources = {
       "workRoom": "Arbeitsraum"
     },
     "templates": {
-      "add": "Karte hinzufügen",
-      "addTemplate": "Karte hinzufügen",
-      "addToAgent": "Zum Agenten hinzufügen",
-      "allAssigned": "Alle verfügbaren Karten sind bereits zugewiesen.",
-      "assigned": "Zugewiesen",
       "cardPreview": "Kartenvorschau",
       "count_one": "{{count}} Karte",
       "count_other": "{{count}} Karten",
-      "empty": {
-        "title": "Keine Karten"
-      },
-      "emptyDescription": "Karten legen fest, wie dieser Agent strukturierte Ergebnisse formatiert (Hotels, E-Mails, Produkte usw.)",
-      "emptyLabel": "Noch keine Karten",
-      "errors": {
-        "loadFailed": "Karten konnten nicht geladen werden"
-      },
       "fieldCount_one": "{{count}} Feld",
       "fieldCount_other": "{{count}} Felder",
       "fieldsWithCount": "Felder ({{count}})",
@@ -16646,14 +16578,7 @@ export const resources = {
       "filterAll_other": "Alle ({{count}})",
       "gallery": "Kartengalerie",
       "loading": "Karten werden geladen…",
-      "noMatches": "Keine passenden Karten.",
-      "previewAll": "Alle Karten ansehen",
-      "removeFromAgent": "Vom Agenten entfernen",
       "sampleData": "Beispieldaten",
-      "searchPlaceholder": "Karten durchsuchen...",
-      "sections": {
-        "fields": "Felder ({{count}})"
-      },
       "selectToPreview": "Karte zur Vorschau auswählen",
       "surface": {
         "carousel": "Karussell",
@@ -18561,11 +18486,6 @@ export const resources = {
       },
       "tasksPerMonth_one": "{{count}} tâche/mois",
       "tasksPerMonth_other": "{{count}} tâches/mois",
-      "templates": {
-        "addFailed": "Échec de l'ajout de la carte",
-        "assignedTemplatesHeader": "Cartes assignées",
-        "removeFailed": "Échec de la suppression de la carte"
-      },
       "thisAgent": "cet agent",
       "tones": {
         "casual": "Décontracté",
@@ -22179,22 +22099,9 @@ export const resources = {
       "workRoom": "Salle de travail"
     },
     "templates": {
-      "add": "Ajouter une carte",
-      "addTemplate": "Ajouter une carte",
-      "addToAgent": "Ajouter à l'agent",
-      "allAssigned": "Toutes les cartes disponibles sont déjà assignées.",
-      "assigned": "Assigné",
       "cardPreview": "Aperçu de la carte",
       "count_one": "{{count}} carte",
       "count_other": "{{count}} cartes",
-      "empty": {
-        "title": "Aucune carte"
-      },
-      "emptyDescription": "Les cartes définissent comment cet agent formate les résultats structurés (hôtels, e-mails, produits, etc.)",
-      "emptyLabel": "Aucune carte pour le moment",
-      "errors": {
-        "loadFailed": "Échec du chargement des cartes"
-      },
       "fieldCount_one": "{{count}} champ",
       "fieldCount_other": "{{count}} champs",
       "fieldsWithCount": "Champs ({{count}})",
@@ -22202,14 +22109,7 @@ export const resources = {
       "filterAll_other": "Tous ({{count}})",
       "gallery": "Galerie de cartes",
       "loading": "Chargement des cartes…",
-      "noMatches": "Aucune carte correspondante.",
-      "previewAll": "Voir toutes les cartes",
-      "removeFromAgent": "Retirer de l'agent",
       "sampleData": "Données d'exemple",
-      "searchPlaceholder": "Rechercher des cartes...",
-      "sections": {
-        "fields": "Champs ({{count}})"
-      },
       "selectToPreview": "Sélectionnez une carte à prévisualiser",
       "surface": {
         "carousel": "carrousel",
@@ -24117,11 +24017,6 @@ export const resources = {
       },
       "tasksPerMonth_one": "{{count}} tarefa/mês",
       "tasksPerMonth_other": "{{count}} tarefas/mês",
-      "templates": {
-        "addFailed": "Falha ao adicionar cartão",
-        "assignedTemplatesHeader": "Cartões atribuídos",
-        "removeFailed": "Falha ao remover cartão"
-      },
       "thisAgent": "este agente",
       "tones": {
         "casual": "Casual",
@@ -27735,22 +27630,9 @@ export const resources = {
       "workRoom": "Sala de trabalho"
     },
     "templates": {
-      "add": "Adicionar cartão",
-      "addTemplate": "Adicionar cartão",
-      "addToAgent": "Adicionar ao agente",
-      "allAssigned": "Todos os cartões disponíveis já foram atribuídos.",
-      "assigned": "Atribuído",
       "cardPreview": "Prévia do card",
       "count_one": "{{count}} cartão",
       "count_other": "{{count}} cartões",
-      "empty": {
-        "title": "Nenhum cartão"
-      },
-      "emptyDescription": "Os cartões definem como este agente formata resultados estruturados (hotéis, e-mails, produtos etc.)",
-      "emptyLabel": "Nenhum cartão ainda",
-      "errors": {
-        "loadFailed": "Falha ao carregar cartões"
-      },
       "fieldCount_one": "{{count}} campo",
       "fieldCount_other": "{{count}} campos",
       "fieldsWithCount": "Campos ({{count}})",
@@ -27758,14 +27640,7 @@ export const resources = {
       "filterAll_other": "Todos ({{count}})",
       "gallery": "Galeria de cartões",
       "loading": "Carregando cartões…",
-      "noMatches": "Nenhum cartão correspondente.",
-      "previewAll": "Ver todos os cartões",
-      "removeFromAgent": "Remover do agente",
       "sampleData": "Dados de exemplo",
-      "searchPlaceholder": "Pesquisar cartões...",
-      "sections": {
-        "fields": "Campos ({{count}})"
-      },
       "selectToPreview": "Selecione um cartão para pré-visualizar",
       "surface": {
         "carousel": "carrossel",
@@ -29673,11 +29548,6 @@ export const resources = {
       },
       "tasksPerMonth_one": "{{count}}件/月",
       "tasksPerMonth_other": "{{count}}件/月",
-      "templates": {
-        "addFailed": "カードの追加に失敗しました",
-        "assignedTemplatesHeader": "割り当てられたカード",
-        "removeFailed": "カードの削除に失敗しました"
-      },
       "thisAgent": "このエージェント",
       "tones": {
         "casual": "カジュアル",
@@ -33291,22 +33161,9 @@ export const resources = {
       "workRoom": "作業ルーム"
     },
     "templates": {
-      "add": "カードを追加",
-      "addTemplate": "カードを追加",
-      "addToAgent": "エージェントに追加",
-      "allAssigned": "利用可能なカードはすべて割り当て済みです。",
-      "assigned": "割り当て済み",
       "cardPreview": "カードプレビュー",
       "count_one": "{{count}}件のカード",
       "count_other": "{{count}}件のカード",
-      "empty": {
-        "title": "カードがありません"
-      },
-      "emptyDescription": "カードは、このエージェントが構造化された結果（ホテル、メール、商品など）をどのように整形するかを定義します",
-      "emptyLabel": "カードがまだありません",
-      "errors": {
-        "loadFailed": "カードの読み込みに失敗しました"
-      },
       "fieldCount_one": "{{count}}件のフィールド",
       "fieldCount_other": "{{count}}件のフィールド",
       "fieldsWithCount": "フィールド（{{count}}）",
@@ -33314,14 +33171,7 @@ export const resources = {
       "filterAll_other": "すべて（{{count}}）",
       "gallery": "カードギャラリー",
       "loading": "カードを読み込み中…",
-      "noMatches": "一致するカードがありません。",
-      "previewAll": "すべてのカードをプレビュー",
-      "removeFromAgent": "エージェントから削除",
       "sampleData": "サンプルデータ",
-      "searchPlaceholder": "カードを検索...",
-      "sections": {
-        "fields": "フィールド（{{count}}）"
-      },
       "selectToPreview": "プレビューするカードを選択してください",
       "surface": {
         "carousel": "カルーセル",
@@ -35229,11 +35079,6 @@ export const resources = {
       },
       "tasksPerMonth_one": "{{count}} 个任务/月",
       "tasksPerMonth_other": "{{count}} 个任务/月",
-      "templates": {
-        "addFailed": "添加卡片失败",
-        "assignedTemplatesHeader": "已分配的卡片",
-        "removeFailed": "移除卡片失败"
-      },
       "thisAgent": "此智能体",
       "tones": {
         "casual": "随意",
@@ -38847,22 +38692,9 @@ export const resources = {
       "workRoom": "工作间"
     },
     "templates": {
-      "add": "添加卡片",
-      "addTemplate": "添加卡片",
-      "addToAgent": "添加到智能体",
-      "allAssigned": "所有可用卡片均已分配。",
-      "assigned": "已分配",
       "cardPreview": "卡片预览",
       "count_one": "{{count}} 张卡片",
       "count_other": "{{count}} 张卡片",
-      "empty": {
-        "title": "暂无卡片"
-      },
-      "emptyDescription": "卡片定义了此智能体如何格式化结构化结果（酒店、邮件、产品等）",
-      "emptyLabel": "暂无卡片",
-      "errors": {
-        "loadFailed": "加载卡片失败"
-      },
       "fieldCount_one": "{{count}} 个字段",
       "fieldCount_other": "{{count}} 个字段",
       "fieldsWithCount": "字段（{{count}}）",
@@ -38870,14 +38702,7 @@ export const resources = {
       "filterAll_other": "全部（{{count}}）",
       "gallery": "卡片库",
       "loading": "正在加载卡片…",
-      "noMatches": "没有匹配的卡片。",
-      "previewAll": "预览所有卡片",
-      "removeFromAgent": "从智能体中移除",
       "sampleData": "示例数据",
-      "searchPlaceholder": "搜索卡片…",
-      "sections": {
-        "fields": "字段（{{count}}）"
-      },
       "selectToPreview": "选择一张卡片以预览",
       "surface": {
         "carousel": "轮播",
@@ -40785,11 +40610,6 @@ export const resources = {
       },
       "tasksPerMonth_one": "월 {{count}}건",
       "tasksPerMonth_other": "월 {{count}}건",
-      "templates": {
-        "addFailed": "카드 추가에 실패했습니다",
-        "assignedTemplatesHeader": "할당된 카드",
-        "removeFailed": "카드 제거에 실패했습니다"
-      },
       "thisAgent": "이 에이전트",
       "tones": {
         "casual": "캐주얼",
@@ -44403,22 +44223,9 @@ export const resources = {
       "workRoom": "작업방"
     },
     "templates": {
-      "add": "카드 추가",
-      "addTemplate": "카드 추가",
-      "addToAgent": "에이전트에 추가",
-      "allAssigned": "사용 가능한 모든 카드가 이미 할당되었습니다.",
-      "assigned": "할당됨",
       "cardPreview": "카드 미리보기",
       "count_one": "카드 {{count}}개",
       "count_other": "카드 {{count}}개",
-      "empty": {
-        "title": "카드 없음"
-      },
-      "emptyDescription": "카드는 이 에이전트가 구조화된 결과(호텔, 이메일, 제품 등)를 표시하는 방식을 정의합니다",
-      "emptyLabel": "아직 카드가 없습니다",
-      "errors": {
-        "loadFailed": "카드 로드 실패"
-      },
       "fieldCount_one": "필드 {{count}}개",
       "fieldCount_other": "필드 {{count}}개",
       "fieldsWithCount": "필드 ({{count}}개)",
@@ -44426,14 +44233,7 @@ export const resources = {
       "filterAll_other": "전체 ({{count}})",
       "gallery": "카드 갤러리",
       "loading": "카드 불러오는 중…",
-      "noMatches": "일치하는 카드가 없습니다.",
-      "previewAll": "모든 카드 미리보기",
-      "removeFromAgent": "에이전트에서 제거",
       "sampleData": "샘플 데이터",
-      "searchPlaceholder": "카드 검색...",
-      "sections": {
-        "fields": "필드 ({{count}}개)"
-      },
       "selectToPreview": "미리보려면 카드를 선택하세요",
       "surface": {
         "carousel": "캐러셀",
@@ -46341,11 +46141,6 @@ export const resources = {
       },
       "tasksPerMonth_one": "{{count}} attività/mese",
       "tasksPerMonth_other": "{{count}} attività/mese",
-      "templates": {
-        "addFailed": "Impossibile aggiungere la scheda",
-        "assignedTemplatesHeader": "Schede assegnate",
-        "removeFailed": "Impossibile rimuovere la scheda"
-      },
       "thisAgent": "questo agente",
       "tones": {
         "casual": "Informale",
@@ -49959,22 +49754,9 @@ export const resources = {
       "workRoom": "Stanza di lavoro"
     },
     "templates": {
-      "add": "Aggiungi scheda",
-      "addTemplate": "Aggiungi scheda",
-      "addToAgent": "Aggiungi all'agente",
-      "allAssigned": "Tutte le schede disponibili sono già assegnate.",
-      "assigned": "Assegnato",
       "cardPreview": "Anteprima scheda",
       "count_one": "{{count}} scheda",
       "count_other": "{{count}} schede",
-      "empty": {
-        "title": "Nessuna scheda"
-      },
-      "emptyDescription": "Le schede definiscono come questo agente formatta i risultati strutturati (hotel, email, prodotti, ecc.)",
-      "emptyLabel": "Ancora nessuna scheda",
-      "errors": {
-        "loadFailed": "Impossibile caricare le schede"
-      },
       "fieldCount_one": "{{count}} campo",
       "fieldCount_other": "{{count}} campi",
       "fieldsWithCount": "Campi ({{count}})",
@@ -49982,14 +49764,7 @@ export const resources = {
       "filterAll_other": "Tutti ({{count}})",
       "gallery": "Galleria schede",
       "loading": "Caricamento delle schede…",
-      "noMatches": "Nessuna scheda corrispondente.",
-      "previewAll": "Vedi tutte le schede",
-      "removeFromAgent": "Rimuovi dall'agente",
       "sampleData": "Dati di esempio",
-      "searchPlaceholder": "Cerca schede...",
-      "sections": {
-        "fields": "Campi ({{count}})"
-      },
       "selectToPreview": "Seleziona una scheda per l'anteprima",
       "surface": {
         "carousel": "carosello",
@@ -51897,11 +51672,6 @@ export const resources = {
       },
       "tasksPerMonth_one": "{{count}} कार्य/माह",
       "tasksPerMonth_other": "{{count}} कार्य/माह",
-      "templates": {
-        "addFailed": "कार्ड जोड़ने में विफल",
-        "assignedTemplatesHeader": "असाइन किए गए कार्ड",
-        "removeFailed": "कार्ड हटाने में विफल"
-      },
       "thisAgent": "यह एजेंट",
       "tones": {
         "casual": "अनौपचारिक",
@@ -55515,22 +55285,9 @@ export const resources = {
       "workRoom": "वर्क रूम"
     },
     "templates": {
-      "add": "कार्ड जोड़ें",
-      "addTemplate": "कार्ड जोड़ें",
-      "addToAgent": "एजेंट में जोड़ें",
-      "allAssigned": "सभी उपलब्ध कार्ड पहले से असाइन किए जा चुके हैं।",
-      "assigned": "असाइन किया गया",
       "cardPreview": "कार्ड पूर्वावलोकन",
       "count_one": "{{count}} कार्ड",
       "count_other": "{{count}} कार्ड",
-      "empty": {
-        "title": "कोई कार्ड नहीं"
-      },
-      "emptyDescription": "कार्ड तय करते हैं कि यह एजेंट संरचित परिणामों (होटल, ईमेल, उत्पाद, आदि) को कैसे फ़ॉर्मेट करे",
-      "emptyLabel": "अभी तक कोई कार्ड नहीं",
-      "errors": {
-        "loadFailed": "कार्ड लोड करना विफल"
-      },
       "fieldCount_one": "{{count}} फ़ील्ड",
       "fieldCount_other": "{{count}} फ़ील्ड",
       "fieldsWithCount": "फ़ील्ड ({{count}})",
@@ -55538,14 +55295,7 @@ export const resources = {
       "filterAll_other": "सभी ({{count}})",
       "gallery": "कार्ड गैलरी",
       "loading": "कार्ड लोड हो रहे हैं…",
-      "noMatches": "कोई मेल खाता कार्ड नहीं।",
-      "previewAll": "सभी कार्ड देखें",
-      "removeFromAgent": "एजेंट से हटाएँ",
       "sampleData": "सैंपल डेटा",
-      "searchPlaceholder": "कार्ड खोजें...",
-      "sections": {
-        "fields": "फ़ील्ड ({{count}})"
-      },
       "selectToPreview": "पूर्वावलोकन के लिए एक कार्ड चुनें",
       "surface": {
         "carousel": "कैरोसेल",
