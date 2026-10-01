@@ -136,6 +136,7 @@ fn login_shell_path() -> Option<String> {
 /// bug `apply_cli_connection_env` clears them for), the region/project vars
 /// that same function sets from the agent's own config, and anything that
 /// steers the loader or the interpreter (`PYTHON*`, `DYLD_*`, `LD_*`).
+#[cfg(not(target_os = "windows"))]
 const INHERITED_ENV_KEYS: &[&str] = &[
     // Anthropic + Claude CLI
     "ANTHROPIC_API_KEY",
