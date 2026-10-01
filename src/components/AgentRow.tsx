@@ -13,6 +13,7 @@ import { useModelCatalog } from "../stores/modelCatalogStore";
 import { formatBackendLabel } from "../lib/models";
 import { cn, formatRelativeShort } from "../lib/utils";
 import { hasKeyProblem } from "../lib/agentKeyProblem";
+import { isAgentOnline } from "../lib/agentOnline";
 import { Crown, Cloud, Laptop, Link2, ChevronRight, ChevronDown, Loader2, Terminal } from "lucide-react";
 import {
   restartHostedAgents,
@@ -52,16 +53,13 @@ const LOCAL_ACTIVITY_PHASE: Record<Exclude<ActivityType, "error">, StreamPhase> 
 };
 
 // Small overlay dot on the avatar that mirrors the conversation list
-// pattern. `processStatus === "running"` is locally known the moment
-// the desktop kicks off the agent, so we trust it ahead of the WS
-// presence flag (which can lag ~60s on the executor heartbeat).
+// pattern. `online` is `isAgentOnline` — the same test the conversation
+// header and the rail count agree on.
 function PresenceDot({
-  processStatus,
-  presence,
+  online,
   elsewhereDevice,
 }: {
-  processStatus: ManagedAgent["processStatus"];
-  presence: "online_local" | "offline";
+  online: boolean;
   /** Device label when the bridge is online on another machine (see
    *  runningElsewhereOn) — null/undefined when running here or offline.
    *  Surfaced as the dot's tooltip so hovering answers "online where?"
@@ -69,12 +67,8 @@ function PresenceDot({
   elsewhereDevice?: string | null;
 }) {
   const { t } = useTranslation("agents");
-  const locallyRunning = processStatus === "running";
-  const effective: "online_local" | "offline" = locallyRunning
-    ? "online_local"
-    : presence;
   const label =
-    effective !== "online_local"
+    !online
       ? t("common:offline")
       : elsewhereDevice != null
         ? elsewhereDevice
@@ -86,7 +80,7 @@ function PresenceDot({
     <span
       className={cn(
         "absolute -bottom-0.5 -right-0.5 h-2.5 w-2.5 rounded-full border-2 border-card bg-clip-padding",
-        effective === "online_local" ? "bg-success" : "bg-muted-foreground"
+        online ? "bg-success" : "bg-muted-foreground"
       )}
       title={label}
       aria-label={label}
@@ -201,10 +195,9 @@ export function AgentRow({
   // Live presence + device from presenceStore — the single runtime presence
   // truth (WS events + authoritative presence_snapshot). REST agent.online/
   // presence/deviceName are point-in-time and never read for liveness.
-  const liveOnline = usePresenceStore((s) => s.online.has(managed.agent.id));
-  const livePresence: "online_local" | "offline" = liveOnline
-    ? "online_local"
-    : "offline";
+  const presenceOnline = usePresenceStore((s) => s.online);
+  const liveOnline = presenceOnline.has(managed.agent.id);
+  const shownOnline = isAgentOnline(managed, presenceOnline);
   const presenceDevice = usePresenceStore(
     (s) => s.agentDevices[managed.agent.id]
   );
@@ -227,14 +220,14 @@ export function AgentRow({
   // Dim the whole row when the agent is offline, so "who is off" reads from
   // across the list instead of from a 10px dot — the same cue the mobile
   // card uses (AgentCard `cardOffline`) and the web agents list. The
-  // online test is the SAME one PresenceDot applies (local process first,
-  // then live presence), so the dot and the dim can never disagree. Two
+  // online test is the SAME one PresenceDot applies (`isAgentOnline`), so
+  // the dot and the dim can never disagree. Two
   // exceptions stay at full strength: a row that needs attention (crashed,
   // or a bad key) — it is offline, but dimming buries the thing to fix —
   // and a row mid-bring-online, whose switch is already showing green+busy.
   const needsAttention =
     managed.processStatus === "crashed" || hasKeyProblem(managed);
-  const dimOffline = !isRunning && !liveOnline && !waking && !needsAttention;
+  const dimOffline = !shownOnline && !waking && !needsAttention;
 
   // Where the agent's bridge is actually alive, when that's NOT this
   // machine — null if there's nothing to take over (offline, hosted,
@@ -466,8 +459,7 @@ export function AgentRow({
             </AvatarFallback>
           </Avatar>
           <PresenceDot
-            processStatus={managed.processStatus}
-            presence={livePresence}
+            online={shownOnline}
             elsewhereDevice={elsewhereDevice}
           />
         </div>

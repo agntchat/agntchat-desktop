@@ -5,6 +5,7 @@ import * as api from "../lib/api";
 import { isFresh } from "../lib/cache";
 import { track, ANALYTICS_EVENTS } from "../lib/analytics";
 import { providerRequiresLlmKey } from "../lib/models";
+import { LOCAL_START_GRACE_MS } from "../lib/agentOnline";
 import { ws } from "../services/websocket";
 import { useAuthStore } from "./authStore";
 
@@ -747,9 +748,8 @@ export const useAgentStore = create<AgentState>((set, get) => ({
             managed.processStatus === "running" || managed.processStatus === "stalled";
 
           // Grace period: don't mark as stalled during bridge startup (warmup, executor registration)
-          const STARTUP_GRACE_MS = 90_000;
           const inStartupGrace =
-            managed.startedAt != null && now - managed.startedAt < STARTUP_GRACE_MS;
+            managed.startedAt != null && now - managed.startedAt < LOCAL_START_GRACE_MS;
 
           // Deploy grace: after the health endpoint recovers from failures, suppress
           // stall detection for 2 minutes. The first polls after a backend restart
@@ -1064,7 +1064,18 @@ export const useAgentStore = create<AgentState>((set, get) => ({
 
       const current = get().agents[id];
       if (current) {
-        set({ agents: { ...get().agents, [id]: { ...current, processStatus: "running", uptimeSecs: 0, startedAt: Date.now() } } });
+        const startedAt = Date.now();
+        set({ agents: { ...get().agents, [id]: { ...current, processStatus: "running", uptimeSecs: 0, startedAt } } });
+        // When the pre-heartbeat window closes, hand subscribers a fresh
+        // entry so every `isAgentOnline` surface re-evaluates — otherwise a
+        // bridge that never connected keeps its green dot until some
+        // unrelated update happens to re-render it.
+        setTimeout(() => {
+          const latest = get().agents[id];
+          if (latest?.startedAt === startedAt) {
+            set({ agents: { ...get().agents, [id]: { ...latest } } });
+          }
+        }, LOCAL_START_GRACE_MS);
       }
     } catch (e) {
       const current = get().agents[id];
