@@ -367,7 +367,7 @@ async function doRefetchOrgScoped() {
     agentConversationsLoaded: false,
     pendingConversation: null,
     activeConversationId: null,
-    activeThreadId: null,
+    activeHuddleId: null,
     messages: {},
     messagesLoading: {},
     hasMore: {},
@@ -395,9 +395,9 @@ async function doRefetchOrgScoped() {
   // hosted agents render offline after every switch. See web store.
   useStreamingStore.setState({ streams: {} });
 
-  // 3. Refetch the current workspace's lists. Agent threads are
+  // 3. Refetch the current workspace's lists. Huddles are
   //    explicitly fetched here (was missed in stage 2's desktop wipe
-  //    — agent threads from the previous workspace lingered in the
+  //    — huddles from the previous workspace lingered in the
   //    sidebar until manual refresh). Tasks are refetched for the same
   //    reason: the nav rail's active-task badge reads the store, so
   //    deferring to the Tasks view left it stuck at 0 after a switch.

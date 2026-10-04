@@ -6,7 +6,7 @@ import { ArtifactsPanel } from "./ArtifactsPanel";
 
 /**
  * Header chip: layers icon + artifact count. Lives in the conversation
- * header next to the threads/files chips — never floating over message
+ * header next to the huddles/files chips — never floating over message
  * content. Hidden when the conversation has no artifacts. Clicking opens
  * the dropdown panel (anchored below the chip); picking an artifact opens
  * the right-docked viewer.

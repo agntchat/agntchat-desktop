@@ -87,10 +87,10 @@ interface StatusPayload {
   hostname?: string;
   reason?: string;
   stats?: { prompts?: number; tool_calls?: number; tools?: Record<string, number> };
-  /** Present on `thread_completed` payloads — the side conversation that
+  /** Present on `huddle_completed` payloads — the side conversation that
    *  was just resolved (or auto-abandoned). Distinct from task lifecycle
-   *  cards; carries thread_id + topic + goal + outcome instead of task_id. */
-  thread_id?: string;
+   *  cards; carries huddle_id + topic + goal + outcome instead of task_id. */
+  huddle_id?: string;
   topic?: string;
   goal?: string;
   outcome?: string;
@@ -831,15 +831,15 @@ export function StatusUpdateMessage({ message }: { message: Message }) {
   const payload = safeParseJson<StatusPayload>(message.content, {
     summary: message.content,
   });
-  // Platform whispers (hand-back / verify nudges, parked-thread and
-  // commitment re-checks, thread idle reminders) are agent-directed prompts,
-  // not user-facing content — skip them entirely, same as thread_completed
+  // Platform whispers (hand-back / verify nudges, parked-huddle and
+  // commitment re-checks, huddle idle reminders) are agent-directed prompts,
+  // not user-facing content — skip them entirely, same as huddle_completed
   // below. New whispers post as ContextBriefing and never reach a client at
   // all; this guard covers the StatusUpdate rows already in history.
   if (
     message.metadata?.parked_recheck ||
     message.metadata?.commitment_recheck ||
-    message.metadata?.thread_nudge ||
+    message.metadata?.huddle_nudge ||
     message.metadata?.nudge_kind
   ) {
     return null;
@@ -866,18 +866,18 @@ export function StatusUpdateMessage({ message }: { message: Message }) {
   if (liveMeta?.agentName) enriched.agent_name = liveMeta.agentName;
   if (liveMeta?.agentAvatarUrl) enriched.agent_avatar_url = liveMeta.agentAvatarUrl;
 
-  // thread_completed: a side agent thread was resolved (or auto-abandoned
-  // by the idle sweeper). Not rendered as its own card — the inline thread
+  // huddle_completed: a side huddle was resolved (or auto-abandoned
+  // by the idle sweeper). Not rendered as its own card — the inline huddle
   // pill (AgentConversationCard) flips to its resolved state instead
-  // (chatStore patches thread_status when this message arrives). The
+  // (chatStore patches huddle_status when this message arrives). The
   // message itself stays in the timeline data because agents consume it
   // as the resolution artifact in recent_messages.
-  if (payload.type === "thread_completed") {
+  if (payload.type === "huddle_completed") {
     return null;
   }
 
   // external_session_*: an external agent's own CLI session started or
-  // ended (#148). No task, no thread — its own compact card.
+  // ended (#148). No task, no huddle — its own compact card.
   if (
     payload.type === "external_session_started" ||
     payload.type === "external_session_ended"

@@ -35,7 +35,7 @@ export function useResizableWidth({
   max: number;
   /** Which edge the pane is docked to. `"left"` (default) grows rightward
    *  from the pane's left edge (list panes); `"right"` grows leftward from the
-   *  pane's right edge (right-docked panes like the thread side pane), so
+   *  pane's right edge (right-docked panes like the huddle side pane), so
    *  dragging the left handle outward widens it. */
   side?: "left" | "right";
 }): ResizableWidth {
@@ -105,9 +105,9 @@ export function useResizableWidth({
 }
 
 /**
- * Shared width for the right-docked panes (the thread side pane and the
+ * Shared width for the right-docked panes (the huddle side pane and the
  * conversation-details pane). Both call this with the SAME storage key, so a
- * width dragged on one applies to the other — switching between a thread and
+ * width dragged on one applies to the other — switching between a huddle and
  * details never jolts. Only one pane is mounted at a time, so they don't
  * fight over the ref.
  */

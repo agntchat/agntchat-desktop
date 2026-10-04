@@ -7,7 +7,7 @@ import { mergeSurfaceOperations, surfaceOperations } from "../a2ui/operations";
 import { useAuthStore } from "./authStore";
 import { useStreamingStore } from "./streamingStore";
 import { usePresenceStore } from "./presenceStore";
-import { agentConversationSourceId } from "../lib/thread-selectors";
+import { agentConversationSourceId } from "../lib/huddle-selectors";
 
 // Seed the shared online-set from `conversation.members[].participant.online`
 // — but only for *humans*. Human presence is tracked through a live Phoenix
@@ -66,7 +66,7 @@ function writeClearedAtStorage(data: Record<string, string[]>) {
  * Capture the first-unread message id for a conversation at open time so
  * ChatThread can render a one-shot "New messages" divider. Returns the next
  * `firstUnreadIds` map (unchanged reference when there's nothing to update).
- * Shared by setActiveConversation (main pane) and openThread (side pane).
+ * Shared by setActiveConversation (main pane) and openHuddle (side pane).
  */
 function msgTime(m: { insertedAt?: string }): number {
   return m.insertedAt ? new Date(m.insertedAt).getTime() : 0;
@@ -112,7 +112,7 @@ const pendingFirstUnread: Record<string, number> = {};
 // second caller shares the first's promise.
 const inflightInitialLoads: Record<string, Promise<void>> = {};
 
-/** Open-time bookkeeping for setActiveConversation / openThread: the
+/** Open-time bookkeeping for setActiveConversation / openHuddle: the
  *  first-unread capture for the one-shot "New messages" divider, and the
  *  history gate. A cache that is behind the row's `lastMessage` is NOT
  *  painted — `historyLoaded` is cleared so ChatThread treats it as a cold
@@ -227,7 +227,7 @@ interface ChatState {
   /** True after `fetchConversations` has resolved at least once. Lets the
    *  onboarding cards distinguish "no conversations" from "not loaded yet". */
   conversationsLoaded: boolean;
-  /** Agent threads — fetched with `?scope=agents` and rendered inline inside
+  /** Huddles — fetched with `?scope=agents` and rendered inline inside
    *  their parent conversations. Kept separate so unread badges and sorting do
    *  not intermix with personal conversations. */
   agentConversations: Conversation[];
@@ -261,7 +261,7 @@ interface ChatState {
    *  so a stale tail is never painted and then swapped (ChatThread refetches
    *  whenever this is false). Distinct from `messagesLoading`, which is false both before the
    *  fetch is kicked off and after it finishes. `ChatThread` gates its
-   *  timeline on this: inline thread cards and artifacts come from stores
+   *  timeline on this: inline huddle cards and artifacts come from stores
    *  that are already warm, so building the thread against an empty message
    *  array renders them alone, unanchored, as if they were the conversation.
    *  A FAILED load does not set it — see `historyError`. */
@@ -275,11 +275,11 @@ interface ChatState {
 
   // Session
   activeConversationId: string | null;
-  /** The agent thread currently open in the right side pane (Slack-style),
+  /** The huddle currently open in the right side pane (Slack-style),
    *  or null when the details pane / nothing is shown there. Its parent is
-   *  always the `activeConversationId` (openThread promotes the parent into
+   *  always the `activeConversationId` (openHuddle promotes the parent into
    *  the main pane), so both are live and joined at once. */
-  activeThreadId: string | null;
+  activeHuddleId: string | null;
   unreadCounts: Record<string, number>;
   /** When set (via setActiveConversation with a target), ChatThread scrolls to
    *  and highlights this message once it's loaded, then clears it. Drives
@@ -379,13 +379,13 @@ interface ChatState {
     id: string | null,
     opts?: { scrollToMessageId?: string }
   ) => void;
-  /** Open an agent thread in the side pane. Promotes the thread's parent into
+  /** Open a huddle in the side pane. Promotes the huddle's parent into
    *  the main pane (if not already there) and keeps BOTH conversations joined
-   *  so the parent stays live beside the thread (Slack "two conversations"). */
-  openThread: (threadId: string) => void;
-  /** Close the side-pane thread. Leaves its WS channel unless it's also the
+   *  so the parent stays live beside the huddle (Slack "two conversations"). */
+  openHuddle: (huddleId: string) => void;
+  /** Close the side-pane huddle. Leaves its WS channel unless it's also the
    *  current main conversation. */
-  closeThread: () => void;
+  closeHuddle: () => void;
   /** Clear the pending scroll target once ChatThread has handled (or given up
    *  on) it, so re-opening the same conversation doesn't re-trigger a jump. */
   clearScrollTarget: () => void;
@@ -395,7 +395,7 @@ interface ChatState {
    * sharing an agent turn) is a no-op. */
   incrementUnread: (conversationId: string, turnGroupKey: string) => void;
   /** Mark a conversation read *only* if it's the one currently open (main pane
-   * or side thread) AND this window is focused/visible. Called as messages
+   * or side huddle) AND this window is focused/visible. Called as messages
    * stream in so the server re-broadcasts `conversation_read` and our other
    * devices' badges clear while we read here. Debounced; no-ops when
    * backgrounded. */
@@ -436,7 +436,7 @@ export const useChatStore = create<ChatState>((set, get) => ({
   firstUnreadIds: {},
   clearedAt: readClearedAtStorage(),
   activeConversationId: null,
-  activeThreadId: null,
+  activeHuddleId: null,
   unreadCounts: {},
   unreadTurnGroups: {},
   scrollTargetMessageId: null,
@@ -468,17 +468,17 @@ export const useChatStore = create<ChatState>((set, get) => ({
           ]
         : convos;
 
-      // Zero unread for any thread we now see as resolved/abandoned —
-      // the thread_completed StatusUpdate lands in the parent, not the
-      // thread, so a stale badge on the resolved row is just visual
+      // Zero unread for any huddle we now see as resolved/abandoned —
+      // the huddle_completed StatusUpdate lands in the parent, not the
+      // huddle, so a stale badge on the resolved row is just visual
       // noise. Mirrors mobile chatStore.
       const existingUnread = get().unreadCounts;
       let clearedUnread: Record<string, number> | null = null;
       for (const conv of merged) {
         const meta = (conv.metadata ?? {}) as Record<string, unknown>;
         const status =
-          (meta.thread_status as string | undefined) ??
-          (meta.threadStatus as string | undefined);
+          (meta.huddle_status as string | undefined) ??
+          (meta.huddleStatus as string | undefined);
         if (
           (status === "resolved" || status === "abandoned") &&
           existingUnread[conv.id] &&
@@ -707,8 +707,8 @@ export const useChatStore = create<ChatState>((set, get) => ({
         clearedAt: remainingCleared,
         activeConversationId:
           s.activeConversationId === conversationId ? null : s.activeConversationId,
-        activeThreadId:
-          s.activeThreadId === conversationId ? null : s.activeThreadId,
+        activeHuddleId:
+          s.activeHuddleId === conversationId ? null : s.activeHuddleId,
       };
     });
     writeClearedAtStorage(remainingCleared);
@@ -740,8 +740,8 @@ export const useChatStore = create<ChatState>((set, get) => ({
       agentConversations: s.agentConversations.filter((c) => c.id !== conversationId),
       activeConversationId:
         s.activeConversationId === conversationId ? null : s.activeConversationId,
-      activeThreadId:
-        s.activeThreadId === conversationId ? null : s.activeThreadId,
+      activeHuddleId:
+        s.activeHuddleId === conversationId ? null : s.activeHuddleId,
     }));
     ws.leaveConversation(conversationId);
   },
@@ -786,7 +786,7 @@ export const useChatStore = create<ChatState>((set, get) => ({
         set((s) => ({
           messagesLoading: { ...s.messagesLoading, [conversationId]: false },
           // Failure is NOT "loaded": flipping historyLoaded here let the inline
-          // thread/artifact cards render alone, as the whole conversation, until
+          // huddle/artifact cards render alone, as the whole conversation, until
           // the WS push landed. The pane reads historyError and offers a retry,
           // which is also what keeps it from spinning forever.
           ...(before
@@ -1133,14 +1133,14 @@ export const useChatStore = create<ChatState>((set, get) => ({
   },
 
   setActiveConversation: (id, opts) => {
-    // Opening an agent thread never replaces the main pane — it belongs in
+    // Opening a huddle never replaces the main pane — it belongs in
     // the side pane. Redirect legacy callers (sidebar rows, deep-links) so a
-    // thread id always lands as a side-pane thread with its parent in the
+    // huddle id always lands as a side-pane huddle with its parent in the
     // main pane, rather than swallowing the main conversation.
     if (id) {
       const conv = get().getConversation(id);
       if (conv && agentConversationSourceId(conv)) {
-        get().openThread(id);
+        get().openHuddle(id);
         if (opts?.scrollToMessageId) set({ scrollTargetMessageId: opts.scrollToMessageId });
         return;
       }
@@ -1150,16 +1150,16 @@ export const useChatStore = create<ChatState>((set, get) => ({
     if (prev && prev !== id) {
       ws.leaveConversation(prev);
     }
-    // Switching the main conversation tears down any open side-pane thread —
+    // Switching the main conversation tears down any open side-pane huddle —
     // otherwise its channel leaks and the pane clings to an unrelated parent.
-    const openThreadId = get().activeThreadId;
-    if (openThreadId && openThreadId !== id && openThreadId !== prev) {
-      ws.leaveConversation(openThreadId);
+    const openHuddleId = get().activeHuddleId;
+    if (openHuddleId && openHuddleId !== id && openHuddleId !== prev) {
+      ws.leaveConversation(openHuddleId);
     }
 
     set((s) => ({
       activeConversationId: id,
-      activeThreadId: null,
+      activeHuddleId: null,
       unreadCounts: id ? { ...s.unreadCounts, [id]: 0 } : s.unreadCounts,
       unreadTurnGroups: id ? { ...s.unreadTurnGroups, [id]: {} } : s.unreadTurnGroups,
       // First-unread divider + history gate (a behind cache opens cold —
@@ -1173,9 +1173,9 @@ export const useChatStore = create<ChatState>((set, get) => ({
     }
   },
 
-  openThread: (threadId) => {
-    const thread = get().getConversation(threadId);
-    const parentId = thread ? agentConversationSourceId(thread) : undefined;
+  openHuddle: (huddleId) => {
+    const huddle = get().getConversation(huddleId);
+    const parentId = huddle ? agentConversationSourceId(huddle) : undefined;
 
     // Bring the parent into the main pane if a different conversation is
     // active (e.g. opened from a sidebar deep-link). Keep it joined.
@@ -1183,31 +1183,31 @@ export const useChatStore = create<ChatState>((set, get) => ({
       get().setActiveConversation(parentId);
     }
 
-    // Tear down a previously-open thread that isn't the parent or the target.
-    const prevThread = get().activeThreadId;
-    if (prevThread && prevThread !== threadId && prevThread !== get().activeConversationId) {
-      ws.leaveConversation(prevThread);
+    // Tear down a previously-open huddle that isn't the parent or the target.
+    const prevHuddle = get().activeHuddleId;
+    if (prevHuddle && prevHuddle !== huddleId && prevHuddle !== get().activeConversationId) {
+      ws.leaveConversation(prevHuddle);
     }
 
     set((s) => ({
-      activeThreadId: threadId,
-      unreadCounts: { ...s.unreadCounts, [threadId]: 0 },
-      unreadTurnGroups: { ...s.unreadTurnGroups, [threadId]: {} },
-      ...captureOpenState(s, threadId),
+      activeHuddleId: huddleId,
+      unreadCounts: { ...s.unreadCounts, [huddleId]: 0 },
+      unreadTurnGroups: { ...s.unreadTurnGroups, [huddleId]: {} },
+      ...captureOpenState(s, huddleId),
     }));
 
-    ws.joinConversation(threadId);
-    markRead(threadId);
+    ws.joinConversation(huddleId);
+    markRead(huddleId);
   },
 
-  closeThread: () => {
-    const threadId = get().activeThreadId;
-    if (!threadId) return;
+  closeHuddle: () => {
+    const huddleId = get().activeHuddleId;
+    if (!huddleId) return;
     // Leave the channel unless it doubles as the main conversation.
-    if (threadId !== get().activeConversationId) {
-      ws.leaveConversation(threadId);
+    if (huddleId !== get().activeConversationId) {
+      ws.leaveConversation(huddleId);
     }
-    set({ activeThreadId: null });
+    set({ activeHuddleId: null });
   },
 
   clearScrollTarget: () => {
@@ -1265,8 +1265,8 @@ export const useChatStore = create<ChatState>((set, get) => ({
   },
 
   markReadIfActiveAndFocused: (conversationId) => {
-    const { activeConversationId, activeThreadId } = get();
-    if (conversationId !== activeConversationId && conversationId !== activeThreadId) {
+    const { activeConversationId, activeHuddleId } = get();
+    if (conversationId !== activeConversationId && conversationId !== activeHuddleId) {
       return;
     }
     if (!windowFocused()) return;
@@ -1281,8 +1281,8 @@ export const useChatStore = create<ChatState>((set, get) => ({
     // skips the mark) should mark it read now, so our other devices' badges
     // clear once we're actually looking at it again.
     const markActiveReadOnFocus = () => {
-      const { activeThreadId, activeConversationId } = get();
-      const id = activeThreadId ?? activeConversationId;
+      const { activeHuddleId, activeConversationId } = get();
+      const id = activeHuddleId ?? activeConversationId;
       if (id) get().markReadIfActiveAndFocused(id);
     };
     if (typeof window !== "undefined") {
@@ -1294,29 +1294,29 @@ export const useChatStore = create<ChatState>((set, get) => ({
       });
     }
 
-    // thread_completed StatusUpdates don't render a card — the thread's
+    // huddle_completed StatusUpdates don't render a card — the huddle's
     // inline pill (AgentConversationCard) flips to its resolved state
     // instead. Patch the local agentConversations entry when the message
     // arrives so the flip is live rather than waiting for a refetch. Also
-    // zero the thread's unread badge (mirrors the fetch-path clearing).
-    const applyThreadCompletion = (msg: Message | undefined | null) => {
+    // zero the huddle's unread badge (mirrors the fetch-path clearing).
+    const applyHuddleCompletion = (msg: Message | undefined | null) => {
       if (!msg) return;
       const msgType = msg.messageType || msg.contentType || "";
       if (msgType !== "StatusUpdate" && msgType !== "status_update") return;
       try {
         const data = JSON.parse(msg.content) as Record<string, unknown>;
-        if (data.type !== "thread_completed" || typeof data.thread_id !== "string")
+        if (data.type !== "huddle_completed" || typeof data.huddle_id !== "string")
           return;
-        const threadId = data.thread_id;
+        const huddleId = data.huddle_id;
         const status = data.outcome === "abandoned" ? "abandoned" : "resolved";
         set((s) => ({
           agentConversations: s.agentConversations.map((c) =>
-            c.id === threadId
-              ? { ...c, metadata: { ...(c.metadata ?? {}), thread_status: status } }
+            c.id === huddleId
+              ? { ...c, metadata: { ...(c.metadata ?? {}), huddle_status: status } }
               : c
           ),
-          unreadCounts: { ...s.unreadCounts, [threadId]: 0 },
-          unreadTurnGroups: { ...s.unreadTurnGroups, [threadId]: {} },
+          unreadCounts: { ...s.unreadCounts, [huddleId]: 0 },
+          unreadTurnGroups: { ...s.unreadTurnGroups, [huddleId]: {} },
         }));
       } catch {
         // not a JSON payload — nothing to do
@@ -1334,7 +1334,7 @@ export const useChatStore = create<ChatState>((set, get) => ({
           active: get().activeConversationId?.slice(0, 8),
         });
         get().addMessage(convId, msg);
-        applyThreadCompletion(msg);
+        applyHuddleCompletion(msg);
 
         // Keep an open+focused conversation marked read as messages stream in,
         // not only at open time. Otherwise the server never re-broadcasts
@@ -1543,11 +1543,11 @@ export const useChatStore = create<ChatState>((set, get) => ({
         });
         if (lastMessage) {
           get().updateConversationFromEvent(convId, lastMessage);
-          // User-channel mirror — catches thread completions for parents
+          // User-channel mirror — catches huddle completions for parents
           // whose conv channel isn't joined (inactive list rows).
-          applyThreadCompletion(lastMessage);
+          applyHuddleCompletion(lastMessage);
         }
-        // Only bump unread for personal conversations — hidden agent threads
+        // Only bump unread for personal conversations — hidden huddles
         // are observational and shouldn't accumulate badges.
         const isPersonal = get().conversations.some((c) => c.id === convId);
         if (isPersonal && convId !== get().activeConversationId) {
@@ -1603,7 +1603,7 @@ export const useChatStore = create<ChatState>((set, get) => ({
           unreadTurnGroups: remainingTurnGroups,
           activeConversationId:
             s.activeConversationId === convId ? null : s.activeConversationId,
-          activeThreadId: s.activeThreadId === convId ? null : s.activeThreadId,
+          activeHuddleId: s.activeHuddleId === convId ? null : s.activeHuddleId,
         };
       });
       writeClearedAtStorage(remainingCleared);
@@ -1648,7 +1648,7 @@ export const useChatStore = create<ChatState>((set, get) => ({
       })
     );
 
-    // A child agent thread was created — re-fetch so the inline card appears.
+    // A child huddle was created — re-fetch so the inline card appears.
     unsubs.push(
       ws.on("conv:sub_conversation_created", (payload) => {
         const convId = payload._conversationId as string;

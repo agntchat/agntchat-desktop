@@ -4,10 +4,10 @@ import { useTranslation } from "react-i18next";
 import i18n from "../../i18n";
 import type { Conversation, ConversationMember } from "../../lib/api";
 import {
-  isResolvedThread,
-  selectChildAgentThreads,
-  threadTopic,
-} from "../../lib/thread-selectors";
+  isResolvedHuddle,
+  selectChildHuddles,
+  huddleTopic,
+} from "../../lib/huddle-selectors";
 import { cn, formatConversationTime } from "../../lib/utils";
 import { useAuthStore } from "../../stores/authStore";
 import { useChatStore } from "../../stores/chatStore";
@@ -20,7 +20,7 @@ interface Props {
   onClose: () => void;
 }
 
-function threadParticipants(
+function huddleParticipants(
   conv: Conversation,
   myId?: string
 ): ConversationMember[] {
@@ -29,22 +29,22 @@ function threadParticipants(
   return others.length > 0 ? others : members;
 }
 
-function threadDisplayTitle(conv: Conversation, myId?: string): string {
-  const topic = threadTopic(conv);
+function huddleDisplayTitle(conv: Conversation, myId?: string): string {
+  const topic = huddleTopic(conv);
   if (topic) return topic;
   if (conv.title) return conv.title;
-  const names = threadParticipants(conv, myId)
+  const names = huddleParticipants(conv, myId)
     .map((m) => m.participant?.displayName)
     .filter(Boolean)
     .join(" ↔ ");
-  return names || i18n.t("chat:threads.agentThread");
+  return names || i18n.t("chat:huddles.huddle");
 }
 
-function threadSubtitle(conv: Conversation, myId?: string): string {
+function huddleSubtitle(conv: Conversation, myId?: string): string {
   // Inverse of the title: when the title shows the topic, the subtitle
   // shows participants; when no topic, subtitle shows the last preview.
-  if (threadTopic(conv)) {
-    return threadParticipants(conv, myId)
+  if (huddleTopic(conv)) {
+    return huddleParticipants(conv, myId)
       .map((m) => m.participant?.displayName)
       .filter(Boolean)
       .join(" ↔ ");
@@ -53,10 +53,10 @@ function threadSubtitle(conv: Conversation, myId?: string): string {
   return preview.replace(/\s+/g, " ").trim().slice(0, 80);
 }
 
-export function ThreadsPanel({ parentConversationId, open, onClose }: Props) {
+export function HuddlesPanel({ parentConversationId, open, onClose }: Props) {
   const { t } = useTranslation("chat");
   const myId = useAuthStore((s) => s.participant?.id);
-  const openThreadInPane = useChatStore((s) => s.openThread);
+  const openHuddleInPane = useChatStore((s) => s.openHuddle);
   const setView = useNavStore((s) => s.setView);
   const agentConversations = useChatStore((s) => s.agentConversations);
   const unreadCounts = useChatStore((s) => s.unreadCounts);
@@ -88,16 +88,16 @@ export function ThreadsPanel({ parentConversationId, open, onClose }: Props) {
     };
   }, [open, onClose]);
 
-  const { openThreads, resolvedThreads } = useMemo(() => {
-    const threads = selectChildAgentThreads(agentConversations, parentConversationId);
+  const { openHuddles, resolvedHuddles } = useMemo(() => {
+    const huddles = selectChildHuddles(agentConversations, parentConversationId);
     const byActivity = (a: Conversation, b: Conversation) =>
       new Date(b.updatedAt || b.insertedAt).getTime() -
       new Date(a.updatedAt || a.insertedAt).getTime();
 
     const opn: Conversation[] = [];
     const res: Conversation[] = [];
-    for (const t of threads) {
-      if (isResolvedThread(t)) res.push(t);
+    for (const t of huddles) {
+      if (isResolvedHuddle(t)) res.push(t);
       else opn.push(t);
     }
     opn.sort(byActivity);
@@ -114,14 +114,14 @@ export function ThreadsPanel({ parentConversationId, open, onClose }: Props) {
         b.insertedAt;
       return new Date(rb).getTime() - new Date(ra).getTime();
     });
-    return { openThreads: opn, resolvedThreads: res };
+    return { openHuddles: opn, resolvedHuddles: res };
   }, [agentConversations, parentConversationId]);
 
   if (!open) return null;
 
-  const openThread = (id: string) => {
+  const openHuddle = (id: string) => {
     setView("chat");
-    openThreadInPane(id);
+    openHuddleInPane(id);
     onClose();
   };
 
@@ -133,11 +133,11 @@ export function ThreadsPanel({ parentConversationId, open, onClose }: Props) {
     >
       <div className="flex items-start justify-between gap-2 px-4 py-3 border-b border-border">
         <div>
-          <p className="text-sm font-semibold">{t("threads.inThisChat")}</p>
+          <p className="text-sm font-semibold">{t("huddles.inThisChat")}</p>
           <p className="text-xs text-muted-foreground">
-            {t("threads.openCount", { count: openThreads.length })}
-            {resolvedThreads.length > 0
-              ? ` · ${t("threads.resolvedCount", { count: resolvedThreads.length })}`
+            {t("huddles.openCount", { count: openHuddles.length })}
+            {resolvedHuddles.length > 0
+              ? ` · ${t("huddles.resolvedCount", { count: resolvedHuddles.length })}`
               : ""}
           </p>
         </div>
@@ -145,45 +145,45 @@ export function ThreadsPanel({ parentConversationId, open, onClose }: Props) {
           type="button"
           onClick={onClose}
           className="rounded p-1 text-muted-foreground hover:bg-accent hover:text-foreground"
-          aria-label={t("threads.closePanel")}
+          aria-label={t("huddles.closePanel")}
         >
           <X className="h-4 w-4" />
         </button>
       </div>
 
       <div className="max-h-[420px] overflow-y-auto py-1">
-        {openThreads.length === 0 && resolvedThreads.length === 0 ? (
+        {openHuddles.length === 0 && resolvedHuddles.length === 0 ? (
           <div className="px-4 py-6 text-center text-xs text-muted-foreground">
             <MessageSquare className="mx-auto mb-2 h-6 w-6 text-muted-foreground/50" />
-            {t("threads.empty")}
+            {t("huddles.empty")}
           </div>
         ) : null}
 
-        {openThreads.map((thread) => (
-          <ThreadRow
-            key={thread.id}
-            thread={thread}
+        {openHuddles.map((huddle) => (
+          <HuddleRow
+            key={huddle.id}
+            huddle={huddle}
             myId={myId}
-            unread={unreadCounts[thread.id] ?? 0}
+            unread={unreadCounts[huddle.id] ?? 0}
             resolved={false}
-            onOpen={openThread}
+            onOpen={openHuddle}
           />
         ))}
 
-        {resolvedThreads.length > 0 ? (
+        {resolvedHuddles.length > 0 ? (
           <div className="px-4 pt-3 pb-1 text-[10px] font-bold uppercase tracking-wider text-muted-foreground">
-            {t("threads.resolved")}
+            {t("huddles.resolved")}
           </div>
         ) : null}
 
-        {resolvedThreads.map((thread) => (
-          <ThreadRow
-            key={thread.id}
-            thread={thread}
+        {resolvedHuddles.map((huddle) => (
+          <HuddleRow
+            key={huddle.id}
+            huddle={huddle}
             myId={myId}
-            unread={unreadCounts[thread.id] ?? 0}
+            unread={unreadCounts[huddle.id] ?? 0}
             resolved
-            onOpen={openThread}
+            onOpen={openHuddle}
           />
         ))}
       </div>
@@ -191,27 +191,27 @@ export function ThreadsPanel({ parentConversationId, open, onClose }: Props) {
   );
 }
 
-function ThreadRow({
-  thread,
+function HuddleRow({
+  huddle,
   myId,
   unread,
   resolved,
   onOpen,
 }: {
-  thread: Conversation;
+  huddle: Conversation;
   myId: string | undefined;
   unread: number;
   resolved: boolean;
   onOpen: (id: string) => void;
 }) {
-  const participants = threadParticipants(thread, myId);
-  const title = threadDisplayTitle(thread, myId);
-  const subtitle = threadSubtitle(thread, myId);
+  const participants = huddleParticipants(huddle, myId);
+  const title = huddleDisplayTitle(huddle, myId);
+  const subtitle = huddleSubtitle(huddle, myId);
 
   return (
     <button
       type="button"
-      onClick={() => onOpen(thread.id)}
+      onClick={() => onOpen(huddle.id)}
       className={cn(
         "flex w-full items-center gap-3 px-4 py-2 text-left transition-colors hover:bg-accent",
         resolved && "opacity-60"
@@ -235,7 +235,7 @@ function ThreadRow({
 
       <div className="flex flex-col items-end gap-1">
         <span className="text-[10px] text-muted-foreground">
-          {formatConversationTime(thread.updatedAt)}
+          {formatConversationTime(huddle.updatedAt)}
         </span>
         {unread > 0 ? (
           <span className="rounded-full bg-primary px-1.5 py-0.5 text-[10px] font-bold leading-none text-primary-foreground">

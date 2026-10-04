@@ -45,7 +45,7 @@ export function FilesPanel({ files, open, onClose, onRefresh }: Props) {
   const containerRef = useRef<HTMLDivElement | null>(null);
   const [opening, setOpening] = useState<string | null>(null);
 
-  // Click-outside + Escape to close — same pattern as ThreadsPanel.
+  // Click-outside + Escape to close — same pattern as HuddlesPanel.
   useEffect(() => {
     if (!open) return;
     const onClick = (e: MouseEvent) => {

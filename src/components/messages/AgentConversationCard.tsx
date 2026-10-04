@@ -7,7 +7,7 @@ import {
 import { useTranslation } from "react-i18next";
 import type { Conversation } from "../../lib/api";
 import { cn, formatConversationTime } from "../../lib/utils";
-import { isResolvedThread, threadStatus, threadTopic } from "../../lib/thread-selectors";
+import { isResolvedHuddle, huddleStatus, huddleTopic } from "../../lib/huddle-selectors";
 import { useAuthStore } from "../../stores/authStore";
 import { useChatStore } from "../../stores/chatStore";
 import { useNavStore } from "../../stores/navStore";
@@ -16,10 +16,10 @@ import { hasLiveStream } from "../../lib/conversation-activity";
 
 /**
  * Slim inline pill rendered in the parent conversation timeline beneath
- * the spawning message. Mirrors mobile's `InlineThreadPill` layout: a
+ * the spawning message. Mirrors mobile's `InlineHuddlePill` layout: a
  * single row with a round icon, two-line text column (title + meta),
- * unread badge, chevron. No feed preview — the header ThreadsBar +
- * the thread itself surface that detail. Resolved threads stay visible
+ * unread badge, chevron. No feed preview — the header HuddlesBar +
+ * the huddle itself surface that detail. Resolved huddles stay visible
  * but dim down so attention goes to open work.
  */
 export function AgentConversationCard({
@@ -29,7 +29,7 @@ export function AgentConversationCard({
 }) {
   const { t } = useTranslation("chat");
   const myId = useAuthStore((s) => s.participant?.id);
-  const openThread = useChatStore((s) => s.openThread);
+  const openHuddle = useChatStore((s) => s.openHuddle);
   const setView = useNavStore((s) => s.setView);
 
   const loadedMessageCount = useChatStore(
@@ -37,47 +37,47 @@ export function AgentConversationCard({
   );
   const unread = useChatStore((s) => s.unreadCounts[conversation.id] ?? 0);
   const isLive = useStreamingStore((s) => hasLiveStream(s.streams[conversation.id]));
-  const resolved = isResolvedThread(conversation);
+  const resolved = isResolvedHuddle(conversation);
 
-  const topic = threadTopic(conversation);
+  const topic = huddleTopic(conversation);
   const others = (conversation.members ?? [])
     .filter((m) => m.participantId !== myId)
     .map((m) => m.participant?.displayName)
     .filter(Boolean) as string[];
-  const peerLine = others.length > 0 ? others.join(" ↔ ") : t("thread.agentThread");
+  const peerLine = others.length > 0 ? others.join(" ↔ ") : t("huddle.huddle");
   const title = topic || conversation.title || peerLine;
   const subtitle = topic ? peerLine : null;
 
-  // Loaded count is authoritative when the child thread's channel has
-  // been joined. When it hasn't (a thread we know exists from the
+  // Loaded count is authoritative when the child huddle's channel has
+  // been joined. When it hasn't (a huddle we know exists from the
   // sidebar but never opened), fall back to `lastMessage` as a
   // "has messages" signal so we don't say "No messages yet" about a
-  // thread that's been chattering for hours.
+  // huddle that's been chattering for hours.
   const hasMessages = loadedMessageCount > 0 || Boolean(conversation.lastMessage?.id);
   const messageCountLabel =
     loadedMessageCount > 0
-      ? t("thread.messages", { count: loadedMessageCount })
+      ? t("huddle.messages", { count: loadedMessageCount })
       : hasMessages
-      ? t("thread.openToView")
-      : t("thread.noMessages");
+      ? t("huddle.openToView")
+      : t("huddle.noMessages");
 
   // The pill is the only resolution signal in the timeline (there is no
-  // separate "Thread resolved" card), so spell the terminal state out.
+  // separate "Huddle resolved" card), so spell the terminal state out.
   const statusLabel = resolved
-    ? threadStatus(conversation) === "abandoned"
-      ? t("thread.status.abandoned")
-      : t("thread.status.resolved")
+    ? huddleStatus(conversation) === "abandoned"
+      ? t("huddle.status.abandoned")
+      : t("huddle.status.resolved")
     : null;
 
   const open = () => {
     setView("chat");
-    openThread(conversation.id);
+    openHuddle(conversation.id);
   };
 
   return (
     // Asymmetric vertical breathing room: more on top to separate from the
     // preceding message bubble, less on the bottom since the next item in
-    // the timeline either anchors to this same message (more thread cards)
+    // the timeline either anchors to this same message (more huddle cards)
     // or starts a new message with its own spacing.
     <div className="flex w-full justify-start px-4 pt-3 pb-1">
       <button

@@ -11,7 +11,7 @@ import { FilesPanel } from "./FilesPanel";
 
 /**
  * Header chip: paperclip + file count. Lives in the conversation header next
- * to the threads chip — never floating over message content. Hidden when the
+ * to the huddles chip — never floating over message content. Hidden when the
  * conversation has no file attachments. Clicking opens the dropdown panel
  * (anchored below the chip) listing every file with uploader + timestamp +
  * download.

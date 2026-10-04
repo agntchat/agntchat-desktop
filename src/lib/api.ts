@@ -3597,7 +3597,7 @@ export async function updateConversationAvatarRest(
 }
 
 /** Flip the room's "agents add agents without asking" switch. Server-side
- *  check: room admins, or — for a thread — the parent's admins. */
+ *  check: room admins, or — for a huddle — the parent's admins. */
 export async function updateConversationAgentAddsRest(
   conversationId: string,
   agentsAddWithoutAsking: boolean

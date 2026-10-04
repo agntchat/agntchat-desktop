@@ -10,7 +10,7 @@ const KINDS = [
   { kind: "direct", key: "agentsAddWithoutAskingDirect", labelKey: "agentAdds.kinds.direct" },
   { kind: "group", key: "agentsAddWithoutAskingGroup", labelKey: "agentAdds.kinds.group" },
   { kind: "channel", key: "agentsAddWithoutAskingChannel", labelKey: "agentAdds.kinds.channel" },
-  { kind: "thread", key: "agentsAddWithoutAskingThread", labelKey: "agentAdds.kinds.thread" },
+  { kind: "huddle", key: "agentsAddWithoutAskingHuddle", labelKey: "agentAdds.kinds.huddle" },
 ] as const;
 
 type Settings = Record<string, boolean>;

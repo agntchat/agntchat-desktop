@@ -57,7 +57,7 @@ import type {
  *     `openUrl` function calls, plus one `event` action already stamped
  *     complete in the data model, so nothing can post to the action endpoint.
  *   - Cards whose primary click navigates or mutates (open artifact viewer,
- *     open a thread, stop a task) are flagged `interactive: false`; the
+ *     open a huddle, stop a task) are flagged `interactive: false`; the
  *     gallery wraps those so a stray click is swallowed. Cards whose only
  *     interaction is a safe local toggle (expand/collapse, carousel) are
  *     flagged `interactive: true`.
@@ -950,37 +950,37 @@ export function buildPreviewCategories(
       })),
     },
 
-    // -------------------------------------------------------------- thread
+    // -------------------------------------------------------------- huddle
     {
-      id: "thread",
-      name: "Agent threads",
+      id: "huddle",
+      name: "Huddles",
       description: "Inline sub-conversation pills",
       icon: GitBranch,
       items: [
         {
-          label: "Open thread",
+          label: "Open huddle",
           interactive: false,
           node: (
             <AgentConversationCard
-              conversation={mkThread("open", "Hotel booking")}
+              conversation={mkHuddle("open", "Hotel booking")}
             />
           ),
         },
         {
-          label: "Resolved thread",
+          label: "Resolved huddle",
           interactive: false,
           node: (
             <AgentConversationCard
-              conversation={mkThread("resolved", "Flight comparison")}
+              conversation={mkHuddle("resolved", "Flight comparison")}
             />
           ),
         },
         {
-          label: "Abandoned thread",
+          label: "Abandoned huddle",
           interactive: false,
           node: (
             <AgentConversationCard
-              conversation={mkThread("abandoned", "Venue research")}
+              conversation={mkHuddle("abandoned", "Venue research")}
             />
           ),
         },
@@ -1384,12 +1384,12 @@ function mkArtifact(
   };
 }
 
-function mkThread(status: string, topic: string): Conversation {
+function mkHuddle(status: string, topic: string): Conversation {
   return {
-    id: `preview-thread-${status}`,
+    id: `preview-huddle-${status}`,
     type: "group",
     title: topic,
-    metadata: { thread_topic: topic, thread_status: status, agent_thread: true },
+    metadata: { huddle_topic: topic, huddle_status: status, huddle: true },
     insertedAt: EARLIER,
     updatedAt: NOW,
     members: [

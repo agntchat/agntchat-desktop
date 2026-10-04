@@ -17,7 +17,7 @@ import { Marker, MarkerContent } from "@/components/ui/marker";
 import { cn, dayKey, formatDayLabel, formatExactDateTime } from "../../lib/utils";
 import { useConversationActivity } from "../../hooks/useConversationActivity";
 import { countActivity, writingEntries } from "../../lib/conversation-activity";
-import { agentConversationSourceId } from "../../lib/thread-selectors";
+import { agentConversationSourceId } from "../../lib/huddle-selectors";
 import type { Artifact, Conversation, Message } from "../../lib/api";
 import { useArtifactStore } from "../../stores/artifactStore";
 import { ws } from "../../services/websocket";
@@ -117,7 +117,7 @@ const STREAM_PHASE_ANNOUNCEMENT_KEYS: Record<string, string> = {
   waiting: "streamAnnounce.waiting",
 };
 
-function isThreadCreationAckMessage(message: Message): boolean {
+function isHuddleCreationAckMessage(message: Message): boolean {
   return (
     message.sender?.type === "agent" &&
     /^\[Continuing in DM with [^\]\n]+\]$/.test((message.content || "").trim())
@@ -173,7 +173,7 @@ function consolidate(messages: Message[]): Message[] {
   return messages
     .filter((msg) => {
       const type = msg.messageType || msg.contentType || "";
-      if (isThreadCreationAckMessage(msg)) return false;
+      if (isHuddleCreationAckMessage(msg)) return false;
       if (HIDDEN_MSG_TYPES.has(type)) return false;
 
       const taskId = extractTaskId(msg);
@@ -185,11 +185,11 @@ function consolidate(messages: Message[]): Message[] {
       if (type === "StatusUpdate" || type === "status_update") {
         try {
           const data = JSON.parse(msg.content) as Record<string, unknown>;
-          // thread_completed has no card of its own — the inline thread
+          // huddle_completed has no card of its own — the inline huddle
           // pill (AgentConversationCard) flips to resolved instead
-          // (chatStore patches thread_status on arrival). Filter here so
+          // (chatStore patches huddle_status on arrival). Filter here so
           // MessageBubble doesn't render an empty avatar/name scaffold.
-          if (data.type === "thread_completed") return false;
+          if (data.type === "huddle_completed") return false;
           const suTaskId = data.task_id as string | undefined;
           const raw = (data.lifecycle_type ?? data.type ?? data.status) as
             | string
@@ -247,7 +247,7 @@ const EMPTY_CLEARED_AT: string[] = [];
  * Groups everything at/before each "Clear chat (local)" boundary behind a
  * collapsible divider — mirrors mobile's chatListItems grouping in
  * lib/chat-kit/ChatKit.tsx. Applied on top of the already-merged
- * message/thread/artifact timeline so thread pills and artifacts collapse
+ * message/huddle/artifact timeline so huddle pills and artifacts collapse
  * along with the messages they're interleaved with, not just the messages.
  */
 function applyClearedGrouping(
@@ -386,10 +386,10 @@ function buildThreadItems(
   return items;
 }
 
-// `agentConversationSourceId` lives in lib/thread-selectors.ts — the
-// shared helper used by ThreadsBar / ThreadsPanel too. Kept the
+// `agentConversationSourceId` lives in lib/huddle-selectors.ts — the
+// shared helper used by HuddlesBar / HuddlesPanel too. Kept the
 // `linkedSourceMessageId` helper local since it's only used here to
-// anchor child-thread cards under their spawning message.
+// anchor child-huddle cards under their spawning message.
 
 function linkedSourceMessageId(conversation: Conversation): string | undefined {
   const metadata = (conversation.metadata ?? {}) as Record<string, unknown>;
@@ -565,7 +565,7 @@ export function ChatThread({ conversationId }: { conversationId: string }) {
     [childAgentConversations]
   );
 
-  // Nothing until this conversation's own history has settled. Inline thread
+  // Nothing until this conversation's own history has settled. Inline huddle
   // cards read `agentConversations` and artifact cards read `artifactStore` —
   // both already warm when the pane switches — so building against an empty
   // message array sends every one of them down buildThreadItems' "unanchored"
@@ -650,7 +650,7 @@ export function ChatThread({ conversationId }: { conversationId: string }) {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [conversationId]);
 
-  // Parent conversations need the hidden agent-thread list so inline
+  // Parent conversations need the hidden huddle list so inline
   // AgentConversationCard rows can render without a separate sidebar.
   useEffect(() => {
     if (
@@ -1292,7 +1292,7 @@ function UnreadDivider() {
 }
 
 /** Collapsed boundary left by "Clear chat (local)". Click to reveal the
- *  messages/threads/artifacts it collapsed (they render above this divider,
+ *  messages/huddles/artifacts it collapsed (they render above this divider,
  *  which then reads "Hide cleared" to collapse them back). */
 function ClearedDivider({
   clearedAt,

@@ -8,7 +8,7 @@ import { GoalsPanel } from "./GoalsPanel";
  * Header chip: target icon + the number of open room goals — what the
  * people (and agents) in this room asked it to get done. Hidden when the
  * room has none. Clicking opens GoalsPanel below the chip. Same shape as
- * ArtifactsBar / ThreadsBar. Mirrors web's GoalsBar.
+ * ArtifactsBar / HuddlesBar. Mirrors web's GoalsBar.
  */
 export function GoalsBar({ conversationId }: { conversationId: string }) {
   const { t } = useTranslation("chat");

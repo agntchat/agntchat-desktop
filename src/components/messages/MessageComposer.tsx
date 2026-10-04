@@ -18,7 +18,7 @@ import {
 } from "@/components/ui/attachment";
 import { ReplyBanner } from "./ReplyBanner";
 import { VoiceRecorderButton } from "./VoiceRecorderButton";
-import { isResolvedThread } from "../../lib/thread-selectors";
+import { isResolvedHuddle } from "../../lib/huddle-selectors";
 import {
   MentionPicker,
   extractMentionQuery,
@@ -68,7 +68,7 @@ export const MessageComposer = forwardRef<
   const setDraft = useChatStore((s) => s.setDraft);
   const sendMessage = useChatStore((s) => s.sendMessage);
   const replyingTo = useChatStore((s) => s.replyingTo[conversationId]);
-  // Search both lists — inline agent threads live in `agentConversations`,
+  // Search both lists — inline huddles live in `agentConversations`,
   // not `conversations`. Without the second branch the find returns
   // undefined for them and the `?? []` fallback loops.
   const conversation = useChatStore(
@@ -77,11 +77,11 @@ export const MessageComposer = forwardRef<
       s.agentConversations.find((c) => c.id === conversationId)
   );
   const members = conversation?.members ?? EMPTY_MEMBERS;
-  // A resolved/abandoned thread is closed for new turns — the agent loop has
-  // stood down, so a message here would land in a dead thread (the exact bug
+  // A resolved/abandoned huddle is closed for new turns — the agent loop has
+  // stood down, so a message here would land in a dead huddle (the exact bug
   // this pane redesign fixes). Block send and point back to the parent.
-  const closedThread = conversation ? isResolvedThread(conversation) : false;
-  const closeThread = useChatStore((s) => s.closeThread);
+  const closedHuddle = conversation ? isResolvedHuddle(conversation) : false;
+  const closeHuddle = useChatStore((s) => s.closeHuddle);
   const agentsMap = useAgentStore((s) => s.agents);
   // Stable flattened list to avoid the Zustand `?? []` selector trap.
   const agents = useMemo(
@@ -395,23 +395,23 @@ export const MessageComposer = forwardRef<
     (draft.trim().length > 0 || attachment != null || pastedTexts.length > 0) &&
     !sending &&
     !uploading &&
-    !closedThread;
+    !closedHuddle;
 
-  // Closed thread: no composer. Show a notice + a way back to the parent
+  // Closed huddle: no composer. Show a notice + a way back to the parent
   // conversation (closing the side pane focuses the main composer).
-  if (closedThread) {
+  if (closedHuddle) {
     return (
       <div className="surface-dock relative z-10 bg-card px-4 py-3">
         <div className="flex flex-col items-center gap-1.5 rounded-lg border border-border bg-muted/30 px-4 py-3 text-center">
           <p className="text-xs text-muted-foreground">
-            {t("threads.closedNotice")}
+            {t("huddles.closedNotice")}
           </p>
           <button
             type="button"
-            onClick={closeThread}
+            onClick={closeHuddle}
             className="text-xs font-semibold text-primary hover:underline"
           >
-            {t("threads.replyInMain")}
+            {t("huddles.replyInMain")}
           </button>
         </div>
       </div>

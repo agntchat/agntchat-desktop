@@ -4,8 +4,8 @@ import { Switch } from "@/components/ui/switch";
 import { useChatStore } from "../stores/chatStore";
 import type { Conversation } from "../lib/api";
 
-/** Mirrors the server's rule: a room admin, or — for a thread — an admin
- *  of the conversation it branched from (a thread's own admin is usually
+/** Mirrors the server's rule: a room admin, or — for a huddle — an admin
+ *  of the conversation it branched from (a huddle's own admin is usually
  *  the agent that opened it). Member role, not `createdBy`. */
 export function canEditAgentAdds(
   conversation: Conversation,

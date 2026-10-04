@@ -3,54 +3,54 @@ import { useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { cn } from "../../lib/utils";
 import {
-  isResolvedThread,
-  selectChildAgentThreads,
-} from "../../lib/thread-selectors";
+  isResolvedHuddle,
+  selectChildHuddles,
+} from "../../lib/huddle-selectors";
 import { useChatStore } from "../../stores/chatStore";
-import { ThreadsPanel } from "./ThreadsPanel";
+import { HuddlesPanel } from "./HuddlesPanel";
 
 /**
- * Header chip: thread icon + open count (+ unread badge). Lives in the
+ * Header chip: huddle icon + open count (+ unread badge). Lives in the
  * conversation header next to the files chip and the Info toggle — never
  * floating over message content. Stays visible whenever the parent has any
- * thread (open OR resolved) so users can drop back into past threads.
+ * huddle (open OR resolved) so users can drop back into past huddles.
  * Click opens the dropdown panel (anchored below the chip) with the full
- * thread list.
+ * huddle list.
  *
  * Styling switches based on what's left:
- *   - Open threads exist → primary-tinted count with open count + unread
- *   - Only resolved threads → muted count
+ *   - Open huddles exist → primary-tinted count with open count + unread
+ *   - Only resolved huddles → muted count
  *   - Nothing at all → hidden
  *
- * Mirrors mobile/components/ThreadsBar.tsx (which renders in the native
+ * Mirrors mobile/components/HuddlesBar.tsx (which renders in the native
  * header's headerRight).
  */
-export function ThreadsBar({ conversationId }: { conversationId: string }) {
+export function HuddlesBar({ conversationId }: { conversationId: string }) {
   const { t } = useTranslation("chat");
   const [open, setOpen] = useState(false);
   const agentConversations = useChatStore((s) => s.agentConversations);
   const unreadCounts = useChatStore((s) => s.unreadCounts);
 
-  const { openThreads, resolvedThreads } = useMemo(() => {
-    const all = selectChildAgentThreads(agentConversations, conversationId);
+  const { openHuddles, resolvedHuddles } = useMemo(() => {
+    const all = selectChildHuddles(agentConversations, conversationId);
     return {
-      openThreads: all.filter((t) => !isResolvedThread(t)),
-      resolvedThreads: all.filter((t) => isResolvedThread(t)),
+      openHuddles: all.filter((t) => !isResolvedHuddle(t)),
+      resolvedHuddles: all.filter((t) => isResolvedHuddle(t)),
     };
   }, [agentConversations, conversationId]);
 
   const unreadTotal = useMemo(
-    () => openThreads.reduce((sum, t) => sum + (unreadCounts[t.id] ?? 0), 0),
-    [openThreads, unreadCounts]
+    () => openHuddles.reduce((sum, t) => sum + (unreadCounts[t.id] ?? 0), 0),
+    [openHuddles, unreadCounts]
   );
 
-  const totalCount = openThreads.length + resolvedThreads.length;
+  const totalCount = openHuddles.length + resolvedHuddles.length;
   if (totalCount === 0) return null;
 
-  const allResolved = openThreads.length === 0;
+  const allResolved = openHuddles.length === 0;
   const chipLabel = allResolved
-    ? t("threads.resolvedCount", { count: resolvedThreads.length })
-    : t("threads.count", { count: openThreads.length });
+    ? t("huddles.resolvedCount", { count: resolvedHuddles.length })
+    : t("huddles.count", { count: openHuddles.length });
 
   return (
     <div className="relative shrink-0">
@@ -67,7 +67,7 @@ export function ThreadsBar({ conversationId }: { conversationId: string }) {
         title={chipLabel}
       >
         <MessagesSquare className="h-3.5 w-3.5" />
-        <span>{allResolved ? resolvedThreads.length : openThreads.length}</span>
+        <span>{allResolved ? resolvedHuddles.length : openHuddles.length}</span>
         {unreadTotal > 0 ? (
           <span className="ml-0.5 inline-flex h-4 min-w-[16px] items-center justify-center rounded-full bg-primary px-1 text-[10px] font-bold leading-none text-primary-foreground">
             {unreadTotal > 99 ? "99+" : unreadTotal}
@@ -75,7 +75,7 @@ export function ThreadsBar({ conversationId }: { conversationId: string }) {
         ) : null}
       </button>
 
-      <ThreadsPanel
+      <HuddlesPanel
         parentConversationId={conversationId}
         open={open}
         onClose={() => setOpen(false)}

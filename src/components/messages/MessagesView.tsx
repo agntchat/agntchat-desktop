@@ -13,10 +13,10 @@ import { Button } from "@/components/ui/button";
 import { cn } from "../../lib/utils";
 import {
   agentConversationSourceId,
-  isResolvedThread,
-  threadStatus,
-  threadTopic,
-} from "../../lib/thread-selectors";
+  isResolvedHuddle,
+  huddleStatus,
+  huddleTopic,
+} from "../../lib/huddle-selectors";
 import { ConversationList } from "./ConversationList";
 import { ChatThread } from "./ChatThread";
 import { MessageComposer, type MessageComposerHandle } from "./MessageComposer";
@@ -39,7 +39,7 @@ import { OnboardingCards } from "../OnboardingCards";
 import { CreateAgentModal } from "../CreateAgentModal";
 import { useOnboardingState } from "../../hooks/useOnboardingState";
 import { useCanCompose } from "../../hooks/useCanCompose";
-import { ThreadsBar } from "./ThreadsBar";
+import { HuddlesBar } from "./HuddlesBar";
 import { FilesBar } from "./FilesBar";
 import { ArtifactsBar } from "./ArtifactsBar";
 import { GoalsBar } from "./GoalsBar";
@@ -61,7 +61,7 @@ function readDetailsPref(): boolean {
 export function MessagesView() {
   const { t } = useTranslation("chat");
   const activeId = useChatStore((s) => s.activeConversationId);
-  const activeThreadId = useChatStore((s) => s.activeThreadId);
+  const activeHuddleId = useChatStore((s) => s.activeHuddleId);
   const artifactViewerOpen = useArtifactStore((s) => s.viewer != null);
   const fetchConversations = useChatStore((s) => s.fetchConversations);
   const fetchAgentConversations = useChatStore((s) => s.fetchAgentConversations);
@@ -209,7 +209,7 @@ export function MessagesView() {
         ref={chatPaneRef}
         className={cn(
           "relative z-10 -ml-2 flex-1 flex flex-col bg-card overflow-hidden surface-panel rounded-l-2xl",
-          activeId && (showDetails || activeThreadId || artifactViewerOpen) && "pr-5"
+          activeId && (showDetails || activeHuddleId || artifactViewerOpen) && "pr-5"
         )}
       >
         {activeId ? (
@@ -224,15 +224,15 @@ export function MessagesView() {
         )}
       </section>
 
-      {/* Right pane: the artifact viewer takes precedence over a thread
+      {/* Right pane: the artifact viewer takes precedence over a huddle
           (Slack-style side pane), which takes precedence over the
           conversation-details pane. Only one is ever shown; closing the
           viewer restores whichever pane was underneath (their state is
           untouched). */}
       {activeId && artifactViewerOpen ? (
         <ArtifactViewer />
-      ) : activeId && activeThreadId ? (
-        <ThreadSidePane threadId={activeThreadId} />
+      ) : activeId && activeHuddleId ? (
+        <HuddleSidePane huddleId={activeHuddleId} />
       ) : activeId && showDetails ? (
         <DetailsPanelWrapper
           conversationId={activeId}
@@ -572,7 +572,7 @@ function ConversationPane({
             the right edge, leaving the title + bring-online at the left. */}
         <div className="flex-1" />
 
-        {/* Shared-content chips — threads, files, artifacts live here in
+        {/* Shared-content chips — huddles, files, artifacts live here in
             the header rather than floating over messages. Each hides
             itself at count 0 and anchors its dropdown panel just below
             the header. Stop propagation so opening a chip's dropdown doesn't
@@ -582,7 +582,7 @@ function ConversationPane({
           onClick={(e) => e.stopPropagation()}
         >
           <GoalsBar conversationId={conversationId} />
-          <ThreadsBar conversationId={conversationId} />
+          <HuddlesBar conversationId={conversationId} />
           <FilesBar conversationId={conversationId} />
           <ArtifactsBar conversationId={conversationId} />
         </div>
@@ -647,22 +647,22 @@ function ConversationPane({
 }
 
 /**
- * Slack-style thread pane. Replaces the conversation-details pane on the
- * right while a thread is open. Renders the thread as a full, live
+ * Slack-style huddle pane. Replaces the conversation-details pane on the
+ * right while a huddle is open. Renders the huddle as a full, live
  * conversation (its own ChatThread + MessageComposer) beside the parent in
  * the main pane — both channels stay joined, so you can converse in both.
  */
-function ThreadSidePane({ threadId }: { threadId: string }) {
+function HuddleSidePane({ huddleId }: { huddleId: string }) {
   const { t } = useTranslation("chat");
-  const closeThread = useChatStore((s) => s.closeThread);
+  const closeHuddle = useChatStore((s) => s.closeHuddle);
   const refreshConversation = useChatStore((s) => s.refreshConversation);
   const conversation = useChatStore(
     (s) =>
-      s.conversations.find((c) => c.id === threadId) ??
-      s.agentConversations.find((c) => c.id === threadId)
+      s.conversations.find((c) => c.id === huddleId) ??
+      s.agentConversations.find((c) => c.id === huddleId)
   );
-  const isLive = useStreamingStore((s) => hasLiveStream(s.streams[threadId]));
-  // The room's agent-adds switch, revealed under the header. A thread's
+  const isLive = useStreamingStore((s) => hasLiveStream(s.streams[huddleId]));
+  // The room's agent-adds switch, revealed under the header. A huddle's
   // parent admins may flip it too, so resolve the parent for the gate.
   const [showSettings, setShowSettings] = useState(false);
   const parentId = conversation ? agentConversationSourceId(conversation) : undefined;
@@ -686,19 +686,19 @@ function ThreadSidePane({ threadId }: { threadId: string }) {
 
   // Pull full member/participant data on open (list payloads can be thin).
   useEffect(() => {
-    refreshConversation(threadId);
-  }, [threadId, refreshConversation]);
+    refreshConversation(huddleId);
+  }, [huddleId, refreshConversation]);
 
-  const resolved = conversation ? isResolvedThread(conversation) : false;
-  const topic = conversation ? threadTopic(conversation) : null;
+  const resolved = conversation ? isResolvedHuddle(conversation) : false;
+  const topic = conversation ? huddleTopic(conversation) : null;
   const title =
-    topic || conversation?.title || t("threads.agentThread");
+    topic || conversation?.title || t("huddles.huddle");
   const statusLabel = resolved
-    ? conversation && threadStatus(conversation) === "abandoned"
-      ? t("threads.abandoned")
-      : t("threads.resolvedLabel")
+    ? conversation && huddleStatus(conversation) === "abandoned"
+      ? t("huddles.abandoned")
+      : t("huddles.resolvedLabel")
     : isLive
-    ? t("threads.live")
+    ? t("huddles.live")
     : null;
 
   return (
@@ -708,11 +708,11 @@ function ThreadSidePane({ threadId }: { threadId: string }) {
         resizing={resizing}
         onResizeStart={onResizeStart}
         onResizeReset={onResizeReset}
-        label={t("threads.resizePane")}
+        label={t("huddles.resizePane")}
       />
       <aside
         ref={paneRef}
-        // Wider than the details pane (w-80) — a thread is a full conversation
+        // Wider than the details pane (w-80) — a huddle is a full conversation
         // with its own composer, so it needs room to breathe beside the parent.
         // Width is drag-resizable (useResizableWidth, right-docked).
         className="surface-panel-strong relative z-20 -ml-3 flex h-full shrink-0 flex-col overflow-hidden rounded-l-lg bg-card"
@@ -738,7 +738,7 @@ function ThreadSidePane({ threadId }: { threadId: string }) {
           </span>
           <div className="min-w-0 flex-1">
             <p className="text-[11px] font-semibold uppercase tracking-wider text-muted-foreground">
-              {t("threads.threadLabel")}
+              {t("huddles.label")}
               {statusLabel ? ` · ${statusLabel}` : ""}
             </p>
             <p className="truncate text-sm font-semibold text-foreground">
@@ -762,9 +762,9 @@ function ThreadSidePane({ threadId }: { threadId: string }) {
           )}
           <button
             type="button"
-            onClick={closeThread}
-            title={t("threads.closePane")}
-            aria-label={t("threads.closePane")}
+            onClick={closeHuddle}
+            title={t("huddles.closePane")}
+            aria-label={t("huddles.closePane")}
             className="shrink-0 flex h-7 w-7 items-center justify-center rounded-md text-muted-foreground hover:bg-accent hover:text-foreground transition-colors"
           >
             <X className="h-4 w-4" />
@@ -780,9 +780,9 @@ function ThreadSidePane({ threadId }: { threadId: string }) {
         )}
 
         <div className="relative flex flex-1 min-h-0 flex-col">
-          <ChatThread conversationId={threadId} />
+          <ChatThread conversationId={huddleId} />
         </div>
-        <MessageComposer conversationId={threadId} />
+        <MessageComposer conversationId={huddleId} />
       </aside>
     </>
   );

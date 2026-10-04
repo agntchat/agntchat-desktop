@@ -88,8 +88,8 @@ function ArtifactContent({
 /**
  * Full artifact viewer — a right-docked side pane opened from an inline
  * ArtifactCard (store-driven; MessagesView renders it in the right-pane slot,
- * taking precedence over the thread / details panes like a thread does over
- * details). Same resizable-width chrome as ThreadSidePane /
+ * taking precedence over the huddle / details panes like a huddle does over
+ * details). Same resizable-width chrome as HuddleSidePane /
  * ConversationDetailsPanel. Shows the current version's content rendered by
  * kind, a collapsible version history (any prior version viewable read-only),
  * and a live comment thread with composer. Mirrors web's ArtifactViewer.
@@ -99,7 +99,7 @@ export function ArtifactViewer() {
   const viewer = useArtifactStore((s) => s.viewer);
   const closeViewer = useArtifactStore((s) => s.closeViewer);
 
-  // Shares its width with the thread / details panes (same storage key), so
+  // Shares its width with the huddle / details panes (same storage key), so
   // switching between them never jolts.
   const {
     width,
@@ -265,7 +265,7 @@ export function ArtifactViewer() {
         className="surface-panel-strong relative z-20 -ml-3 flex h-full shrink-0 flex-col overflow-hidden rounded-l-lg bg-card"
         style={{ width } as React.CSSProperties}
       >
-        {/* Header — mirrors the thread pane's label + title + close layout. */}
+        {/* Header — mirrors the huddle pane's label + title + close layout. */}
         <header
           className="relative flex h-14 shrink-0 items-center gap-3 bg-card px-4 after:absolute after:bottom-0 after:left-4 after:right-4 after:h-px after:bg-border"
           style={{ WebkitAppRegion: "no-drag" } as React.CSSProperties}

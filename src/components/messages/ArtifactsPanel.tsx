@@ -25,14 +25,14 @@ const KIND_LABEL_KEY: Record<string, string> = {
  * Dropdown behind the header ArtifactsBar chip: every artifact in the
  * conversation, newest first, with kind + version + last-edited time.
  * Picking one opens the right-docked ArtifactViewer. Same anchor + dismiss
- * behavior as ThreadsPanel / FilesPanel.
+ * behavior as HuddlesPanel / FilesPanel.
  */
 export function ArtifactsPanel({ conversationId, artifacts, open, onClose }: Props) {
   const { t } = useTranslation("artifacts");
   const containerRef = useRef<HTMLDivElement | null>(null);
   const openViewer = useArtifactStore((s) => s.openViewer);
 
-  // Click-outside + Escape to close — same pattern as ThreadsPanel.
+  // Click-outside + Escape to close — same pattern as HuddlesPanel.
   useEffect(() => {
     if (!open) return;
     const onClick = (e: MouseEvent) => {

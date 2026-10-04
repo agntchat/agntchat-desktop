@@ -63,8 +63,8 @@ export function ConversationDetailsPanel({
   onAfterLeave,
 }: Props) {
   const { t } = useTranslation("chat");
-  // Shares its width with the thread side pane (same storage key), so
-  // switching between details and a thread never jolts.
+  // Shares its width with the huddle side pane (same storage key), so
+  // switching between details and a huddle never jolts.
   const {
     width,
     ref: paneRef,

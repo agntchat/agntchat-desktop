@@ -17,7 +17,7 @@ import {
  * Admin-only gallery that renders every in-conversation card component in each
  * of its states, using sample data (see fixtures.tsx). Read-only — there's no
  * create/edit; it exists so the platform's cards can be reviewed in one place
- * instead of having to drive a real task/artifact/thread to see them.
+ * instead of having to drive a real task/artifact/huddle to see them.
  *
  * Layout: a category list on the left, a scrolling
  * gallery of that category's states on the right.
@@ -177,7 +177,7 @@ function CategoryRow({
 
 const swallowClick = (e: React.MouseEvent) => {
   // Non-interactive previews: neutralize navigation / mutation clicks (open
-  // viewer, open thread, stop task) while keeping hover styles intact.
+  // viewer, open huddle, stop task) while keeping hover styles intact.
   e.preventDefault();
   e.stopPropagation();
 };
