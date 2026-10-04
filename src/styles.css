@@ -135,8 +135,6 @@
   --color-response-card: var(--color-response-card);
   --color-response-card-inset: var(--color-response-card-inset);
   --color-response-card-border: var(--color-response-card-border);
-  --color-response-card-muted-foreground: var(--color-response-card-muted-foreground);
-  --color-response-card-accent: var(--color-response-card-accent);
 
   --radius-sm: var(--radius-sm);
   --radius-md: var(--radius-md);

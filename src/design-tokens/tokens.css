@@ -65,8 +65,6 @@
   --color-response-card: #F5F7FB;
   --color-response-card-inset: #EAEEF6;
   --color-response-card-border: #DCE1EB;
-  --color-response-card-muted-foreground: #6E6E80;
-  --color-response-card-accent: #007BFF;
   --color-highlight: #FFFF00;
 
   /* Radius */
@@ -242,8 +240,6 @@
   --color-response-card: #1B1D25;
   --color-response-card-inset: #15161C;
   --color-response-card-border: #2D303B;
-  --color-response-card-muted-foreground: #9898A6;
-  --color-response-card-accent: #007BFF;
   --color-highlight: #665500;
 }
 
@@ -310,8 +306,6 @@ html.debug-tokens {
   --color-response-card: #FFEE55 !important;
   --color-response-card-inset: #FFDD33 !important;
   --color-response-card-border: #FF7700 !important;
-  --color-response-card-muted-foreground: #FF1493 !important;
-  --color-response-card-accent: #FF00FF !important;
   --color-highlight: #FF0080 !important;
 
   /* Radius — collapse everything so hardcoded rounded corners stand out */
