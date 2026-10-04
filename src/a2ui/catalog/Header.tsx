@@ -9,7 +9,6 @@ import {
   VisibleSchema, WeightSchema,
   asRecord,
   asString,
-  avatarTint,
   renderChild,
   resolveDeep,
   weightStyle,
@@ -42,7 +41,7 @@ export const HeaderApi = {
  *  lines max), subtitle 14 muted, an optional leading icon tile or avatar
  *  and a trailing Price/Rating/Stat/caption aligned with the title. No
  *  default icon. An avatar without a picture is the initials of
- *  `leading.name` (else the title) on a tint picked by that name. */
+ *  `leading.name` (else the title), in the app's AvatarFallback colours. */
 export const Header = createComponentImplementation(HeaderApi, ({ props, buildChild, context }) => {
   const labelId = useContext(CardLabelContext);
   const [imageFailed, setImageFailed] = useState(false);
@@ -72,7 +71,7 @@ export const Header = createComponentImplementation(HeaderApi, ({ props, buildCh
       // No picture (or a 404): the initials of who the card is about.
       const name = asString(leading.name)?.trim() || title;
       lead = (
-        <div className={`a2ui-header__lead a2ui-header__lead--avatar a2ui-avatar--t${avatarTint(name)}`} aria-hidden="true">
+        <div className="a2ui-header__lead a2ui-header__lead--avatar" aria-hidden="true">
           {getInitials(name)}
         </div>
       );

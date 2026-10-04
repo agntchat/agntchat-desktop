@@ -27,8 +27,8 @@ export const CalloutApi = {
   }),
 };
 
-/** The status line as a tinted banner: the tone is the background, the
- *  icon carries the hue, the text stays foreground (14/500). */
+/** The status line: a recessed band, the icon in the tone's colour — the
+ *  only coloured mark — and the text in the foreground (14/500). */
 export const Callout = createComponentImplementation(CalloutApi, ({ props, context }) => {
   const text = asString(props.text)?.trim();
   if (!text) return null;

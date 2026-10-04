@@ -106,18 +106,6 @@ export function resolveDeep<T = unknown>(value: unknown, ctx: DataContext): T {
   return out as T;
 }
 
-/** How many initials-disc tints the stylesheet draws (`.a2ui-avatar--t<n>`). */
-export const AVATAR_TINTS = 6;
-
-/** The tint of a name's initials disc: stable for the name, so one sender
- *  is the same colour on every card and every client (mobile mirrors this
- *  hash in `mobile/lib/a2ui/shared.ts`). */
-export function avatarTint(name: string | undefined): number {
-  let hash = 0;
-  for (const ch of (name ?? "").trim().toLowerCase()) hash = (hash * 31 + (ch.codePointAt(0) ?? 0)) % 1_000_003;
-  return hash % AVATAR_TINTS;
-}
-
 export function asArray<T = unknown>(value: unknown): T[] {
   return Array.isArray(value) ? (value as T[]) : [];
 }

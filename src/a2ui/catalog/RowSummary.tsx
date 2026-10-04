@@ -2,7 +2,7 @@ import { ChevronDown } from "lucide-react";
 import type { DataContext } from "@a2ui/web_core/v0_9";
 import { getInitials, resolveIcon } from "../host";
 import { plainText, type CardSummaryIds, type ComponentLookup } from "../rowSummary";
-import { absoluteDataPath, asArray, asNumber, asRecord, asString, avatarTint, currentLocale } from "../shared";
+import { absoluteDataPath, asArray, asNumber, asRecord, asString, currentLocale } from "../shared";
 import { formatMoney } from "./Price";
 
 const STAR = "M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z";
@@ -150,7 +150,7 @@ export function RowSummary({
     } else if (leading.image !== undefined) {
       const name = asString(resolveAt(dataContext, basePath, leading.name))?.trim() || title;
       lead = (
-        <div className={`a2ui-row__lead a2ui-row__lead--avatar a2ui-avatar--t${avatarTint(name)}`} aria-hidden="true">
+        <div className="a2ui-row__lead a2ui-row__lead--avatar" aria-hidden="true">
           {getInitials(name)}
         </div>
       );

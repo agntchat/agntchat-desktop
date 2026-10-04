@@ -32,7 +32,8 @@ export const ChipRowApi = {
   }),
 };
 
-/** Short scannable tags. A chip is a value; `prefix` is a short muted
+/** Short scannable tags, drawn as the app's Badge `outline`; a tone is a
+ *  status dot before the label. A chip is a value; `prefix` is a short muted
  *  lead-in for a value that is not a fact on its own ("Prep" before
  *  "15 min"), an icon the alternative. Beyond `max` a "+N" control expands
  *  the row in place. */
