@@ -132,6 +132,9 @@
   --color-bubble-agent: var(--color-bubble-agent);
   --color-bubble-agent-foreground: var(--color-bubble-agent-foreground);
   --color-bubble-agent-accent: var(--color-bubble-agent-accent);
+  --color-response-card: var(--color-response-card);
+  --color-response-card-inset: var(--color-response-card-inset);
+  --color-response-card-border: var(--color-response-card-border);
 
   --radius-sm: var(--radius-sm);
   --radius-md: var(--radius-md);
