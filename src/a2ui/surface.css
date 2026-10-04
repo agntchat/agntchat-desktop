@@ -13,8 +13,8 @@
  * The card is its own sheet, not the chat pane's colour: `response-card`
  * (the sheet), `response-card-inset` (the recessed band: footer, stat
  * tiles, the open row) and `response-card-border` (its edge and every
- * hairline inside it). The sheet can be any tone (it is a mid-tone blue in
- * dark), so nothing on it is a fixed page colour: a rule reads the scoped
+ * hairline inside it). The sheet can be any tone, so nothing on it is a
+ * fixed page colour: a rule reads the scoped
  * variables below, which the surface sets for the pane and a card (or a
  * rows list) sets again for its sheet —
  *   --a2ui-sheet   what the element is drawn on
@@ -53,14 +53,14 @@
   --a2ui-fill: color-mix(in srgb, var(--color-foreground) 6%, transparent);
   --a2ui-fill-strong: color-mix(in srgb, var(--color-foreground) 10%, transparent);
   --a2ui-edge: color-mix(in srgb, var(--color-foreground) 20%, var(--a2ui-sheet));
-  --a2ui-tint-info: color-mix(in srgb, var(--color-primary) 18%, var(--a2ui-sheet));
-  --a2ui-tint-success: color-mix(in srgb, var(--color-success) 18%, var(--a2ui-sheet));
+  --a2ui-tint-info: color-mix(in srgb, var(--color-primary) 14%, var(--a2ui-sheet));
+  --a2ui-tint-success: color-mix(in srgb, var(--color-success) 16%, var(--a2ui-sheet));
   --a2ui-tint-warning: color-mix(in srgb, var(--color-warning) 22%, var(--a2ui-sheet));
-  --a2ui-tint-destructive: color-mix(in srgb, var(--color-destructive) 16%, var(--a2ui-sheet));
+  --a2ui-tint-destructive: color-mix(in srgb, var(--color-destructive) 14%, var(--a2ui-sheet));
   --a2ui-ink-info: var(--a2ui-accent);
-  --a2ui-ink-success: color-mix(in srgb, var(--color-success) 45%, var(--color-foreground));
-  --a2ui-ink-warning: color-mix(in srgb, var(--color-warning) 45%, var(--color-foreground));
-  --a2ui-ink-destructive: color-mix(in srgb, var(--color-destructive) 45%, var(--color-foreground));
+  --a2ui-ink-success: color-mix(in srgb, var(--color-success) 70%, var(--color-foreground));
+  --a2ui-ink-warning: color-mix(in srgb, var(--color-warning) 55%, var(--color-foreground));
+  --a2ui-ink-destructive: color-mix(in srgb, var(--color-destructive) 80%, var(--color-foreground));
 }
 .a2ui-surface *,
 .a2ui-surface *::before,
@@ -164,8 +164,8 @@
 .a2ui-avatar--t4 { --a2ui-hue: color-mix(in srgb, var(--color-primary), var(--color-success)); }
 .a2ui-avatar--t5 { --a2ui-hue: color-mix(in srgb, var(--color-warning) 60%, var(--color-destructive)); }
 [class*="a2ui-avatar--t"] {
-  background: color-mix(in srgb, var(--a2ui-hue) 24%, var(--a2ui-sheet));
-  color: color-mix(in srgb, var(--a2ui-hue) 50%, var(--color-foreground));
+  background: color-mix(in srgb, var(--a2ui-hue) 22%, var(--a2ui-sheet));
+  color: color-mix(in srgb, var(--a2ui-hue) 75%, var(--color-foreground));
 }
 .a2ui-header__text { flex: 1; min-width: 0; align-self: center; }
 .a2ui-overline {

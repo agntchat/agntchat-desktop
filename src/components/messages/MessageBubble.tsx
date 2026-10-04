@@ -128,6 +128,7 @@ export const MessageBubble = memo(function MessageBubble({
   const avatarUrl = message.sender?.avatarUrl;
   const isTask = isTaskMessage(message);
   const isStatusUpdate = isStatusUpdateMessage(message);
+  const isSurface = message.messageType === "Surface";
 
   // Model + backend label for agent messages — same resolution order as web:
   // message.metadata.{model,backend} is the primary source (populated on
@@ -235,7 +236,10 @@ export const MessageBubble = memo(function MessageBubble({
     );
   }
 
-  if (isTask || isStatusUpdate) {
+  // A response card (Surface) is a card too: it draws its own sheet, so it
+  // stands on the pane by itself — never inset in the agent's chat bubble.
+  // Wider than the task cards: its layout needs the room.
+  if (isTask || isStatusUpdate || isSurface) {
     return (
       <MessageRow
         align={align}
@@ -245,7 +249,7 @@ export const MessageBubble = memo(function MessageBubble({
         {!isOwn && (
           <SenderAvatar show={showAvatar} senderName={senderName} avatarUrl={avatarUrl} />
         )}
-        <MessageContent className="w-[60%] gap-0">
+        <MessageContent className={cn("gap-0", isSurface ? "w-[72%]" : "w-[60%]")}>
           {!isOwn && showSenderName && (
             <SenderHeader
               senderName={senderName}
@@ -256,6 +260,8 @@ export const MessageBubble = memo(function MessageBubble({
           )}
           {isTask ? (
             <TaskMessage message={message} />
+          ) : isSurface ? (
+            <SurfaceMessage message={message} />
           ) : (
             <StatusUpdateMessage message={message} />
           )}
@@ -319,8 +325,6 @@ export const MessageBubble = memo(function MessageBubble({
               <ToolMessage message={message} />
             ) : isFileMessage(message) ? (
               <FileMessage message={message} />
-            ) : message.messageType === "Surface" ? (
-              <SurfaceMessage message={message} />
             ) : (
               <>
                 {message.content?.trim() ? (
