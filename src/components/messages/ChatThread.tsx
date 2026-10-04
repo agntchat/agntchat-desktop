@@ -87,6 +87,7 @@ const BARE_STATUS_TO_LIFECYCLE: Record<string, string> = {
   failed: "task_failed",
   declined: "task_failed",
   blocked: "task_in_progress",
+  waiting: "task_in_progress",
   cancelled: "task_cancelled",
 };
 
@@ -97,6 +98,7 @@ const STATUS_RANK: Record<string, number> = {
   in_progress: 1,
   accepted: 1,
   blocked: 1,
+  waiting: 1,
   complete: 2,
   failed: 2,
   declined: 2,

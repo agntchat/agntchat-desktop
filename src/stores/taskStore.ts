@@ -41,6 +41,7 @@ const ACTIVE_STATUSES = new Set<TaskStatus>([
   "accepted",
   "in_progress",
   "blocked",
+  "waiting",
 ]);
 
 interface TaskState {

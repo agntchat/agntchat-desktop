@@ -20,10 +20,10 @@ type Filter = "active" | "pending" | "in_progress" | "complete" | "cancelled";
 /**
  * Buckets cover the full set of backend task states so no task is ever
  * orphaned outside a filter. Canonical states (backend/lib/agentchat/tasks/
- * task.ex:9): pending accepted rejected in_progress blocked complete
+ * task.ex): pending accepted rejected in_progress blocked waiting complete
  * cancelled failed exhausted. Matchers are grouped semantically:
  *  - Pending = waiting to start or just picked up (pending + accepted)
- *  - Progress = actively running, including stalled (in_progress + blocked)
+ *  - Progress = actively running, including stalled (in_progress + blocked + waiting)
  *  - Done = completed successfully
  *  - Ended = terminated without success (cancelled + failed + rejected + exhausted)
  */
@@ -34,7 +34,11 @@ const FILTERS: { value: Filter; labelKey: string; matches: (s: TaskStatus) => bo
     value: "active",
     labelKey: "filters.active",
     matches: (s) =>
-      s === "pending" || s === "accepted" || s === "in_progress" || s === "blocked",
+      s === "pending" ||
+      s === "accepted" ||
+      s === "in_progress" ||
+      s === "blocked" ||
+      s === "waiting",
   },
   {
     value: "pending",
@@ -44,7 +48,7 @@ const FILTERS: { value: Filter; labelKey: string; matches: (s: TaskStatus) => bo
   {
     value: "in_progress",
     labelKey: "filters.inProgress",
-    matches: (s) => s === "in_progress" || s === "blocked",
+    matches: (s) => s === "in_progress" || s === "blocked" || s === "waiting",
   },
   { value: "complete", labelKey: "filters.done", matches: (s) => s === "complete" },
   {
@@ -59,6 +63,7 @@ const STATUS_COLORS: Record<string, string> = {
   accepted: "bg-primary/10 text-primary border-primary/30",
   in_progress: "bg-warning/10 text-warning border-warning/30",
   blocked: "bg-destructive/10 text-destructive border-destructive/30",
+  waiting: "bg-primary/10 text-primary border-primary/30",
   complete: "bg-success/10 text-success border-success/30",
   cancelled: "bg-muted text-muted-foreground border-border",
   failed: "bg-destructive/10 text-destructive border-destructive/30",
@@ -71,6 +76,7 @@ const STATUS_LABEL_KEY: Record<string, string> = {
   accepted: "status.accepted",
   in_progress: "status.inProgress",
   blocked: "status.blocked",
+  waiting: "status.waiting",
   complete: "status.complete",
   cancelled: "status.cancelled",
   failed: "status.failed",
@@ -223,6 +229,7 @@ const ACTIVE_ROW_STATUSES = new Set<TaskStatus>([
   "accepted",
   "in_progress",
   "blocked",
+  "waiting",
 ]);
 
 function TaskRow({

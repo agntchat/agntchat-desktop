@@ -117,6 +117,7 @@ const BARE_STATUS_TO_LIFECYCLE: Record<string, string> = {
   failed: "task_failed",
   declined: "task_failed",
   blocked: "task_in_progress",
+  waiting: "task_in_progress",
   cancelled: "task_cancelled",
 };
 
@@ -131,6 +132,7 @@ function resolveEffectiveType(
     case "in_progress":
     case "accepted":
     case "blocked":
+    case "waiting":
       return "task_in_progress";
     case "complete":
       return "task_complete";

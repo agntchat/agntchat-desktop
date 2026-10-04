@@ -5428,7 +5428,8 @@ export const resources = {
         "inProgress": "In Progress",
         "in_progress": "In progress",
         "pending": "Pending",
-        "rejected": "Rejected"
+        "rejected": "Rejected",
+        "waiting": "Waiting on work"
       },
       "stop": {
         "body": "Stop \"{{title}}\"? The agent will halt its current run.",
@@ -10959,7 +10960,8 @@ export const resources = {
         "inProgress": "En curso",
         "in_progress": "En curso",
         "pending": "Pendiente",
-        "rejected": "Rechazada"
+        "rejected": "Rechazada",
+        "waiting": "Esperando trabajo"
       },
       "stop": {
         "body": "¿Detener \"{{title}}\"? El agente interrumpirá su ejecución actual.",
@@ -16490,7 +16492,8 @@ export const resources = {
         "inProgress": "In Bearbeitung",
         "in_progress": "In Bearbeitung",
         "pending": "Ausstehend",
-        "rejected": "Abgelehnt"
+        "rejected": "Abgelehnt",
+        "waiting": "Wartet auf Zuarbeit"
       },
       "stop": {
         "body": "\"{{title}}\" stoppen? Der Agent bricht seinen aktuellen Durchlauf ab.",
@@ -22021,7 +22024,8 @@ export const resources = {
         "inProgress": "En cours",
         "in_progress": "En cours",
         "pending": "En attente",
-        "rejected": "Rejeté"
+        "rejected": "Rejeté",
+        "waiting": "En attente d'un travail"
       },
       "stop": {
         "body": "Arrêter « {{title}} » ? L'agent interrompra son exécution en cours.",
@@ -27552,7 +27556,8 @@ export const resources = {
         "inProgress": "Em Andamento",
         "in_progress": "Em andamento",
         "pending": "Pendente",
-        "rejected": "Rejeitada"
+        "rejected": "Rejeitada",
+        "waiting": "Aguardando trabalho"
       },
       "stop": {
         "body": "Interromper \"{{title}}\"? O agente vai parar sua execução atual.",
@@ -33083,7 +33088,8 @@ export const resources = {
         "inProgress": "進行中",
         "in_progress": "進行中",
         "pending": "保留中",
-        "rejected": "却下"
+        "rejected": "却下",
+        "waiting": "作業待ち"
       },
       "stop": {
         "body": "「{{title}}」を停止しますか? エージェントは現在の実行を中断します。",
@@ -38614,7 +38620,8 @@ export const resources = {
         "inProgress": "进行中",
         "in_progress": "进行中",
         "pending": "待处理",
-        "rejected": "已拒绝"
+        "rejected": "已拒绝",
+        "waiting": "等待工作"
       },
       "stop": {
         "body": "停止“{{title}}”？代理将终止当前运行。",
@@ -44145,7 +44152,8 @@ export const resources = {
         "inProgress": "진행 중",
         "in_progress": "진행 중",
         "pending": "대기 중",
-        "rejected": "거부됨"
+        "rejected": "거부됨",
+        "waiting": "작업 대기 중"
       },
       "stop": {
         "body": "\"{{title}}\"을(를) 중지할까요? 에이전트가 현재 실행을 중단합니다.",
@@ -49676,7 +49684,8 @@ export const resources = {
         "inProgress": "In corso",
         "in_progress": "In corso",
         "pending": "In attesa",
-        "rejected": "Rifiutato"
+        "rejected": "Rifiutato",
+        "waiting": "In attesa di lavoro"
       },
       "stop": {
         "body": "Interrompere \"{{title}}\"? L'agente fermerà l'esecuzione in corso.",
@@ -55207,7 +55216,8 @@ export const resources = {
         "inProgress": "प्रगति में",
         "in_progress": "प्रगति में",
         "pending": "लंबित",
-        "rejected": "अस्वीकृत"
+        "rejected": "अस्वीकृत",
+        "waiting": "काम की प्रतीक्षा में"
       },
       "stop": {
         "body": "\"{{title}}\" रोकें? एजेंट अपना वर्तमान रन रोक देगा।",

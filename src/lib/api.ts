@@ -3217,6 +3217,7 @@ export type TaskStatus =
   | "rejected"
   | "in_progress"
   | "blocked"
+  | "waiting"
   | "complete"
   | "cancelled"
   | "failed"

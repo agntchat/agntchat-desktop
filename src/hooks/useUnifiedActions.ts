@@ -43,7 +43,7 @@ export interface ActionSection {
   data: MergedItem[];
 }
 
-const ACTIVE_TASK_STATUSES = new Set(["pending", "accepted", "in_progress", "blocked"]);
+const ACTIVE_TASK_STATUSES = new Set(["pending", "accepted", "in_progress", "blocked", "waiting"]);
 function isTaskActive(status: string): boolean {
   return ACTIVE_TASK_STATUSES.has(status);
 }

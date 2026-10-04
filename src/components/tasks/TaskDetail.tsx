@@ -29,6 +29,7 @@ const ACTIVE_STATUSES = new Set<TaskStatus>([
   "accepted",
   "in_progress",
   "blocked",
+  "waiting",
 ]);
 
 const STATUS_CHIP_CLASS: Record<string, string> = {
@@ -36,6 +37,7 @@ const STATUS_CHIP_CLASS: Record<string, string> = {
   accepted: "bg-primary/10 text-primary border-primary/30",
   in_progress: "bg-warning/10 text-warning border-warning/30",
   blocked: "bg-destructive/10 text-destructive border-destructive/30",
+  waiting: "bg-primary/10 text-primary border-primary/30",
   complete: "bg-success/10 text-success border-success/30",
   cancelled: "bg-muted text-muted-foreground border-border",
   rejected: "bg-destructive/10 text-destructive border-destructive/30",
@@ -49,6 +51,7 @@ const STATUS_LABEL_KEY: Record<string, string> = {
   accepted: "status.accepted",
   in_progress: "status.inProgress",
   blocked: "status.blocked",
+  waiting: "status.waiting",
   complete: "status.complete",
   cancelled: "status.cancelled",
   rejected: "status.rejected",
