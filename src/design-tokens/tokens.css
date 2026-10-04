@@ -62,9 +62,11 @@
   --color-bubble-agent: #F0F4FA;
   --color-bubble-agent-foreground: #111111;
   --color-bubble-agent-accent: #007BFF;
-  --color-response-card: #F5F7FB;
-  --color-response-card-inset: #EAEEF6;
-  --color-response-card-border: #DCE1EB;
+  --color-response-card: #F0EFEB;
+  --color-response-card-inset: #E5E3DD;
+  --color-response-card-border: #D9D7D0;
+  --color-response-card-muted-foreground: #62626F;
+  --color-response-card-accent: #0064D1;
   --color-highlight: #FFFF00;
 
   /* Radius */
@@ -237,9 +239,11 @@
   --color-bubble-agent: #1C2333;
   --color-bubble-agent-foreground: #FAFAFA;
   --color-bubble-agent-accent: #007BFF;
-  --color-response-card: #1B1D25;
-  --color-response-card-inset: #15161C;
-  --color-response-card-border: #2D303B;
+  --color-response-card: #4A6275;
+  --color-response-card-inset: #3E5364;
+  --color-response-card-border: #607789;
+  --color-response-card-muted-foreground: #D0D9E0;
+  --color-response-card-accent: #BFE0FF;
   --color-highlight: #665500;
 }
 
@@ -306,6 +310,8 @@ html.debug-tokens {
   --color-response-card: #FFEE55 !important;
   --color-response-card-inset: #FFDD33 !important;
   --color-response-card-border: #FF7700 !important;
+  --color-response-card-muted-foreground: #FF1493 !important;
+  --color-response-card-accent: #FF00FF !important;
   --color-highlight: #FF0080 !important;
 
   /* Radius — collapse everything so hardcoded rounded corners stand out */
