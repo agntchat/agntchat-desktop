@@ -5333,8 +5333,6 @@ export const resources = {
         "normal": "Normal",
         "urgent": "Urgent"
       },
-      "queuedPreview_one": "+{{count}} task queued",
-      "queuedPreview_other": "+{{count}} tasks queued",
       "reminder": {
         "addFailed": "Couldn't set the reminder",
         "addTitle": "New reminder",
@@ -10883,8 +10881,6 @@ export const resources = {
         "normal": "Normal",
         "urgent": "Urgente"
       },
-      "queuedPreview_one": "+{{count}} tarea en cola",
-      "queuedPreview_other": "+{{count}} tareas en cola",
       "reminder": {
         "addFailed": "No se pudo crear el recordatorio",
         "addTitle": "Nuevo recordatorio",
@@ -16433,8 +16429,6 @@ export const resources = {
         "normal": "Normal",
         "urgent": "Dringend"
       },
-      "queuedPreview_one": "+{{count}} wartende Aufgabe",
-      "queuedPreview_other": "+{{count}} wartende Aufgaben",
       "reminder": {
         "addFailed": "Erinnerung konnte nicht erstellt werden",
         "addTitle": "Neue Erinnerung",
@@ -21983,8 +21977,6 @@ export const resources = {
         "normal": "Normale",
         "urgent": "Urgente"
       },
-      "queuedPreview_one": "+{{count}} tâche en attente",
-      "queuedPreview_other": "+{{count}} tâches en attente",
       "reminder": {
         "addFailed": "Impossible de créer le rappel",
         "addTitle": "Nouveau rappel",
@@ -27533,8 +27525,6 @@ export const resources = {
         "normal": "Normal",
         "urgent": "Urgente"
       },
-      "queuedPreview_one": "+{{count}} tarefa na fila",
-      "queuedPreview_other": "+{{count}} tarefas na fila",
       "reminder": {
         "addFailed": "Não foi possível criar o lembrete",
         "addTitle": "Novo lembrete",
@@ -33083,8 +33073,6 @@ export const resources = {
         "normal": "通常",
         "urgent": "至急"
       },
-      "queuedPreview_one": "+{{count}}件のタスクが待機中",
-      "queuedPreview_other": "+{{count}}件のタスクが待機中",
       "reminder": {
         "addFailed": "リマインダーを設定できませんでした",
         "addTitle": "新しいリマインダー",
@@ -38633,8 +38621,6 @@ export const resources = {
         "normal": "普通",
         "urgent": "紧急"
       },
-      "queuedPreview_one": "+{{count}} 个任务排队中",
-      "queuedPreview_other": "+{{count}} 个任务排队中",
       "reminder": {
         "addFailed": "无法设置提醒",
         "addTitle": "新提醒",
@@ -44183,8 +44169,6 @@ export const resources = {
         "normal": "보통",
         "urgent": "긴급"
       },
-      "queuedPreview_one": "+{{count}}개 작업 대기 중",
-      "queuedPreview_other": "+{{count}}개 작업 대기 중",
       "reminder": {
         "addFailed": "리마인더를 설정하지 못했습니다",
         "addTitle": "새 리마인더",
@@ -49733,8 +49717,6 @@ export const resources = {
         "normal": "Normale",
         "urgent": "Urgente"
       },
-      "queuedPreview_one": "+{{count}} attività in coda",
-      "queuedPreview_other": "+{{count}} attività in coda",
       "reminder": {
         "addFailed": "Impossibile impostare il promemoria",
         "addTitle": "Nuovo promemoria",
@@ -55283,8 +55265,6 @@ export const resources = {
         "normal": "सामान्य",
         "urgent": "तत्काल"
       },
-      "queuedPreview_one": "+{{count}} कार्य कतार में",
-      "queuedPreview_other": "+{{count}} कार्य कतार में",
       "reminder": {
         "addFailed": "रिमाइंडर सेट नहीं हो सका",
         "addTitle": "नया रिमाइंडर",
