@@ -239,6 +239,9 @@ class WebSocketService {
       "surface_update",
       "reaction_added",
       "reaction_removed",
+      // Reply threads: a thread-only reply, and a root's footer counters.
+      "thread_reply",
+      "thread_updated",
       "message_streaming",
       "task_progress",
       "conversation_memory",
@@ -311,6 +314,10 @@ class WebSocketService {
       metadata?: Record<string, unknown>;
       parentMessageId?: string;
       attachments?: Array<Record<string, unknown>>;
+      /** Reply threads: the thread being replied in, and whether the reply
+       *  also shows in the main timeline (thread-only otherwise). */
+      threadRootId?: string;
+      alsoInMain?: boolean;
     }
   ): Promise<Record<string, unknown>> {
     return new Promise((resolve, reject) => {
@@ -327,6 +334,10 @@ class WebSocketService {
       // backend links to this text message in one transaction.
       if (options?.attachments && options.attachments.length > 0) {
         payload.attachments = options.attachments;
+      }
+      if (options?.threadRootId) {
+        payload.thread_root_id = options.threadRootId;
+        payload.also_in_main = options.alsoInMain === true;
       }
 
       channel

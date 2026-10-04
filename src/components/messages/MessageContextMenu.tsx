@@ -1,6 +1,7 @@
 import { useEffect, useRef } from "react";
 import { createPortal } from "react-dom";
-import { Reply, Copy, Hash, Trash2 } from "lucide-react";
+import { useTranslation } from "react-i18next";
+import { Reply, Copy, Hash, Trash2, CornerUpLeft } from "lucide-react";
 import { cn } from "../../lib/utils";
 import type { Message } from "../../lib/api";
 
@@ -10,10 +11,14 @@ interface Props {
   y: number;
   /** Whether the current user can delete this message (own messages). */
   canDelete: boolean;
-  onReply: (message: Message) => void;
+  /** Omitted in the reply-thread pane, where the composer already replies. */
+  onReply?: (message: Message) => void;
   onCopy: (message: Message) => void;
   onCopyId: (message: Message) => void;
-  onDelete: (message: Message) => void;
+  /** Omitted in the reply-thread pane (`canDelete` is false there). */
+  onDelete?: (message: Message) => void;
+  /** Reply-thread pane: show a thread-only reply in the main timeline too. */
+  onPostToMain?: (message: Message) => void;
   onClose: () => void;
 }
 
@@ -26,8 +31,10 @@ export function MessageContextMenu({
   onCopy,
   onCopyId,
   onDelete,
+  onPostToMain,
   onClose,
 }: Props) {
+  const { t } = useTranslation("chat");
   const ref = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -57,12 +64,22 @@ export function MessageContextMenu({
     onClick: () => void;
     destructive?: boolean;
   };
-  const actions: Action[] = [
-    { icon: Reply, label: "Reply", onClick: () => { onReply(message); onClose(); } },
+  const actions: Action[] = [];
+  if (onReply) {
+    actions.push({ icon: Reply, label: "Reply", onClick: () => { onReply(message); onClose(); } });
+  }
+  if (onPostToMain) {
+    actions.push({
+      icon: CornerUpLeft,
+      label: t("replyThread.postToMain"),
+      onClick: () => { onPostToMain(message); onClose(); },
+    });
+  }
+  actions.push(
     { icon: Copy, label: "Copy", onClick: () => { onCopy(message); onClose(); } },
-    { icon: Hash, label: "Copy ID", onClick: () => { onCopyId(message); onClose(); } },
-  ];
-  if (canDelete) {
+    { icon: Hash, label: "Copy ID", onClick: () => { onCopyId(message); onClose(); } }
+  );
+  if (canDelete && onDelete) {
     actions.push({
       icon: Trash2,
       label: "Delete",

@@ -46,6 +46,8 @@ import { GoalsBar } from "./GoalsBar";
 import { ArtifactViewer } from "./ArtifactViewer";
 import { useArtifactStore } from "../../stores/artifactStore";
 import { ConversationTour } from "./ConversationTour";
+import { ReplyThreadPane } from "./ReplyThreadPane";
+import { useReplyThreadsEnabled } from "../../lib/reply-threads";
 import { AgentPowerButton } from "../ui/agent-power-button";
 
 const DETAILS_KEY = "agentchat:showDetails";
@@ -63,6 +65,16 @@ export function MessagesView() {
   const activeId = useChatStore((s) => s.activeConversationId);
   const activeHuddleId = useChatStore((s) => s.activeHuddleId);
   const artifactViewerOpen = useArtifactStore((s) => s.viewer != null);
+  // The reply thread open in the side pane (viewer's `reply_threads` flag;
+  // nothing can open one without it). Always a thread of the main
+  // conversation.
+  const replyThreadsEnabled = useReplyThreadsEnabled();
+  const activeReplyRootId = useChatStore((s) =>
+    s.activeReplyThread && s.activeReplyThread.conversationId === s.activeConversationId
+      ? s.activeReplyThread.rootId
+      : null
+  );
+  const replyThreadRootIdOpen = replyThreadsEnabled ? activeReplyRootId : null;
   const fetchConversations = useChatStore((s) => s.fetchConversations);
   const fetchAgentConversations = useChatStore((s) => s.fetchAgentConversations);
   const fetchUnreadCounts = useChatStore((s) => s.fetchUnreadCounts);
@@ -209,7 +221,9 @@ export function MessagesView() {
         ref={chatPaneRef}
         className={cn(
           "relative z-10 -ml-2 flex-1 flex flex-col bg-card overflow-hidden surface-panel rounded-l-2xl",
-          activeId && (showDetails || activeHuddleId || artifactViewerOpen) && "pr-5"
+          activeId &&
+            (showDetails || activeHuddleId || replyThreadRootIdOpen || artifactViewerOpen) &&
+            "pr-5"
         )}
       >
         {activeId ? (
@@ -224,13 +238,15 @@ export function MessagesView() {
         )}
       </section>
 
-      {/* Right pane: the artifact viewer takes precedence over a huddle
-          (Slack-style side pane), which takes precedence over the
-          conversation-details pane. Only one is ever shown; closing the
-          viewer restores whichever pane was underneath (their state is
-          untouched). */}
+      {/* Right pane: artifact viewer > reply thread > huddle (Slack-style
+          side pane) > conversation details. Only one is ever shown; closing
+          the viewer restores whichever pane was underneath (their state is
+          untouched). A reply thread and a huddle are never open together —
+          opening one closes the other (chatStore). */}
       {activeId && artifactViewerOpen ? (
         <ArtifactViewer />
+      ) : activeId && replyThreadRootIdOpen ? (
+        <ReplyThreadPaneWrapper conversationId={activeId} rootId={replyThreadRootIdOpen} />
       ) : activeId && activeHuddleId ? (
         <HuddleSidePane huddleId={activeHuddleId} />
       ) : activeId && showDetails ? (
@@ -786,6 +802,25 @@ function HuddleSidePane({ huddleId }: { huddleId: string }) {
       </aside>
     </>
   );
+}
+
+/** Resolves the main conversation for the reply-thread pane (a thread is part
+ *  of that conversation, not a second one like a huddle). */
+function ReplyThreadPaneWrapper({
+  conversationId,
+  rootId,
+}: {
+  conversationId: string;
+  rootId: string;
+}) {
+  const conversation = useChatStore(
+    (s) =>
+      s.conversations.find((c) => c.id === conversationId) ??
+      s.agentConversations.find((c) => c.id === conversationId) ??
+      (s.pendingConversation?.id === conversationId ? s.pendingConversation : undefined)
+  );
+  if (!conversation) return null;
+  return <ReplyThreadPane conversation={conversation} rootId={rootId} />;
 }
 
 function DetailsPanelWrapper({

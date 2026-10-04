@@ -8,6 +8,18 @@ import { useAuthStore } from "./authStore";
 import { useStreamingStore } from "./streamingStore";
 import { usePresenceStore } from "./presenceStore";
 import { agentConversationSourceId } from "../lib/huddle-selectors";
+import { replyThreadsEnabled } from "../lib/reply-threads";
+import {
+  dedup,
+  findReplyThreadCopy,
+  mainTimelineOnly,
+  msgTime,
+  nextReactions,
+  patchReplyThreadCopies,
+  PENDING_PREFIX,
+  sortMessages,
+} from "./chatMessageHelpers";
+import { createReplyThreadSlice, type ReplyThreadSlice } from "./replyThreadSlice";
 
 // Seed the shared online-set from `conversation.members[].participant.online`
 // — but only for *humans*. Human presence is tracked through a live Phoenix
@@ -31,8 +43,6 @@ function seedOnlineFromConversations(convos: Conversation[]) {
     return { online: next };
   });
 }
-
-const PENDING_PREFIX = "pending-";
 
 // Per-conversation "cleared" boundaries for the local-only "Clear chat"
 // action. Persisted so the collapse survives a reopen — `messages` itself is
@@ -68,10 +78,6 @@ function writeClearedAtStorage(data: Record<string, string[]>) {
  * `firstUnreadIds` map (unchanged reference when there's nothing to update).
  * Shared by setActiveConversation (main pane) and openHuddle (side pane).
  */
-function msgTime(m: { insertedAt?: string }): number {
-  return m.insertedAt ? new Date(m.insertedAt).getTime() : 0;
-}
-
 // --- Reopen catch-up ---------------------------------------------------------
 // Messages stay cached per conversation, but the channel is left when the
 // conversation is closed, so the cached tail goes stale the moment an agent
@@ -175,21 +181,6 @@ function markReadDebounced(id: string) {
   }, 500);
 }
 
-function dedup(messages: Message[]): Message[] {
-  const seen = new Set<string>();
-  return messages.filter((m) => {
-    if (seen.has(m.id)) return false;
-    seen.add(m.id);
-    return true;
-  });
-}
-
-function sortMessages(messages: Message[]): Message[] {
-  return [...messages].sort(
-    (a, b) => new Date(a.insertedAt).getTime() - new Date(b.insertedAt).getTime()
-  );
-}
-
 function sortConversations(convos: Conversation[]): Conversation[] {
   return [...convos].sort((a, b) => {
     if (a.pinned && !b.pinned) return -1;
@@ -220,7 +211,9 @@ function upsertConversation(list: Conversation[], conv: Conversation): Conversat
   );
 }
 
-interface ChatState {
+// Reply threads (replyThreadSlice.ts) are part of this store: a thread's
+// replies are messages of the same conversation, kept apart from `messages`.
+export interface ChatState extends ReplyThreadSlice {
   // Conversations
   conversations: Conversation[];
   conversationsLoading: boolean;
@@ -418,6 +411,7 @@ interface ChatState {
 }
 
 export const useChatStore = create<ChatState>((set, get) => ({
+  ...createReplyThreadSlice(set, get),
   conversations: [],
   conversationsLoading: false,
   conversationsLoaded: false,
@@ -709,6 +703,10 @@ export const useChatStore = create<ChatState>((set, get) => ({
           s.activeConversationId === conversationId ? null : s.activeConversationId,
         activeHuddleId:
           s.activeHuddleId === conversationId ? null : s.activeHuddleId,
+        activeReplyThread:
+          s.activeReplyThread?.conversationId === conversationId
+            ? null
+            : s.activeReplyThread,
       };
     });
     writeClearedAtStorage(remainingCleared);
@@ -742,6 +740,10 @@ export const useChatStore = create<ChatState>((set, get) => ({
         s.activeConversationId === conversationId ? null : s.activeConversationId,
       activeHuddleId:
         s.activeHuddleId === conversationId ? null : s.activeHuddleId,
+      activeReplyThread:
+        s.activeReplyThread?.conversationId === conversationId
+          ? null
+          : s.activeReplyThread,
     }));
     ws.leaveConversation(conversationId);
   },
@@ -774,7 +776,7 @@ export const useChatStore = create<ChatState>((set, get) => ({
         // initial load landed.
         set((s) => {
           const existing = s.messages[conversationId] ?? [];
-          const merged = dedup([...data.messages, ...existing]);
+          const merged = dedup([...mainTimelineOnly(data.messages), ...existing]);
           return {
             messages: { ...s.messages, [conversationId]: sortMessages(merged) },
             hasMore: { ...s.hasMore, [conversationId]: data.messages.length >= 30 },
@@ -931,7 +933,9 @@ export const useChatStore = create<ChatState>((set, get) => ({
     const myId = useAuthStore.getState().participant?.id;
     if (!myId) return;
 
-    const msg = (get().messages[conversationId] ?? []).find((m) => m.id === messageId);
+    const msg =
+      (get().messages[conversationId] ?? []).find((m) => m.id === messageId) ??
+      findReplyThreadCopy(get(), messageId);
     const mine = msg?.reactions
       ?.find((r) => r.emoji === emoji)
       ?.participantIds.includes(myId);
@@ -972,41 +976,32 @@ export const useChatStore = create<ChatState>((set, get) => ({
 
   applyReactionEvent: (conversationId, messageId, emoji, participantId, kind) => {
     set((s) => {
+      const react = (m: Message): Message => {
+        const next = nextReactions(m.reactions ?? [], emoji, participantId, kind);
+        return next ? { ...m, reactions: next } : m;
+      };
+      const out: Partial<ChatState> = {};
+
       const current = s.messages[conversationId] ?? [];
       const idx = current.findIndex((m) => m.id === messageId);
-      if (idx < 0) return s;
-
-      const msg = current[idx]!;
-      const reactions = msg.reactions ?? [];
-      let next: typeof reactions;
-
-      if (kind === "added") {
-        const entry = reactions.find((r) => r.emoji === emoji);
-        if (entry?.participantIds.includes(participantId)) return s;
-        next = entry
-          ? reactions.map((r) =>
-              r.emoji === emoji
-                ? { ...r, participantIds: [...r.participantIds, participantId] }
-                : r
-            )
-          : [...reactions, { emoji, participantIds: [participantId] }];
-      } else {
-        next = reactions
-          .map((r) =>
-            r.emoji === emoji
-              ? { ...r, participantIds: r.participantIds.filter((p) => p !== participantId) }
-              : r
-          )
-          .filter((r) => r.participantIds.length > 0);
+      if (idx >= 0) {
+        const reacted = react(current[idx]!);
+        if (reacted !== current[idx]) {
+          const updated = [...current];
+          updated[idx] = reacted;
+          out.messages = { ...s.messages, [conversationId]: updated };
+        }
       }
 
-      const updated = [...current];
-      updated[idx] = { ...msg, reactions: next };
-      return { messages: { ...s.messages, [conversationId]: updated } };
+      // The same message as held by an open reply thread.
+      Object.assign(out, patchReplyThreadCopies(s, messageId, react));
+      return Object.keys(out).length > 0 ? out : s;
     });
   },
 
   addMessage: (conversationId, message) => {
+    // Never the main timeline's: a thread-only reply (see mainTimelineOnly).
+    if (message.threadOnly) return;
     set((s) => {
       const existing = s.messages[conversationId] ?? [];
       const dupIdx = existing.findIndex((m) => m.id === message.id);
@@ -1061,7 +1056,7 @@ export const useChatStore = create<ChatState>((set, get) => ({
 
   applyLatestWindow: (conversationId, messages) => {
     set((s) => {
-      const incoming = sortMessages(dedup(messages ?? []));
+      const incoming = sortMessages(dedup(mainTimelineOnly(messages ?? [])));
       const existing = s.messages[conversationId] ?? [];
 
       let next = existing;
@@ -1160,6 +1155,7 @@ export const useChatStore = create<ChatState>((set, get) => ({
     set((s) => ({
       activeConversationId: id,
       activeHuddleId: null,
+      activeReplyThread: null,
       unreadCounts: id ? { ...s.unreadCounts, [id]: 0 } : s.unreadCounts,
       unreadTurnGroups: id ? { ...s.unreadTurnGroups, [id]: {} } : s.unreadTurnGroups,
       // First-unread divider + history gate (a behind cache opens cold —
@@ -1191,6 +1187,8 @@ export const useChatStore = create<ChatState>((set, get) => ({
 
     set((s) => ({
       activeHuddleId: huddleId,
+      // One right pane at a time: a huddle replaces an open reply thread.
+      activeReplyThread: null,
       unreadCounts: { ...s.unreadCounts, [huddleId]: 0 },
       unreadTurnGroups: { ...s.unreadTurnGroups, [huddleId]: {} },
       ...captureOpenState(s, huddleId),
@@ -1335,6 +1333,11 @@ export const useChatStore = create<ChatState>((set, get) => ({
         });
         get().addMessage(convId, msg);
         applyHuddleCompletion(msg);
+        // A reply that also shows in the main timeline (sent that way, or
+        // posted back later) belongs to its thread's list too.
+        if (msg.threadRootId && replyThreadsEnabled()) {
+          get().applyReplyThreadMessage(convId, msg);
+        }
 
         // Keep an open+focused conversation marked read as messages stream in,
         // not only at open time. Otherwise the server never re-broadcasts
@@ -1363,6 +1366,47 @@ export const useChatStore = create<ChatState>((set, get) => ({
       })
     );
 
+    // Reply threads. A thread-only reply arrives under its own event and goes
+    // to its thread's list — never `addMessage`, never the main timeline.
+    // Ignored without the viewer's flag, as it was before threads existed.
+    unsubs.push(
+      ws.on("conv:thread_reply", (payload) => {
+        if (!replyThreadsEnabled()) return;
+        const msg = payload as unknown as Message & { _conversationId: string };
+        const convId = msg._conversationId ?? msg.conversationId;
+        if (!convId || !msg.id || !msg.threadRootId) return;
+        get().applyReplyThreadMessage(convId, msg);
+
+        // The sender's reply has landed: clear their stream and typing, as
+        // `new_message` does (activity is conversation-level).
+        const streamId = (msg.metadata as Record<string, unknown> | undefined)
+          ?.stream_id as string | undefined;
+        if (streamId) {
+          useStreamingStore.getState().clearStreamByStreamId(streamId);
+        }
+        if (msg.senderId) {
+          useStreamingStore.getState().clearStreamBySender(convId, msg.senderId);
+          usePresenceStore.getState().clearTyping(convId, msg.senderId);
+        }
+      })
+    );
+
+    unsubs.push(
+      ws.on("conv:thread_updated", (payload) => {
+        if (!replyThreadsEnabled()) return;
+        const convId =
+          (payload._conversationId as string) ?? (payload.conversationId as string);
+        const rootId = payload.rootId as string;
+        if (!convId || !rootId) return;
+        get().applyReplyThreadUpdated(convId, {
+          rootId,
+          replyCount: payload.replyCount as number | undefined,
+          lastReplyAt: payload.lastReplyAt as string | null | undefined,
+          replySenderIds: payload.replySenderIds as string[] | undefined,
+        });
+      })
+    );
+
     unsubs.push(
       ws.on("conv:recent_messages", (payload) => {
         const convId = payload._conversationId as string;
@@ -1376,12 +1420,20 @@ export const useChatStore = create<ChatState>((set, get) => ({
         const convId = payload._conversationId as string;
         const messageId = payload.messageId as string;
         if (!convId || !messageId) return;
-        set((s) => ({
-          messages: {
-            ...s.messages,
-            [convId]: (s.messages[convId] ?? []).filter((m) => m.id !== messageId),
-          },
-        }));
+        set((s) => {
+          const current = s.messages[convId] ?? [];
+          // A reply held by a loaded thread goes too (empty maps when the
+          // viewer has no reply threads).
+          const threads = patchReplyThreadCopies(s, messageId, () => null);
+          if (!current.some((m) => m.id === messageId)) return threads ?? s;
+          return {
+            ...threads,
+            messages: {
+              ...s.messages,
+              [convId]: current.filter((m) => m.id !== messageId),
+            },
+          };
+        });
       })
     );
 
@@ -1604,6 +1656,8 @@ export const useChatStore = create<ChatState>((set, get) => ({
           activeConversationId:
             s.activeConversationId === convId ? null : s.activeConversationId,
           activeHuddleId: s.activeHuddleId === convId ? null : s.activeHuddleId,
+          activeReplyThread:
+            s.activeReplyThread?.conversationId === convId ? null : s.activeReplyThread,
         };
       });
       writeClearedAtStorage(remainingCleared);

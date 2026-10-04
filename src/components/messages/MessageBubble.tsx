@@ -111,6 +111,8 @@ export const MessageBubble = memo(function MessageBubble({
   showAvatar,
   showSenderName,
   onContextMenu,
+  onOpenThread,
+  hideQuoteOf,
 }: {
   message: Message;
   /** Show the sender avatar (true for the first in a run). */
@@ -119,6 +121,12 @@ export const MessageBubble = memo(function MessageBubble({
   showSenderName: boolean;
   /** Right-click handler — bubbles the message + cursor up to the thread. */
   onContextMenu?: (message: Message, e: React.MouseEvent) => void;
+  /** Reply threads (viewer's flag on, main timeline): the reply preview of a
+   *  reply opens its thread. Unset → the preview is plain, as before. */
+  onOpenThread?: (rootId: string) => void;
+  /** Reply-thread pane: the thread's root id. A reply quoting the root
+   *  hides its preview there — the root is right above. */
+  hideQuoteOf?: string;
 }) {
   const { t } = useTranslation("chat");
   const myId = useAuthStore((s) => s.participant?.id);
@@ -199,10 +207,22 @@ export const MessageBubble = memo(function MessageBubble({
   const conversationId = message.conversationId;
   const parent = useChatStore((s) => {
     if (!message.parentMessageId) return undefined;
-    return s.messages[conversationId]?.find(
-      (m) => m.id === message.parentMessageId
+    return (
+      s.messages[conversationId]?.find((m) => m.id === message.parentMessageId) ??
+      // A reply quoting another reply of its thread: thread-only replies are
+      // held by the reply-thread slice, not the main list (empty without the
+      // viewer's reply_threads flag).
+      (message.threadRootId
+        ? s.replyThreadMessages[message.threadRootId]?.find(
+            (m) => m.id === message.parentMessageId
+          )
+        : undefined)
     );
   });
+  const threadRootId = message.threadRootId;
+  const openThread =
+    onOpenThread && threadRootId ? () => onOpenThread(threadRootId) : undefined;
+  const hideQuote = !!hideQuoteOf && message.parentMessageId === hideQuoteOf;
 
   // Compaction summaries render full-width (no avatar, no bubble) — they're a
   // conversation-level event, not a message attributed to a participant.
@@ -293,25 +313,52 @@ export const MessageBubble = memo(function MessageBubble({
           />
         )}
 
-        {parent && (
+        {(parent || openThread) && !hideQuote && (
           // data-slot opts the preview into MessageContent's self-end
           // alignment for own messages, like the bubble below it.
+          // With reply threads on, the preview of a reply opens its thread —
+          // also when the quoted message is not in the main list (it may be
+          // a thread-only reply), where only the "View thread" line shows.
           <div
             data-slot="reply-preview"
+            role={openThread ? "button" : undefined}
+            tabIndex={openThread ? 0 : undefined}
+            aria-label={openThread ? t("replyThread.viewThread") : undefined}
+            onClick={openThread}
+            onKeyDown={
+              openThread
+                ? (e) => {
+                    if (e.key === "Enter" || e.key === " ") {
+                      e.preventDefault();
+                      openThread();
+                    }
+                  }
+                : undefined
+            }
             className={cn(
               "mb-0.5 max-w-[72%] rounded-md border-l-2 px-2 py-1 text-[11px]",
               isOwn
                 ? "border-primary-foreground/40 bg-primary/10 text-muted-foreground"
-                : "border-muted-foreground/40 bg-muted/40 text-muted-foreground"
+                : "border-muted-foreground/40 bg-muted/40 text-muted-foreground",
+              openThread && "cursor-pointer hover:bg-accent/60"
             )}
           >
-            <div className="flex items-center gap-1">
-              <ReplyIcon className="h-2.5 w-2.5" />
-              <span className="font-medium text-foreground">
-                {parent.sender?.displayName ?? t("common:unknown")}
+            {parent && (
+              <>
+                <div className="flex items-center gap-1">
+                  <ReplyIcon className="h-2.5 w-2.5" />
+                  <span className="font-medium text-foreground">
+                    {parent.sender?.displayName ?? t("common:unknown")}
+                  </span>
+                </div>
+                <p className="truncate">{parent.content}</p>
+              </>
+            )}
+            {openThread && (
+              <span className="font-medium text-primary/70">
+                {t("replyThread.viewThread")}
               </span>
-            </div>
-            <p className="truncate">{parent.content}</p>
+            )}
           </div>
         )}
 

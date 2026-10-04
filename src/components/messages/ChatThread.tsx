@@ -18,6 +18,8 @@ import { cn, dayKey, formatDayLabel, formatExactDateTime } from "../../lib/utils
 import { useConversationActivity } from "../../hooks/useConversationActivity";
 import { countActivity, writingEntries } from "../../lib/conversation-activity";
 import { agentConversationSourceId } from "../../lib/huddle-selectors";
+import { replyThreadRootId, useReplyThreadsEnabled } from "../../lib/reply-threads";
+import { ReplyThreadFooter } from "./ReplyThreadFooter";
 import type { Artifact, Conversation, Message } from "../../lib/api";
 import { useArtifactStore } from "../../stores/artifactStore";
 import { ws } from "../../services/websocket";
@@ -500,6 +502,33 @@ export function ChatThread({ conversationId }: { conversationId: string }) {
   const myId = useAuthStore((s) => s.participant?.id);
   const turnAnchorEnabled = useAuthStore(
     (s) => s.participant?.features?.turn_anchor === true
+  );
+  // Reply threads live under the MAIN pane's messages only. ChatThread also
+  // renders the huddle side pane, which keeps the quote-reply: opening a
+  // thread would close the huddle it is in.
+  const isMainPane = useChatStore((s) => s.activeConversationId === conversationId);
+  const replyThreadsOn = useReplyThreadsEnabled() && isMainPane;
+  const openReplyThread = useChatStore((s) => s.openReplyThread);
+  const openReplyRootId = useChatStore((s) =>
+    s.activeReplyThread?.conversationId === conversationId ? s.activeReplyThread.rootId : null
+  );
+  const handleOpenReplyThread = useCallback(
+    (rootId: string) => openReplyThread(conversationId, rootId),
+    [openReplyThread, conversationId]
+  );
+  const handleReply = useCallback(
+    (message: Message) => {
+      if (replyThreadsOn) {
+        // Reply opens the message's thread (the pane focuses its composer).
+        // An unsent message has no id the server knows yet.
+        if (!message.pending) {
+          openReplyThread(conversationId, replyThreadRootId(message));
+        }
+        return;
+      }
+      setReplyingTo(conversationId, message);
+    },
+    [replyThreadsOn, openReplyThread, setReplyingTo, conversationId]
   );
   const conversationType = useChatStore(
     (s) => s.conversations.find((c) => c.id === conversationId)?.type
@@ -1185,7 +1214,17 @@ export function ChatThread({ conversationId }: { conversationId: string }) {
                       showAvatar={showAvatar}
                       showSenderName={showSenderName}
                       onContextMenu={handleContextMenu}
+                      onOpenThread={replyThreadsOn ? handleOpenReplyThread : undefined}
                     />
+                    {replyThreadsOn && !msg.threadRootId && (msg.replyCount ?? 0) > 0 && (
+                      <ReplyThreadFooter
+                        message={msg}
+                        isOwn={msg.senderId === myId}
+                        active={openReplyRootId === msg.id}
+                        members={conversationMembers}
+                        onOpen={handleOpenReplyThread}
+                      />
+                    )}
                   </div>
                 </Fragment>
               );
@@ -1245,7 +1284,7 @@ export function ChatThread({ conversationId }: { conversationId: string }) {
           x={menu.x}
           y={menu.y}
           canDelete={menu.message.senderId === myId && !menu.message.pending}
-          onReply={(m) => setReplyingTo(conversationId, m)}
+          onReply={handleReply}
           onCopy={(m) => navigator.clipboard?.writeText(m.content ?? "")}
           onCopyId={(m) => navigator.clipboard?.writeText(m.id)}
           onDelete={(m) => {

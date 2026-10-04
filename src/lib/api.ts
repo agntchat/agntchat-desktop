@@ -3194,6 +3194,19 @@ export interface Message {
   turnGroupId?: string;
   fileAttachments?: FileAttachment[];
   reactions?: MessageReaction[];
+  // Reply threads (lib/reply-threads.ts).
+  /** On a reply: the top-level message its thread hangs off. */
+  threadRootId?: string | null;
+  /** On a reply: it shows in its thread and NOT in the main timeline. Such a
+   * message never enters the chat store's `messages[conversationId]`. */
+  threadOnly?: boolean;
+  /** On a root: the thread's footer, kept current by `thread_updated`. */
+  replyCount?: number;
+  lastReplyAt?: string | null;
+  replySenderIds?: string[];
+  /** On a root: replies the viewer has not read (REST list / thread fetch;
+   * bumped locally as replies arrive). */
+  threadUnread?: number;
   insertedAt: string;
   updatedAt: string;
   pending?: boolean;
@@ -3571,6 +3584,37 @@ export async function fetchUnreadCounts(): Promise<{ unreadCounts: Record<string
 
 export async function markConversationReadRest(conversationId: string): Promise<void> {
   await request(`/api/conversations/${conversationId}/read`, { method: "POST" });
+}
+
+// --- Reply threads ---
+
+/** A thread's root and its replies, oldest first. */
+export async function fetchReplyThread(
+  conversationId: string,
+  rootId: string
+): Promise<{ root: Message; replies: Message[] }> {
+  return request(`/api/conversations/${conversationId}/threads/${rootId}`);
+}
+
+export async function markReplyThreadReadRest(
+  conversationId: string,
+  rootId: string
+): Promise<void> {
+  await request(`/api/conversations/${conversationId}/threads/${rootId}/read`, {
+    method: "POST",
+  });
+}
+
+/** Show a thread-only reply in the main timeline too. Its author or an admin
+ *  of the conversation; the server refuses anyone else. */
+export async function postReplyToMainRest(
+  conversationId: string,
+  messageId: string
+): Promise<Message> {
+  return request(
+    `/api/conversations/${conversationId}/messages/${messageId}/post-to-main`,
+    { method: "POST" }
+  );
 }
 
 export async function updateConversationTitleRest(
