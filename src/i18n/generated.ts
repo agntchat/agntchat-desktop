@@ -2969,6 +2969,24 @@ export const resources = {
         "title": "Name this group"
       },
       "reply": "Reply",
+      "replyThread": {
+        "alsoInMainLabel": "Also sent to the conversation",
+        "alsoSendToConversation": "Also send to the conversation",
+        "closePane": "Close thread",
+        "composerPlaceholder": "Reply in thread…",
+        "loadFailed": "Couldn't load this thread.",
+        "noReplies": "No replies yet",
+        "openThread": "Open thread",
+        "postToMain": "Send to conversation",
+        "postToMainFailed": "Couldn't send this reply to the conversation.",
+        "replies_one": "{{count}} reply",
+        "replies_other": "{{count}} replies",
+        "resizePane": "Resize thread pane",
+        "sendFailed": "Couldn't send your reply. Try again.",
+        "title": "Thread",
+        "unread": "Unread replies",
+        "viewThread": "View thread"
+      },
       "replyingTo": "Replying to",
       "resizeList": "Resize conversation list",
       "results": {
@@ -8501,6 +8519,24 @@ export const resources = {
         "title": "Nombra este grupo"
       },
       "reply": "Responder",
+      "replyThread": {
+        "alsoInMainLabel": "También enviado a la conversación",
+        "alsoSendToConversation": "Enviar también a la conversación",
+        "closePane": "Cerrar hilo",
+        "composerPlaceholder": "Responder en el hilo…",
+        "loadFailed": "No se pudo cargar este hilo.",
+        "noReplies": "Aún no hay respuestas",
+        "openThread": "Abrir hilo",
+        "postToMain": "Enviar a la conversación",
+        "postToMainFailed": "No se pudo enviar esta respuesta a la conversación.",
+        "replies_one": "{{count}} respuesta",
+        "replies_other": "{{count}} respuestas",
+        "resizePane": "Redimensionar panel del hilo",
+        "sendFailed": "No se pudo enviar tu respuesta. Vuelve a intentarlo.",
+        "title": "Hilo",
+        "unread": "Respuestas sin leer",
+        "viewThread": "Ver hilo"
+      },
       "replyingTo": "Respondiendo a",
       "resizeList": "Redimensionar la lista de conversaciones",
       "results": {
@@ -14033,6 +14069,24 @@ export const resources = {
         "title": "Diese Gruppe benennen"
       },
       "reply": "Antworten",
+      "replyThread": {
+        "alsoInMainLabel": "Auch in der Unterhaltung gesendet",
+        "alsoSendToConversation": "Auch in der Unterhaltung senden",
+        "closePane": "Thread schließen",
+        "composerPlaceholder": "Im Thread antworten…",
+        "loadFailed": "Dieser Thread konnte nicht geladen werden.",
+        "noReplies": "Noch keine Antworten",
+        "openThread": "Thread öffnen",
+        "postToMain": "In der Unterhaltung senden",
+        "postToMainFailed": "Diese Antwort konnte nicht in der Unterhaltung gesendet werden.",
+        "replies_one": "{{count}} Antwort",
+        "replies_other": "{{count}} Antworten",
+        "resizePane": "Thread-Bereich anpassen",
+        "sendFailed": "Ihre Antwort konnte nicht gesendet werden. Versuchen Sie es erneut.",
+        "title": "Thread",
+        "unread": "Ungelesene Antworten",
+        "viewThread": "Thread anzeigen"
+      },
       "replyingTo": "Antwort an",
       "resizeList": "Größe der Unterhaltungsliste ändern",
       "results": {
@@ -19565,6 +19619,24 @@ export const resources = {
         "title": "Nommer ce groupe"
       },
       "reply": "Répondre",
+      "replyThread": {
+        "alsoInMainLabel": "Également envoyé dans la conversation",
+        "alsoSendToConversation": "Envoyer aussi dans la conversation",
+        "closePane": "Fermer le fil",
+        "composerPlaceholder": "Répondre dans le fil…",
+        "loadFailed": "Impossible de charger ce fil.",
+        "noReplies": "Aucune réponse pour le moment",
+        "openThread": "Ouvrir le fil",
+        "postToMain": "Envoyer dans la conversation",
+        "postToMainFailed": "Impossible d'envoyer cette réponse dans la conversation.",
+        "replies_one": "{{count}} réponse",
+        "replies_other": "{{count}} réponses",
+        "resizePane": "Redimensionner le volet du fil",
+        "sendFailed": "Impossible d'envoyer votre réponse. Réessayez.",
+        "title": "Fil",
+        "unread": "Réponses non lues",
+        "viewThread": "Voir le fil"
+      },
       "replyingTo": "Réponse à",
       "resizeList": "Redimensionner la liste des conversations",
       "results": {
@@ -25097,6 +25169,24 @@ export const resources = {
         "title": "Nomeie este grupo"
       },
       "reply": "Responder",
+      "replyThread": {
+        "alsoInMainLabel": "Também enviada para a conversa",
+        "alsoSendToConversation": "Enviar também para a conversa",
+        "closePane": "Fechar thread",
+        "composerPlaceholder": "Responder na thread…",
+        "loadFailed": "Não foi possível carregar esta thread.",
+        "noReplies": "Ainda não há respostas",
+        "openThread": "Abrir thread",
+        "postToMain": "Enviar para a conversa",
+        "postToMainFailed": "Não foi possível enviar esta resposta para a conversa.",
+        "replies_one": "{{count}} resposta",
+        "replies_other": "{{count}} respostas",
+        "resizePane": "Redimensionar painel da thread",
+        "sendFailed": "Não foi possível enviar sua resposta. Tente novamente.",
+        "title": "Thread",
+        "unread": "Respostas não lidas",
+        "viewThread": "Ver thread"
+      },
       "replyingTo": "Respondendo a",
       "resizeList": "Redimensionar lista de conversas",
       "results": {
@@ -30629,6 +30719,24 @@ export const resources = {
         "title": "このグループに名前を付ける"
       },
       "reply": "返信",
+      "replyThread": {
+        "alsoInMainLabel": "会話にも送信済み",
+        "alsoSendToConversation": "会話にも送信する",
+        "closePane": "スレッドを閉じる",
+        "composerPlaceholder": "スレッドに返信…",
+        "loadFailed": "このスレッドを読み込めませんでした。",
+        "noReplies": "まだ返信はありません",
+        "openThread": "スレッドを開く",
+        "postToMain": "会話に送信",
+        "postToMainFailed": "この返信を会話に送信できませんでした。",
+        "replies_one": "{{count}}件の返信",
+        "replies_other": "{{count}}件の返信",
+        "resizePane": "スレッドパネルのサイズを変更",
+        "sendFailed": "返信を送信できませんでした。もう一度お試しください。",
+        "title": "スレッド",
+        "unread": "未読の返信",
+        "viewThread": "スレッドを表示"
+      },
       "replyingTo": "返信先",
       "resizeList": "会話リストのサイズを変更",
       "results": {
@@ -36161,6 +36269,24 @@ export const resources = {
         "title": "为该群组命名"
       },
       "reply": "回复",
+      "replyThread": {
+        "alsoInMainLabel": "已同时发送到对话",
+        "alsoSendToConversation": "同时发送到对话",
+        "closePane": "关闭消息列",
+        "composerPlaceholder": "在消息列中回复…",
+        "loadFailed": "无法加载此消息列。",
+        "noReplies": "暂无回复",
+        "openThread": "打开消息列",
+        "postToMain": "发送到对话",
+        "postToMainFailed": "无法将此回复发送到对话。",
+        "replies_one": "{{count}} 条回复",
+        "replies_other": "{{count}} 条回复",
+        "resizePane": "调整消息列面板大小",
+        "sendFailed": "无法发送你的回复，请重试。",
+        "title": "消息列",
+        "unread": "未读回复",
+        "viewThread": "查看消息列"
+      },
       "replyingTo": "正在回复",
       "resizeList": "调整对话列表大小",
       "results": {
@@ -41693,6 +41819,24 @@ export const resources = {
         "title": "이 그룹 이름 지정"
       },
       "reply": "답장",
+      "replyThread": {
+        "alsoInMainLabel": "대화에도 전송됨",
+        "alsoSendToConversation": "대화에도 보내기",
+        "closePane": "스레드 닫기",
+        "composerPlaceholder": "스레드에 답장…",
+        "loadFailed": "이 스레드를 불러오지 못했습니다.",
+        "noReplies": "아직 답장이 없습니다",
+        "openThread": "스레드 열기",
+        "postToMain": "대화에 보내기",
+        "postToMainFailed": "이 답장을 대화에 보내지 못했습니다.",
+        "replies_one": "답장 {{count}}개",
+        "replies_other": "답장 {{count}}개",
+        "resizePane": "스레드 패널 크기 조정",
+        "sendFailed": "답장을 보내지 못했습니다. 다시 시도하세요.",
+        "title": "스레드",
+        "unread": "읽지 않은 답장",
+        "viewThread": "스레드 보기"
+      },
       "replyingTo": "답장 대상",
       "resizeList": "대화 목록 크기 조정",
       "results": {
@@ -47225,6 +47369,24 @@ export const resources = {
         "title": "Assegna un nome a questo gruppo"
       },
       "reply": "Rispondi",
+      "replyThread": {
+        "alsoInMainLabel": "Inviato anche nella conversazione",
+        "alsoSendToConversation": "Invia anche nella conversazione",
+        "closePane": "Chiudi thread",
+        "composerPlaceholder": "Rispondi nel thread…",
+        "loadFailed": "Impossibile caricare questo thread.",
+        "noReplies": "Ancora nessuna risposta",
+        "openThread": "Apri thread",
+        "postToMain": "Invia nella conversazione",
+        "postToMainFailed": "Impossibile inviare questa risposta nella conversazione.",
+        "replies_one": "{{count}} risposta",
+        "replies_other": "{{count}} risposte",
+        "resizePane": "Ridimensiona pannello thread",
+        "sendFailed": "Impossibile inviare la risposta. Riprova.",
+        "title": "Thread",
+        "unread": "Risposte non lette",
+        "viewThread": "Visualizza thread"
+      },
       "replyingTo": "In risposta a",
       "resizeList": "Ridimensiona elenco conversazioni",
       "results": {
@@ -52757,6 +52919,24 @@ export const resources = {
         "title": "इस समूह को नाम दें"
       },
       "reply": "जवाब दें",
+      "replyThread": {
+        "alsoInMainLabel": "बातचीत में भी भेजा गया",
+        "alsoSendToConversation": "बातचीत में भी भेजें",
+        "closePane": "थ्रेड बंद करें",
+        "composerPlaceholder": "थ्रेड में जवाब दें…",
+        "loadFailed": "यह थ्रेड लोड नहीं हो सका।",
+        "noReplies": "अभी तक कोई जवाब नहीं",
+        "openThread": "थ्रेड खोलें",
+        "postToMain": "बातचीत में भेजें",
+        "postToMainFailed": "यह जवाब बातचीत में नहीं भेजा जा सका।",
+        "replies_one": "{{count}} जवाब",
+        "replies_other": "{{count}} जवाब",
+        "resizePane": "थ्रेड पैनल का आकार बदलें",
+        "sendFailed": "आपका जवाब नहीं भेजा जा सका। पुनः प्रयास करें।",
+        "title": "थ्रेड",
+        "unread": "अपठित जवाब",
+        "viewThread": "थ्रेड देखें"
+      },
       "replyingTo": "जवाब दे रहे हैं",
       "resizeList": "बातचीत सूची का आकार बदलें",
       "results": {
