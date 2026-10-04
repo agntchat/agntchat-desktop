@@ -1043,7 +1043,19 @@ export function buildPreviewCategories(
       icon: Users,
       items: [
         {
-          label: "Two agents working",
+          label: "One agent working (plain row)",
+          interactive: true,
+          node: (
+            <ActivityDock
+              entries={[
+                mkEntry("a1", "Nova", "agent", { phase: "tool_call", phaseDetail: "Reading calendar for this week" }),
+              ]}
+              onStop={() => {}}
+            />
+          ),
+        },
+        {
+          label: "Two agents working (summary + chips)",
           interactive: true,
           node: (
             <ActivityDock
@@ -1071,7 +1083,7 @@ export function buildPreviewCategories(
           ),
         },
         {
-          label: "Crowd (collapses to chips)",
+          label: "Crowd",
           interactive: true,
           node: (
             <ActivityDock
