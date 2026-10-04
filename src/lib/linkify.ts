@@ -18,17 +18,28 @@ const PHONE_RE =
   /(?<!\d)(?:\+?\d{1,3}[-.\s])?\(?\d{3}\)?[-.\s]\d{3}[-.\s]\d{4}(?!\d)/g;
 
 // US street address: house number + 1-5 name words + street suffix,
-// optionally followed by ", City" / ", City, ST" / ", City, ST 12345".
-// Case-insensitive on suffix; trailing period after suffix tolerated.
+// optionally followed by a direction ("NW") and ", City" / ", City, ST" /
+// ", City, ST 12345". Trailing period after suffix tolerated.
+//
+// Deliberately strict, because this runs over every message and artifact:
+// - Case-sensitive. Name words and the suffix must be capitalised (or an
+//   ordinal like "5th"), so "3 of the drafts" is prose, not an address.
+// - The suffix must be a whole word. Without the boundary "St" matched the
+//   start of "stack" and "Pl" the start of "plan".
+// - Spaces and tabs only between parts, so a match never crosses a line.
 const STREET_SUFFIX =
   "Street|St|Avenue|Ave|Boulevard|Blvd|Road|Rd|Drive|Dr|Lane|Ln|Way|Place|Pl|Court|Ct|Highway|Hwy|Parkway|Pkwy|Terrace|Ter|Circle|Cir|Trail|Trl|Square|Sq";
 
+const NAME_WORD = String.raw`(?:[A-Z][A-Za-z'\-]*|\d{1,3}(?:st|nd|rd|th))`;
+const CITY_WORD = String.raw`[A-Z][A-Za-z'\-]*`;
+
 const ADDRESS_RE = new RegExp(
-  String.raw`\b\d{1,6}\s+(?:[NSEW]\.?\s+)?(?:[A-Za-z][A-Za-z'\-]*\s+){1,5}(?:` +
+  String.raw`\b\d{1,6}[ \t]+(?:[NSEW]\.?[ \t]+)?(?:${NAME_WORD}[ \t]+){1,5}(?:` +
     STREET_SUFFIX +
+    String.raw`)\b\.?(?:[ \t]+(?:NE|NW|SE|SW|N|S|E|W)\b)?` +
     // Optional ", City [Words]" followed by optional ", ST" and optional " 12345[-1234]".
-    String.raw`)\.?(?:,\s+[A-Z][A-Za-z'\-]*(?:\s+[A-Z][A-Za-z'\-]*){0,4}(?:,\s+[A-Z]{2}(?:\s+\d{5}(?:-\d{4})?)?)?)?`,
-  "gi",
+    String.raw`(?:,[ \t]+${CITY_WORD}(?:[ \t]+${CITY_WORD}){0,4}(?:,[ \t]+[A-Z]{2}(?:[ \t]+\d{5}(?:-\d{4})?)?)?)?`,
+  "g",
 );
 
 // Trailing punctuation that should not be part of a URL/address match.
@@ -43,8 +54,9 @@ type LinkMatch = {
 
 export function linkifyMarkdown(source: string): string {
   if (!source || typeof source !== "string") return source;
-  // Cheap reject when nothing plausible is present.
-  if (!/[@:]|www\.|\d{3,}/.test(source)) return source;
+  // Cheap reject when nothing plausible is present. Any digit passes: a
+  // house number can be a single one.
+  if (!/[@:]|www\.|\d/.test(source)) return source;
 
   const out: string[] = [];
   let lastEnd = 0;
