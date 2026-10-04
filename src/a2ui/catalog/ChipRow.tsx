@@ -17,6 +17,7 @@ import {
 
 const ChipSchema = z.object({
   label: CommonSchemas.DynamicString,
+  prefix: CommonSchemas.DynamicString.optional(),
   icon: IconNameSchema.optional(),
   tone: ToneSchema.optional(),
 });
@@ -31,8 +32,10 @@ export const ChipRowApi = {
   }),
 };
 
-/** Short scannable tags in pills. Beyond `max` a "+N" control expands the
- *  row in place. Labels are values only — never "Label: value". */
+/** Short scannable tags. A chip is a value; `prefix` is a short muted
+ *  lead-in for a value that is not a fact on its own ("Prep" before
+ *  "15 min"), an icon the alternative. Beyond `max` a "+N" control expands
+ *  the row in place. */
 export const ChipRow = createComponentImplementation(ChipRowApi, ({ props, context }) => {
   const { t } = useTranslation("templates");
   const [expanded, setExpanded] = useState(false);
@@ -43,6 +46,7 @@ export const ChipRow = createComponentImplementation(ChipRowApi, ({ props, conte
       if (!label) return null;
       return {
         label,
+        prefix: chip ? asString(chip.prefix)?.trim() : undefined,
         Icon: resolveIcon(chip ? asString(chip.icon) : undefined),
         tone: chip && typeof chip.tone === "string" && chip.tone !== "neutral" ? chip.tone : null,
       };
@@ -59,6 +63,7 @@ export const ChipRow = createComponentImplementation(ChipRowApi, ({ props, conte
       {visible.map((chip, i) => (
         <span key={i} className={`a2ui-chip${chip.tone ? ` a2ui-chip--${chip.tone}` : ""}`}>
           {chip.Icon && <chip.Icon className="a2ui-i" aria-hidden="true" />}
+          {chip.prefix && <span className="a2ui-chip__prefix">{chip.prefix}</span>}
           {chip.label}
         </span>
       ))}

@@ -59,6 +59,15 @@ function Sparkline({ data, first, last }: { data: number[]; first: string; last:
   );
 }
 
+/** A figure the server sent already signed ("+1.33%", "-$2.10") reads as a
+ *  move: up or down by its sign — which is in the text, so never colour
+ *  alone. Anything else ("68°F", "3 — 1") is neutral. */
+export function signOf(value: string): "up" | "down" | null {
+  if (/^\+\s?[\d.$€£¥]/.test(value)) return "up";
+  if (/^[-−]\s?[\d.$€£¥]/.test(value)) return "down";
+  return null;
+}
+
 /** A number that matters: tabular value, label beneath, delta with the sign
  *  always in the text (never colour alone), 80×24 sparkline, 4px progress. */
 export const Stat = createComponentImplementation(StatApi, ({ props, context }) => {
@@ -100,6 +109,7 @@ export const Stat = createComponentImplementation(StatApi, ({ props, context }) 
   }
 
   const label = asString(props.label);
+  const sign = deltaValue === undefined && typeof rawValue === "string" ? signOf(rawValue.trim()) : null;
   const showMeta = deltaText !== null || trend.length >= 2;
   const pct =
     progressValue !== undefined && progressMax !== undefined && progressMax > 0
@@ -108,7 +118,7 @@ export const Stat = createComponentImplementation(StatApi, ({ props, context }) 
 
   return (
     <div className={`a2ui-stat a2ui-stat--${size}`} style={weightStyle(props.weight)}>
-      <div className="a2ui-stat__value">{value}</div>
+      <div className={`a2ui-stat__value${sign ? ` a2ui-stat__value--${sign}` : ""}`}>{value}</div>
       {showMeta && (
         <div className={`a2ui-stat__meta a2ui-delta--${dir}`}>
           {deltaText !== null && (

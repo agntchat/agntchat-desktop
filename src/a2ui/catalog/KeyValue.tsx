@@ -55,11 +55,15 @@ export const KeyValue = createComponentImplementation(KeyValueApi, ({ props, con
     })
     .filter((x): x is NonNullable<typeof x> => x !== null);
   if (items.length === 0) return null;
+  // Labels align down the card: when some rows carry an icon (a template's
+  // fields) and others do not (the facts the agent added), the bare ones
+  // keep the icon's column.
+  const indent = items.some((item) => item.Icon);
 
   return (
     <dl className={`a2ui-kv${props.layout === "grid" ? " a2ui-kv--grid" : ""}`} style={weightStyle(props.weight)}>
       {items.map((item, i) => (
-        <KeyValueRow key={i} {...item} />
+        <KeyValueRow key={i} {...item} indent={indent} />
       ))}
     </dl>
   );
@@ -71,7 +75,9 @@ function KeyValueRow({
   Icon,
   link,
   mono,
+  indent,
 }: {
+  indent: boolean;
   label: string;
   value: string;
   Icon: ReturnType<typeof resolveIcon>;
@@ -82,7 +88,7 @@ function KeyValueRow({
   return (
     <div className={long ? "a2ui-kv__row a2ui-kv__row--long" : "a2ui-kv__row"}>
       <dt>
-        {Icon && <Icon className="a2ui-i" aria-hidden="true" />}
+        {Icon ? <Icon className="a2ui-i" aria-hidden="true" /> : indent ? <span className="a2ui-kv__noicon" aria-hidden="true" /> : null}
         {label}
       </dt>
       <dd className={mono ? "a2ui-mono" : undefined}>

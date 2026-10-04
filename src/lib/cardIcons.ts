@@ -1,5 +1,14 @@
 import {
   ArrowLeftRight,
+  Code,
+  CloudSun,
+  Bell,
+  Clapperboard,
+  Trophy,
+  Users,
+  FileText,
+  ChefHat,
+  Sunrise,
   Banknote,
   BarChart3,
   Bed,
@@ -73,6 +82,15 @@ export const ICON_MAP: Record<string, LucideIcon> = {
   newspaper: Newspaper,
   banknote: Banknote,
   "bar-chart-3": BarChart3,
+  code: Code,
+  "cloud-sun": CloudSun,
+  bell: Bell,
+  clapperboard: Clapperboard,
+  trophy: Trophy,
+  users: Users,
+  "file-text": FileText,
+  "chef-hat": ChefHat,
+  sunrise: Sunrise,
 };
 
 export function resolveIcon(name?: string | null): LucideIcon | null {

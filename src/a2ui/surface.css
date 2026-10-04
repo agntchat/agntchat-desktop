@@ -214,6 +214,8 @@
   display: flex; align-items: center; gap: var(--space-2); line-height: var(--line-height-normal); min-width: 0;
 }
 .a2ui-kv dt .a2ui-i { font-size: 14px; opacity: .8; }
+.a2ui-kv__noicon { width: 14px; flex: none; }
+.a2ui-kv--grid .a2ui-kv__noicon { display: none; }
 .a2ui-kv dd { margin: 0; font-weight: 400; min-width: 0; overflow-wrap: anywhere; line-height: var(--line-height-normal); }
 .a2ui-kv dd a { color: var(--a2ui-accent); text-decoration: none; font-weight: 500; }
 .a2ui-kv dd a:hover { text-decoration: underline; }
@@ -241,7 +243,10 @@
   background: var(--a2ui-fill-strong); color: var(--a2ui-muted); white-space: nowrap; max-width: 100%;
   overflow: hidden; text-overflow: ellipsis;
 }
-.a2ui-chip .a2ui-i { font-size: 12px; }
+.a2ui-chip .a2ui-i { font-size: 12px; opacity: .85; }
+/* A labelled chip: the lead-in is quiet, the value carries the weight. */
+.a2ui-chip__prefix { font-weight: 400; opacity: .8; }
+.a2ui-chip:has(> .a2ui-chip__prefix) { color: var(--color-foreground); font-weight: 600; gap: var(--space-1_5); }
 .a2ui-chip--success { background: var(--a2ui-tint-success); color: var(--a2ui-ink-success); }
 .a2ui-chip--warning { background: var(--a2ui-tint-warning); color: var(--a2ui-ink-warning); }
 .a2ui-chip--info { background: var(--a2ui-tint-info); color: var(--a2ui-ink-info); }
@@ -275,6 +280,13 @@ a.a2ui-callout__text:hover { text-decoration: underline; }
 .a2ui-stat { display: flex; flex-direction: column; gap: var(--space-0_5); min-width: 0; }
 .a2ui-stat__value { font-variant-numeric: tabular-nums; font-weight: 600; line-height: 1.1; letter-spacing: -0.01em; }
 .a2ui-stat--sm .a2ui-stat__value { font-size: var(--font-size-xl); }
+.a2ui-stat__value--up { color: var(--a2ui-ink-success); }
+.a2ui-stat__value--down { color: var(--a2ui-ink-destructive); }
+/* A figure on its own in the card is its headline number: one wide tile. */
+.a2ui-card > .a2ui-column > .a2ui-stat {
+  background: var(--color-response-card-inset); border: 1px solid var(--color-response-card-border); border-radius: var(--radius-lg);
+  padding: var(--space-3) var(--space-4);
+}
 .a2ui-stat--md .a2ui-stat__value { font-size: var(--font-size-3xl); }
 .a2ui-stat--lg .a2ui-stat__value { font-size: var(--font-size-4xl); font-weight: 700; }
 .a2ui-stat__label { font-size: var(--font-size-sm); font-weight: 500; color: var(--a2ui-muted); line-height: var(--line-height-tight); }
