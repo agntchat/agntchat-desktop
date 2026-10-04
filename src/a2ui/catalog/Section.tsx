@@ -19,7 +19,7 @@ export const SectionApi = {
   }),
 };
 
-/** A titled block: uppercase label with icon, hairline above (never below).
+/** A titled block: a 14/600 heading with its icon, hairline above (never below).
  *  The section boundary is the divider — there is no standalone Divider. */
 export const Section = createComponentImplementation(SectionApi, ({ props, buildChild }) => {
   const [open, setOpen] = useState(!(props.collapsible && props.collapsed));

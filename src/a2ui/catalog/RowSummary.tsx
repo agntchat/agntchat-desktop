@@ -2,7 +2,7 @@ import { ChevronDown } from "lucide-react";
 import type { DataContext } from "@a2ui/web_core/v0_9";
 import { getInitials, resolveIcon } from "../host";
 import { plainText, type CardSummaryIds, type ComponentLookup } from "../rowSummary";
-import { absoluteDataPath, asArray, asNumber, asRecord, asString, currentLocale } from "../shared";
+import { absoluteDataPath, asArray, asNumber, asRecord, asString, avatarTint, currentLocale } from "../shared";
 import { formatMoney } from "./Price";
 
 const STAR = "M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z";
@@ -18,7 +18,8 @@ function resolveAt(dataContext: DataContext, basePath: string | undefined, raw: 
 
 /**
  * The trailing column's compact rendering of a `Rating` (one star + value),
- * `Price` (amount + unit), `Stat` (value) or single-chip `ChipRow`. Drawn
+ * `Price` (amount + unit), `Stat` (value) or single-chip `ChipRow` (a caption
+ * `Text` — a timestamp — sits on the title's line instead). Drawn
  * here from the component model rather than through `buildChild`: the node
  * layer only resolves a list's own children, not a card's descendants.
  */
@@ -86,8 +87,10 @@ function TrailPart({
 }
 
 /**
- * One compact row of a `List variant=rows`: thumbnail · title/subtitle ·
- * trailing column (the header's trailing child over the hero's overlay) ·
+ * One compact row of a `List variant=rows`: thumbnail or avatar ·
+ * title/subtitle (+ a one-line preview of the card's lead text) · trailing
+ * column (the header's trailing child over the hero's overlay; a caption —
+ * a mail row's date — ends the title's line so the preview runs under it) ·
  * chevron. A button, so keyboard and screen readers get the expand state.
  */
 export function RowSummary({
@@ -110,6 +113,7 @@ export function RowSummary({
   const hero = ids.hero ? components.get(ids.hero)?.properties : undefined;
   const header = ids.header ? components.get(ids.header)?.properties : undefined;
   const callout = ids.callout ? components.get(ids.callout)?.properties : undefined;
+  const previewNode = ids.preview ? components.get(ids.preview)?.properties : undefined;
 
   const image = hero
     ? asArray<unknown>(resolveAt(dataContext, basePath, hero.images)).find((u): u is string => typeof u === "string" && u.length > 0)
@@ -120,6 +124,10 @@ export function RowSummary({
   const leading = header ? asRecord(header.leading) : undefined;
   const chipText = callout ? asString(resolveAt(dataContext, basePath, callout.text)) : undefined;
   const chipTone = callout && typeof callout.tone === "string" && callout.tone !== "neutral" ? callout.tone : "info";
+  // A caption trailing (a timestamp) is part of the title line, not a column.
+  const trailingNode = ids.trailing ? components.get(ids.trailing) : undefined;
+  const meta = trailingNode?.type === "Text" ? asString(resolveAt(dataContext, basePath, trailingNode.properties.text))?.trim() : undefined;
+  const preview = previewNode ? plainText(asString(resolveAt(dataContext, basePath, previewNode.text)) ?? "").slice(0, 200) : "";
 
   let lead: React.ReactNode = null;
   if (image) {
@@ -140,9 +148,10 @@ export function RowSummary({
         </div>
       );
     } else if (leading.image !== undefined) {
+      const name = asString(resolveAt(dataContext, basePath, leading.name))?.trim() || title;
       lead = (
-        <div className="a2ui-row__lead a2ui-row__lead--avatar" aria-hidden="true">
-          {getInitials(title)}
+        <div className={`a2ui-row__lead a2ui-row__lead--avatar a2ui-avatar--t${avatarTint(name)}`} aria-hidden="true">
+          {getInitials(name)}
         </div>
       );
     }
@@ -151,22 +160,26 @@ export function RowSummary({
   return (
     <button
       type="button"
-      className={`a2ui-row${expanded ? " a2ui-row--expanded" : ""}${visited ? " a2ui-row--visited" : ""}`}
+      className={`a2ui-lrow${expanded ? " a2ui-lrow--expanded" : ""}${visited ? " a2ui-lrow--visited" : ""}`}
       aria-expanded={expanded}
       onClick={onToggle}
     >
       {lead}
       <div className="a2ui-row__main">
         {overline && <div className="a2ui-overline">{overline}</div>}
-        <div className="a2ui-row__title">{title}</div>
-        {(subtitle || chipText) && (
+        <div className="a2ui-row__titleline">
+          <div className="a2ui-row__title">{title}</div>
+          {meta && <span className="a2ui-row__meta">{meta}</span>}
+        </div>
+        {(subtitle || chipText || preview) && (
           <div className="a2ui-row__sub">
             {subtitle && <span className="a2ui-row__subtitle">{subtitle}</span>}
+            {preview && <span className="a2ui-row__preview">{preview}</span>}
             {chipText && <span className={`a2ui-chip a2ui-chip--${chipTone} a2ui-row__chip`}>{plainText(chipText)}</span>}
           </div>
         )}
       </div>
-      {ids.trailing && (
+      {ids.trailing && trailingNode?.type !== "Text" && (
         <div className="a2ui-row__trail">
           <TrailPart id={ids.trailing} components={components} dataContext={dataContext} basePath={basePath} />
         </div>

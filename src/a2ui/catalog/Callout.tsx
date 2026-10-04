@@ -27,8 +27,8 @@ export const CalloutApi = {
   }),
 };
 
-/** The pull-quote / status line: 2px left rule, 15/600, icon in the tone
- *  colour; warning and destructive also tint the rule. */
+/** The status line as a tinted banner: the tone is the background, the
+ *  icon carries the hue, the text stays foreground (14/500). */
 export const Callout = createComponentImplementation(CalloutApi, ({ props, context }) => {
   const text = asString(props.text)?.trim();
   if (!text) return null;

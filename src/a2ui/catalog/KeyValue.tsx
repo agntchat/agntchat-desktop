@@ -34,9 +34,10 @@ export const KeyValueApi = {
   }),
 };
 
-/** Aligned facts as a `<dl>`: 96px label column, linked values in primary,
- *  `mono` values in the mono face. An item with an empty value is dropped;
- *  `grid` is two columns on ≥480px bubbles. */
+/** Aligned facts as a `<dl>`, one `<div>` per pair: `rows` is a fixed label
+ *  column with a hairline between facts, `grid` is two-up cells (label over
+ *  value) on ≥480px bubbles. Linked values are primary, `mono` values in the
+ *  mono face. An item with an empty value is dropped. */
 export const KeyValue = createComponentImplementation(KeyValueApi, ({ props, context }) => {
   const items = asArray<unknown>(resolveDeep(props.items, context.dataContext))
     .map((raw) => {
@@ -79,8 +80,8 @@ function KeyValueRow({
 }) {
   const long = label.trim().split(/\s+/).length > 2;
   return (
-    <>
-      <dt className={long ? "a2ui-kv__long" : undefined}>
+    <div className={long ? "a2ui-kv__row a2ui-kv__row--long" : "a2ui-kv__row"}>
+      <dt>
         {Icon && <Icon className="a2ui-i" aria-hidden="true" />}
         {label}
       </dt>
@@ -97,6 +98,6 @@ function KeyValueRow({
           value
         )}
       </dd>
-    </>
+    </div>
   );
 }

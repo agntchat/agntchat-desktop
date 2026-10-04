@@ -52,6 +52,8 @@ export const Text = createComponentImplementation(TextApi, ({ props }) => {
     );
 
   const cls = `a2ui-text a2ui-text--${variant}${props.mono ? " a2ui-text--mono" : ""}`;
+  // An optional line a template binds (a timestamp some items lack).
+  if (!text.trim()) return null;
   if (!maxLines) {
     return (
       <div className={cls} style={weightStyle(props.weight)}>

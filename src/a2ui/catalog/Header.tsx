@@ -9,6 +9,7 @@ import {
   VisibleSchema, WeightSchema,
   asRecord,
   asString,
+  avatarTint,
   renderChild,
   resolveDeep,
   weightStyle,
@@ -24,7 +25,11 @@ export const HeaderApi = {
     leading: z
       .union([
         z.object({ icon: IconNameSchema }),
-        z.object({ image: CommonSchemas.DynamicString, variant: z.enum(["avatar", "logo"]).optional() }),
+        z.object({
+          image: CommonSchemas.DynamicString,
+          variant: z.enum(["avatar", "logo"]).optional(),
+          name: CommonSchemas.DynamicString.optional(),
+        }),
       ])
       .optional(),
     trailing: CommonSchemas.ComponentId.optional(),
@@ -33,9 +38,11 @@ export const HeaderApi = {
   }),
 };
 
-/** The card's identity block: overline 12/500 uppercase, title 16/600 (two
- *  lines max), subtitle 14 muted, optional leading icon/avatar and a
- *  trailing Price/Rating/Stat aligned with the title. No default icon. */
+/** The card's identity block: overline 12/600 uppercase, title 16/600 (two
+ *  lines max), subtitle 14 muted, an optional leading icon tile or avatar
+ *  and a trailing Price/Rating/Stat/caption aligned with the title. No
+ *  default icon. An avatar without a picture is the initials of
+ *  `leading.name` (else the title) on a tint picked by that name. */
 export const Header = createComponentImplementation(HeaderApi, ({ props, buildChild, context }) => {
   const labelId = useContext(CardLabelContext);
   const [imageFailed, setImageFailed] = useState(false);
@@ -61,11 +68,12 @@ export const Header = createComponentImplementation(HeaderApi, ({ props, buildCh
           <img src={image} alt="" onError={() => setImageFailed(true)} />
         </div>
       );
-    } else if (image || leading.image) {
-      // Image missing or 404: the first letters of the title in an accent disc.
+    } else if (leading.image !== undefined) {
+      // No picture (or a 404): the initials of who the card is about.
+      const name = asString(leading.name)?.trim() || title;
       lead = (
-        <div className="a2ui-header__lead a2ui-header__lead--avatar" aria-hidden="true">
-          {getInitials(title)}
+        <div className={`a2ui-header__lead a2ui-header__lead--avatar a2ui-avatar--t${avatarTint(name)}`} aria-hidden="true">
+          {getInitials(name)}
         </div>
       );
     }

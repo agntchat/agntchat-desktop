@@ -4,7 +4,9 @@
  * needs no second template (`docs/feature-proposals/a2ui/blueprints.md`,
  * family 1): `Hero` → 64px thumbnail, `Header` → title/subtitle (+ its
  * `trailing`), `Hero.overlay` → the trailing column, the first `Callout`
- * → a toned chip; everything else waits for the row to expand.
+ * → a toned chip, the card's first loose body `Text` → a one-line preview
+ * after the subtitle (a mail row's snippet); everything else waits for the
+ * row to expand.
  */
 
 /** The slice of a component model the walk reads. */
@@ -28,6 +30,8 @@ export interface CardSummaryIds {
   trailing?: string;
   /** The first `Callout` in the body (a toned chip on the row). */
   callout?: string;
+  /** The first body `Text` that is the card's own child (not a Section's). */
+  preview?: string;
 }
 
 const CONTAINERS = new Set(["Column", "Row"]);
@@ -65,6 +69,9 @@ export function summarizeCard(components: ComponentLookup, cardId: string): Card
         return;
       case "Callout":
         if (!out.callout) out.callout = id;
+        return;
+      case "Text":
+        if (!out.preview && (node.properties.variant ?? "body") === "body") out.preview = id;
         return;
       default:
         if (CONTAINERS.has(node.type)) for (const child of childIds(node.properties)) visit(child, depth + 1);
