@@ -4320,7 +4320,6 @@ export interface Routine {
   maxRuns?: number;
   expiresAt?: string;
   consecutiveFailures: number;
-  responseTemplate?: string;
   /** Per-routine model override; absent → agent's default model. */
   model?: string;
   insertedAt: string;

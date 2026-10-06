@@ -17,7 +17,6 @@ import {
   deleteRoutine,
   pauseRoutine,
   resumeRoutine,
-  listResponseTemplates,
 } from "../lib/api";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -50,25 +49,6 @@ import {
   AlertTriangle,
 } from "lucide-react";
 import { alertDialog } from "../stores/confirmStore";
-
-/** Names from the response-template library, for the routine's card picker.
- *  The library is global — any agent can format a routine's output with any
- *  template, so the choice is not narrowed per agent. */
-function useLibraryTemplateNames(): string[] {
-  const [names, setNames] = useState<string[]>([]);
-  useEffect(() => {
-    let alive = true;
-    listResponseTemplates()
-      .then(({ templates }) => {
-        if (alive) setNames((templates ?? []).map((tpl) => tpl.name).sort());
-      })
-      .catch((e) => console.error("Failed to fetch templates:", e));
-    return () => {
-      alive = false;
-    };
-  }, []);
-  return names;
-}
 
 const HOURS = Array.from({ length: 24 }, (_, i) => ({ value: String(i) }));
 
@@ -967,7 +947,6 @@ function CreateRoutineDialog({
   const [schedule, setSchedule] = useState<ScheduleState>(() => defaultScheduleState());
   const [reportTo, setReportTo] = useState("");
   const [maxRuns, setMaxRuns] = useState("");
-  const [responseTemplate, setResponseTemplate] = useState("");
   // "" = the agent's default model; a model id runs this routine on that model.
   const [model, setModel] = useState("");
   // Cron hour/minute are wall-clock in the profile timezone.
@@ -992,7 +971,6 @@ function CreateRoutineDialog({
     () => Object.values(agents).find((m) => m.agent.id === agentId)?.agent.displayName,
     [agents, agentId],
   );
-  const templateNames = useLibraryTemplateNames();
 
   const scheduleValid =
     schedule.mode !== "datetime" || schedule.selectedDays.length > 0;
@@ -1004,7 +982,6 @@ function CreateRoutineDialog({
     setSchedule(defaultScheduleState());
     setReportTo("");
     setMaxRuns("");
-    setResponseTemplate("");
     setModel("");
     setOrganizationId(
       workspacesEnabled && activeWorkspace ? activeWorkspace.id : PERSONAL_WORKSPACE,
@@ -1028,7 +1005,6 @@ function CreateRoutineDialog({
         ...(description ? { description } : {}),
         ...(reportTo ? { report_to: reportTo } : {}),
         ...(maxRuns ? { max_runs: parseInt(maxRuns) } : {}),
-        ...(responseTemplate ? { response_template: responseTemplate } : {}),
         ...(model ? { model } : {}),
         ...(organizationId !== PERSONAL_WORKSPACE
           ? { organization_id: organizationId }
@@ -1145,25 +1121,6 @@ function CreateRoutineDialog({
               />
             </div>
 
-            {templateNames.length > 0 && (
-              <div className="space-y-1.5">
-                <Label className="text-xs">{t("routines.responseTemplateOptional")}</Label>
-                <Select value={responseTemplate} onValueChange={(v) => setResponseTemplate(v ?? "")}>
-                  <SelectTrigger>
-                    <SelectValue placeholder={t("routines.noTemplatePlainText")} />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="">{t("common:none")}</SelectItem>
-                    {templateNames.map((tpl) => (
-                      <SelectItem key={tpl} value={tpl}>
-                        {tpl.replace(/_/g, " ")}
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-                <p className="text-[11px] text-muted-foreground">{t("routines.templateHint")}</p>
-              </div>
-            )}
 
             <ModelOverrideField agentId={agentId} value={model} onChange={setModel} />
 
@@ -1214,7 +1171,6 @@ export function RoutineForm({ routine, variant, onDone, onSaved }: RoutineFormPr
   const [description, setDescription] = useState(routine.description || "");
   const [instructions, setInstructions] = useState(routine.instructions);
   const [schedule, setSchedule] = useState<ScheduleState>(() => parseRoutineSchedule(routine));
-  const [responseTemplate, setResponseTemplate] = useState(routine.responseTemplate || "");
   const [reportTo, setReportTo] = useState(routine.reportTo || "");
   // "" = the agent's default model; a model id runs this routine on that model.
   const [model, setModel] = useState(routine.model || "");
@@ -1240,7 +1196,6 @@ export function RoutineForm({ routine, variant, onDone, onSaved }: RoutineFormPr
   const { agents } = useAgentStore();
   const agentName = Object.values(agents).find((m) => m.agent.id === routine.participantId)
     ?.agent.displayName;
-  const templateNames = useLibraryTemplateNames();
 
   // Re-seed when the pane switches to a different routine. Keyed on the id
   // rather than the object so a store refresh doesn't wipe in-progress edits.
@@ -1248,7 +1203,6 @@ export function RoutineForm({ routine, variant, onDone, onSaved }: RoutineFormPr
     setName(routine.name);
     setDescription(routine.description || "");
     setInstructions(routine.instructions);
-    setResponseTemplate(routine.responseTemplate || "");
     setReportTo(routine.reportTo || "");
     setModel(routine.model || "");
     setOrganizationId(routine.organizationId || PERSONAL_WORKSPACE);
@@ -1265,7 +1219,6 @@ export function RoutineForm({ routine, variant, onDone, onSaved }: RoutineFormPr
     if (name !== routine.name) return true;
     if (instructions !== routine.instructions) return true;
     if ((description || "") !== (routine.description || "")) return true;
-    if ((responseTemplate || "") !== (routine.responseTemplate || "")) return true;
     if ((reportTo || "") !== (routine.reportTo || "")) return true;
     if ((model || "") !== (routine.model || "")) return true;
     if (routineTz !== (routine.timezone || userTz)) return true;
@@ -1290,7 +1243,6 @@ export function RoutineForm({ routine, variant, onDone, onSaved }: RoutineFormPr
     name,
     instructions,
     description,
-    responseTemplate,
     reportTo,
     model,
     routineTz,
@@ -1312,7 +1264,6 @@ export function RoutineForm({ routine, variant, onDone, onSaved }: RoutineFormPr
         schedule_type: scheduleType,
         schedule_config: scheduleConfig,
         timezone: routineTz,
-        response_template: responseTemplate || null,
         report_to: reportTo || null,
         // "" clears the override (→ agent's default model).
         model,
@@ -1421,20 +1372,6 @@ export function RoutineForm({ routine, variant, onDone, onSaved }: RoutineFormPr
           onChange={setReportTo}
         />
 
-        {templateNames.length > 0 && (
-          <div className="space-y-1.5">
-            <Label className="text-xs">{t("routines.responseTemplate")}</Label>
-            <Select value={responseTemplate} onValueChange={(v) => setResponseTemplate(v ?? "")}>
-              <SelectTrigger><SelectValue placeholder={t("routines.noTemplate")} /></SelectTrigger>
-              <SelectContent>
-                <SelectItem value="">{t("common:none")}</SelectItem>
-                {templateNames.map((tpl) => (
-                  <SelectItem key={tpl} value={tpl}>{tpl.replace(/_/g, " ")}</SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
-          </div>
-        )}
 
         <ModelOverrideField
           agentId={routine.participantId}
