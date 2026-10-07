@@ -1,5 +1,14 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 
+/** Upper bound for a pane width: a fixed px value, or a function of the
+ *  viewport width for panes whose ceiling should grow with the window. */
+export type MaxWidth = number | ((viewportWidth: number) => number);
+
+function resolveMax(max: MaxWidth): number {
+  if (typeof max !== "function") return max;
+  return max(typeof window === "undefined" ? Number.POSITIVE_INFINITY : window.innerWidth);
+}
+
 /**
  * Drag-to-resize for a left list pane. Returns the current width, a ref to put
  * on the resizable element (its left edge is the measurement origin), and the
@@ -32,16 +41,19 @@ export function useResizableWidth({
   storageKey: string;
   defaultWidth: number;
   min: number;
-  max: number;
+  /** Fixed px, or `(viewportWidth) => px` — re-evaluated on window resize, with
+   *  the current width re-clamped so a pane never outgrows a shrunk window. */
+  max: MaxWidth;
   /** Which edge the pane is docked to. `"left"` (default) grows rightward
    *  from the pane's left edge (list panes); `"right"` grows leftward from the
    *  pane's right edge (right-docked panes like the huddle side pane), so
    *  dragging the left handle outward widens it. */
   side?: "left" | "right";
 }): ResizableWidth {
+  const [maxPx, setMaxPx] = useState<number>(() => resolveMax(max));
   const clamp = useCallback(
-    (px: number) => Math.max(min, Math.min(max, px)),
-    [min, max]
+    (px: number) => Math.max(min, Math.min(maxPx, px)),
+    [min, maxPx]
   );
 
   const [width, setWidth] = useState<number>(() => {
@@ -49,11 +61,25 @@ export function useResizableWidth({
       const raw = localStorage.getItem(storageKey);
       if (raw) {
         const n = parseInt(raw, 10);
-        if (Number.isFinite(n)) return Math.max(min, Math.min(max, n));
+        if (Number.isFinite(n)) return Math.max(min, Math.min(resolveMax(max), n));
       }
     } catch {}
     return defaultWidth;
   });
+
+  // A viewport-relative ceiling follows the window: recompute on resize and
+  // pull the current width back under it.
+  useEffect(() => {
+    setMaxPx(resolveMax(max));
+    if (typeof max !== "function") return;
+    const onResize = () => setMaxPx(resolveMax(max));
+    window.addEventListener("resize", onResize);
+    return () => window.removeEventListener("resize", onResize);
+  }, [max]);
+
+  useEffect(() => {
+    setWidth((w) => clamp(w));
+  }, [clamp]);
 
   const [resizing, setResizing] = useState(false);
   const ref = useRef<HTMLElement>(null);
@@ -117,6 +143,31 @@ export function useRightPaneWidth(): ResizableWidth {
     defaultWidth: 416,
     min: 320,
     max: 640,
+    side: "right",
+  });
+}
+
+/** Room the artifact pane always leaves for the rail + list + chat column. */
+const ARTIFACT_PANE_RESERVED = 560;
+/** The artifact pane may always reach at least this wide, however small the
+ *  window — below that the ceiling would barely beat the docked default. */
+const ARTIFACT_PANE_MAX_FLOOR = 640;
+const artifactPaneMax = (viewportWidth: number) =>
+  Math.max(ARTIFACT_PANE_MAX_FLOOR, viewportWidth - ARTIFACT_PANE_RESERVED);
+
+/**
+ * Width for the right-docked artifact viewer. Its own storage key (a reading
+ * pane wants to be wider than the details / huddle panes, and dragging it out
+ * shouldn't drag those along), and a ceiling that grows with the window so a
+ * wide display can give most of itself to the document while the chat column
+ * keeps a usable minimum.
+ */
+export function useArtifactPaneWidth(): ResizableWidth {
+  return useResizableWidth({
+    storageKey: "agentchat:artifactPaneWidth",
+    defaultWidth: 480,
+    min: 320,
+    max: artifactPaneMax,
     side: "right",
   });
 }

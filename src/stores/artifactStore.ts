@@ -38,8 +38,10 @@ interface ArtifactState {
   artifacts: Record<string, Artifact[]>;
   /** Comments by artifact id, oldest first. */
   comments: Record<string, ArtifactComment[]>;
-  /** Open viewer target, or null when closed. */
-  viewer: { artifactId: string; conversationId: string } | null;
+  /** Open viewer target, or null when closed. `expanded` is the full-screen
+   *  reading mode (a window-filling overlay instead of the docked pane); it
+   *  resets to the docked pane on every open. */
+  viewer: { artifactId: string; conversationId: string; expanded: boolean } | null;
   /** @internal per-conversation last successful fetch time */
   _loadedAt: Record<string, number>;
 
@@ -56,8 +58,16 @@ interface ArtifactState {
   /** Post a comment via REST; the WS broadcast + local append render it. */
   postComment: (artifactId: string, body: string) => Promise<ArtifactComment>;
 
-  openViewer: (artifactId: string, conversationId: string) => void;
+  /** Open (or switch) the viewer. `expanded` keeps full screen when jumping
+   *  between artifacts from the full-screen list; it defaults to docked. */
+  openViewer: (
+    artifactId: string,
+    conversationId: string,
+    opts?: { expanded?: boolean }
+  ) => void;
   closeViewer: () => void;
+  /** Switch the open viewer between the docked pane and full screen. */
+  setViewerExpanded: (expanded: boolean) => void;
 
   initWsListeners: () => () => void;
 }
@@ -148,9 +158,13 @@ export const useArtifactStore = create<ArtifactState>((set, get) => ({
     return comment;
   },
 
-  openViewer: (artifactId, conversationId) =>
-    set({ viewer: { artifactId, conversationId } }),
+  openViewer: (artifactId, conversationId, opts) =>
+    set({ viewer: { artifactId, conversationId, expanded: opts?.expanded ?? false } }),
   closeViewer: () => set({ viewer: null }),
+  setViewerExpanded: (expanded) => {
+    const viewer = get().viewer;
+    if (viewer && viewer.expanded !== expanded) set({ viewer: { ...viewer, expanded } });
+  },
 
   initWsListeners: () => {
     const unsubs: (() => void)[] = [];
