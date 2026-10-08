@@ -3735,6 +3735,30 @@ export const resources = {
         "title": "Add here",
         "wireHint": "Drag from a node's right connector to another to wire them: task → agent assigns, agent → room adds, routine → room sets where it reports, task → task adds a dependency. Select a cable and press Delete to cut it."
       },
+      "createDialog": {
+        "assignTo": "Assign to",
+        "cancel": "Cancel",
+        "create": "Create",
+        "created": "{{name}} added to the canvas",
+        "droppedOn": "Dropped on {{name}}",
+        "droppedOnCanvas": "Dropped on the canvas — choose where it goes.",
+        "everyMinutes": "Every (minutes)",
+        "inRoom": "In room",
+        "instructions": "Instructions",
+        "nobody": "Nobody yet",
+        "pickRoom": "Pick a room…",
+        "reportsTo": "Reports to {{name}}",
+        "roomTitle": "Title (optional)",
+        "routineName": "Name",
+        "runBy": "Run by",
+        "taskTitle": "Title",
+        "title": {
+          "room": "New room",
+          "routine": "New routine",
+          "task": "New task"
+        },
+        "withAgent": "With agent"
+      },
       "edge": {
         "anchored": "asked in",
         "assigned": "assigned to",
@@ -3799,6 +3823,13 @@ export const resources = {
       "loadFailed": "Couldn't load the graph.",
       "members_one": "{{count}} member",
       "members_other": "{{count}} members",
+      "palette": {
+        "dragHint": "Drag onto the canvas. Drop on an agent or a room to wire it there.",
+        "room": "Room",
+        "routine": "Routine",
+        "task": "Task",
+        "title": "Add"
+      },
       "refresh": "Refresh",
       "resetLayout": "Reset layout",
       "resetLayoutHint": "Forget your own arrangement and show the workspace's",
@@ -3839,6 +3870,19 @@ export const resources = {
         "group": "Group",
         "session": "Session",
         "task": "Work room"
+      },
+      "templates": {
+        "applied": "{{count}} routines from \"{{name}}\" added to this agent",
+        "apply": "Apply",
+        "delete": "Delete",
+        "hint": "A template is this agent's routines under a name, shared by the workspace. Applying one creates those routines for this agent.",
+        "namePlaceholder": "Save this agent's routines as…",
+        "partiallyApplied": "Only {{count}} of {{total}} routines were added",
+        "pick": "Apply a template…",
+        "save_one": "Save {{count}} routine",
+        "save_other": "Save {{count}} routines",
+        "saved": "Template \"{{name}}\" saved with {{count}} routines",
+        "title": "Pocket templates"
       },
       "title": "Work graph",
       "unfold": "Unfold",
@@ -9493,6 +9537,30 @@ export const resources = {
         "title": "Añadir aquí",
         "wireHint": "Arrastra desde el conector derecho de un nodo a otro para conectarlos: tarea → agente asigna, agente → sala añade, rutina → sala fija dónde informa, tarea → tarea añade una dependencia. Selecciona un cable y pulsa Suprimir para cortarlo."
       },
+      "createDialog": {
+        "assignTo": "Asignar a",
+        "cancel": "Cancelar",
+        "create": "Crear",
+        "created": "{{name}} añadido al lienzo",
+        "droppedOn": "Soltado sobre {{name}}",
+        "droppedOnCanvas": "Soltado en el lienzo: elige dónde va.",
+        "everyMinutes": "Cada (minutos)",
+        "inRoom": "En la sala",
+        "instructions": "Instrucciones",
+        "nobody": "Nadie aún",
+        "pickRoom": "Elige una sala…",
+        "reportsTo": "Informa en {{name}}",
+        "roomTitle": "Título (opcional)",
+        "routineName": "Nombre",
+        "runBy": "Ejecutada por",
+        "taskTitle": "Título",
+        "title": {
+          "room": "Nueva sala",
+          "routine": "Nueva rutina",
+          "task": "Nueva tarea"
+        },
+        "withAgent": "Con el agente"
+      },
       "edge": {
         "anchored": "pedida en",
         "assigned": "asignada a",
@@ -9557,6 +9625,13 @@ export const resources = {
       "loadFailed": "No se pudo cargar el grafo.",
       "members_one": "{{count}} miembro",
       "members_other": "{{count}} miembros",
+      "palette": {
+        "dragHint": "Arrastra al lienzo. Suéltalo sobre un agente o una sala para conectarlo allí.",
+        "room": "Sala",
+        "routine": "Rutina",
+        "task": "Tarea",
+        "title": "Añadir"
+      },
       "refresh": "Actualizar",
       "resetLayout": "Restablecer disposición",
       "resetLayoutHint": "Olvidar tu disposición y mostrar la del espacio de trabajo",
@@ -9597,6 +9672,19 @@ export const resources = {
         "group": "Grupo",
         "session": "Sesión",
         "task": "Sala de trabajo"
+      },
+      "templates": {
+        "applied": "{{count}} rutinas de «{{name}}» añadidas a este agente",
+        "apply": "Aplicar",
+        "delete": "Eliminar",
+        "hint": "Una plantilla son las rutinas de este agente bajo un nombre, compartidas por el espacio de trabajo. Aplicarla crea esas rutinas para este agente.",
+        "namePlaceholder": "Guardar las rutinas de este agente como…",
+        "partiallyApplied": "Solo se añadieron {{count}} de {{total}} rutinas",
+        "pick": "Aplicar una plantilla…",
+        "save_one": "Guardar {{count}} rutina",
+        "save_other": "Guardar {{count}} rutinas",
+        "saved": "Plantilla «{{name}}» guardada con {{count}} rutinas",
+        "title": "Plantillas"
       },
       "title": "Grafo de trabajo",
       "unfold": "Desplegar",
@@ -15251,6 +15339,30 @@ export const resources = {
         "title": "Hier hinzufügen",
         "wireHint": "Ziehe vom rechten Anschluss eines Knotens zu einem anderen, um sie zu verbinden: Aufgabe → Agent weist zu, Agent → Raum fügt hinzu, Routine → Raum legt den Berichtsort fest, Aufgabe → Aufgabe fügt eine Abhängigkeit hinzu. Kabel auswählen und Entf drücken, um es zu trennen."
       },
+      "createDialog": {
+        "assignTo": "Zuweisen an",
+        "cancel": "Abbrechen",
+        "create": "Erstellen",
+        "created": "{{name}} zur Leinwand hinzugefügt",
+        "droppedOn": "Abgelegt auf {{name}}",
+        "droppedOnCanvas": "Auf der Leinwand abgelegt – wähle, wohin es gehört.",
+        "everyMinutes": "Alle (Minuten)",
+        "inRoom": "Im Raum",
+        "instructions": "Anweisungen",
+        "nobody": "Noch niemand",
+        "pickRoom": "Raum wählen…",
+        "reportsTo": "Berichtet an {{name}}",
+        "roomTitle": "Titel (optional)",
+        "routineName": "Name",
+        "runBy": "Ausgeführt von",
+        "taskTitle": "Titel",
+        "title": {
+          "room": "Neuer Raum",
+          "routine": "Neue Routine",
+          "task": "Neue Aufgabe"
+        },
+        "withAgent": "Mit Agent"
+      },
       "edge": {
         "anchored": "angefragt in",
         "assigned": "zugewiesen an",
@@ -15315,6 +15427,13 @@ export const resources = {
       "loadFailed": "Der Graph konnte nicht geladen werden.",
       "members_one": "{{count}} Mitglied",
       "members_other": "{{count}} Mitglieder",
+      "palette": {
+        "dragHint": "Auf die Leinwand ziehen. Auf einem Agenten oder Raum ablegen, um es dort zu verbinden.",
+        "room": "Raum",
+        "routine": "Routine",
+        "task": "Aufgabe",
+        "title": "Hinzufügen"
+      },
       "refresh": "Aktualisieren",
       "resetLayout": "Anordnung zurücksetzen",
       "resetLayoutHint": "Deine Anordnung verwerfen und die des Arbeitsbereichs zeigen",
@@ -15355,6 +15474,19 @@ export const resources = {
         "group": "Gruppe",
         "session": "Sitzung",
         "task": "Arbeitsraum"
+      },
+      "templates": {
+        "applied": "{{count}} Routinen aus „{{name}}“ zu diesem Agenten hinzugefügt",
+        "apply": "Anwenden",
+        "delete": "Löschen",
+        "hint": "Eine Vorlage sind die Routinen dieses Agenten unter einem Namen, geteilt im Arbeitsbereich. Anwenden erstellt diese Routinen für diesen Agenten.",
+        "namePlaceholder": "Routinen dieses Agenten speichern als…",
+        "partiallyApplied": "Nur {{count}} von {{total}} Routinen wurden hinzugefügt",
+        "pick": "Vorlage anwenden…",
+        "save_one": "{{count}} Routine speichern",
+        "save_other": "{{count}} Routinen speichern",
+        "saved": "Vorlage „{{name}}“ mit {{count}} Routinen gespeichert",
+        "title": "Vorlagen"
       },
       "title": "Arbeitsgraph",
       "unfold": "Ausklappen",
@@ -21009,6 +21141,30 @@ export const resources = {
         "title": "Ajouter ici",
         "wireHint": "Faites glisser depuis le connecteur droit d'un nœud vers un autre pour les relier : tâche → agent assigne, agent → salle ajoute, routine → salle définit où elle rapporte, tâche → tâche ajoute une dépendance. Sélectionnez un câble et appuyez sur Suppr pour le couper."
       },
+      "createDialog": {
+        "assignTo": "Assigner à",
+        "cancel": "Annuler",
+        "create": "Créer",
+        "created": "{{name}} ajouté au canevas",
+        "droppedOn": "Déposé sur {{name}}",
+        "droppedOnCanvas": "Déposé sur le canevas : choisissez où il va.",
+        "everyMinutes": "Toutes les (minutes)",
+        "inRoom": "Dans la salle",
+        "instructions": "Instructions",
+        "nobody": "Personne pour l'instant",
+        "pickRoom": "Choisir une salle…",
+        "reportsTo": "Rapporte à {{name}}",
+        "roomTitle": "Titre (facultatif)",
+        "routineName": "Nom",
+        "runBy": "Exécutée par",
+        "taskTitle": "Titre",
+        "title": {
+          "room": "Nouvelle salle",
+          "routine": "Nouvelle routine",
+          "task": "Nouvelle tâche"
+        },
+        "withAgent": "Avec l'agent"
+      },
       "edge": {
         "anchored": "demandée dans",
         "assigned": "assignée à",
@@ -21073,6 +21229,13 @@ export const resources = {
       "loadFailed": "Impossible de charger le graphe.",
       "members_one": "{{count}} membre",
       "members_other": "{{count}} membres",
+      "palette": {
+        "dragHint": "Faites glisser sur le canevas. Déposez sur un agent ou une salle pour le relier là.",
+        "room": "Salle",
+        "routine": "Routine",
+        "task": "Tâche",
+        "title": "Ajouter"
+      },
       "refresh": "Actualiser",
       "resetLayout": "Réinitialiser la disposition",
       "resetLayoutHint": "Oublier votre disposition et afficher celle de l'espace de travail",
@@ -21113,6 +21276,19 @@ export const resources = {
         "group": "Groupe",
         "session": "Session",
         "task": "Salle de travail"
+      },
+      "templates": {
+        "applied": "{{count}} routines de « {{name}} » ajoutées à cet agent",
+        "apply": "Appliquer",
+        "delete": "Supprimer",
+        "hint": "Un modèle regroupe les routines de cet agent sous un nom, partagé par l'espace de travail. L'appliquer crée ces routines pour cet agent.",
+        "namePlaceholder": "Enregistrer les routines de cet agent sous…",
+        "partiallyApplied": "Seulement {{count}} routines sur {{total}} ont été ajoutées",
+        "pick": "Appliquer un modèle…",
+        "save_one": "Enregistrer {{count}} routine",
+        "save_other": "Enregistrer {{count}} routines",
+        "saved": "Modèle « {{name}} » enregistré avec {{count}} routines",
+        "title": "Modèles"
       },
       "title": "Graphe de travail",
       "unfold": "Déplier",
@@ -26767,6 +26943,30 @@ export const resources = {
         "title": "Adicionar aqui",
         "wireHint": "Arraste do conector direito de um nó para outro para os ligar: tarefa → agente atribui, agente → sala adiciona, rotina → sala define onde reporta, tarefa → tarefa adiciona uma dependência. Selecione um cabo e prima Delete para o cortar."
       },
+      "createDialog": {
+        "assignTo": "Atribuir a",
+        "cancel": "Cancelar",
+        "create": "Criar",
+        "created": "{{name}} adicionado à tela",
+        "droppedOn": "Largado em {{name}}",
+        "droppedOnCanvas": "Largado na tela: escolha para onde vai.",
+        "everyMinutes": "A cada (minutos)",
+        "inRoom": "Na sala",
+        "instructions": "Instruções",
+        "nobody": "Ninguém ainda",
+        "pickRoom": "Escolha uma sala…",
+        "reportsTo": "Reporta a {{name}}",
+        "roomTitle": "Título (opcional)",
+        "routineName": "Nome",
+        "runBy": "Executada por",
+        "taskTitle": "Título",
+        "title": {
+          "room": "Nova sala",
+          "routine": "Nova rotina",
+          "task": "Nova tarefa"
+        },
+        "withAgent": "Com o agente"
+      },
       "edge": {
         "anchored": "pedida em",
         "assigned": "atribuída a",
@@ -26831,6 +27031,13 @@ export const resources = {
       "loadFailed": "Não foi possível carregar o grafo.",
       "members_one": "{{count}} membro",
       "members_other": "{{count}} membros",
+      "palette": {
+        "dragHint": "Arraste para a tela. Largue sobre um agente ou uma sala para o ligar aí.",
+        "room": "Sala",
+        "routine": "Rotina",
+        "task": "Tarefa",
+        "title": "Adicionar"
+      },
       "refresh": "Atualizar",
       "resetLayout": "Repor disposição",
       "resetLayoutHint": "Esquecer a sua disposição e mostrar a do espaço de trabalho",
@@ -26871,6 +27078,19 @@ export const resources = {
         "group": "Grupo",
         "session": "Sessão",
         "task": "Sala de trabalho"
+      },
+      "templates": {
+        "applied": "{{count}} rotinas de \"{{name}}\" adicionadas a este agente",
+        "apply": "Aplicar",
+        "delete": "Eliminar",
+        "hint": "Um modelo são as rotinas deste agente sob um nome, partilhadas pelo espaço de trabalho. Aplicá-lo cria essas rotinas para este agente.",
+        "namePlaceholder": "Guardar as rotinas deste agente como…",
+        "partiallyApplied": "Só {{count}} de {{total}} rotinas foram adicionadas",
+        "pick": "Aplicar um modelo…",
+        "save_one": "Guardar {{count}} rotina",
+        "save_other": "Guardar {{count}} rotinas",
+        "saved": "Modelo \"{{name}}\" guardado com {{count}} rotinas",
+        "title": "Modelos"
       },
       "title": "Grafo de trabalho",
       "unfold": "Desdobrar",
@@ -32525,6 +32745,30 @@ export const resources = {
         "title": "ここに追加",
         "wireHint": "ノード右側のコネクタから別のノードへドラッグして接続：タスク → エージェントで割り当て、エージェント → ルームで追加、ルーティン → ルームで報告先を設定、タスク → タスクで依存関係を追加。ケーブルを選んで Delete で切断。"
       },
+      "createDialog": {
+        "assignTo": "担当",
+        "cancel": "キャンセル",
+        "create": "作成",
+        "created": "{{name}} をキャンバスに追加しました",
+        "droppedOn": "{{name}} に配置",
+        "droppedOnCanvas": "キャンバスに配置 — 行き先を選んでください。",
+        "everyMinutes": "間隔（分）",
+        "inRoom": "ルーム",
+        "instructions": "指示",
+        "nobody": "未割り当て",
+        "pickRoom": "ルームを選択…",
+        "reportsTo": "報告先: {{name}}",
+        "roomTitle": "タイトル（任意）",
+        "routineName": "名前",
+        "runBy": "実行エージェント",
+        "taskTitle": "タイトル",
+        "title": {
+          "room": "新しいルーム",
+          "routine": "新しいルーティン",
+          "task": "新しいタスク"
+        },
+        "withAgent": "参加エージェント"
+      },
       "edge": {
         "anchored": "依頼元",
         "assigned": "担当",
@@ -32589,6 +32833,13 @@ export const resources = {
       "loadFailed": "グラフを読み込めませんでした。",
       "members_one": "メンバー {{count}} 人",
       "members_other": "メンバー {{count}} 人",
+      "palette": {
+        "dragHint": "キャンバスにドラッグ。エージェントやルームの上に置くとそこに接続されます。",
+        "room": "ルーム",
+        "routine": "ルーティン",
+        "task": "タスク",
+        "title": "追加"
+      },
       "refresh": "更新",
       "resetLayout": "配置をリセット",
       "resetLayoutHint": "自分の配置を忘れてワークスペースの配置を表示",
@@ -32629,6 +32880,19 @@ export const resources = {
         "group": "グループ",
         "session": "セッション",
         "task": "作業ルーム"
+      },
+      "templates": {
+        "applied": "「{{name}}」のルーティン {{count}} 件をこのエージェントに追加しました",
+        "apply": "適用",
+        "delete": "削除",
+        "hint": "テンプレートは、このエージェントのルーティンに名前を付けてワークスペースで共有したものです。適用するとそのルーティンがこのエージェントに作成されます。",
+        "namePlaceholder": "このエージェントのルーティンを保存…",
+        "partiallyApplied": "{{total}} 件中 {{count}} 件のみ追加されました",
+        "pick": "テンプレートを適用…",
+        "save_one": "{{count}} 件を保存",
+        "save_other": "{{count}} 件を保存",
+        "saved": "テンプレート「{{name}}」をルーティン {{count}} 件で保存しました",
+        "title": "テンプレート"
       },
       "title": "ワークグラフ",
       "unfold": "展開",
@@ -38283,6 +38547,30 @@ export const resources = {
         "title": "在此添加",
         "wireHint": "从节点右侧连接点拖到另一个节点即可连线：任务 → 智能体为分配，智能体 → 房间为加入，例程 → 房间为设置汇报位置，任务 → 任务为添加依赖。选中连线按 Delete 可断开。"
       },
+      "createDialog": {
+        "assignTo": "分配给",
+        "cancel": "取消",
+        "create": "创建",
+        "created": "已将 {{name}} 添加到画布",
+        "droppedOn": "放在 {{name}} 上",
+        "droppedOnCanvas": "放在画布上 — 请选择归属。",
+        "everyMinutes": "间隔（分钟）",
+        "inRoom": "所在房间",
+        "instructions": "指令",
+        "nobody": "暂无",
+        "pickRoom": "选择房间…",
+        "reportsTo": "汇报至 {{name}}",
+        "roomTitle": "标题（可选）",
+        "routineName": "名称",
+        "runBy": "运行者",
+        "taskTitle": "标题",
+        "title": {
+          "room": "新房间",
+          "routine": "新例程",
+          "task": "新任务"
+        },
+        "withAgent": "包含智能体"
+      },
       "edge": {
         "anchored": "发起于",
         "assigned": "分配给",
@@ -38347,6 +38635,13 @@ export const resources = {
       "loadFailed": "无法加载图谱。",
       "members_one": "{{count}} 位成员",
       "members_other": "{{count}} 位成员",
+      "palette": {
+        "dragHint": "拖到画布上。放在智能体或房间上即可连接到那里。",
+        "room": "房间",
+        "routine": "例程",
+        "task": "任务",
+        "title": "添加"
+      },
       "refresh": "刷新",
       "resetLayout": "重置布局",
       "resetLayoutHint": "放弃你的布局，显示工作区布局",
@@ -38387,6 +38682,19 @@ export const resources = {
         "group": "群组",
         "session": "会话",
         "task": "工作室"
+      },
+      "templates": {
+        "applied": "已将“{{name}}”中的 {{count}} 个例程添加到此智能体",
+        "apply": "应用",
+        "delete": "删除",
+        "hint": "模板是以名称保存并在工作区共享的智能体例程集合。应用后会为此智能体创建这些例程。",
+        "namePlaceholder": "将此智能体的例程另存为…",
+        "partiallyApplied": "仅添加了 {{total}} 个例程中的 {{count}} 个",
+        "pick": "应用模板…",
+        "save_one": "保存 {{count}} 个例程",
+        "save_other": "保存 {{count}} 个例程",
+        "saved": "已保存模板“{{name}}”，含 {{count}} 个例程",
+        "title": "模板"
       },
       "title": "工作图谱",
       "unfold": "展开",
@@ -44041,6 +44349,30 @@ export const resources = {
         "title": "여기에 추가",
         "wireHint": "노드의 오른쪽 커넥터에서 다른 노드로 드래그해 연결: 작업 → 에이전트는 할당, 에이전트 → 방은 추가, 루틴 → 방은 보고 위치 설정, 작업 → 작업은 의존성 추가. 케이블을 선택하고 Delete를 누르면 끊어집니다."
       },
+      "createDialog": {
+        "assignTo": "담당자",
+        "cancel": "취소",
+        "create": "만들기",
+        "created": "{{name}}을(를) 캔버스에 추가함",
+        "droppedOn": "{{name}} 위에 놓음",
+        "droppedOnCanvas": "캔버스에 놓음 — 어디에 둘지 선택하세요.",
+        "everyMinutes": "간격(분)",
+        "inRoom": "방",
+        "instructions": "지침",
+        "nobody": "아직 없음",
+        "pickRoom": "방 선택…",
+        "reportsTo": "{{name}}에 보고",
+        "roomTitle": "제목 (선택)",
+        "routineName": "이름",
+        "runBy": "실행 에이전트",
+        "taskTitle": "제목",
+        "title": {
+          "room": "새 방",
+          "routine": "새 루틴",
+          "task": "새 작업"
+        },
+        "withAgent": "참여 에이전트"
+      },
       "edge": {
         "anchored": "요청 위치",
         "assigned": "담당",
@@ -44105,6 +44437,13 @@ export const resources = {
       "loadFailed": "그래프를 불러올 수 없습니다.",
       "members_one": "멤버 {{count}}명",
       "members_other": "멤버 {{count}}명",
+      "palette": {
+        "dragHint": "캔버스로 드래그하세요. 에이전트나 방 위에 놓으면 거기에 연결됩니다.",
+        "room": "방",
+        "routine": "루틴",
+        "task": "작업",
+        "title": "추가"
+      },
       "refresh": "새로 고침",
       "resetLayout": "배치 초기화",
       "resetLayoutHint": "내 배치를 지우고 워크스페이스 배치 표시",
@@ -44145,6 +44484,19 @@ export const resources = {
         "group": "그룹",
         "session": "세션",
         "task": "작업 방"
+      },
+      "templates": {
+        "applied": "\"{{name}}\"의 루틴 {{count}}개를 이 에이전트에 추가함",
+        "apply": "적용",
+        "delete": "삭제",
+        "hint": "템플릿은 이 에이전트의 루틴을 이름 붙여 워크스페이스에서 공유한 것입니다. 적용하면 해당 루틴이 이 에이전트에 생성됩니다.",
+        "namePlaceholder": "이 에이전트의 루틴을 다음 이름으로 저장…",
+        "partiallyApplied": "루틴 {{total}}개 중 {{count}}개만 추가됨",
+        "pick": "템플릿 적용…",
+        "save_one": "루틴 {{count}}개 저장",
+        "save_other": "루틴 {{count}}개 저장",
+        "saved": "템플릿 \"{{name}}\" 저장됨 (루틴 {{count}}개)",
+        "title": "템플릿"
       },
       "title": "작업 그래프",
       "unfold": "펼치기",
@@ -49799,6 +50151,30 @@ export const resources = {
         "title": "Aggiungi qui",
         "wireHint": "Trascina dal connettore destro di un nodo a un altro per collegarli: attività → agente assegna, agente → stanza aggiunge, routine → stanza imposta dove riporta, attività → attività aggiunge una dipendenza. Seleziona un cavo e premi Canc per tagliarlo."
       },
+      "createDialog": {
+        "assignTo": "Assegna a",
+        "cancel": "Annulla",
+        "create": "Crea",
+        "created": "{{name}} aggiunto alla tela",
+        "droppedOn": "Rilasciato su {{name}}",
+        "droppedOnCanvas": "Rilasciato sulla tela: scegli dove va.",
+        "everyMinutes": "Ogni (minuti)",
+        "inRoom": "Nella stanza",
+        "instructions": "Istruzioni",
+        "nobody": "Nessuno per ora",
+        "pickRoom": "Scegli una stanza…",
+        "reportsTo": "Riporta a {{name}}",
+        "roomTitle": "Titolo (facoltativo)",
+        "routineName": "Nome",
+        "runBy": "Eseguita da",
+        "taskTitle": "Titolo",
+        "title": {
+          "room": "Nuova stanza",
+          "routine": "Nuova routine",
+          "task": "Nuova attività"
+        },
+        "withAgent": "Con l'agente"
+      },
       "edge": {
         "anchored": "richiesta in",
         "assigned": "assegnata a",
@@ -49863,6 +50239,13 @@ export const resources = {
       "loadFailed": "Impossibile caricare il grafo.",
       "members_one": "{{count}} membro",
       "members_other": "{{count}} membri",
+      "palette": {
+        "dragHint": "Trascina sulla tela. Rilascia su un agente o una stanza per collegarlo lì.",
+        "room": "Stanza",
+        "routine": "Routine",
+        "task": "Attività",
+        "title": "Aggiungi"
+      },
       "refresh": "Aggiorna",
       "resetLayout": "Reimposta disposizione",
       "resetLayoutHint": "Dimentica la tua disposizione e mostra quella dello spazio di lavoro",
@@ -49903,6 +50286,19 @@ export const resources = {
         "group": "Gruppo",
         "session": "Sessione",
         "task": "Stanza di lavoro"
+      },
+      "templates": {
+        "applied": "{{count}} routine da \"{{name}}\" aggiunte a questo agente",
+        "apply": "Applica",
+        "delete": "Elimina",
+        "hint": "Un modello sono le routine di questo agente sotto un nome, condivise dallo spazio di lavoro. Applicarlo crea quelle routine per questo agente.",
+        "namePlaceholder": "Salva le routine di questo agente come…",
+        "partiallyApplied": "Solo {{count}} routine su {{total}} sono state aggiunte",
+        "pick": "Applica un modello…",
+        "save_one": "Salva {{count}} routine",
+        "save_other": "Salva {{count}} routine",
+        "saved": "Modello \"{{name}}\" salvato con {{count}} routine",
+        "title": "Modelli"
       },
       "title": "Grafo di lavoro",
       "unfold": "Espandi",
@@ -55557,6 +55953,30 @@ export const resources = {
         "title": "यहाँ जोड़ें",
         "wireHint": "नोड के दाएँ कनेक्टर से दूसरे नोड तक खींचकर जोड़ें: कार्य → एजेंट असाइन करता है, एजेंट → रूम जोड़ता है, रूटीन → रूम रिपोर्ट स्थान तय करता है, कार्य → कार्य निर्भरता जोड़ता है। केबल चुनकर Delete दबाएँ तो वह कट जाती है।"
       },
+      "createDialog": {
+        "assignTo": "को सौंपें",
+        "cancel": "रद्द करें",
+        "create": "बनाएँ",
+        "created": "{{name}} कैनवास में जोड़ा गया",
+        "droppedOn": "{{name}} पर छोड़ा गया",
+        "droppedOnCanvas": "कैनवास पर छोड़ा गया — चुनें कि यह कहाँ जाए।",
+        "everyMinutes": "हर (मिनट)",
+        "inRoom": "रूम में",
+        "instructions": "निर्देश",
+        "nobody": "अभी कोई नहीं",
+        "pickRoom": "एक रूम चुनें…",
+        "reportsTo": "{{name}} को रिपोर्ट करता है",
+        "roomTitle": "शीर्षक (वैकल्पिक)",
+        "routineName": "नाम",
+        "runBy": "द्वारा चलाया जाए",
+        "taskTitle": "शीर्षक",
+        "title": {
+          "room": "नया रूम",
+          "routine": "नया रूटीन",
+          "task": "नया कार्य"
+        },
+        "withAgent": "एजेंट के साथ"
+      },
       "edge": {
         "anchored": "में माँगा गया",
         "assigned": "को सौंपा गया",
@@ -55621,6 +56041,13 @@ export const resources = {
       "loadFailed": "ग्राफ़ लोड नहीं हो सका।",
       "members_one": "{{count}} सदस्य",
       "members_other": "{{count}} सदस्य",
+      "palette": {
+        "dragHint": "कैनवास पर खींचें। किसी एजेंट या रूम पर छोड़ें ताकि वहाँ जुड़ जाए।",
+        "room": "रूम",
+        "routine": "रूटीन",
+        "task": "कार्य",
+        "title": "जोड़ें"
+      },
       "refresh": "रीफ़्रेश करें",
       "resetLayout": "लेआउट रीसेट करें",
       "resetLayoutHint": "अपना लेआउट भूलें और कार्यक्षेत्र का दिखाएँ",
@@ -55661,6 +56088,19 @@ export const resources = {
         "group": "समूह",
         "session": "सत्र",
         "task": "कार्य रूम"
+      },
+      "templates": {
+        "applied": "\"{{name}}\" से {{count}} रूटीन इस एजेंट में जोड़े गए",
+        "apply": "लागू करें",
+        "delete": "हटाएँ",
+        "hint": "टेम्पलेट इस एजेंट के रूटीन का नामित संग्रह है, जो कार्यक्षेत्र में साझा होता है। लागू करने से वे रूटीन इस एजेंट के लिए बन जाते हैं।",
+        "namePlaceholder": "इस एजेंट के रूटीन इस नाम से सहेजें…",
+        "partiallyApplied": "{{total}} में से केवल {{count}} रूटीन जोड़े गए",
+        "pick": "टेम्पलेट लागू करें…",
+        "save_one": "{{count}} रूटीन सहेजें",
+        "save_other": "{{count}} रूटीन सहेजें",
+        "saved": "टेम्पलेट \"{{name}}\" {{count}} रूटीन के साथ सहेजा गया",
+        "title": "टेम्पलेट"
       },
       "title": "कार्य ग्राफ़",
       "unfold": "खोलें",

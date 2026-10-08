@@ -68,6 +68,9 @@ import {
 import { layoutGraph } from "./layout";
 import { GROUP_HOST_KINDS, fold, neighbourhood, satelliteCounts } from "./pockets";
 import { connectWire, createRoomWith, createTaskFor, cuttable, disconnectWire, resolveWire } from "./wiring";
+import { CreateNodeDialog, GraphPalette, PALETTE_MIME, type PaletteDrop, type PaletteKind } from "./GraphPalette";
+import { createRoutine } from "../../lib/api";
+import { useRoutineStore } from "../../stores/routineStore";
 
 /** Transient outcome of a wire or a new node, shown under the toolbar. */
 type Notice = { tone: "ok" | "error"; text: string };
@@ -204,16 +207,41 @@ function WorkGraphCanvas() {
   const agentActivity = usePresenceStore((s) => s.agentActivity);
   const currentUserId = useAuthStore((s) => s.participant?.id);
   const theme = useThemeStore((s) => s.theme);
-  const { fitView } = useReactFlow();
+  const { fitView, screenToFlowPosition, getIntersectingNodes } = useReactFlow<WorkGraphFlowNode>();
 
   // Read once on mount, then after the events that change the graph while
   // the view is open. Every node kind has a user-channel event now, so
   // there is no poll.
+  const fetchTemplates = useWorkGraphStore((s) => s.fetchTemplates);
   useEffect(() => {
     void fetchGraph();
     void fetchDecisions();
+    void fetchTemplates();
     return initWsListeners();
-  }, [fetchGraph, fetchDecisions, initWsListeners]);
+  }, [fetchGraph, fetchDecisions, fetchTemplates, initWsListeners]);
+
+  // --- Phase 4b: the palette. A chip dropped on the canvas opens the
+  // creation dialog, wired to the node it landed on; the new node is pinned
+  // where it was dropped once the graph re-reads.
+  const [drop, setDrop] = useState<PaletteDrop | null>(null);
+  const onDragOver = useCallback((e: React.DragEvent) => {
+    if (e.dataTransfer.types.includes(PALETTE_MIME)) {
+      e.preventDefault();
+      e.dataTransfer.dropEffect = "copy";
+    }
+  }, []);
+  const onDrop = useCallback(
+    (e: React.DragEvent) => {
+      const kind = e.dataTransfer.getData(PALETTE_MIME) as PaletteKind | "";
+      if (!kind) return;
+      e.preventDefault();
+      const position = screenToFlowPosition({ x: e.clientX, y: e.clientY });
+      const hit = getIntersectingNodes({ x: position.x, y: position.y, width: 1, height: 1 }, true)[0];
+      const target = hit ? graph?.nodes.find((n) => n.id === hit.id) ?? null : null;
+      setDrop({ kind, target: target && (target.kind === "agent" || target.kind === "conversation") ? target : null, position });
+    },
+    [screenToFlowPosition, getIntersectingNodes, graph]
+  );
 
   // Decisions waiting on the person, counted onto the node they belong to:
   // the room they were asked in, else the agent that asked.
@@ -597,7 +625,7 @@ function WorkGraphCanvas() {
       </div>
 
       <div className="relative flex min-h-0 flex-1">
-        <div className="relative min-w-0 flex-1">
+        <div className="relative min-w-0 flex-1" onDragOver={onDragOver} onDrop={onDrop}>
           <ReactFlow
             nodes={nodes}
             edges={flowEdges}
@@ -625,6 +653,7 @@ function WorkGraphCanvas() {
             className="bg-background"
           >
             <Background variant={BackgroundVariant.Dots} gap={24} size={1} />
+            <GraphPalette />
             <Controls showInteractive={false} />
             <MiniMap
               pannable
@@ -662,6 +691,21 @@ function WorkGraphCanvas() {
             )}
           </ReactFlow>
         </div>
+
+        {drop && (
+          <CreateNodeDialog
+            drop={drop}
+            agents={(graph?.nodes ?? []).filter((n) => n.kind === "agent")}
+            rooms={(graph?.nodes ?? []).filter((n) => n.kind === "conversation" && n.subtype !== "direct")}
+            onCreated={({ nodeId, label }) => {
+              setPosition(nodeId, drop.position);
+              say({ tone: "ok", text: t("createDialog.created", { name: label }) });
+              void fetchGraph();
+            }}
+            onFailed={(text) => say({ tone: "error", text })}
+            onClose={() => setDrop(null)}
+          />
+        )}
 
         {selected && (
           <NodePanel
@@ -754,6 +798,78 @@ function NodePanel({
       onCreated(t("create.roomCreated", { name: titleFor(node) }));
     } catch (e) {
       onFailed(e instanceof Error ? e.message : t("wiring.failed"));
+    } finally {
+      setCreating(false);
+    }
+  };
+
+  // Phase 4c: pocket templates — this agent's routines saved under a name
+  // for the workspace, or another template's routines stamped onto it.
+  const templates = useWorkGraphStore((s) => s.templates);
+  const saveTemplate = useWorkGraphStore((s) => s.saveTemplate);
+  const deleteTemplate = useWorkGraphStore((s) => s.deleteTemplate);
+  const routines = useRoutineStore((s) => s.routines);
+  const fetchRoutinesIfStale = useRoutineStore((s) => s.fetchRoutinesIfStale);
+  const [templateName, setTemplateName] = useState("");
+  const [templateId, setTemplateId] = useState("");
+  useEffect(() => {
+    if (node.kind === "agent") void fetchRoutinesIfStale();
+  }, [node.kind, fetchRoutinesIfStale]);
+  const agentRoutines = useMemo(
+    () => (node.kind === "agent" ? routines.filter((r) => r.participantId === node.rowId) : []),
+    [routines, node]
+  );
+  const saveAsTemplate = async () => {
+    const name = templateName.trim();
+    if (!name || agentRoutines.length === 0) return;
+    setCreating(true);
+    try {
+      await saveTemplate(
+        name,
+        agentRoutines.map((r) => ({
+          name: r.name,
+          description: r.description,
+          instructions: r.instructions,
+          schedule_type: r.scheduleType,
+          schedule_config: r.scheduleConfig,
+          timezone: r.timezone,
+        }))
+      );
+      setTemplateName("");
+      onCreated(t("templates.saved", { name, count: agentRoutines.length }));
+    } catch (e) {
+      onFailed(e instanceof Error ? e.message : t("wiring.failed"));
+    } finally {
+      setCreating(false);
+    }
+  };
+  const applyTemplate = async () => {
+    const tpl = templates.find((x) => x.id === templateId);
+    if (!tpl) return;
+    setCreating(true);
+    let made = 0;
+    try {
+      for (const r of tpl.spec.routines) {
+        await createRoutine({
+          agent_id: node.rowId,
+          name: String(r.name ?? ""),
+          instructions: String(r.instructions ?? ""),
+          schedule_type: String(r.schedule_type ?? "interval"),
+          schedule_config: (r.schedule_config as Record<string, unknown>) ?? { every_minutes: 60 },
+          ...(typeof r.description === "string" ? { description: r.description } : {}),
+          ...(typeof r.timezone === "string" ? { timezone: r.timezone } : {}),
+        });
+        made++;
+      }
+      onCreated(t("templates.applied", { name: tpl.name, count: made }));
+    } catch (e) {
+      onFailed(
+        made > 0
+          ? t("templates.partiallyApplied", { count: made, total: tpl.spec.routines.length })
+          : e instanceof Error
+            ? e.message
+            : t("wiring.failed")
+      );
     } finally {
       setCreating(false);
     }
@@ -989,6 +1105,67 @@ function NodePanel({
               </Button>
             )}
             <p className="mt-1.5 text-[11px] text-muted-foreground">{t("create.wireHint")}</p>
+          </div>
+        )}
+
+        {node.kind === "agent" && (
+          <div className="mb-4 rounded-md border border-dashed border-border p-2.5">
+            <p className="mb-1.5 text-[11px] font-semibold uppercase tracking-wide text-muted-foreground">
+              {t("templates.title")}
+            </p>
+            <form
+              className="flex gap-1.5"
+              onSubmit={(e) => {
+                e.preventDefault();
+                void saveAsTemplate();
+              }}
+            >
+              <Input
+                value={templateName}
+                onChange={(e) => setTemplateName(e.target.value)}
+                placeholder={t("templates.namePlaceholder")}
+                className="h-8 flex-1"
+                disabled={creating || agentRoutines.length === 0}
+              />
+              <Button type="submit" size="sm" disabled={creating || agentRoutines.length === 0 || templateName.trim().length === 0}>
+                {t("templates.save", { count: agentRoutines.length })}
+              </Button>
+            </form>
+            {templates.length > 0 && (
+              <div className="mt-1.5 flex gap-1.5">
+                <select
+                  className="h-8 min-w-0 flex-1 rounded-md border border-border bg-background px-2 text-sm text-foreground outline-none focus:ring-2 focus:ring-ring"
+                  value={templateId}
+                  onChange={(e) => setTemplateId(e.target.value)}
+                  disabled={creating}
+                  aria-label={t("templates.pick")}
+                >
+                  <option value="">{t("templates.pick")}</option>
+                  {templates.map((tpl) => (
+                    <option key={tpl.id} value={tpl.id}>
+                      {tpl.name} · {tpl.spec.routines.length}
+                    </option>
+                  ))}
+                </select>
+                <Button size="sm" disabled={creating || !templateId} onClick={() => void applyTemplate()}>
+                  {t("templates.apply")}
+                </Button>
+                {templateId && (
+                  <Button
+                    size="sm"
+                    variant="outline"
+                    disabled={creating}
+                    onClick={() => {
+                      void deleteTemplate(templateId).then(() => setTemplateId(""));
+                    }}
+                    title={t("templates.delete")}
+                  >
+                    {t("templates.delete")}
+                  </Button>
+                )}
+              </div>
+            )}
+            <p className="mt-1.5 text-[11px] text-muted-foreground">{t("templates.hint")}</p>
           </div>
         )}
 

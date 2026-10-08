@@ -109,6 +109,16 @@ export interface SavedLayout {
   updatedAt: string;
 }
 
+/** A saved pocket (`Agentchat.WorkGraph.Templates`): an agent's routines under a name, for the workspace. */
+export interface PocketTemplate {
+  id: string;
+  name: string;
+  kind: "agent_pocket";
+  spec: { routines: Array<Record<string, unknown>> };
+  createdById: string | null;
+  insertedAt: string;
+}
+
 /** A pending decision (`GET /api/me/decisions`, the `work_surfaces` flag), as the graph needs it. */
 export interface GraphDecision {
   kind: string;
@@ -145,7 +155,11 @@ interface WorkGraphState {
   /** Room nodes opened in place as a live conversation (phase 3). */
   openChats: Set<string>;
   decisions: GraphDecision[];
+  templates: PocketTemplate[];
   fetchGraph: () => Promise<void>;
+  fetchTemplates: () => Promise<void>;
+  saveTemplate: (name: string, routines: Array<Record<string, unknown>>) => Promise<PocketTemplate>;
+  deleteTemplate: (id: string) => Promise<void>;
   fetchDecisions: () => Promise<void>;
   /** Effective positions: mine over the workspace's. */
   positions: () => Record<string, Position>;
@@ -241,6 +255,31 @@ export const useWorkGraphStore = create<WorkGraphState>((set, get) => ({
   focusDepth: 0,
   openChats: new Set<string>(),
   decisions: [],
+  templates: [],
+
+  fetchTemplates: async () => {
+    if (!useAuthStore.getState().participant?.features?.work_graph) return;
+    try {
+      const data = await request<{ templates: PocketTemplate[] }>("/api/me/work-graph/templates");
+      set({ templates: data.templates });
+    } catch {
+      // Templates are a convenience; the last list stands.
+    }
+  },
+
+  saveTemplate: async (name, routines) => {
+    const data = await request<{ template: PocketTemplate }>("/api/me/work-graph/templates", {
+      method: "POST",
+      body: JSON.stringify({ name, spec: { routines } }),
+    });
+    set((s) => ({ templates: [data.template, ...s.templates] }));
+    return data.template;
+  },
+
+  deleteTemplate: async (id) => {
+    await request(`/api/me/work-graph/templates/${id}`, { method: "DELETE" });
+    set((s) => ({ templates: s.templates.filter((t) => t.id !== id) }));
+  },
 
   fetchGraph: async () => {
     if (!useAuthStore.getState().participant?.features?.work_graph) return;
