@@ -329,9 +329,17 @@ function WorkGraphCanvas() {
 
   // React Flow owns positions while a drag is in flight (a controlled
   // `nodes` prop alone would leave the card still until mouseup); the
-  // computed set is pushed in whenever it changes.
+  // computed set is pushed in whenever it changes, except mid-drag, when a
+  // recompute (an activity tick, a new message) would snap the card back.
   const [nodes, setNodes, onNodesChange] = useNodesState<WorkGraphFlowNode>(computedNodes);
-  useEffect(() => setNodes(computedNodes), [computedNodes, setNodes]);
+  const draggingRef = useRef(false);
+  useEffect(() => {
+    if (!draggingRef.current) setNodes(computedNodes);
+  }, [computedNodes, setNodes]);
+
+  // Cables are controlled too; selection has to be mirrored by hand for a
+  // Delete to find the selected one.
+  const [selectedEdgeId, setSelectedEdgeId] = useState<string | null>(null);
 
   const flowEdges = useMemo<Edge[]>(
     () =>
@@ -344,24 +352,41 @@ function WorkGraphCanvas() {
           source: edge.source,
           target: edge.target,
           type: "smoothstep",
-          label: touchesSelected ? t(EDGE_LABEL_KEYS[edge.kind]) : undefined,
+          selected: edge.id === selectedEdgeId,
+          label: touchesSelected || edge.id === selectedEdgeId ? t(EDGE_LABEL_KEYS[edge.kind]) : undefined,
           labelStyle: { fontSize: 10, fill: "var(--muted-foreground)" },
           labelBgStyle: { fill: "var(--card)" },
           animated: Boolean(touchesSelected) && Boolean(style.strong),
           markerEnd: { type: MarkerType.ArrowClosed, width: 14, height: 14 },
           style: {
-            strokeWidth: touchesSelected ? 2 : style.strong ? 1.5 : 1,
+            strokeWidth: touchesSelected || edge.id === selectedEdgeId ? 2 : style.strong ? 1.5 : 1,
             strokeDasharray: style.dash,
-            stroke: touchesSelected ? "var(--primary)" : "var(--border)",
+            stroke: touchesSelected || edge.id === selectedEdgeId ? "var(--primary)" : "var(--border)",
             opacity: !inFocus ? 0.15 : selectedId && !touchesSelected ? 0.35 : 1,
           },
         };
       }),
-    [visibleEdges, selectedId, focused, t]
+    [visibleEdges, selectedId, selectedEdgeId, focused, t]
   );
 
+  const onEdgesChange = useCallback(
+    (changes: Array<{ type: string; id?: string; selected?: boolean }>) => {
+      for (const c of changes) {
+        if (c.type === "select" && c.id) setSelectedEdgeId(c.selected ? c.id : null);
+      }
+    },
+    []
+  );
+
+  const onNodeDragStart: OnNodeDrag<WorkGraphFlowNode> = useCallback(() => {
+    draggingRef.current = true;
+  }, []);
+
   const onNodeDragStop: OnNodeDrag<WorkGraphFlowNode> = useCallback(
-    (_evt, node) => setPosition(node.id, node.position),
+    (_evt, node) => {
+      draggingRef.current = false;
+      setPosition(node.id, node.position);
+    },
     [setPosition]
   );
 
@@ -425,11 +450,17 @@ function WorkGraphCanvas() {
     [byId, say, t, titleFor, fetchGraph]
   );
 
-  // Delete/Backspace cuts a selected cable when its relation has an inverse
-  // call; nodes are never deleted from the canvas.
+  // Delete cuts the one selected cable when its relation has an inverse
+  // call. Nodes are never deleted from the canvas, and a selected node does
+  // not take its cables with it (React Flow would offer them all). A folded
+  // cable stands for a relation on a hidden row, so only cables the server
+  // itself reported can be cut.
+  const serverEdgeIds = useMemo(() => new Set((graph?.edges ?? []).map((e) => e.id)), [graph]);
   const onBeforeDelete: OnBeforeDelete<WorkGraphFlowNode> = useCallback(
-    async ({ edges: toDelete }) => {
-      const serverEdges = toDelete
+    async ({ nodes: nodesToDelete, edges: toDelete }) => {
+      if (nodesToDelete.length > 0) return false;
+      const chosen = toDelete.filter((e) => e.selected && serverEdgeIds.has(e.id));
+      const serverEdges = chosen
         .map((e) => visibleEdges.find((v) => v.id === e.id))
         .filter((e): e is GraphEdge => Boolean(e));
       const allowed = serverEdges.filter((e) => cuttable(e, byId));
@@ -437,13 +468,14 @@ function WorkGraphCanvas() {
         say({ tone: "error", text: t("wiring.cannotCut") });
         return false;
       }
-      return { nodes: [], edges: toDelete.filter((e) => allowed.some((a) => a.id === e.id)) };
+      return { nodes: [], edges: chosen.filter((e) => allowed.some((a) => a.id === e.id)) };
     },
-    [visibleEdges, byId, say, t]
+    [visibleEdges, byId, serverEdgeIds, say, t]
   );
 
   const onEdgesDelete: OnEdgesDelete = useCallback(
     (deleted) => {
+      setSelectedEdgeId(null);
       const serverEdges = deleted
         .map((e) => visibleEdges.find((v) => v.id === e.id))
         .filter((e): e is GraphEdge => Boolean(e));
@@ -578,16 +610,21 @@ function WorkGraphCanvas() {
             nodeTypes={NODE_TYPES}
             colorMode={theme === "dark" ? "dark" : "light"}
             onNodesChange={onNodesChange}
+            onEdgesChange={onEdgesChange}
+            onNodeDragStart={onNodeDragStart}
             onNodeDragStop={onNodeDragStop}
             onNodeClick={onNodeClick}
             onNodeDoubleClick={onNodeDoubleClick}
-            onPaneClick={() => select(null)}
+            onPaneClick={() => {
+              select(null);
+              setSelectedEdgeId(null);
+            }}
             nodesConnectable
             isValidConnection={isValidConnection}
             onConnect={onConnect}
             onBeforeDelete={onBeforeDelete}
             onEdgesDelete={onEdgesDelete}
-            deleteKeyCode={["Backspace", "Delete"]}
+            deleteKeyCode="Delete"
             minZoom={0.1}
             maxZoom={2}
             proOptions={{ hideAttribution: true }}

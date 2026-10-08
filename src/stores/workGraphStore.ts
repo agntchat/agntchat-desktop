@@ -219,6 +219,8 @@ const REFRESH_DEBOUNCE_MS = 800;
 const LAYOUT_SAVE_DEBOUNCE_MS = 1200;
 
 let saveTimer: number | undefined;
+/** Bumped on every local layout change; a save only clears `layoutDirty` if nothing changed since it was sent. */
+let layoutRev = 0;
 
 /**
  * The work graph (`work_graph` flag): the workspace as nodes and edges,
@@ -279,6 +281,7 @@ export const useWorkGraphStore = create<WorkGraphState>((set, get) => ({
   collapsed: () => get().mineCollapsed ?? new Set(get().layout.workspace?.collapsed ?? []),
 
   setPosition: (id, pos) => {
+    layoutRev++;
     set({ minePositions: { ...get().minePositions, [id]: pos }, layoutDirty: true });
     scheduleSave(get, set);
   },
@@ -287,20 +290,24 @@ export const useWorkGraphStore = create<WorkGraphState>((set, get) => ({
     const next = new Set(get().collapsed());
     if (next.has(id)) next.delete(id);
     else next.add(id);
+    layoutRev++;
     set({ mineCollapsed: next, layoutDirty: true });
     scheduleSave(get, set);
   },
   collapseAll: (ids) => {
+    layoutRev++;
     set({ mineCollapsed: new Set(ids), layoutDirty: true });
     scheduleSave(get, set);
   },
   expandAll: () => {
+    layoutRev++;
     set({ mineCollapsed: new Set<string>(), layoutDirty: true });
     scheduleSave(get, set);
   },
 
   resetLayout: async () => {
     window.clearTimeout(saveTimer);
+    layoutRev++;
     set({ minePositions: {}, mineCollapsed: null, layoutDirty: false });
     try {
       await request("/api/me/work-graph/layout", { method: "DELETE" });
@@ -380,6 +387,7 @@ function scheduleSave(
 ) {
   window.clearTimeout(saveTimer);
   saveTimer = window.setTimeout(async () => {
+    const sentRev = layoutRev;
     const body = {
       scope: "mine",
       positions: get().minePositions,
@@ -390,7 +398,9 @@ function scheduleSave(
         method: "PUT",
         body: JSON.stringify(body),
       });
-      set({ layout: { ...get().layout, mine: data.layout }, layoutDirty: false });
+      // A change made while this save was in flight keeps the local state
+      // authoritative until its own save lands.
+      set({ layout: { ...get().layout, mine: data.layout }, ...(layoutRev === sentRev ? { layoutDirty: false } : {}) });
     } catch {
       // Keep the local state; the next change retries.
     }

@@ -12,9 +12,9 @@ export const CHAT_NODE_HEIGHT = 560;
 
 /**
  * A conversation living inside its node (phase 3): the same thread and
- * composer the chat view uses, mounted in the card. Joining the room's
- * channel and loading its latest window happen here, and the channel is
- * left on close unless the room is also open in the chat view. Wheel and
+ * composer the chat view uses, mounted in the card. The room's channel is
+ * joined here (the thread loads its own message window) and left on close
+ * unless the room is also open in the chat view. Wheel and
  * drag inside the thread stay with the thread (`nowheel nodrag nopan`), so
  * scrolling messages never pans the canvas.
  */
@@ -29,19 +29,17 @@ export function EmbeddedChat({
 }) {
   const { t } = useTranslation("graph");
   const setActiveConversation = useChatStore((s) => s.setActiveConversation);
-  const fetchMessages = useChatStore((s) => s.fetchMessages);
   const setView = useNavStore((s) => s.setView);
 
   useEffect(() => {
     ws.joinConversation(conversationId);
-    void fetchMessages(conversationId);
     return () => {
       const { activeConversationId, activeHuddleId } = useChatStore.getState();
       if (conversationId !== activeConversationId && conversationId !== activeHuddleId) {
         ws.leaveConversation(conversationId);
       }
     };
-  }, [conversationId, fetchMessages]);
+  }, [conversationId]);
 
   return (
     <div
