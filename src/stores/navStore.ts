@@ -10,6 +10,7 @@ export type View =
   | "hosts"
   | "previews"
   | "canvas"
+  | "graph"
   | "fleet"
   | "platform";
 

@@ -22,7 +22,7 @@ export const LOCALE_LABELS: Record<SupportedLocale, string> = {
   "hi": "हिन्दी"
 };
 
-export const NAMESPACES = ["agents","artifacts","auth","canvas","chat","common","files","friends","memory","nav","onboarding","platform","previews","settings","tasks","templates"] as const;
+export const NAMESPACES = ["agents","artifacts","auth","canvas","chat","common","decisions","files","friends","graph","memory","nav","onboarding","platform","previews","settings","tasks","templates"] as const;
 
 export type Namespace = (typeof NAMESPACES)[number];
 
@@ -2542,6 +2542,19 @@ export const resources = {
         "label": "Waiting for {{name}}"
       },
       "backToParent": "Back to parent conversation",
+      "board": {
+        "artifacts": "Latest artifacts",
+        "artifactsCount_one": "{{count}} artifact",
+        "artifactsCount_other": "{{count}} artifacts",
+        "decisions": "Waiting on you",
+        "decisionsCount_one": "{{count}} waiting on you",
+        "decisionsCount_other": "{{count}} waiting on you",
+        "goals": "Working toward",
+        "goalsCount_one": "{{count}} goal",
+        "goalsCount_other": "{{count}} goals",
+        "label": "Board",
+        "version": "v{{version}}"
+      },
       "branch": {
         "cancelledCount": "{{count}} cancelled",
         "completedCount": "{{count}} completed",
@@ -3375,6 +3388,46 @@ export const resources = {
       "yesterday": "Yesterday",
       "you": "You"
     },
+    "decisions": {
+      "actions": {
+        "allow": "Allow",
+        "approve": "Approve",
+        "deny": "Deny",
+        "openConversation": "Open conversation",
+        "openTask": "Open task",
+        "reject": "Reject",
+        "resumeLoop": "Answered, resume",
+        "reviewPayment": "Review payment"
+      },
+      "body": {
+        "credential": "Needs {{label}}",
+        "credentialWithReason": "Needs {{label}}: {{reason}}",
+        "memberRequest": "Wants to add {{name}} to the conversation",
+        "permission": "Wants to use {{tool}}",
+        "spend": "Wants to spend {{amount}} at {{merchant}}",
+        "spendUnknownMerchant": "a merchant"
+      },
+      "empty": {
+        "body": "Approvals, questions and blocked work from your agents show up here as they come in.",
+        "title": "Nothing is waiting on you"
+      },
+      "failed": "That didn't go through. Try again.",
+      "hint": "Everything your agents are waiting on you for, across every room.",
+      "kind": {
+        "approval": "Approval",
+        "blockedTask": "Blocked task",
+        "credential": "Credential",
+        "loopQuestion": "Question",
+        "memberRequest": "Member request",
+        "permission": "Permission",
+        "spend": "Payment"
+      },
+      "loading": "Loading…",
+      "pending_one": "{{count}} waiting on you",
+      "pending_other": "{{count}} waiting on you",
+      "someone": "Someone",
+      "title": "Decisions"
+    },
     "files": {
       "added": "Added",
       "addedBy": "Added by",
@@ -3650,6 +3703,96 @@ export const resources = {
       },
       "youMarker": "(you)"
     },
+    "graph": {
+      "actions": {
+        "openAgent": "Open agent",
+        "openArtifact": "Open artifact",
+        "openConversation": "Open conversation",
+        "openTask": "Open task"
+      },
+      "closePanel": "Close details",
+      "connections_one": "{{count}} connection",
+      "connections_other": "{{count}} connections",
+      "edge": {
+        "anchored": "asked in",
+        "assigned": "assigned to",
+        "childOf": "inside",
+        "delegated": "delegated",
+        "dependsOn": "depends on",
+        "goalOf": "goal of",
+        "in": "in",
+        "livesIn": "lives in",
+        "member": "member of",
+        "ownedBy": "owned by",
+        "owns": "owns",
+        "produced": "produced",
+        "reportsTo": "reports to",
+        "runs": "runs",
+        "setBy": "set",
+        "source": "created",
+        "subtask": "part of",
+        "targets": "for",
+        "worksIn": "worked in"
+      },
+      "empty": "Nothing to draw yet. Add an agent or start a conversation and it appears here.",
+      "fields": {
+        "deadline": "Deadline",
+        "iterations": "Runs",
+        "lastRun": "Last run",
+        "members": "Members",
+        "nextRun": "Next run",
+        "remindAt": "Reminds at",
+        "schedule": "Schedule",
+        "status": "Status",
+        "stopReason": "Stopped because",
+        "type": "Type",
+        "updated": "Updated",
+        "version": "Version"
+      },
+      "fit": "Fit",
+      "hint": "Your workspace as a map: agents, rooms, tasks, routines and what connects them.",
+      "iterations_one": "{{count}} run",
+      "iterations_other": "{{count}} runs",
+      "kind": {
+        "agent": "Agent",
+        "artifact": "Artifact",
+        "conversation": "Conversation",
+        "goal": "Goal",
+        "huddle": "Huddle",
+        "human": "You",
+        "loop": "Loop",
+        "reminder": "Reminder",
+        "routine": "Routine",
+        "task": "Task",
+        "workRoom": "Work room"
+      },
+      "loadFailed": "Couldn't load the graph.",
+      "members_one": "{{count}} member",
+      "members_other": "{{count}} members",
+      "refresh": "Refresh",
+      "resetLayout": "Reset layout",
+      "searchPlaceholder": "Find a node…",
+      "status": {
+        "accepted": "Accepted",
+        "active": "Active",
+        "blocked": "Blocked",
+        "deactivated": "Deactivated",
+        "in_progress": "In progress",
+        "open": "Open",
+        "paused": "Paused",
+        "pending": "Pending",
+        "waiting": "Waiting"
+      },
+      "subtype": {
+        "channel": "Channel",
+        "direct": "Direct",
+        "group": "Group",
+        "session": "Session",
+        "task": "Work room"
+      },
+      "title": "Work graph",
+      "untitled": "Untitled"
+    },
     "memory": {
       "agentMemories": "Agent Memories",
       "agentSubtitle": "What {{name}} knows and remembers",
@@ -3778,9 +3921,11 @@ export const resources = {
       "canvases": "Canvases",
       "chats": "Chats",
       "collapseSidebar": "Collapse sidebar",
+      "decisions": "Decisions",
       "expandSidebar": "Expand sidebar",
       "files": "Files",
       "friends": "Friends",
+      "graph": "Graph",
       "hosts": "Hosts",
       "location": "Location",
       "members": "Members",
@@ -8092,6 +8237,19 @@ export const resources = {
         "label": "Esperando a {{name}}"
       },
       "backToParent": "Volver a la conversación principal",
+      "board": {
+        "artifacts": "Últimos artefactos",
+        "artifactsCount_one": "{{count}} artefacto",
+        "artifactsCount_other": "{{count}} artefactos",
+        "decisions": "Pendiente de ti",
+        "decisionsCount_one": "{{count}} pendiente de ti",
+        "decisionsCount_other": "{{count}} pendientes de ti",
+        "goals": "Objetivos",
+        "goalsCount_one": "{{count}} objetivo",
+        "goalsCount_other": "{{count}} objetivos",
+        "label": "Tablero",
+        "version": "v{{version}}"
+      },
       "branch": {
         "cancelledCount": "{{count}} canceladas",
         "completedCount": "{{count}} completadas",
@@ -8925,6 +9083,46 @@ export const resources = {
       "yesterday": "Ayer",
       "you": "Tú"
     },
+    "decisions": {
+      "actions": {
+        "allow": "Permitir",
+        "approve": "Aprobar",
+        "deny": "Denegar",
+        "openConversation": "Abrir conversación",
+        "openTask": "Abrir tarea",
+        "reject": "Rechazar",
+        "resumeLoop": "Respondido, reanudar",
+        "reviewPayment": "Revisar pago"
+      },
+      "body": {
+        "credential": "Necesita {{label}}",
+        "credentialWithReason": "Necesita {{label}}: {{reason}}",
+        "memberRequest": "Quiere añadir a {{name}} a la conversación",
+        "permission": "Quiere usar {{tool}}",
+        "spend": "Quiere gastar {{amount}} en {{merchant}}",
+        "spendUnknownMerchant": "un comercio"
+      },
+      "empty": {
+        "body": "Las aprobaciones, preguntas y trabajo bloqueado de tus agentes aparecerán aquí según lleguen.",
+        "title": "Nada pendiente de ti"
+      },
+      "failed": "No se pudo completar. Inténtalo de nuevo.",
+      "hint": "Todo lo que tus agentes esperan de ti, en todas las salas.",
+      "kind": {
+        "approval": "Aprobación",
+        "blockedTask": "Tarea bloqueada",
+        "credential": "Credencial",
+        "loopQuestion": "Pregunta",
+        "memberRequest": "Solicitud de miembro",
+        "permission": "Permiso",
+        "spend": "Pago"
+      },
+      "loading": "Cargando…",
+      "pending_one": "{{count}} pendiente de ti",
+      "pending_other": "{{count}} pendientes de ti",
+      "someone": "Alguien",
+      "title": "Decisiones"
+    },
     "files": {
       "added": "Añadido",
       "addedBy": "Añadido por",
@@ -9200,6 +9398,96 @@ export const resources = {
       },
       "youMarker": "(tú)"
     },
+    "graph": {
+      "actions": {
+        "openAgent": "Abrir agente",
+        "openArtifact": "Abrir artefacto",
+        "openConversation": "Abrir conversación",
+        "openTask": "Abrir tarea"
+      },
+      "closePanel": "Cerrar detalles",
+      "connections_one": "{{count}} conexión",
+      "connections_other": "{{count}} conexiones",
+      "edge": {
+        "anchored": "pedida en",
+        "assigned": "asignada a",
+        "childOf": "dentro de",
+        "delegated": "delegó",
+        "dependsOn": "depende de",
+        "goalOf": "objetivo de",
+        "in": "en",
+        "livesIn": "vive en",
+        "member": "miembro de",
+        "ownedBy": "a cargo de",
+        "owns": "posee",
+        "produced": "produjo",
+        "reportsTo": "informa en",
+        "runs": "ejecuta",
+        "setBy": "fijó",
+        "source": "creó",
+        "subtask": "parte de",
+        "targets": "para",
+        "worksIn": "se trabaja en"
+      },
+      "empty": "Nada que dibujar todavía. Añade un agente o inicia una conversación y aparecerá aquí.",
+      "fields": {
+        "deadline": "Fecha límite",
+        "iterations": "Ejecuciones",
+        "lastRun": "Última ejecución",
+        "members": "Miembros",
+        "nextRun": "Próxima ejecución",
+        "remindAt": "Recuerda el",
+        "schedule": "Programación",
+        "status": "Estado",
+        "stopReason": "Detenido por",
+        "type": "Tipo",
+        "updated": "Actualizado",
+        "version": "Versión"
+      },
+      "fit": "Ajustar",
+      "hint": "Tu espacio de trabajo como un mapa: agentes, salas, tareas, rutinas y lo que los conecta.",
+      "iterations_one": "{{count}} ejecución",
+      "iterations_other": "{{count}} ejecuciones",
+      "kind": {
+        "agent": "Agente",
+        "artifact": "Artefacto",
+        "conversation": "Conversación",
+        "goal": "Objetivo",
+        "huddle": "Corrillo",
+        "human": "Tú",
+        "loop": "Bucle",
+        "reminder": "Recordatorio",
+        "routine": "Rutina",
+        "task": "Tarea",
+        "workRoom": "Sala de trabajo"
+      },
+      "loadFailed": "No se pudo cargar el grafo.",
+      "members_one": "{{count}} miembro",
+      "members_other": "{{count}} miembros",
+      "refresh": "Actualizar",
+      "resetLayout": "Restablecer disposición",
+      "searchPlaceholder": "Buscar un nodo…",
+      "status": {
+        "accepted": "Aceptada",
+        "active": "Activo",
+        "blocked": "Bloqueada",
+        "deactivated": "Desactivado",
+        "in_progress": "En curso",
+        "open": "Abierto",
+        "paused": "En pausa",
+        "pending": "Pendiente",
+        "waiting": "Esperando"
+      },
+      "subtype": {
+        "channel": "Canal",
+        "direct": "Directa",
+        "group": "Grupo",
+        "session": "Sesión",
+        "task": "Sala de trabajo"
+      },
+      "title": "Grafo de trabajo",
+      "untitled": "Sin título"
+    },
     "memory": {
       "agentMemories": "Memorias del agente",
       "agentSubtitle": "Lo que {{name}} sabe y recuerda",
@@ -9328,9 +9616,11 @@ export const resources = {
       "canvases": "Lienzos",
       "chats": "Chats",
       "collapseSidebar": "Contraer barra lateral",
+      "decisions": "Decisiones",
       "expandSidebar": "Expandir barra lateral",
       "files": "Archivos",
       "friends": "Amigos",
+      "graph": "Grafo",
       "hosts": "Servidores",
       "location": "Ubicación",
       "members": "Miembros",
@@ -13642,6 +13932,19 @@ export const resources = {
         "label": "Wartet auf {{name}}"
       },
       "backToParent": "Zurück zur übergeordneten Unterhaltung",
+      "board": {
+        "artifacts": "Neueste Artefakte",
+        "artifactsCount_one": "{{count}} Artefakt",
+        "artifactsCount_other": "{{count}} Artefakte",
+        "decisions": "Wartet auf dich",
+        "decisionsCount_one": "{{count}} wartet auf dich",
+        "decisionsCount_other": "{{count}} warten auf dich",
+        "goals": "Ziele",
+        "goalsCount_one": "{{count}} Ziel",
+        "goalsCount_other": "{{count}} Ziele",
+        "label": "Board",
+        "version": "v{{version}}"
+      },
       "branch": {
         "cancelledCount": "{{count}} abgebrochen",
         "completedCount": "{{count}} abgeschlossen",
@@ -14475,6 +14778,46 @@ export const resources = {
       "yesterday": "Gestern",
       "you": "Sie"
     },
+    "decisions": {
+      "actions": {
+        "allow": "Erlauben",
+        "approve": "Freigeben",
+        "deny": "Ablehnen",
+        "openConversation": "Unterhaltung öffnen",
+        "openTask": "Aufgabe öffnen",
+        "reject": "Zurückweisen",
+        "resumeLoop": "Beantwortet, fortsetzen",
+        "reviewPayment": "Zahlung prüfen"
+      },
+      "body": {
+        "credential": "Braucht {{label}}",
+        "credentialWithReason": "Braucht {{label}}: {{reason}}",
+        "memberRequest": "Möchte {{name}} zur Unterhaltung hinzufügen",
+        "permission": "Möchte {{tool}} verwenden",
+        "spend": "Möchte {{amount}} bei {{merchant}} ausgeben",
+        "spendUnknownMerchant": "einem Händler"
+      },
+      "empty": {
+        "body": "Freigaben, Fragen und blockierte Arbeit deiner Agenten erscheinen hier, sobald sie eintreffen.",
+        "title": "Nichts wartet auf dich"
+      },
+      "failed": "Das hat nicht geklappt. Versuch es noch einmal.",
+      "hint": "Alles, wofür deine Agenten auf dich warten, über alle Räume hinweg.",
+      "kind": {
+        "approval": "Freigabe",
+        "blockedTask": "Blockierte Aufgabe",
+        "credential": "Zugangsdaten",
+        "loopQuestion": "Frage",
+        "memberRequest": "Mitgliedsanfrage",
+        "permission": "Berechtigung",
+        "spend": "Zahlung"
+      },
+      "loading": "Wird geladen…",
+      "pending_one": "{{count}} wartet auf dich",
+      "pending_other": "{{count}} warten auf dich",
+      "someone": "Jemand",
+      "title": "Entscheidungen"
+    },
     "files": {
       "added": "Hinzugefügt",
       "addedBy": "Hinzugefügt von",
@@ -14750,6 +15093,96 @@ export const resources = {
       },
       "youMarker": "(Sie)"
     },
+    "graph": {
+      "actions": {
+        "openAgent": "Agent öffnen",
+        "openArtifact": "Artefakt öffnen",
+        "openConversation": "Unterhaltung öffnen",
+        "openTask": "Aufgabe öffnen"
+      },
+      "closePanel": "Details schließen",
+      "connections_one": "{{count}} Verbindung",
+      "connections_other": "{{count}} Verbindungen",
+      "edge": {
+        "anchored": "angefragt in",
+        "assigned": "zugewiesen an",
+        "childOf": "innerhalb von",
+        "delegated": "delegiert",
+        "dependsOn": "hängt ab von",
+        "goalOf": "Ziel von",
+        "in": "in",
+        "livesIn": "lebt in",
+        "member": "Mitglied von",
+        "ownedBy": "verantwortet von",
+        "owns": "besitzt",
+        "produced": "erstellte",
+        "reportsTo": "berichtet an",
+        "runs": "führt aus",
+        "setBy": "setzte",
+        "source": "erstellte",
+        "subtask": "Teil von",
+        "targets": "für",
+        "worksIn": "bearbeitet in"
+      },
+      "empty": "Noch nichts zu zeichnen. Füge einen Agenten hinzu oder starte eine Unterhaltung, dann erscheint sie hier.",
+      "fields": {
+        "deadline": "Frist",
+        "iterations": "Durchläufe",
+        "lastRun": "Letzter Lauf",
+        "members": "Mitglieder",
+        "nextRun": "Nächster Lauf",
+        "remindAt": "Erinnert am",
+        "schedule": "Zeitplan",
+        "status": "Status",
+        "stopReason": "Gestoppt wegen",
+        "type": "Typ",
+        "updated": "Aktualisiert",
+        "version": "Version"
+      },
+      "fit": "Einpassen",
+      "hint": "Dein Arbeitsbereich als Karte: Agenten, Räume, Aufgaben, Routinen und was sie verbindet.",
+      "iterations_one": "{{count}} Durchlauf",
+      "iterations_other": "{{count}} Durchläufe",
+      "kind": {
+        "agent": "Agent",
+        "artifact": "Artefakt",
+        "conversation": "Unterhaltung",
+        "goal": "Ziel",
+        "huddle": "Huddle",
+        "human": "Du",
+        "loop": "Loop",
+        "reminder": "Erinnerung",
+        "routine": "Routine",
+        "task": "Aufgabe",
+        "workRoom": "Arbeitsraum"
+      },
+      "loadFailed": "Der Graph konnte nicht geladen werden.",
+      "members_one": "{{count}} Mitglied",
+      "members_other": "{{count}} Mitglieder",
+      "refresh": "Aktualisieren",
+      "resetLayout": "Anordnung zurücksetzen",
+      "searchPlaceholder": "Knoten suchen…",
+      "status": {
+        "accepted": "Angenommen",
+        "active": "Aktiv",
+        "blocked": "Blockiert",
+        "deactivated": "Deaktiviert",
+        "in_progress": "In Arbeit",
+        "open": "Offen",
+        "paused": "Pausiert",
+        "pending": "Ausstehend",
+        "waiting": "Wartet"
+      },
+      "subtype": {
+        "channel": "Kanal",
+        "direct": "Direkt",
+        "group": "Gruppe",
+        "session": "Sitzung",
+        "task": "Arbeitsraum"
+      },
+      "title": "Arbeitsgraph",
+      "untitled": "Ohne Titel"
+    },
     "memory": {
       "agentMemories": "Agenten-Erinnerungen",
       "agentSubtitle": "Was {{name}} weiß und sich merkt",
@@ -14878,9 +15311,11 @@ export const resources = {
       "canvases": "Canvases",
       "chats": "Chats",
       "collapseSidebar": "Seitenleiste einklappen",
+      "decisions": "Entscheidungen",
       "expandSidebar": "Seitenleiste ausklappen",
       "files": "Dateien",
       "friends": "Freunde",
+      "graph": "Graph",
       "hosts": "Hosts",
       "location": "Standort",
       "members": "Mitglieder",
@@ -19192,6 +19627,19 @@ export const resources = {
         "label": "En attente de {{name}}"
       },
       "backToParent": "Retour à la conversation parente",
+      "board": {
+        "artifacts": "Derniers artefacts",
+        "artifactsCount_one": "{{count}} artefact",
+        "artifactsCount_other": "{{count}} artefacts",
+        "decisions": "En attente de vous",
+        "decisionsCount_one": "{{count}} en attente de vous",
+        "decisionsCount_other": "{{count}} en attente de vous",
+        "goals": "Objectifs",
+        "goalsCount_one": "{{count}} objectif",
+        "goalsCount_other": "{{count}} objectifs",
+        "label": "Tableau",
+        "version": "v{{version}}"
+      },
       "branch": {
         "cancelledCount": "{{count}} annulé(s)",
         "completedCount": "{{count}} terminé(s)",
@@ -20025,6 +20473,46 @@ export const resources = {
       "yesterday": "Hier",
       "you": "Vous"
     },
+    "decisions": {
+      "actions": {
+        "allow": "Autoriser",
+        "approve": "Approuver",
+        "deny": "Refuser",
+        "openConversation": "Ouvrir la conversation",
+        "openTask": "Ouvrir la tâche",
+        "reject": "Rejeter",
+        "resumeLoop": "Répondu, reprendre",
+        "reviewPayment": "Vérifier le paiement"
+      },
+      "body": {
+        "credential": "A besoin de {{label}}",
+        "credentialWithReason": "A besoin de {{label}} : {{reason}}",
+        "memberRequest": "Souhaite ajouter {{name}} à la conversation",
+        "permission": "Souhaite utiliser {{tool}}",
+        "spend": "Souhaite dépenser {{amount}} chez {{merchant}}",
+        "spendUnknownMerchant": "un commerçant"
+      },
+      "empty": {
+        "body": "Les approbations, questions et travaux bloqués de vos agents apparaîtront ici au fil de l'eau.",
+        "title": "Rien n'attend votre décision"
+      },
+      "failed": "Ça n'a pas fonctionné. Réessayez.",
+      "hint": "Tout ce que vos agents attendent de vous, dans toutes les salles.",
+      "kind": {
+        "approval": "Approbation",
+        "blockedTask": "Tâche bloquée",
+        "credential": "Identifiant",
+        "loopQuestion": "Question",
+        "memberRequest": "Demande d'ajout",
+        "permission": "Autorisation",
+        "spend": "Paiement"
+      },
+      "loading": "Chargement…",
+      "pending_one": "{{count}} en attente de vous",
+      "pending_other": "{{count}} en attente de vous",
+      "someone": "Quelqu'un",
+      "title": "Décisions"
+    },
     "files": {
       "added": "Ajouté",
       "addedBy": "Ajouté par",
@@ -20300,6 +20788,96 @@ export const resources = {
       },
       "youMarker": "(vous)"
     },
+    "graph": {
+      "actions": {
+        "openAgent": "Ouvrir l'agent",
+        "openArtifact": "Ouvrir l'artefact",
+        "openConversation": "Ouvrir la conversation",
+        "openTask": "Ouvrir la tâche"
+      },
+      "closePanel": "Fermer les détails",
+      "connections_one": "{{count}} connexion",
+      "connections_other": "{{count}} connexions",
+      "edge": {
+        "anchored": "demandée dans",
+        "assigned": "assignée à",
+        "childOf": "dans",
+        "delegated": "a délégué",
+        "dependsOn": "dépend de",
+        "goalOf": "objectif de",
+        "in": "dans",
+        "livesIn": "vit dans",
+        "member": "membre de",
+        "ownedBy": "porté par",
+        "owns": "possède",
+        "produced": "a produit",
+        "reportsTo": "rapporte à",
+        "runs": "exécute",
+        "setBy": "a défini",
+        "source": "a créé",
+        "subtask": "partie de",
+        "targets": "pour",
+        "worksIn": "travaillée dans"
+      },
+      "empty": "Rien à afficher pour l'instant. Ajoutez un agent ou démarrez une conversation et elle apparaîtra ici.",
+      "fields": {
+        "deadline": "Échéance",
+        "iterations": "Exécutions",
+        "lastRun": "Dernière exécution",
+        "members": "Membres",
+        "nextRun": "Prochaine exécution",
+        "remindAt": "Rappel le",
+        "schedule": "Planification",
+        "status": "Statut",
+        "stopReason": "Arrêté car",
+        "type": "Type",
+        "updated": "Mis à jour",
+        "version": "Version"
+      },
+      "fit": "Ajuster",
+      "hint": "Votre espace de travail en carte : agents, salles, tâches, routines et ce qui les relie.",
+      "iterations_one": "{{count}} exécution",
+      "iterations_other": "{{count}} exécutions",
+      "kind": {
+        "agent": "Agent",
+        "artifact": "Artefact",
+        "conversation": "Conversation",
+        "goal": "Objectif",
+        "huddle": "Aparté",
+        "human": "Vous",
+        "loop": "Boucle",
+        "reminder": "Rappel",
+        "routine": "Routine",
+        "task": "Tâche",
+        "workRoom": "Salle de travail"
+      },
+      "loadFailed": "Impossible de charger le graphe.",
+      "members_one": "{{count}} membre",
+      "members_other": "{{count}} membres",
+      "refresh": "Actualiser",
+      "resetLayout": "Réinitialiser la disposition",
+      "searchPlaceholder": "Trouver un nœud…",
+      "status": {
+        "accepted": "Acceptée",
+        "active": "Actif",
+        "blocked": "Bloquée",
+        "deactivated": "Désactivé",
+        "in_progress": "En cours",
+        "open": "Ouvert",
+        "paused": "En pause",
+        "pending": "En attente",
+        "waiting": "En attente"
+      },
+      "subtype": {
+        "channel": "Canal",
+        "direct": "Directe",
+        "group": "Groupe",
+        "session": "Session",
+        "task": "Salle de travail"
+      },
+      "title": "Graphe de travail",
+      "untitled": "Sans titre"
+    },
     "memory": {
       "agentMemories": "Mémoires de l'agent",
       "agentSubtitle": "Ce que {{name}} sait et retient",
@@ -20428,9 +21006,11 @@ export const resources = {
       "canvases": "Canvas",
       "chats": "Discussions",
       "collapseSidebar": "Réduire la barre latérale",
+      "decisions": "Décisions",
       "expandSidebar": "Développer la barre latérale",
       "files": "Fichiers",
       "friends": "Amis",
+      "graph": "Graphe",
       "hosts": "Serveurs",
       "location": "Position",
       "members": "Membres",
@@ -24742,6 +25322,19 @@ export const resources = {
         "label": "Aguardando {{name}}"
       },
       "backToParent": "Voltar à conversa principal",
+      "board": {
+        "artifacts": "Artefatos recentes",
+        "artifactsCount_one": "{{count}} artefato",
+        "artifactsCount_other": "{{count}} artefatos",
+        "decisions": "À sua espera",
+        "decisionsCount_one": "{{count}} à sua espera",
+        "decisionsCount_other": "{{count}} à sua espera",
+        "goals": "Objetivos",
+        "goalsCount_one": "{{count}} objetivo",
+        "goalsCount_other": "{{count}} objetivos",
+        "label": "Quadro",
+        "version": "v{{version}}"
+      },
       "branch": {
         "cancelledCount": "{{count}} cancelada(s)",
         "completedCount": "{{count}} concluída(s)",
@@ -25575,6 +26168,46 @@ export const resources = {
       "yesterday": "Ontem",
       "you": "Você"
     },
+    "decisions": {
+      "actions": {
+        "allow": "Permitir",
+        "approve": "Aprovar",
+        "deny": "Negar",
+        "openConversation": "Abrir conversa",
+        "openTask": "Abrir tarefa",
+        "reject": "Rejeitar",
+        "resumeLoop": "Respondido, retomar",
+        "reviewPayment": "Rever pagamento"
+      },
+      "body": {
+        "credential": "Precisa de {{label}}",
+        "credentialWithReason": "Precisa de {{label}}: {{reason}}",
+        "memberRequest": "Quer adicionar {{name}} à conversa",
+        "permission": "Quer usar {{tool}}",
+        "spend": "Quer gastar {{amount}} em {{merchant}}",
+        "spendUnknownMerchant": "um comerciante"
+      },
+      "empty": {
+        "body": "Aprovações, perguntas e trabalho bloqueado dos seus agentes aparecem aqui à medida que chegam.",
+        "title": "Nada à sua espera"
+      },
+      "failed": "Não foi possível concluir. Tente novamente.",
+      "hint": "Tudo o que os seus agentes esperam de si, em todas as salas.",
+      "kind": {
+        "approval": "Aprovação",
+        "blockedTask": "Tarefa bloqueada",
+        "credential": "Credencial",
+        "loopQuestion": "Pergunta",
+        "memberRequest": "Pedido de membro",
+        "permission": "Permissão",
+        "spend": "Pagamento"
+      },
+      "loading": "A carregar…",
+      "pending_one": "{{count}} à sua espera",
+      "pending_other": "{{count}} à sua espera",
+      "someone": "Alguém",
+      "title": "Decisões"
+    },
     "files": {
       "added": "Adicionado",
       "addedBy": "Adicionado por",
@@ -25850,6 +26483,96 @@ export const resources = {
       },
       "youMarker": "(você)"
     },
+    "graph": {
+      "actions": {
+        "openAgent": "Abrir agente",
+        "openArtifact": "Abrir artefato",
+        "openConversation": "Abrir conversa",
+        "openTask": "Abrir tarefa"
+      },
+      "closePanel": "Fechar detalhes",
+      "connections_one": "{{count}} ligação",
+      "connections_other": "{{count}} ligações",
+      "edge": {
+        "anchored": "pedida em",
+        "assigned": "atribuída a",
+        "childOf": "dentro de",
+        "delegated": "delegou",
+        "dependsOn": "depende de",
+        "goalOf": "objetivo de",
+        "in": "em",
+        "livesIn": "vive em",
+        "member": "membro de",
+        "ownedBy": "a cargo de",
+        "owns": "possui",
+        "produced": "produziu",
+        "reportsTo": "reporta a",
+        "runs": "executa",
+        "setBy": "definiu",
+        "source": "criou",
+        "subtask": "parte de",
+        "targets": "para",
+        "worksIn": "trabalhada em"
+      },
+      "empty": "Nada para desenhar ainda. Adicione um agente ou inicie uma conversa e ela aparece aqui.",
+      "fields": {
+        "deadline": "Prazo",
+        "iterations": "Execuções",
+        "lastRun": "Última execução",
+        "members": "Membros",
+        "nextRun": "Próxima execução",
+        "remindAt": "Lembra em",
+        "schedule": "Agendamento",
+        "status": "Estado",
+        "stopReason": "Parado por",
+        "type": "Tipo",
+        "updated": "Atualizado",
+        "version": "Versão"
+      },
+      "fit": "Ajustar",
+      "hint": "O seu espaço de trabalho como um mapa: agentes, salas, tarefas, rotinas e o que os liga.",
+      "iterations_one": "{{count}} execução",
+      "iterations_other": "{{count}} execuções",
+      "kind": {
+        "agent": "Agente",
+        "artifact": "Artefato",
+        "conversation": "Conversa",
+        "goal": "Objetivo",
+        "huddle": "Huddle",
+        "human": "Você",
+        "loop": "Ciclo",
+        "reminder": "Lembrete",
+        "routine": "Rotina",
+        "task": "Tarefa",
+        "workRoom": "Sala de trabalho"
+      },
+      "loadFailed": "Não foi possível carregar o grafo.",
+      "members_one": "{{count}} membro",
+      "members_other": "{{count}} membros",
+      "refresh": "Atualizar",
+      "resetLayout": "Repor disposição",
+      "searchPlaceholder": "Encontrar um nó…",
+      "status": {
+        "accepted": "Aceite",
+        "active": "Ativo",
+        "blocked": "Bloqueada",
+        "deactivated": "Desativado",
+        "in_progress": "Em curso",
+        "open": "Aberto",
+        "paused": "Em pausa",
+        "pending": "Pendente",
+        "waiting": "À espera"
+      },
+      "subtype": {
+        "channel": "Canal",
+        "direct": "Direta",
+        "group": "Grupo",
+        "session": "Sessão",
+        "task": "Sala de trabalho"
+      },
+      "title": "Grafo de trabalho",
+      "untitled": "Sem título"
+    },
     "memory": {
       "agentMemories": "Memórias do agente",
       "agentSubtitle": "O que {{name}} sabe e lembra",
@@ -25978,9 +26701,11 @@ export const resources = {
       "canvases": "Canvases",
       "chats": "Chats",
       "collapseSidebar": "Recolher barra lateral",
+      "decisions": "Decisões",
       "expandSidebar": "Expandir barra lateral",
       "files": "Arquivos",
       "friends": "Amigos",
+      "graph": "Grafo",
       "hosts": "Servidores",
       "location": "Localização",
       "members": "Membros",
@@ -30292,6 +31017,19 @@ export const resources = {
         "label": "{{name}}を待機中"
       },
       "backToParent": "親会話に戻る",
+      "board": {
+        "artifacts": "最新のアーティファクト",
+        "artifactsCount_one": "アーティファクト {{count}} 件",
+        "artifactsCount_other": "アーティファクト {{count}} 件",
+        "decisions": "あなたの判断待ち",
+        "decisionsCount_one": "判断待ち {{count}} 件",
+        "decisionsCount_other": "判断待ち {{count}} 件",
+        "goals": "目標",
+        "goalsCount_one": "目標 {{count}} 件",
+        "goalsCount_other": "目標 {{count}} 件",
+        "label": "ボード",
+        "version": "v{{version}}"
+      },
       "branch": {
         "cancelledCount": "{{count}}件キャンセル",
         "completedCount": "{{count}}件完了",
@@ -31125,6 +31863,46 @@ export const resources = {
       "yesterday": "昨日",
       "you": "あなた"
     },
+    "decisions": {
+      "actions": {
+        "allow": "許可",
+        "approve": "承認",
+        "deny": "拒否",
+        "openConversation": "会話を開く",
+        "openTask": "タスクを開く",
+        "reject": "却下",
+        "resumeLoop": "回答済み、再開",
+        "reviewPayment": "支払いを確認"
+      },
+      "body": {
+        "credential": "{{label}} が必要です",
+        "credentialWithReason": "{{label}} が必要です: {{reason}}",
+        "memberRequest": "{{name}} を会話に追加したがっています",
+        "permission": "{{tool}} を使いたがっています",
+        "spend": "{{merchant}} で {{amount}} を支払いたがっています",
+        "spendUnknownMerchant": "店舗"
+      },
+      "empty": {
+        "body": "エージェントからの承認依頼、質問、止まっている作業が届くとここに表示されます。",
+        "title": "判断待ちの項目はありません"
+      },
+      "failed": "処理できませんでした。もう一度お試しください。",
+      "hint": "すべてのルームで、エージェントがあなたの判断を待っている項目。",
+      "kind": {
+        "approval": "承認",
+        "blockedTask": "止まっているタスク",
+        "credential": "認証情報",
+        "loopQuestion": "質問",
+        "memberRequest": "メンバー追加の依頼",
+        "permission": "許可",
+        "spend": "支払い"
+      },
+      "loading": "読み込み中…",
+      "pending_one": "判断待ち {{count}} 件",
+      "pending_other": "判断待ち {{count}} 件",
+      "someone": "誰か",
+      "title": "判断待ち"
+    },
     "files": {
       "added": "追加日",
       "addedBy": "追加者",
@@ -31400,6 +32178,96 @@ export const resources = {
       },
       "youMarker": "（自分）"
     },
+    "graph": {
+      "actions": {
+        "openAgent": "エージェントを開く",
+        "openArtifact": "アーティファクトを開く",
+        "openConversation": "会話を開く",
+        "openTask": "タスクを開く"
+      },
+      "closePanel": "詳細を閉じる",
+      "connections_one": "接続 {{count}} 件",
+      "connections_other": "接続 {{count}} 件",
+      "edge": {
+        "anchored": "依頼元",
+        "assigned": "担当",
+        "childOf": "内部",
+        "delegated": "委任",
+        "dependsOn": "依存",
+        "goalOf": "目標",
+        "in": "所属",
+        "livesIn": "所在",
+        "member": "メンバー",
+        "ownedBy": "担当",
+        "owns": "所有",
+        "produced": "作成",
+        "reportsTo": "報告先",
+        "runs": "実行",
+        "setBy": "設定",
+        "source": "作成",
+        "subtask": "一部",
+        "targets": "対象",
+        "worksIn": "作業場所"
+      },
+      "empty": "まだ表示するものがありません。エージェントを追加するか会話を始めると、ここに表示されます。",
+      "fields": {
+        "deadline": "期限",
+        "iterations": "実行回数",
+        "lastRun": "前回実行",
+        "members": "メンバー",
+        "nextRun": "次回実行",
+        "remindAt": "通知時刻",
+        "schedule": "スケジュール",
+        "status": "状態",
+        "stopReason": "停止理由",
+        "type": "種類",
+        "updated": "更新",
+        "version": "バージョン"
+      },
+      "fit": "全体表示",
+      "hint": "ワークスペースを地図に：エージェント、ルーム、タスク、ルーティンとそのつながり。",
+      "iterations_one": "{{count}} 回実行",
+      "iterations_other": "{{count}} 回実行",
+      "kind": {
+        "agent": "エージェント",
+        "artifact": "アーティファクト",
+        "conversation": "会話",
+        "goal": "目標",
+        "huddle": "ハドル",
+        "human": "あなた",
+        "loop": "ループ",
+        "reminder": "リマインダー",
+        "routine": "ルーティン",
+        "task": "タスク",
+        "workRoom": "作業ルーム"
+      },
+      "loadFailed": "グラフを読み込めませんでした。",
+      "members_one": "メンバー {{count}} 人",
+      "members_other": "メンバー {{count}} 人",
+      "refresh": "更新",
+      "resetLayout": "配置をリセット",
+      "searchPlaceholder": "ノードを検索…",
+      "status": {
+        "accepted": "受理済み",
+        "active": "有効",
+        "blocked": "ブロック中",
+        "deactivated": "無効",
+        "in_progress": "進行中",
+        "open": "オープン",
+        "paused": "一時停止",
+        "pending": "保留中",
+        "waiting": "待機中"
+      },
+      "subtype": {
+        "channel": "チャンネル",
+        "direct": "ダイレクト",
+        "group": "グループ",
+        "session": "セッション",
+        "task": "作業ルーム"
+      },
+      "title": "ワークグラフ",
+      "untitled": "無題"
+    },
     "memory": {
       "agentMemories": "エージェントメモリー",
       "agentSubtitle": "{{name}}が知っていること、覚えていること",
@@ -31528,9 +32396,11 @@ export const resources = {
       "canvases": "キャンバス",
       "chats": "チャット",
       "collapseSidebar": "サイドバーを折りたたむ",
+      "decisions": "判断待ち",
       "expandSidebar": "サイドバーを展開",
       "files": "ファイル",
       "friends": "フレンド",
+      "graph": "グラフ",
       "hosts": "ホスト",
       "location": "位置情報",
       "members": "メンバー",
@@ -35842,6 +36712,19 @@ export const resources = {
         "label": "等待{{name}}"
       },
       "backToParent": "返回上级对话",
+      "board": {
+        "artifacts": "最新产物",
+        "artifactsCount_one": "{{count}} 个产物",
+        "artifactsCount_other": "{{count}} 个产物",
+        "decisions": "等待你处理",
+        "decisionsCount_one": "{{count}} 项等待你处理",
+        "decisionsCount_other": "{{count}} 项等待你处理",
+        "goals": "目标",
+        "goalsCount_one": "{{count}} 个目标",
+        "goalsCount_other": "{{count}} 个目标",
+        "label": "看板",
+        "version": "v{{version}}"
+      },
       "branch": {
         "cancelledCount": "{{count}} 个已取消",
         "completedCount": "{{count}} 个已完成",
@@ -36675,6 +37558,46 @@ export const resources = {
       "yesterday": "昨天",
       "you": "你"
     },
+    "decisions": {
+      "actions": {
+        "allow": "允许",
+        "approve": "批准",
+        "deny": "拒绝",
+        "openConversation": "打开对话",
+        "openTask": "打开任务",
+        "reject": "驳回",
+        "resumeLoop": "已回答，继续",
+        "reviewPayment": "查看付款"
+      },
+      "body": {
+        "credential": "需要 {{label}}",
+        "credentialWithReason": "需要 {{label}}：{{reason}}",
+        "memberRequest": "想要将 {{name}} 加入对话",
+        "permission": "想要使用 {{tool}}",
+        "spend": "想要在 {{merchant}} 支付 {{amount}}",
+        "spendUnknownMerchant": "某商家"
+      },
+      "empty": {
+        "body": "智能体的审批请求、提问和受阻的工作会在到达时显示在这里。",
+        "title": "没有等待你处理的事项"
+      },
+      "failed": "未能完成，请重试。",
+      "hint": "所有房间中你的智能体正在等待你处理的全部事项。",
+      "kind": {
+        "approval": "审批",
+        "blockedTask": "受阻任务",
+        "credential": "凭据",
+        "loopQuestion": "提问",
+        "memberRequest": "成员请求",
+        "permission": "权限",
+        "spend": "付款"
+      },
+      "loading": "加载中…",
+      "pending_one": "{{count}} 项等待你处理",
+      "pending_other": "{{count}} 项等待你处理",
+      "someone": "某人",
+      "title": "待决事项"
+    },
     "files": {
       "added": "已添加",
       "addedBy": "添加者",
@@ -36950,6 +37873,96 @@ export const resources = {
       },
       "youMarker": "（你）"
     },
+    "graph": {
+      "actions": {
+        "openAgent": "打开智能体",
+        "openArtifact": "打开产物",
+        "openConversation": "打开对话",
+        "openTask": "打开任务"
+      },
+      "closePanel": "关闭详情",
+      "connections_one": "{{count}} 个连接",
+      "connections_other": "{{count}} 个连接",
+      "edge": {
+        "anchored": "发起于",
+        "assigned": "分配给",
+        "childOf": "属于",
+        "delegated": "委派",
+        "dependsOn": "依赖",
+        "goalOf": "目标",
+        "in": "位于",
+        "livesIn": "位于",
+        "member": "成员",
+        "ownedBy": "负责人",
+        "owns": "拥有",
+        "produced": "生成",
+        "reportsTo": "汇报至",
+        "runs": "运行",
+        "setBy": "设置",
+        "source": "创建",
+        "subtask": "子任务",
+        "targets": "针对",
+        "worksIn": "工作于"
+      },
+      "empty": "暂无内容。添加智能体或开始对话后将显示在这里。",
+      "fields": {
+        "deadline": "截止",
+        "iterations": "运行次数",
+        "lastRun": "上次运行",
+        "members": "成员",
+        "nextRun": "下次运行",
+        "remindAt": "提醒时间",
+        "schedule": "计划",
+        "status": "状态",
+        "stopReason": "停止原因",
+        "type": "类型",
+        "updated": "更新于",
+        "version": "版本"
+      },
+      "fit": "适配",
+      "hint": "以地图方式查看工作区：智能体、房间、任务、例程及其关联。",
+      "iterations_one": "{{count}} 次运行",
+      "iterations_other": "{{count}} 次运行",
+      "kind": {
+        "agent": "智能体",
+        "artifact": "产物",
+        "conversation": "对话",
+        "goal": "目标",
+        "huddle": "小组讨论",
+        "human": "你",
+        "loop": "循环",
+        "reminder": "提醒",
+        "routine": "例程",
+        "task": "任务",
+        "workRoom": "工作室"
+      },
+      "loadFailed": "无法加载图谱。",
+      "members_one": "{{count}} 位成员",
+      "members_other": "{{count}} 位成员",
+      "refresh": "刷新",
+      "resetLayout": "重置布局",
+      "searchPlaceholder": "查找节点…",
+      "status": {
+        "accepted": "已接受",
+        "active": "活跃",
+        "blocked": "受阻",
+        "deactivated": "已停用",
+        "in_progress": "进行中",
+        "open": "进行中",
+        "paused": "已暂停",
+        "pending": "待处理",
+        "waiting": "等待中"
+      },
+      "subtype": {
+        "channel": "频道",
+        "direct": "私聊",
+        "group": "群组",
+        "session": "会话",
+        "task": "工作室"
+      },
+      "title": "工作图谱",
+      "untitled": "无标题"
+    },
     "memory": {
       "agentMemories": "智能体记忆",
       "agentSubtitle": "{{name}} 所知道和记住的内容",
@@ -37078,9 +38091,11 @@ export const resources = {
       "canvases": "画布",
       "chats": "聊天",
       "collapseSidebar": "收起侧边栏",
+      "decisions": "待决事项",
       "expandSidebar": "展开侧边栏",
       "files": "文件",
       "friends": "好友",
+      "graph": "图谱",
       "hosts": "主机",
       "location": "位置",
       "members": "成员",
@@ -41392,6 +42407,19 @@ export const resources = {
         "label": "{{name}} 대기 중"
       },
       "backToParent": "상위 대화로 돌아가기",
+      "board": {
+        "artifacts": "최근 아티팩트",
+        "artifactsCount_one": "아티팩트 {{count}}개",
+        "artifactsCount_other": "아티팩트 {{count}}개",
+        "decisions": "내 결정 대기 중",
+        "decisionsCount_one": "대기 중 {{count}}개",
+        "decisionsCount_other": "대기 중 {{count}}개",
+        "goals": "목표",
+        "goalsCount_one": "목표 {{count}}개",
+        "goalsCount_other": "목표 {{count}}개",
+        "label": "보드",
+        "version": "v{{version}}"
+      },
       "branch": {
         "cancelledCount": "{{count}}개 취소됨",
         "completedCount": "{{count}}개 완료됨",
@@ -42225,6 +43253,46 @@ export const resources = {
       "yesterday": "어제",
       "you": "나"
     },
+    "decisions": {
+      "actions": {
+        "allow": "허용",
+        "approve": "승인",
+        "deny": "거부",
+        "openConversation": "대화 열기",
+        "openTask": "작업 열기",
+        "reject": "반려",
+        "resumeLoop": "답변 완료, 재개",
+        "reviewPayment": "결제 검토"
+      },
+      "body": {
+        "credential": "{{label}}이(가) 필요합니다",
+        "credentialWithReason": "{{label}}이(가) 필요합니다: {{reason}}",
+        "memberRequest": "{{name}}을(를) 대화에 추가하려고 합니다",
+        "permission": "{{tool}} 사용을 원합니다",
+        "spend": "{{merchant}}에서 {{amount}}을(를) 결제하려고 합니다",
+        "spendUnknownMerchant": "판매자"
+      },
+      "empty": {
+        "body": "에이전트의 승인 요청, 질문, 막힌 작업이 들어오면 여기에 표시됩니다.",
+        "title": "대기 중인 항목이 없습니다"
+      },
+      "failed": "처리되지 않았습니다. 다시 시도하세요.",
+      "hint": "모든 방에서 에이전트가 내 결정을 기다리는 모든 항목.",
+      "kind": {
+        "approval": "승인",
+        "blockedTask": "막힌 작업",
+        "credential": "자격 증명",
+        "loopQuestion": "질문",
+        "memberRequest": "멤버 추가 요청",
+        "permission": "권한",
+        "spend": "결제"
+      },
+      "loading": "불러오는 중…",
+      "pending_one": "대기 중 {{count}}개",
+      "pending_other": "대기 중 {{count}}개",
+      "someone": "누군가",
+      "title": "결정"
+    },
     "files": {
       "added": "추가됨",
       "addedBy": "추가한 사람",
@@ -42500,6 +43568,96 @@ export const resources = {
       },
       "youMarker": "(나)"
     },
+    "graph": {
+      "actions": {
+        "openAgent": "에이전트 열기",
+        "openArtifact": "아티팩트 열기",
+        "openConversation": "대화 열기",
+        "openTask": "작업 열기"
+      },
+      "closePanel": "세부 정보 닫기",
+      "connections_one": "연결 {{count}}개",
+      "connections_other": "연결 {{count}}개",
+      "edge": {
+        "anchored": "요청 위치",
+        "assigned": "담당",
+        "childOf": "하위",
+        "delegated": "위임",
+        "dependsOn": "의존",
+        "goalOf": "목표",
+        "in": "위치",
+        "livesIn": "위치",
+        "member": "멤버",
+        "ownedBy": "담당",
+        "owns": "소유",
+        "produced": "생성",
+        "reportsTo": "보고 대상",
+        "runs": "실행",
+        "setBy": "설정",
+        "source": "생성",
+        "subtask": "일부",
+        "targets": "대상",
+        "worksIn": "작업 위치"
+      },
+      "empty": "아직 표시할 것이 없습니다. 에이전트를 추가하거나 대화를 시작하면 여기에 나타납니다.",
+      "fields": {
+        "deadline": "기한",
+        "iterations": "실행 횟수",
+        "lastRun": "마지막 실행",
+        "members": "멤버",
+        "nextRun": "다음 실행",
+        "remindAt": "알림 시각",
+        "schedule": "일정",
+        "status": "상태",
+        "stopReason": "중지 이유",
+        "type": "유형",
+        "updated": "업데이트",
+        "version": "버전"
+      },
+      "fit": "맞춤",
+      "hint": "지도처럼 보는 워크스페이스: 에이전트, 방, 작업, 루틴과 그 연결.",
+      "iterations_one": "{{count}}회 실행",
+      "iterations_other": "{{count}}회 실행",
+      "kind": {
+        "agent": "에이전트",
+        "artifact": "아티팩트",
+        "conversation": "대화",
+        "goal": "목표",
+        "huddle": "허들",
+        "human": "나",
+        "loop": "루프",
+        "reminder": "리마인더",
+        "routine": "루틴",
+        "task": "작업",
+        "workRoom": "작업 방"
+      },
+      "loadFailed": "그래프를 불러올 수 없습니다.",
+      "members_one": "멤버 {{count}}명",
+      "members_other": "멤버 {{count}}명",
+      "refresh": "새로 고침",
+      "resetLayout": "배치 초기화",
+      "searchPlaceholder": "노드 찾기…",
+      "status": {
+        "accepted": "수락됨",
+        "active": "활성",
+        "blocked": "막힘",
+        "deactivated": "비활성화",
+        "in_progress": "진행 중",
+        "open": "열림",
+        "paused": "일시 중지",
+        "pending": "대기 중",
+        "waiting": "대기 중"
+      },
+      "subtype": {
+        "channel": "채널",
+        "direct": "다이렉트",
+        "group": "그룹",
+        "session": "세션",
+        "task": "작업 방"
+      },
+      "title": "작업 그래프",
+      "untitled": "제목 없음"
+    },
     "memory": {
       "agentMemories": "에이전트 메모리",
       "agentSubtitle": "{{name}}이(가) 알고 기억하는 것",
@@ -42628,9 +43786,11 @@ export const resources = {
       "canvases": "캔버스",
       "chats": "채팅",
       "collapseSidebar": "사이드바 접기",
+      "decisions": "결정",
       "expandSidebar": "사이드바 펼치기",
       "files": "파일",
       "friends": "친구",
+      "graph": "그래프",
       "hosts": "호스트",
       "location": "위치",
       "members": "멤버",
@@ -46942,6 +48102,19 @@ export const resources = {
         "label": "In attesa di {{name}}"
       },
       "backToParent": "Torna alla conversazione principale",
+      "board": {
+        "artifacts": "Ultimi artefatti",
+        "artifactsCount_one": "{{count}} artefatto",
+        "artifactsCount_other": "{{count}} artefatti",
+        "decisions": "In attesa di te",
+        "decisionsCount_one": "{{count}} in attesa di te",
+        "decisionsCount_other": "{{count}} in attesa di te",
+        "goals": "Obiettivi",
+        "goalsCount_one": "{{count}} obiettivo",
+        "goalsCount_other": "{{count}} obiettivi",
+        "label": "Bacheca",
+        "version": "v{{version}}"
+      },
       "branch": {
         "cancelledCount": "{{count}} annullati",
         "completedCount": "{{count}} completati",
@@ -47775,6 +48948,46 @@ export const resources = {
       "yesterday": "Ieri",
       "you": "Tu"
     },
+    "decisions": {
+      "actions": {
+        "allow": "Consenti",
+        "approve": "Approva",
+        "deny": "Nega",
+        "openConversation": "Apri conversazione",
+        "openTask": "Apri attività",
+        "reject": "Rifiuta",
+        "resumeLoop": "Risposto, riprendi",
+        "reviewPayment": "Rivedi pagamento"
+      },
+      "body": {
+        "credential": "Ha bisogno di {{label}}",
+        "credentialWithReason": "Ha bisogno di {{label}}: {{reason}}",
+        "memberRequest": "Vuole aggiungere {{name}} alla conversazione",
+        "permission": "Vuole usare {{tool}}",
+        "spend": "Vuole spendere {{amount}} presso {{merchant}}",
+        "spendUnknownMerchant": "un esercente"
+      },
+      "empty": {
+        "body": "Approvazioni, domande e lavoro bloccato dei tuoi agenti compariranno qui man mano che arrivano.",
+        "title": "Niente in attesa di te"
+      },
+      "failed": "Non è andata a buon fine. Riprova.",
+      "hint": "Tutto ciò per cui i tuoi agenti aspettano te, in ogni stanza.",
+      "kind": {
+        "approval": "Approvazione",
+        "blockedTask": "Attività bloccata",
+        "credential": "Credenziale",
+        "loopQuestion": "Domanda",
+        "memberRequest": "Richiesta di aggiunta",
+        "permission": "Autorizzazione",
+        "spend": "Pagamento"
+      },
+      "loading": "Caricamento…",
+      "pending_one": "{{count}} in attesa di te",
+      "pending_other": "{{count}} in attesa di te",
+      "someone": "Qualcuno",
+      "title": "Decisioni"
+    },
     "files": {
       "added": "Aggiunto",
       "addedBy": "Aggiunto da",
@@ -48050,6 +49263,96 @@ export const resources = {
       },
       "youMarker": "(tu)"
     },
+    "graph": {
+      "actions": {
+        "openAgent": "Apri agente",
+        "openArtifact": "Apri artefatto",
+        "openConversation": "Apri conversazione",
+        "openTask": "Apri attività"
+      },
+      "closePanel": "Chiudi dettagli",
+      "connections_one": "{{count}} collegamento",
+      "connections_other": "{{count}} collegamenti",
+      "edge": {
+        "anchored": "richiesta in",
+        "assigned": "assegnata a",
+        "childOf": "dentro",
+        "delegated": "ha delegato",
+        "dependsOn": "dipende da",
+        "goalOf": "obiettivo di",
+        "in": "in",
+        "livesIn": "vive in",
+        "member": "membro di",
+        "ownedBy": "in carico a",
+        "owns": "possiede",
+        "produced": "ha prodotto",
+        "reportsTo": "riporta a",
+        "runs": "esegue",
+        "setBy": "ha impostato",
+        "source": "ha creato",
+        "subtask": "parte di",
+        "targets": "per",
+        "worksIn": "lavorata in"
+      },
+      "empty": "Niente da disegnare ancora. Aggiungi un agente o avvia una conversazione e comparirà qui.",
+      "fields": {
+        "deadline": "Scadenza",
+        "iterations": "Esecuzioni",
+        "lastRun": "Ultima esecuzione",
+        "members": "Membri",
+        "nextRun": "Prossima esecuzione",
+        "remindAt": "Ricorda il",
+        "schedule": "Pianificazione",
+        "status": "Stato",
+        "stopReason": "Fermato per",
+        "type": "Tipo",
+        "updated": "Aggiornato",
+        "version": "Versione"
+      },
+      "fit": "Adatta",
+      "hint": "Il tuo spazio di lavoro come mappa: agenti, stanze, attività, routine e ciò che li collega.",
+      "iterations_one": "{{count}} esecuzione",
+      "iterations_other": "{{count}} esecuzioni",
+      "kind": {
+        "agent": "Agente",
+        "artifact": "Artefatto",
+        "conversation": "Conversazione",
+        "goal": "Obiettivo",
+        "huddle": "Huddle",
+        "human": "Tu",
+        "loop": "Loop",
+        "reminder": "Promemoria",
+        "routine": "Routine",
+        "task": "Attività",
+        "workRoom": "Stanza di lavoro"
+      },
+      "loadFailed": "Impossibile caricare il grafo.",
+      "members_one": "{{count}} membro",
+      "members_other": "{{count}} membri",
+      "refresh": "Aggiorna",
+      "resetLayout": "Reimposta disposizione",
+      "searchPlaceholder": "Trova un nodo…",
+      "status": {
+        "accepted": "Accettata",
+        "active": "Attivo",
+        "blocked": "Bloccata",
+        "deactivated": "Disattivato",
+        "in_progress": "In corso",
+        "open": "Aperto",
+        "paused": "In pausa",
+        "pending": "In attesa",
+        "waiting": "In attesa"
+      },
+      "subtype": {
+        "channel": "Canale",
+        "direct": "Diretta",
+        "group": "Gruppo",
+        "session": "Sessione",
+        "task": "Stanza di lavoro"
+      },
+      "title": "Grafo di lavoro",
+      "untitled": "Senza titolo"
+    },
     "memory": {
       "agentMemories": "Memorie dell'agente",
       "agentSubtitle": "Cosa sa e ricorda {{name}}",
@@ -48178,9 +49481,11 @@ export const resources = {
       "canvases": "Canvas",
       "chats": "Chat",
       "collapseSidebar": "Comprimi barra laterale",
+      "decisions": "Decisioni",
       "expandSidebar": "Espandi barra laterale",
       "files": "File",
       "friends": "Amici",
+      "graph": "Grafo",
       "hosts": "Host",
       "location": "Posizione",
       "members": "Membri",
@@ -52492,6 +53797,19 @@ export const resources = {
         "label": "{{name}} की प्रतीक्षा में"
       },
       "backToParent": "मूल बातचीत पर वापस जाएँ",
+      "board": {
+        "artifacts": "नवीनतम आर्टिफ़ैक्ट",
+        "artifactsCount_one": "{{count}} आर्टिफ़ैक्ट",
+        "artifactsCount_other": "{{count}} आर्टिफ़ैक्ट",
+        "decisions": "आपकी प्रतीक्षा में",
+        "decisionsCount_one": "{{count}} आपकी प्रतीक्षा में",
+        "decisionsCount_other": "{{count}} आपकी प्रतीक्षा में",
+        "goals": "लक्ष्य",
+        "goalsCount_one": "{{count}} लक्ष्य",
+        "goalsCount_other": "{{count}} लक्ष्य",
+        "label": "बोर्ड",
+        "version": "v{{version}}"
+      },
       "branch": {
         "cancelledCount": "{{count}} रद्द",
         "completedCount": "{{count}} पूर्ण",
@@ -53325,6 +54643,46 @@ export const resources = {
       "yesterday": "कल",
       "you": "आप"
     },
+    "decisions": {
+      "actions": {
+        "allow": "अनुमति दें",
+        "approve": "स्वीकृत करें",
+        "deny": "अस्वीकार करें",
+        "openConversation": "बातचीत खोलें",
+        "openTask": "कार्य खोलें",
+        "reject": "अस्वीकार करें",
+        "resumeLoop": "उत्तर दिया, फिर शुरू करें",
+        "reviewPayment": "भुगतान की समीक्षा करें"
+      },
+      "body": {
+        "credential": "{{label}} की ज़रूरत है",
+        "credentialWithReason": "{{label}} की ज़रूरत है: {{reason}}",
+        "memberRequest": "{{name}} को बातचीत में जोड़ना चाहता है",
+        "permission": "{{tool}} का उपयोग करना चाहता है",
+        "spend": "{{merchant}} पर {{amount}} खर्च करना चाहता है",
+        "spendUnknownMerchant": "एक विक्रेता"
+      },
+      "empty": {
+        "body": "आपके एजेंटों की स्वीकृतियाँ, प्रश्न और अवरुद्ध कार्य आने पर यहाँ दिखाई देंगे।",
+        "title": "कुछ भी आपकी प्रतीक्षा में नहीं है"
+      },
+      "failed": "यह पूरा नहीं हो सका। फिर से प्रयास करें।",
+      "hint": "वह सब कुछ जिसके लिए आपके एजेंट हर रूम में आपकी प्रतीक्षा कर रहे हैं।",
+      "kind": {
+        "approval": "स्वीकृति",
+        "blockedTask": "अवरुद्ध कार्य",
+        "credential": "क्रेडेंशियल",
+        "loopQuestion": "प्रश्न",
+        "memberRequest": "सदस्य अनुरोध",
+        "permission": "अनुमति",
+        "spend": "भुगतान"
+      },
+      "loading": "लोड हो रहा है…",
+      "pending_one": "{{count}} आपकी प्रतीक्षा में",
+      "pending_other": "{{count}} आपकी प्रतीक्षा में",
+      "someone": "कोई",
+      "title": "निर्णय"
+    },
     "files": {
       "added": "जोड़ा गया",
       "addedBy": "द्वारा जोड़ा गया",
@@ -53600,6 +54958,96 @@ export const resources = {
       },
       "youMarker": "(आप)"
     },
+    "graph": {
+      "actions": {
+        "openAgent": "एजेंट खोलें",
+        "openArtifact": "आर्टिफ़ैक्ट खोलें",
+        "openConversation": "बातचीत खोलें",
+        "openTask": "कार्य खोलें"
+      },
+      "closePanel": "विवरण बंद करें",
+      "connections_one": "{{count}} कनेक्शन",
+      "connections_other": "{{count}} कनेक्शन",
+      "edge": {
+        "anchored": "में माँगा गया",
+        "assigned": "को सौंपा गया",
+        "childOf": "के अंदर",
+        "delegated": "प्रत्यायोजित",
+        "dependsOn": "पर निर्भर",
+        "goalOf": "का लक्ष्य",
+        "in": "में",
+        "livesIn": "में रहता है",
+        "member": "का सदस्य",
+        "ownedBy": "के ज़िम्मे",
+        "owns": "स्वामी है",
+        "produced": "बनाया",
+        "reportsTo": "को रिपोर्ट",
+        "runs": "चलाता है",
+        "setBy": "सेट किया",
+        "source": "बनाया",
+        "subtask": "का हिस्सा",
+        "targets": "के लिए",
+        "worksIn": "में कार्य"
+      },
+      "empty": "अभी दिखाने के लिए कुछ नहीं है। एक एजेंट जोड़ें या बातचीत शुरू करें, वह यहाँ दिखेगी।",
+      "fields": {
+        "deadline": "अंतिम तिथि",
+        "iterations": "रन",
+        "lastRun": "पिछला रन",
+        "members": "सदस्य",
+        "nextRun": "अगला रन",
+        "remindAt": "रिमाइंडर समय",
+        "schedule": "शेड्यूल",
+        "status": "स्थिति",
+        "stopReason": "रुकने का कारण",
+        "type": "प्रकार",
+        "updated": "अपडेट",
+        "version": "संस्करण"
+      },
+      "fit": "फ़िट करें",
+      "hint": "आपका कार्यक्षेत्र एक नक्शे के रूप में: एजेंट, रूम, कार्य, रूटीन और उन्हें जोड़ने वाले संबंध।",
+      "iterations_one": "{{count}} रन",
+      "iterations_other": "{{count}} रन",
+      "kind": {
+        "agent": "एजेंट",
+        "artifact": "आर्टिफ़ैक्ट",
+        "conversation": "बातचीत",
+        "goal": "लक्ष्य",
+        "huddle": "हडल",
+        "human": "आप",
+        "loop": "लूप",
+        "reminder": "रिमाइंडर",
+        "routine": "रूटीन",
+        "task": "कार्य",
+        "workRoom": "कार्य रूम"
+      },
+      "loadFailed": "ग्राफ़ लोड नहीं हो सका।",
+      "members_one": "{{count}} सदस्य",
+      "members_other": "{{count}} सदस्य",
+      "refresh": "रीफ़्रेश करें",
+      "resetLayout": "लेआउट रीसेट करें",
+      "searchPlaceholder": "नोड खोजें…",
+      "status": {
+        "accepted": "स्वीकृत",
+        "active": "सक्रिय",
+        "blocked": "अवरुद्ध",
+        "deactivated": "निष्क्रिय",
+        "in_progress": "प्रगति में",
+        "open": "खुला",
+        "paused": "रुका हुआ",
+        "pending": "लंबित",
+        "waiting": "प्रतीक्षा में"
+      },
+      "subtype": {
+        "channel": "चैनल",
+        "direct": "सीधी",
+        "group": "समूह",
+        "session": "सत्र",
+        "task": "कार्य रूम"
+      },
+      "title": "कार्य ग्राफ़",
+      "untitled": "बिना शीर्षक"
+    },
     "memory": {
       "agentMemories": "एजेंट मेमोरी",
       "agentSubtitle": "{{name}} क्या जानता है और याद रखता है",
@@ -53728,9 +55176,11 @@ export const resources = {
       "canvases": "कैनवास",
       "chats": "चैट",
       "collapseSidebar": "साइडबार संक्षिप्त करें",
+      "decisions": "निर्णय",
       "expandSidebar": "साइडबार विस्तृत करें",
       "files": "फ़ाइलें",
       "friends": "मित्र",
+      "graph": "ग्राफ़",
       "hosts": "होस्ट",
       "location": "स्थान",
       "members": "सदस्य",

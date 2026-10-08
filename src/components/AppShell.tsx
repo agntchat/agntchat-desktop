@@ -8,6 +8,7 @@ import {
   Shapes,
   FolderOpen,
   ShieldHalf,
+  Waypoints,
   Users,
   Sun,
   Moon,
@@ -59,6 +60,7 @@ import { CanvasView } from "./canvas/CanvasView";
 import { Profile } from "./Profile";
 import { FriendsView } from "./FriendsView";
 import { FleetView } from "./FleetView";
+import { WorkGraphView } from "./graph/WorkGraphView";
 import { PlatformView } from "./PlatformView";
 import { WorkspaceSwitcher } from "./WorkspaceSwitcher";
 
@@ -71,6 +73,7 @@ type View =
   | "hosts"
   | "previews"
   | "canvas"
+  | "graph"
   | "fleet"
   | "platform";
 
@@ -178,6 +181,11 @@ export function AppShell() {
           participant?.platformAdmin ? <PreviewsView /> : <Dashboard />
         ) : view === "canvas" ? (
           <CanvasView />
+        ) : view === "graph" ? (
+          // The work graph is behind the work_graph trial flag — a stale
+          // persisted "graph" view falls back to the dashboard when it is
+          // off for this user (the backend 404s the endpoint anyway).
+          participant?.features?.work_graph ? <WorkGraphView /> : <Dashboard />
         ) : view === "fleet" || view === "platform" ? (
           // Fleet folded into Platform — host management now lives under the
           // admin-only Platform area. A stale persisted "fleet" view (the tab
@@ -456,6 +464,16 @@ function LeftRail({
           active={view === "files"}
           onClick={() => onChange("files")}
         />
+        {/* Work graph trial: the workspace as a canvas of nodes. Behind the
+            work_graph runtime flag (resolved per-user on /me). */}
+        {participant?.features?.work_graph === true && (
+          <RailButton
+            icon={Waypoints}
+            label={t("graph")}
+            active={view === "graph"}
+            onClick={() => onChange("graph")}
+          />
+        )}
         {/* Self-hosting: run your agents on your own VM. Behind the
             org_hosts runtime flag (resolved per-user on /me) — the backend
             404s every host route when it's off, so the button hides

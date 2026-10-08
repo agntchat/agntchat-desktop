@@ -25,6 +25,7 @@
     "@tauri-apps/plugin-process": "^2.3.1",
     "@tauri-apps/plugin-shell": "^2.2.0",
     "@tauri-apps/plugin-updater": "^2.11.0",
+    "@xyflow/react": "^12.8.4",
     "i18next": "^26.3.4",
     "phoenix": "^1.8.5",
     "posthog-js": "^1.396.6",
