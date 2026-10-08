@@ -22,6 +22,10 @@ import type { AgentActivity } from "../../lib/agent-activity";
 import { AgentActivityIndicator } from "../AgentActivityIndicator";
 import { cn } from "../../lib/utils";
 import { NODE_HEIGHT, NODE_WIDTH } from "./layout";
+import { EmbeddedChat } from "./EmbeddedChat";
+
+/** Kinds a person can open in place as a live conversation. */
+export const CHAT_KINDS: GraphNodeKind[] = ["conversation", "huddle", "work_room"];
 
 /** Per-kind accent. Hue only — the card itself uses the theme's surfaces. */
 export const KIND_COLORS: Record<GraphNodeKind, string> = {
@@ -105,6 +109,11 @@ export type WorkGraphFlowNode = Node<
     satellites?: Partial<Record<GraphNodeKind, number>>;
     collapsed?: boolean;
     onToggleCollapse?: (id: string) => void;
+    /** Pending decisions waiting on the person here (the `work_surfaces` inbox). */
+    attention?: number;
+    /** A room opened in place as a live conversation. */
+    chatOpen?: boolean;
+    onCloseChat?: (id: string) => void;
   },
   "work"
 >;
@@ -119,7 +128,8 @@ export type WorkGraphFlowNode = Node<
  */
 function GraphNodeComponent({ data, selected }: NodeProps<WorkGraphFlowNode>) {
   const { t } = useTranslation("graph");
-  const { node, title, dimmed, online, activity, satellites, collapsed, onToggleCollapse } = data;
+  const { node, title, dimmed, online, activity, satellites, collapsed, onToggleCollapse, attention, chatOpen, onCloseChat } =
+    data;
   const Icon = KIND_ICONS[node.kind] ?? Hash;
   const color = KIND_COLORS[node.kind];
 
@@ -179,15 +189,40 @@ function GraphNodeComponent({ data, selected }: NodeProps<WorkGraphFlowNode>) {
   >;
   const foldable = satelliteEntries.length > 0 && onToggleCollapse;
 
+  if (chatOpen && onCloseChat) {
+    return (
+      <div
+        style={{ borderLeftColor: color }}
+        className={cn(
+          "flex flex-col rounded-lg border border-border border-l-4 bg-card text-card-foreground shadow-lg",
+          selected && "ring-2 ring-primary",
+          dimmed && "opacity-25"
+        )}
+      >
+        <Handle type="target" position={Position.Left} className="!h-2 !w-2 !border-0 !bg-border" />
+        <EmbeddedChat conversationId={node.rowId} title={title} onClose={() => onCloseChat(node.id)} />
+        <Handle type="source" position={Position.Right} className="!h-2 !w-2 !border-0 !bg-border" />
+      </div>
+    );
+  }
+
   return (
     <div
       style={{ width: NODE_WIDTH, minHeight: NODE_HEIGHT, borderLeftColor: color }}
       className={cn(
-        "flex flex-col rounded-lg border border-border border-l-4 bg-card text-card-foreground shadow-sm transition-opacity",
+        "relative flex flex-col rounded-lg border border-border border-l-4 bg-card text-card-foreground shadow-sm transition-opacity",
         selected && "ring-2 ring-primary",
         dimmed && "opacity-25"
       )}
     >
+      {attention ? (
+        <span
+          className="absolute -right-1.5 -top-1.5 flex h-4 min-w-4 items-center justify-center rounded-full bg-primary px-1 text-[10px] font-bold text-primary-foreground"
+          title={t("attention", { count: attention })}
+        >
+          {attention > 99 ? "99+" : attention}
+        </span>
+      ) : null}
       <Handle type="target" position={Position.Left} className="!h-2 !w-2 !border-0 !bg-border" />
       <div className="flex items-center gap-2.5 px-3 py-2">
         <div

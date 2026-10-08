@@ -3705,9 +3705,11 @@ export const resources = {
     },
     "graph": {
       "actions": {
+        "closeHere": "Close here",
         "openAgent": "Open agent",
         "openArtifact": "Open artifact",
         "openConversation": "Open conversation",
+        "openHere": "Open here",
         "openTask": "Open task"
       },
       "artifactKind": {
@@ -3717,6 +3719,9 @@ export const resources = {
         "markdown": "Markdown",
         "text": "Text"
       },
+      "attention_one": "{{count}} waiting on you",
+      "attention_other": "{{count}} waiting on you",
+      "closeChat": "Close conversation",
       "closePanel": "Close details",
       "connections_one": "{{count}} connection",
       "connections_other": "{{count}} connections",
@@ -3786,11 +3791,14 @@ export const resources = {
       "members_other": "{{count}} members",
       "refresh": "Refresh",
       "resetLayout": "Reset layout",
+      "resetLayoutHint": "Forget your own arrangement and show the workspace's",
       "runtime": {
         "external": "External session",
         "local": "On this computer",
         "orgHost": "Hosted"
       },
+      "saveWorkspaceLayout": "Save for workspace",
+      "saveWorkspaceLayoutHint": "Make this arrangement the one everyone in the workspace starts from",
       "schedule": {
         "cron": "On a cron schedule",
         "interval": "Every N minutes"
@@ -9434,9 +9442,11 @@ export const resources = {
     },
     "graph": {
       "actions": {
+        "closeHere": "Cerrar aquí",
         "openAgent": "Abrir agente",
         "openArtifact": "Abrir artefacto",
         "openConversation": "Abrir conversación",
+        "openHere": "Abrir aquí",
         "openTask": "Abrir tarea"
       },
       "artifactKind": {
@@ -9446,6 +9456,9 @@ export const resources = {
         "markdown": "Markdown",
         "text": "Texto"
       },
+      "attention_one": "{{count}} pendiente de ti",
+      "attention_other": "{{count}} pendientes de ti",
+      "closeChat": "Cerrar conversación",
       "closePanel": "Cerrar detalles",
       "connections_one": "{{count}} conexión",
       "connections_other": "{{count}} conexiones",
@@ -9515,11 +9528,14 @@ export const resources = {
       "members_other": "{{count}} miembros",
       "refresh": "Actualizar",
       "resetLayout": "Restablecer disposición",
+      "resetLayoutHint": "Olvidar tu disposición y mostrar la del espacio de trabajo",
       "runtime": {
         "external": "Sesión externa",
         "local": "En este ordenador",
         "orgHost": "Alojado"
       },
+      "saveWorkspaceLayout": "Guardar para el espacio",
+      "saveWorkspaceLayoutHint": "Hacer de esta disposición la que todos en el espacio de trabajo verán al empezar",
       "schedule": {
         "cron": "Según cron",
         "interval": "Cada N minutos"
@@ -15163,9 +15179,11 @@ export const resources = {
     },
     "graph": {
       "actions": {
+        "closeHere": "Hier schließen",
         "openAgent": "Agent öffnen",
         "openArtifact": "Artefakt öffnen",
         "openConversation": "Unterhaltung öffnen",
+        "openHere": "Hier öffnen",
         "openTask": "Aufgabe öffnen"
       },
       "artifactKind": {
@@ -15175,6 +15193,9 @@ export const resources = {
         "markdown": "Markdown",
         "text": "Text"
       },
+      "attention_one": "{{count}} wartet auf dich",
+      "attention_other": "{{count}} warten auf dich",
+      "closeChat": "Unterhaltung schließen",
       "closePanel": "Details schließen",
       "connections_one": "{{count}} Verbindung",
       "connections_other": "{{count}} Verbindungen",
@@ -15244,11 +15265,14 @@ export const resources = {
       "members_other": "{{count}} Mitglieder",
       "refresh": "Aktualisieren",
       "resetLayout": "Anordnung zurücksetzen",
+      "resetLayoutHint": "Deine Anordnung verwerfen und die des Arbeitsbereichs zeigen",
       "runtime": {
         "external": "Externe Sitzung",
         "local": "Auf diesem Computer",
         "orgHost": "Gehostet"
       },
+      "saveWorkspaceLayout": "Für Arbeitsbereich speichern",
+      "saveWorkspaceLayoutHint": "Diese Anordnung zur Ausgangsansicht für alle im Arbeitsbereich machen",
       "schedule": {
         "cron": "Nach Cron-Plan",
         "interval": "Alle N Minuten"
@@ -20892,9 +20916,11 @@ export const resources = {
     },
     "graph": {
       "actions": {
+        "closeHere": "Fermer ici",
         "openAgent": "Ouvrir l'agent",
         "openArtifact": "Ouvrir l'artefact",
         "openConversation": "Ouvrir la conversation",
+        "openHere": "Ouvrir ici",
         "openTask": "Ouvrir la tâche"
       },
       "artifactKind": {
@@ -20904,6 +20930,9 @@ export const resources = {
         "markdown": "Markdown",
         "text": "Texte"
       },
+      "attention_one": "{{count}} en attente de vous",
+      "attention_other": "{{count}} en attente de vous",
+      "closeChat": "Fermer la conversation",
       "closePanel": "Fermer les détails",
       "connections_one": "{{count}} connexion",
       "connections_other": "{{count}} connexions",
@@ -20973,11 +21002,14 @@ export const resources = {
       "members_other": "{{count}} membres",
       "refresh": "Actualiser",
       "resetLayout": "Réinitialiser la disposition",
+      "resetLayoutHint": "Oublier votre disposition et afficher celle de l'espace de travail",
       "runtime": {
         "external": "Session externe",
         "local": "Sur cet ordinateur",
         "orgHost": "Hébergé"
       },
+      "saveWorkspaceLayout": "Enregistrer pour l'espace",
+      "saveWorkspaceLayoutHint": "Faire de cette disposition celle que tout l'espace de travail voit au départ",
       "schedule": {
         "cron": "Selon un cron",
         "interval": "Toutes les N minutes"
@@ -26621,9 +26653,11 @@ export const resources = {
     },
     "graph": {
       "actions": {
+        "closeHere": "Fechar aqui",
         "openAgent": "Abrir agente",
         "openArtifact": "Abrir artefato",
         "openConversation": "Abrir conversa",
+        "openHere": "Abrir aqui",
         "openTask": "Abrir tarefa"
       },
       "artifactKind": {
@@ -26633,6 +26667,9 @@ export const resources = {
         "markdown": "Markdown",
         "text": "Texto"
       },
+      "attention_one": "{{count}} à sua espera",
+      "attention_other": "{{count}} à sua espera",
+      "closeChat": "Fechar conversa",
       "closePanel": "Fechar detalhes",
       "connections_one": "{{count}} ligação",
       "connections_other": "{{count}} ligações",
@@ -26702,11 +26739,14 @@ export const resources = {
       "members_other": "{{count}} membros",
       "refresh": "Atualizar",
       "resetLayout": "Repor disposição",
+      "resetLayoutHint": "Esquecer a sua disposição e mostrar a do espaço de trabalho",
       "runtime": {
         "external": "Sessão externa",
         "local": "Neste computador",
         "orgHost": "Alojado"
       },
+      "saveWorkspaceLayout": "Guardar para o espaço",
+      "saveWorkspaceLayoutHint": "Tornar esta disposição a inicial para todos no espaço de trabalho",
       "schedule": {
         "cron": "Segundo cron",
         "interval": "A cada N minutos"
@@ -32350,9 +32390,11 @@ export const resources = {
     },
     "graph": {
       "actions": {
+        "closeHere": "ここで閉じる",
         "openAgent": "エージェントを開く",
         "openArtifact": "アーティファクトを開く",
         "openConversation": "会話を開く",
+        "openHere": "ここで開く",
         "openTask": "タスクを開く"
       },
       "artifactKind": {
@@ -32362,6 +32404,9 @@ export const resources = {
         "markdown": "Markdown",
         "text": "テキスト"
       },
+      "attention_one": "判断待ち {{count}} 件",
+      "attention_other": "判断待ち {{count}} 件",
+      "closeChat": "会話を閉じる",
       "closePanel": "詳細を閉じる",
       "connections_one": "接続 {{count}} 件",
       "connections_other": "接続 {{count}} 件",
@@ -32431,11 +32476,14 @@ export const resources = {
       "members_other": "メンバー {{count}} 人",
       "refresh": "更新",
       "resetLayout": "配置をリセット",
+      "resetLayoutHint": "自分の配置を忘れてワークスペースの配置を表示",
       "runtime": {
         "external": "外部セッション",
         "local": "このコンピューター上",
         "orgHost": "ホスト型"
       },
+      "saveWorkspaceLayout": "ワークスペースに保存",
+      "saveWorkspaceLayoutHint": "この配置をワークスペース全員の初期配置にする",
       "schedule": {
         "cron": "cron スケジュール",
         "interval": "N分ごと"
@@ -38079,9 +38127,11 @@ export const resources = {
     },
     "graph": {
       "actions": {
+        "closeHere": "在此关闭",
         "openAgent": "打开智能体",
         "openArtifact": "打开产物",
         "openConversation": "打开对话",
+        "openHere": "在此打开",
         "openTask": "打开任务"
       },
       "artifactKind": {
@@ -38091,6 +38141,9 @@ export const resources = {
         "markdown": "Markdown",
         "text": "文本"
       },
+      "attention_one": "{{count}} 项等待你处理",
+      "attention_other": "{{count}} 项等待你处理",
+      "closeChat": "关闭对话",
       "closePanel": "关闭详情",
       "connections_one": "{{count}} 个连接",
       "connections_other": "{{count}} 个连接",
@@ -38160,11 +38213,14 @@ export const resources = {
       "members_other": "{{count}} 位成员",
       "refresh": "刷新",
       "resetLayout": "重置布局",
+      "resetLayoutHint": "放弃你的布局，显示工作区布局",
       "runtime": {
         "external": "外部会话",
         "local": "本机",
         "orgHost": "托管"
       },
+      "saveWorkspaceLayout": "保存为工作区布局",
+      "saveWorkspaceLayoutHint": "将此布局设为工作区所有人的初始布局",
       "schedule": {
         "cron": "按 cron 计划",
         "interval": "每 N 分钟"
@@ -43808,9 +43864,11 @@ export const resources = {
     },
     "graph": {
       "actions": {
+        "closeHere": "여기서 닫기",
         "openAgent": "에이전트 열기",
         "openArtifact": "아티팩트 열기",
         "openConversation": "대화 열기",
+        "openHere": "여기서 열기",
         "openTask": "작업 열기"
       },
       "artifactKind": {
@@ -43820,6 +43878,9 @@ export const resources = {
         "markdown": "Markdown",
         "text": "텍스트"
       },
+      "attention_one": "대기 중 {{count}}개",
+      "attention_other": "대기 중 {{count}}개",
+      "closeChat": "대화 닫기",
       "closePanel": "세부 정보 닫기",
       "connections_one": "연결 {{count}}개",
       "connections_other": "연결 {{count}}개",
@@ -43889,11 +43950,14 @@ export const resources = {
       "members_other": "멤버 {{count}}명",
       "refresh": "새로 고침",
       "resetLayout": "배치 초기화",
+      "resetLayoutHint": "내 배치를 지우고 워크스페이스 배치 표시",
       "runtime": {
         "external": "외부 세션",
         "local": "이 컴퓨터에서",
         "orgHost": "호스팅됨"
       },
+      "saveWorkspaceLayout": "워크스페이스에 저장",
+      "saveWorkspaceLayoutHint": "이 배치를 워크스페이스 구성원 모두의 기본 배치로 설정",
       "schedule": {
         "cron": "cron 일정",
         "interval": "N분마다"
@@ -49537,9 +49601,11 @@ export const resources = {
     },
     "graph": {
       "actions": {
+        "closeHere": "Chiudi qui",
         "openAgent": "Apri agente",
         "openArtifact": "Apri artefatto",
         "openConversation": "Apri conversazione",
+        "openHere": "Apri qui",
         "openTask": "Apri attività"
       },
       "artifactKind": {
@@ -49549,6 +49615,9 @@ export const resources = {
         "markdown": "Markdown",
         "text": "Testo"
       },
+      "attention_one": "{{count}} in attesa di te",
+      "attention_other": "{{count}} in attesa di te",
+      "closeChat": "Chiudi conversazione",
       "closePanel": "Chiudi dettagli",
       "connections_one": "{{count}} collegamento",
       "connections_other": "{{count}} collegamenti",
@@ -49618,11 +49687,14 @@ export const resources = {
       "members_other": "{{count}} membri",
       "refresh": "Aggiorna",
       "resetLayout": "Reimposta disposizione",
+      "resetLayoutHint": "Dimentica la tua disposizione e mostra quella dello spazio di lavoro",
       "runtime": {
         "external": "Sessione esterna",
         "local": "Su questo computer",
         "orgHost": "Ospitato"
       },
+      "saveWorkspaceLayout": "Salva per lo spazio",
+      "saveWorkspaceLayoutHint": "Rendi questa disposizione quella da cui parte tutto lo spazio di lavoro",
       "schedule": {
         "cron": "Secondo cron",
         "interval": "Ogni N minuti"
@@ -55266,9 +55338,11 @@ export const resources = {
     },
     "graph": {
       "actions": {
+        "closeHere": "यहाँ बंद करें",
         "openAgent": "एजेंट खोलें",
         "openArtifact": "आर्टिफ़ैक्ट खोलें",
         "openConversation": "बातचीत खोलें",
+        "openHere": "यहाँ खोलें",
         "openTask": "कार्य खोलें"
       },
       "artifactKind": {
@@ -55278,6 +55352,9 @@ export const resources = {
         "markdown": "Markdown",
         "text": "टेक्स्ट"
       },
+      "attention_one": "{{count}} आपकी प्रतीक्षा में",
+      "attention_other": "{{count}} आपकी प्रतीक्षा में",
+      "closeChat": "बातचीत बंद करें",
       "closePanel": "विवरण बंद करें",
       "connections_one": "{{count}} कनेक्शन",
       "connections_other": "{{count}} कनेक्शन",
@@ -55347,11 +55424,14 @@ export const resources = {
       "members_other": "{{count}} सदस्य",
       "refresh": "रीफ़्रेश करें",
       "resetLayout": "लेआउट रीसेट करें",
+      "resetLayoutHint": "अपना लेआउट भूलें और कार्यक्षेत्र का दिखाएँ",
       "runtime": {
         "external": "बाहरी सत्र",
         "local": "इस कंप्यूटर पर",
         "orgHost": "होस्टेड"
       },
+      "saveWorkspaceLayout": "कार्यक्षेत्र के लिए सहेजें",
+      "saveWorkspaceLayoutHint": "इस लेआउट को कार्यक्षेत्र के सभी लोगों का प्रारंभिक लेआउट बनाएँ",
       "schedule": {
         "cron": "क्रॉन शेड्यूल पर",
         "interval": "हर N मिनट"

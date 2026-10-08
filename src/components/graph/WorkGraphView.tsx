@@ -16,9 +16,22 @@ import {
 } from "@xyflow/react";
 import "@xyflow/react/dist/style.css";
 import { useTranslation } from "react-i18next";
-import { Crosshair, FoldVertical, LocateFixed, RefreshCw, Search, Shuffle, UnfoldVertical, Waypoints, X } from "lucide-react";
+import {
+  Crosshair,
+  FoldVertical,
+  LocateFixed,
+  MessageSquareText,
+  RefreshCw,
+  Save,
+  Search,
+  Shuffle,
+  UnfoldVertical,
+  Waypoints,
+  X,
+} from "lucide-react";
 import {
   useWorkGraphStore,
+  type GraphDecision,
   type GraphEdge,
   type GraphEdgeKind,
   type GraphNode as GraphNodeData,
@@ -37,6 +50,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import {
   ARTIFACT_KIND_KEYS,
+  CHAT_KINDS,
   GraphNode,
   KIND_COLORS,
   KIND_ICONS,
@@ -100,6 +114,17 @@ export const EDGE_LABEL_KEYS: Record<GraphEdgeKind, string> = {
   owned_by: "graph:edge.ownedBy",
 };
 
+/** Decision kinds → the inbox's own labels (`decisions` namespace), static for the audit. */
+const DECISION_KIND_KEYS: Record<string, string> = {
+  permission: "decisions:kind.permission",
+  credential: "decisions:kind.credential",
+  approval: "decisions:kind.approval",
+  member_request: "decisions:kind.memberRequest",
+  loop_question: "decisions:kind.loopQuestion",
+  spend: "decisions:kind.spend",
+  blocked_task: "decisions:kind.blockedTask",
+};
+
 /**
  * The work graph (`work_graph` flag): the workspace as a canvas of typed
  * nodes — people, agents, rooms, huddles, work rooms, tasks, routines,
@@ -122,13 +147,30 @@ function WorkGraphCanvas() {
   const graph = useWorkGraphStore((s) => s.graph);
   const loading = useWorkGraphStore((s) => s.loading);
   const error = useWorkGraphStore((s) => s.error);
-  const positions = useWorkGraphStore((s) => s.positions);
+  const layout = useWorkGraphStore((s) => s.layout);
+  const minePositions = useWorkGraphStore((s) => s.minePositions);
+  const mineCollapsed = useWorkGraphStore((s) => s.mineCollapsed);
   const hiddenKinds = useWorkGraphStore((s) => s.hiddenKinds);
   const query = useWorkGraphStore((s) => s.query);
   const selectedId = useWorkGraphStore((s) => s.selectedId);
-  const collapsed = useWorkGraphStore((s) => s.collapsed);
   const focusDepth = useWorkGraphStore((s) => s.focusDepth);
+  const openChats = useWorkGraphStore((s) => s.openChats);
+  const decisions = useWorkGraphStore((s) => s.decisions);
   const fetchGraph = useWorkGraphStore((s) => s.fetchGraph);
+  const fetchDecisions = useWorkGraphStore((s) => s.fetchDecisions);
+  const saveWorkspaceLayout = useWorkGraphStore((s) => s.saveWorkspaceLayout);
+  const toggleChat = useWorkGraphStore((s) => s.toggleChat);
+  const closeChat = useWorkGraphStore((s) => s.closeChat);
+
+  // Effective layout: my pins over the workspace's, my folds if I have any.
+  const positions = useMemo(
+    () => ({ ...(layout.workspace?.positions ?? {}), ...minePositions }),
+    [layout.workspace, minePositions]
+  );
+  const collapsed = useMemo(
+    () => mineCollapsed ?? new Set(layout.workspace?.collapsed ?? []),
+    [mineCollapsed, layout.workspace]
+  );
   const setPosition = useWorkGraphStore((s) => s.setPosition);
   const resetLayout = useWorkGraphStore((s) => s.resetLayout);
   const toggleKind = useWorkGraphStore((s) => s.toggleKind);
@@ -152,13 +194,25 @@ function WorkGraphCanvas() {
   // view is open, and on a slow poll (routines have no event).
   useEffect(() => {
     void fetchGraph();
+    void fetchDecisions();
     const unsub = initWsListeners();
     const id = window.setInterval(() => void fetchGraph(), POLL_MS);
     return () => {
       unsub();
       window.clearInterval(id);
     };
-  }, [fetchGraph, initWsListeners]);
+  }, [fetchGraph, fetchDecisions, initWsListeners]);
+
+  // Decisions waiting on the person, counted onto the node they belong to:
+  // the room they were asked in, else the agent that asked.
+  const attention = useMemo(() => {
+    const out: Record<string, number> = {};
+    for (const d of decisions) {
+      const id = d.conversationId ? `conversation:${d.conversationId}` : d.agent ? `agent:${d.agent.id}` : null;
+      if (id) out[id] = (out[id] ?? 0) + 1;
+    }
+    return out;
+  }, [decisions]);
 
   // A DM has no title server-side; the chat store knows its members.
   const titleFor = useCallback(
@@ -226,8 +280,14 @@ function WorkGraphCanvas() {
             satellites: host ? allSatellites[node.id] : undefined,
             collapsed: host ? collapsed.has(node.id) : undefined,
             onToggleCollapse: host ? toggleCollapsed : undefined,
+            attention: attention[node.id],
+            chatOpen: openChats.has(node.id),
+            onCloseChat: CHAT_KINDS.includes(node.kind) ? closeChat : undefined,
           },
           selected: node.id === selectedId,
+          // A room opened in place must not be folded into its parent's pocket
+          // by a drag, and its handles move with its new size.
+          draggable: true,
         };
       }),
     [
@@ -242,6 +302,9 @@ function WorkGraphCanvas() {
       allSatellites,
       collapsed,
       toggleCollapsed,
+      attention,
+      openChats,
+      closeChat,
       selectedId,
     ]
   );
@@ -289,11 +352,14 @@ function WorkGraphCanvas() {
     [select]
   );
 
+  // Double-click: a room opens in place; an agent folds or unfolds its pocket.
   const onNodeDoubleClick: NodeMouseHandler<WorkGraphFlowNode> = useCallback(
     (_evt, node) => {
-      if (GROUP_HOST_KINDS.includes(node.data.node.kind) && allSatellites[node.id]) toggleCollapsed(node.id);
+      const kind = node.data.node.kind;
+      if (CHAT_KINDS.includes(kind)) toggleChat(node.id);
+      else if (GROUP_HOST_KINDS.includes(kind) && allSatellites[node.id]) toggleCollapsed(node.id);
     },
-    [allSatellites, toggleCollapsed]
+    [allSatellites, toggleCollapsed, toggleChat]
   );
 
   const selected = useMemo(
@@ -370,9 +436,13 @@ function WorkGraphCanvas() {
               <LocateFixed className="h-4 w-4" />
               {t("fit")}
             </Button>
-            <Button variant="outline" size="sm" onClick={resetLayout} title={t("resetLayout")}>
+            <Button variant="outline" size="sm" onClick={() => void resetLayout()} title={t("resetLayoutHint")}>
               <Shuffle className="h-4 w-4" />
               {t("resetLayout")}
+            </Button>
+            <Button variant="outline" size="sm" onClick={() => void saveWorkspaceLayout()} title={t("saveWorkspaceLayoutHint")}>
+              <Save className="h-4 w-4" />
+              {t("saveWorkspaceLayout")}
             </Button>
             <Button variant="outline" size="sm" onClick={() => void fetchGraph()} disabled={loading} title={t("refresh")}>
               <RefreshCw className={cn("h-4 w-4", loading && "animate-spin")} />
@@ -456,6 +526,13 @@ function WorkGraphCanvas() {
             node={selected}
             titleFor={titleFor}
             folded={folded.members[selected.id] ?? []}
+            decisions={decisions.filter(
+              (d) =>
+                (d.conversationId && `conversation:${d.conversationId}` === selected.id) ||
+                (!d.conversationId && d.agent && `agent:${d.agent.id}` === selected.id)
+            )}
+            chatOpen={openChats.has(selected.id)}
+            onToggleChat={() => toggleChat(selected.id)}
             onClose={() => select(null)}
           />
         )}
@@ -469,14 +546,21 @@ function NodePanel({
   node,
   titleFor,
   folded,
+  decisions,
+  chatOpen,
+  onToggleChat,
   onClose,
 }: {
   node: GraphNodeData;
   titleFor: (node: GraphNodeData) => string;
   folded: string[];
+  decisions: GraphDecision[];
+  chatOpen: boolean;
+  onToggleChat: () => void;
   onClose: () => void;
 }) {
   const { t } = useTranslation("graph");
+  const { t: tDecisions } = useTranslation("decisions");
   const setView = useNavStore((s) => s.setView);
   const setActiveConversation = useChatStore((s) => s.setActiveConversation);
   const selectTask = useTaskStore((s) => s.selectTask);
@@ -656,6 +740,27 @@ function NodePanel({
           </div>
         )}
 
+        {decisions.length > 0 && (
+          <div className="mb-4">
+            <p className="mb-1.5 text-[11px] font-semibold uppercase tracking-wide text-muted-foreground">
+              {t("attention", { count: decisions.length })}
+            </p>
+            <ul className="flex flex-col gap-1.5">
+              {decisions.map((d) => (
+                <li key={d.id} className="rounded-md border border-border bg-background px-2.5 py-1.5">
+                  <p className="text-[10px] font-semibold uppercase tracking-wide text-muted-foreground">
+                    {tDecisions(DECISION_KIND_KEYS[d.kind] ?? "decisions:kind.approval")}
+                    {d.agent?.displayName ? ` · ${d.agent.displayName}` : ""}
+                  </p>
+                  <p className="line-clamp-3 text-sm text-foreground">
+                    {d.prompt || d.description || d.question || d.label || d.title || d.merchantName || d.toolName || ""}
+                  </p>
+                </li>
+              ))}
+            </ul>
+          </div>
+        )}
+
         {neighbours.length > 0 && (
           <>
             <p className="mb-1.5 text-[11px] font-semibold uppercase tracking-wide text-muted-foreground">
@@ -686,11 +791,19 @@ function NodePanel({
         )}
       </div>
 
-      {action && (
-        <div className="border-t border-border p-3">
-          <Button className="w-full" onClick={action.run}>
-            {action.label}
-          </Button>
+      {(action || CHAT_KINDS.includes(node.kind)) && (
+        <div className="flex flex-col gap-2 border-t border-border p-3">
+          {CHAT_KINDS.includes(node.kind) && (
+            <Button variant="outline" className="w-full" onClick={onToggleChat}>
+              <MessageSquareText className="h-4 w-4" />
+              {chatOpen ? t("actions.closeHere") : t("actions.openHere")}
+            </Button>
+          )}
+          {action && (
+            <Button className="w-full" onClick={action.run}>
+              {action.label}
+            </Button>
+          )}
         </div>
       )}
     </aside>
