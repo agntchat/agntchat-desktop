@@ -134,6 +134,9 @@ class WebSocketService {
       "agent_created",
       "agent_deleted",
       "agent_deactivated",
+      // A routine of one of the owner's agents changed or ran. routineStore
+      // upserts/drops by id; the work graph re-reads.
+      "routine_updated",
       "agent_busy_redirect",
       "human_status_changed",
       "presence_snapshot",

@@ -11,6 +11,7 @@ import { useRoomGoalsStore } from "../stores/roomGoalsStore";
 import { useFriendStore } from "../stores/friendStore";
 import { useWorkspaceStore } from "../stores/workspaceStore";
 import { useArtifactStore } from "../stores/artifactStore";
+import { useRoutineStore } from "../stores/routineStore";
 import { ws } from "../services/websocket";
 
 /**
@@ -44,6 +45,7 @@ export function useWebSocket() {
     const unsubFriends = useFriendStore.getState().initWsListeners();
     const unsubWorkspace = useWorkspaceStore.getState().initWsListeners();
     const unsubArtifacts = useArtifactStore.getState().initWsListeners();
+    const unsubRoutines = useRoutineStore.getState().initWsListeners();
 
     // Re-join whichever conversation is currently open whenever the socket
     // comes up. Fixes a missed-message bug where `disconnect()` clears the
@@ -164,6 +166,7 @@ export function useWebSocket() {
       unsubFriends();
       unsubWorkspace();
       unsubArtifacts();
+      unsubRoutines();
       ws.disconnect();
     };
   }, [token, participantId]);

@@ -83,8 +83,12 @@ const WIRED_KEYS = {
 
 const NODE_TYPES = { work: GraphNode };
 
-/** Routines have no WebSocket event; the view re-reads on this cadence while mounted. */
-const POLL_MS = 60_000;
+/**
+ * Safety net while mounted: artifact and room-goal changes push on
+ * conversation channels only, which the graph does not join. Everything
+ * else (tasks, agents, rooms, routines, reminders) arrives as an event.
+ */
+const POLL_MS = 5 * 60_000;
 
 /** Edge families: structure is quiet, work is strong, schedules dashed, outputs dotted. */
 const EDGE_STYLE: Record<GraphEdgeKind, { dash?: string; strong?: boolean }> = {
@@ -209,7 +213,7 @@ function WorkGraphCanvas() {
   const { fitView } = useReactFlow();
 
   // Read once on mount, after the events that change the graph while the
-  // view is open, and on a slow poll (routines have no event).
+  // view is open, and on a slow safety poll.
   useEffect(() => {
     void fetchGraph();
     void fetchDecisions();

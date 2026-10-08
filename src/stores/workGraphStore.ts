@@ -172,9 +172,9 @@ export const useWorkGraphEnabled = () =>
   useAuthStore((s) => s.participant?.features?.work_graph === true);
 
 /**
- * User-channel events after which the graph may have changed. Routines have
- * no event of their own, so the view also re-reads on a slow timer while it
- * is mounted (`WorkGraphView`).
+ * User-channel events after which the graph may have changed. Artifacts and
+ * room goals push on conversation channels only, so the view also re-reads
+ * on a slow safety timer while it is mounted (`WorkGraphView`).
  */
 const REFRESH_EVENTS = [
   "task_created",
@@ -191,6 +191,7 @@ const REFRESH_EVENTS = [
   "agent_deleted",
   "agent_deactivated",
   "reminder_fired",
+  "routine_updated",
   "user_channel_joined",
 ] as const;
 

@@ -1,5 +1,6 @@
 import { create } from "zustand";
 import { listRoutines } from "../lib/api";
+import { ws } from "../services/websocket";
 import type { Routine } from "../lib/api";
 import { isFresh } from "../lib/cache";
 
@@ -22,6 +23,8 @@ interface RoutineState {
 
   fetchRoutines: () => Promise<void>;
   fetchRoutinesIfStale: () => Promise<void>;
+  /** Apply `routine_updated` pushes: upsert, or drop when `deleted`. */
+  initWsListeners: () => () => void;
   /** Fold a server-confirmed row back into the list — the Actions detail
    *  pane edits routines without going through a refetch. */
   upsertRoutine: (routine: Routine) => void;
@@ -51,6 +54,16 @@ export const useRoutineStore = create<RoutineState>((set, get) => ({
         ? s.routines.map((r) => (r.id === routine.id ? routine : r))
         : [routine, ...s.routines],
     })),
+
+  initWsListeners: () =>
+    ws.on("routine_updated", (payload) => {
+      const routine = payload as unknown as Routine & { deleted?: boolean; change?: string };
+      if (routine.deleted) {
+        set((s) => ({ routines: s.routines.filter((r) => r.id !== routine.id) }));
+      } else {
+        get().upsertRoutine(routine);
+      }
+    }),
 
   fetchRoutinesIfStale: async () => {
     const inflight = get()._inflight;
