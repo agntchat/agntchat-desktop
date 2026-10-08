@@ -129,6 +129,11 @@ class WebSocketService {
       "agent_status_changed",
       "agent_activity_changed",
       "agent_updated",
+      // Agent lifecycle (create / delete / deactivate) — the work graph
+      // re-reads on these so a new or removed agent appears at once.
+      "agent_created",
+      "agent_deleted",
+      "agent_deactivated",
       "agent_busy_redirect",
       "human_status_changed",
       "presence_snapshot",

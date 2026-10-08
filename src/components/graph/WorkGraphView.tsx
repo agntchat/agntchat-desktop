@@ -8,6 +8,7 @@ import {
   ReactFlow,
   ReactFlowProvider,
   MarkerType,
+  useNodesState,
   useReactFlow,
   type Edge,
   type NodeMouseHandler,
@@ -15,9 +16,10 @@ import {
 } from "@xyflow/react";
 import "@xyflow/react/dist/style.css";
 import { useTranslation } from "react-i18next";
-import { LocateFixed, RefreshCw, Search, Shuffle, Waypoints, X } from "lucide-react";
+import { Crosshair, FoldVertical, LocateFixed, RefreshCw, Search, Shuffle, UnfoldVertical, Waypoints, X } from "lucide-react";
 import {
   useWorkGraphStore,
+  type GraphEdge,
   type GraphEdgeKind,
   type GraphNode as GraphNodeData,
   type GraphNodeKind,
@@ -33,8 +35,19 @@ import { useThemeStore } from "../../stores/themeStore";
 import { cn, formatRelativeShort, getConversationTitle } from "../../lib/utils";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { GraphNode, KIND_COLORS, KIND_ICONS, KIND_LABEL_KEYS, type WorkGraphFlowNode } from "./GraphNode";
+import {
+  ARTIFACT_KIND_KEYS,
+  GraphNode,
+  KIND_COLORS,
+  KIND_ICONS,
+  KIND_LABEL_KEYS,
+  RUNTIME_KEYS,
+  SCHEDULE_KEYS,
+  STOP_REASON_KEYS,
+  type WorkGraphFlowNode,
+} from "./GraphNode";
 import { layoutGraph } from "./layout";
+import { GROUP_HOST_KINDS, fold, neighbourhood, satelliteCounts } from "./pockets";
 
 const NODE_TYPES = { work: GraphNode };
 
@@ -65,7 +78,7 @@ const EDGE_STYLE: Record<GraphEdgeKind, { dash?: string; strong?: boolean }> = {
 };
 
 /** i18n keys per edge kind — static so the catalog audit sees them. */
-const EDGE_LABEL_KEYS: Record<GraphEdgeKind, string> = {
+export const EDGE_LABEL_KEYS: Record<GraphEdgeKind, string> = {
   owns: "graph:edge.owns",
   member: "graph:edge.member",
   child_of: "graph:edge.childOf",
@@ -91,8 +104,9 @@ const EDGE_LABEL_KEYS: Record<GraphEdgeKind, string> = {
  * The work graph (`work_graph` flag): the workspace as a canvas of typed
  * nodes — people, agents, rooms, huddles, work rooms, tasks, routines,
  * loops, reminders, artifacts, goals — joined by the relations the server
- * reports (`GET /api/me/work-graph`). Read-only in this phase: selecting a
- * node shows its fields and one way into the surface that owns it. Plan
+ * reports (`GET /api/me/work-graph`). Phase 2: agents and rooms fold their
+ * satellites into pockets, focus dims what is more than a hop or two from
+ * the selection, and agent nodes carry live activity and presence. Plan
  * and later phases: docs/feature-proposals/work-graph-canvas.md.
  */
 export function WorkGraphView() {
@@ -112,25 +126,39 @@ function WorkGraphCanvas() {
   const hiddenKinds = useWorkGraphStore((s) => s.hiddenKinds);
   const query = useWorkGraphStore((s) => s.query);
   const selectedId = useWorkGraphStore((s) => s.selectedId);
+  const collapsed = useWorkGraphStore((s) => s.collapsed);
+  const focusDepth = useWorkGraphStore((s) => s.focusDepth);
   const fetchGraph = useWorkGraphStore((s) => s.fetchGraph);
   const setPosition = useWorkGraphStore((s) => s.setPosition);
   const resetLayout = useWorkGraphStore((s) => s.resetLayout);
   const toggleKind = useWorkGraphStore((s) => s.toggleKind);
   const setQuery = useWorkGraphStore((s) => s.setQuery);
   const select = useWorkGraphStore((s) => s.select);
+  const toggleCollapsed = useWorkGraphStore((s) => s.toggleCollapsed);
+  const collapseAll = useWorkGraphStore((s) => s.collapseAll);
+  const expandAll = useWorkGraphStore((s) => s.expandAll);
+  const cycleFocus = useWorkGraphStore((s) => s.cycleFocus);
+  const initWsListeners = useWorkGraphStore((s) => s.initWsListeners);
 
   const conversations = useChatStore((s) => s.conversations);
   const agentConversations = useChatStore((s) => s.agentConversations);
   const online = usePresenceStore((s) => s.online);
+  const agentActivity = usePresenceStore((s) => s.agentActivity);
   const currentUserId = useAuthStore((s) => s.participant?.id);
   const theme = useThemeStore((s) => s.theme);
   const { fitView } = useReactFlow();
 
+  // Read once on mount, after the events that change the graph while the
+  // view is open, and on a slow poll (routines have no event).
   useEffect(() => {
     void fetchGraph();
+    const unsub = initWsListeners();
     const id = window.setInterval(() => void fetchGraph(), POLL_MS);
-    return () => window.clearInterval(id);
-  }, [fetchGraph]);
+    return () => {
+      unsub();
+      window.clearInterval(id);
+    };
+  }, [fetchGraph, initWsListeners]);
 
   // A DM has no title server-side; the chat store knows its members.
   const titleFor = useCallback(
@@ -146,17 +174,21 @@ function WorkGraphCanvas() {
     [conversations, agentConversations, currentUserId, t]
   );
 
-  const visibleNodes = useMemo(
-    () => (graph?.nodes ?? []).filter((n) => !hiddenKinds.has(n.kind)),
-    [graph, hiddenKinds]
-  );
+  // Kind filter, then pockets: satellites of a folded host leave the canvas
+  // and their edges re-route to the host.
+  const filtered = useMemo(() => {
+    const nodes = (graph?.nodes ?? []).filter((n) => !hiddenKinds.has(n.kind));
+    const ids = new Set(nodes.map((n) => n.id));
+    const edges = (graph?.edges ?? []).filter((e) => ids.has(e.source) && ids.has(e.target));
+    return { nodes, edges };
+  }, [graph, hiddenKinds]);
 
-  const visibleEdges = useMemo(() => {
-    const ids = new Set(visibleNodes.map((n) => n.id));
-    return (graph?.edges ?? []).filter((e) => ids.has(e.source) && ids.has(e.target));
-  }, [graph, visibleNodes]);
+  const allSatellites = useMemo(() => satelliteCounts(filtered.nodes), [filtered.nodes]);
+  const folded = useMemo(() => fold(filtered.nodes, filtered.edges, collapsed), [filtered, collapsed]);
+  const visibleNodes = folded.nodes;
+  const visibleEdges = folded.edges;
 
-  // Seed layout once per graph shape; pinned positions win and anchor the rest.
+  // Seed layout once per visible shape; pinned positions win and anchor the rest.
   const layoutRef = useRef<{ key: string; positions: Record<string, { x: number; y: number }> } | null>(null);
   const laidOut = useMemo(() => {
     const key = visibleNodes.map((n) => n.id).join("|") + "#" + Object.keys(positions).length;
@@ -166,13 +198,21 @@ function WorkGraphCanvas() {
     return out;
   }, [visibleNodes, visibleEdges, positions]);
 
+  // Focus: what is near the selection, by hops over the visible edges.
+  const focused = useMemo(() => {
+    if (!selectedId || focusDepth === 0) return null;
+    return neighbourhood(selectedId, visibleEdges, focusDepth);
+  }, [selectedId, focusDepth, visibleEdges]);
+
   const needle = query.trim().toLowerCase();
 
-  const flowNodes = useMemo<WorkGraphFlowNode[]>(
+  const computedNodes = useMemo<WorkGraphFlowNode[]>(
     () =>
       visibleNodes.map((node) => {
         const title = titleFor(node);
-        const dimmed = needle.length > 0 && !title.toLowerCase().includes(needle);
+        const matchesQuery = needle.length === 0 || title.toLowerCase().includes(needle);
+        const inFocus = !focused || focused.has(node.id);
+        const host = GROUP_HOST_KINDS.includes(node.kind);
         return {
           id: node.id,
           type: "work",
@@ -180,20 +220,44 @@ function WorkGraphCanvas() {
           data: {
             node,
             title,
-            dimmed,
+            dimmed: !matchesQuery || !inFocus,
             online: node.kind === "agent" ? online.has(node.rowId) : undefined,
+            activity: node.kind === "agent" ? agentActivity[node.rowId] : undefined,
+            satellites: host ? allSatellites[node.id] : undefined,
+            collapsed: host ? collapsed.has(node.id) : undefined,
+            onToggleCollapse: host ? toggleCollapsed : undefined,
           },
           selected: node.id === selectedId,
         };
       }),
-    [visibleNodes, positions, laidOut, titleFor, needle, online, selectedId]
+    [
+      visibleNodes,
+      positions,
+      laidOut,
+      titleFor,
+      needle,
+      focused,
+      online,
+      agentActivity,
+      allSatellites,
+      collapsed,
+      toggleCollapsed,
+      selectedId,
+    ]
   );
+
+  // React Flow owns positions while a drag is in flight (a controlled
+  // `nodes` prop alone would leave the card still until mouseup); the
+  // computed set is pushed in whenever it changes.
+  const [nodes, setNodes, onNodesChange] = useNodesState<WorkGraphFlowNode>(computedNodes);
+  useEffect(() => setNodes(computedNodes), [computedNodes, setNodes]);
 
   const flowEdges = useMemo<Edge[]>(
     () =>
       visibleEdges.map((edge) => {
         const style = EDGE_STYLE[edge.kind] ?? {};
         const touchesSelected = selectedId && (edge.source === selectedId || edge.target === selectedId);
+        const inFocus = !focused || (focused.has(edge.source) && focused.has(edge.target));
         return {
           id: edge.id,
           source: edge.source,
@@ -208,11 +272,11 @@ function WorkGraphCanvas() {
             strokeWidth: touchesSelected ? 2 : style.strong ? 1.5 : 1,
             strokeDasharray: style.dash,
             stroke: touchesSelected ? "var(--primary)" : "var(--border)",
-            opacity: selectedId && !touchesSelected ? 0.35 : 1,
+            opacity: !inFocus ? 0.15 : selectedId && !touchesSelected ? 0.35 : 1,
           },
         };
       }),
-    [visibleEdges, selectedId, t]
+    [visibleEdges, selectedId, focused, t]
   );
 
   const onNodeDragStop: OnNodeDrag<WorkGraphFlowNode> = useCallback(
@@ -225,19 +289,31 @@ function WorkGraphCanvas() {
     [select]
   );
 
+  const onNodeDoubleClick: NodeMouseHandler<WorkGraphFlowNode> = useCallback(
+    (_evt, node) => {
+      if (GROUP_HOST_KINDS.includes(node.data.node.kind) && allSatellites[node.id]) toggleCollapsed(node.id);
+    },
+    [allSatellites, toggleCollapsed]
+  );
+
   const selected = useMemo(
     () => (selectedId ? graph?.nodes.find((n) => n.id === selectedId) ?? null : null),
     [graph, selectedId]
   );
 
+  // A selected satellite that gets folded away loses its selection.
+  useEffect(() => {
+    if (selectedId && graph && !visibleNodes.some((n) => n.id === selectedId)) select(null);
+  }, [selectedId, visibleNodes, graph, select]);
+
   // Once the first graph lands, frame it.
   const framedRef = useRef(false);
   useEffect(() => {
-    if (graph && !framedRef.current && flowNodes.length > 0) {
+    if (graph && !framedRef.current && computedNodes.length > 0) {
       framedRef.current = true;
       window.requestAnimationFrame(() => void fitView({ padding: 0.2, duration: 300 }));
     }
-  }, [graph, flowNodes.length, fitView]);
+  }, [graph, computedNodes.length, fitView]);
 
   const kinds: GraphNodeKind[] = graph?.nodeKinds ?? [];
   const counts = useMemo(() => {
@@ -245,6 +321,9 @@ function WorkGraphCanvas() {
     for (const n of graph?.nodes ?? []) out[n.kind] = (out[n.kind] ?? 0) + 1;
     return out;
   }, [graph]);
+
+  const hostIds = useMemo(() => Object.keys(allSatellites), [allSatellites]);
+  const allFolded = hostIds.length > 0 && hostIds.every((id) => collapsed.has(id));
 
   return (
     <div className="flex h-full w-full flex-col">
@@ -267,6 +346,26 @@ function WorkGraphCanvas() {
                 className="h-9 w-56 pl-8"
               />
             </div>
+            <Button
+              variant={focusDepth > 0 ? "default" : "outline"}
+              size="sm"
+              onClick={cycleFocus}
+              title={t("focusHint")}
+              aria-pressed={focusDepth > 0}
+            >
+              <Crosshair className="h-4 w-4" />
+              {focusDepth === 0 ? t("focus") : t("focusDepth", { depth: focusDepth })}
+            </Button>
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={() => (allFolded ? expandAll() : collapseAll(hostIds))}
+              disabled={hostIds.length === 0}
+              title={allFolded ? t("unfoldAll") : t("foldAll")}
+            >
+              {allFolded ? <UnfoldVertical className="h-4 w-4" /> : <FoldVertical className="h-4 w-4" />}
+              {allFolded ? t("unfoldAll") : t("foldAll")}
+            </Button>
             <Button variant="outline" size="sm" onClick={() => void fitView({ padding: 0.2, duration: 300 })} title={t("fit")}>
               <LocateFixed className="h-4 w-4" />
               {t("fit")}
@@ -311,12 +410,14 @@ function WorkGraphCanvas() {
       <div className="relative flex min-h-0 flex-1">
         <div className="relative min-w-0 flex-1">
           <ReactFlow
-            nodes={flowNodes}
+            nodes={nodes}
             edges={flowEdges}
             nodeTypes={NODE_TYPES}
             colorMode={theme === "dark" ? "dark" : "light"}
+            onNodesChange={onNodesChange}
             onNodeDragStop={onNodeDragStop}
             onNodeClick={onNodeClick}
+            onNodeDoubleClick={onNodeDoubleClick}
             onPaneClick={() => select(null)}
             nodesConnectable={false}
             minZoom={0.1}
@@ -351,7 +452,12 @@ function WorkGraphCanvas() {
         </div>
 
         {selected && (
-          <NodePanel node={selected} title={titleFor(selected)} onClose={() => select(null)} />
+          <NodePanel
+            node={selected}
+            titleFor={titleFor}
+            folded={folded.members[selected.id] ?? []}
+            onClose={() => select(null)}
+          />
         )}
       </div>
     </div>
@@ -359,7 +465,17 @@ function WorkGraphCanvas() {
 }
 
 /** Right-hand detail pane for the selected node, with one way into its own surface. */
-function NodePanel({ node, title, onClose }: { node: GraphNodeData; title: string; onClose: () => void }) {
+function NodePanel({
+  node,
+  titleFor,
+  folded,
+  onClose,
+}: {
+  node: GraphNodeData;
+  titleFor: (node: GraphNodeData) => string;
+  folded: string[];
+  onClose: () => void;
+}) {
   const { t } = useTranslation("graph");
   const setView = useNavStore((s) => s.setView);
   const setActiveConversation = useChatStore((s) => s.setActiveConversation);
@@ -368,7 +484,9 @@ function NodePanel({ node, title, onClose }: { node: GraphNodeData; title: strin
   const openViewer = useArtifactStore((s) => s.openViewer);
   const graph = useWorkGraphStore((s) => s.graph);
   const select = useWorkGraphStore((s) => s.select);
+  const toggleCollapsed = useWorkGraphStore((s) => s.toggleCollapsed);
   const Icon = KIND_ICONS[node.kind];
+  const title = titleFor(node);
 
   const openConversation = (id: string) => {
     setActiveConversation(id);
@@ -421,10 +539,12 @@ function NodePanel({ node, title, onClose }: { node: GraphNodeData; title: strin
       action = null;
   }
 
-  // Neighbours, by edge kind, so the panel reads as "what this is wired to".
+  const byId = useMemo(() => new Map((graph?.nodes ?? []).map((n) => [n.id, n])), [graph]);
+
+  // Neighbours over the server's edges (not the folded ones), so the pane
+  // always says what the row is really wired to.
   const neighbours = useMemo(() => {
     if (!graph) return [];
-    const byId = new Map(graph.nodes.map((n) => [n.id, n]));
     return graph.edges
       .filter((e) => e.source === node.id || e.target === node.id)
       .map((e) => {
@@ -432,20 +552,30 @@ function NodePanel({ node, title, onClose }: { node: GraphNodeData; title: strin
         const other = byId.get(otherId);
         return other ? { edge: e, other, outgoing: e.source === node.id } : null;
       })
-      .filter((x): x is { edge: (typeof graph.edges)[number]; other: GraphNodeData; outgoing: boolean } => x !== null);
-  }, [graph, node.id]);
+      .filter((x): x is { edge: GraphEdge; other: GraphNodeData; outgoing: boolean } => x !== null);
+  }, [graph, byId, node.id]);
+
+  const foldedNodes = useMemo(
+    () => folded.map((id) => byId.get(id)).filter((n): n is GraphNodeData => Boolean(n)),
+    [folded, byId]
+  );
+
+  const enumLabel = (keys: Record<string, string>, value: string | null | undefined) =>
+    value ? (keys[value] ? t(keys[value]) : value) : null;
 
   const facts: Array<[string, string]> = [];
   if (node.status) facts.push([t("fields.status"), t(`status.${node.status}`, { defaultValue: node.status })]);
-  if (node.subtype) facts.push([t("fields.type"), node.subtype]);
+  if (node.kind === "conversation" && node.subtype) facts.push([t("fields.type"), t(`subtype.${node.subtype}`, { defaultValue: node.subtype })]);
+  if (node.kind === "artifact" && node.subtype) facts.push([t("fields.type"), enumLabel(ARTIFACT_KIND_KEYS, node.subtype) ?? node.subtype]);
+  if (node.runtime) facts.push([t("fields.runtime"), enumLabel(RUNTIME_KEYS, node.runtime) ?? node.runtime]);
   if (typeof node.memberCount === "number") facts.push([t("fields.members"), String(node.memberCount)]);
-  if (node.schedule) facts.push([t("fields.schedule"), node.schedule]);
+  if (node.schedule) facts.push([t("fields.schedule"), enumLabel(SCHEDULE_KEYS, node.schedule) ?? node.schedule]);
   if (node.nextRunAt) facts.push([t("fields.nextRun"), new Date(node.nextRunAt).toLocaleString()]);
   if (node.lastRunAt) facts.push([t("fields.lastRun"), formatRelativeShort(node.lastRunAt)]);
   if (node.deadline) facts.push([t("fields.deadline"), new Date(node.deadline).toLocaleString()]);
   if (node.remindAt) facts.push([t("fields.remindAt"), new Date(node.remindAt).toLocaleString()]);
   if (typeof node.iterationCount === "number") facts.push([t("fields.iterations"), String(node.iterationCount)]);
-  if (node.stopReason) facts.push([t("fields.stopReason"), node.stopReason]);
+  if (node.stopReason) facts.push([t("fields.stopReason"), enumLabel(STOP_REASON_KEYS, node.stopReason) ?? node.stopReason]);
   if (typeof node.version === "number") facts.push([t("fields.version"), `v${node.version}`]);
   if (node.updatedAt) facts.push([t("fields.updated"), formatRelativeShort(node.updatedAt)]);
   if (node.lastTouchedAt) facts.push([t("fields.updated"), formatRelativeShort(node.lastTouchedAt)]);
@@ -493,6 +623,39 @@ function NodePanel({ node, title, onClose }: { node: GraphNodeData; title: strin
           </dl>
         )}
 
+        {foldedNodes.length > 0 && (
+          <div className="mb-4">
+            <div className="mb-1.5 flex items-center justify-between">
+              <p className="text-[11px] font-semibold uppercase tracking-wide text-muted-foreground">
+                {t("folded", { count: foldedNodes.length })}
+              </p>
+              <button
+                type="button"
+                onClick={() => toggleCollapsed(node.id)}
+                className="text-[11px] font-semibold text-primary hover:underline"
+              >
+                {t("unfold")}
+              </button>
+            </div>
+            <ul className="flex flex-col gap-1">
+              {foldedNodes.map((other) => {
+                const OtherIcon = KIND_ICONS[other.kind];
+                return (
+                  <li key={other.id} className="flex items-center gap-2 px-2 py-1 text-sm text-foreground">
+                    <OtherIcon className="h-3.5 w-3.5 shrink-0" style={{ color: KIND_COLORS[other.kind] }} />
+                    <span className="min-w-0 flex-1 truncate">{titleFor(other)}</span>
+                    {other.status && (
+                      <span className="shrink-0 text-[10px] text-muted-foreground">
+                        {t(`status.${other.status}`, { defaultValue: other.status })}
+                      </span>
+                    )}
+                  </li>
+                );
+              })}
+            </ul>
+          </div>
+        )}
+
         {neighbours.length > 0 && (
           <>
             <p className="mb-1.5 text-[11px] font-semibold uppercase tracking-wide text-muted-foreground">
@@ -509,9 +672,7 @@ function NodePanel({ node, title, onClose }: { node: GraphNodeData; title: strin
                       className="flex w-full items-center gap-2 rounded-md px-2 py-1.5 text-left hover:bg-accent"
                     >
                       <OtherIcon className="h-3.5 w-3.5 shrink-0" style={{ color: KIND_COLORS[other.kind] }} />
-                      <span className="min-w-0 flex-1 truncate text-sm text-foreground">
-                        {other.label?.trim() || t("untitled")}
-                      </span>
+                      <span className="min-w-0 flex-1 truncate text-sm text-foreground">{titleFor(other)}</span>
                       <span className="shrink-0 text-[10px] text-muted-foreground">
                         {outgoing ? "→ " : "← "}
                         {t(EDGE_LABEL_KEYS[edge.kind])}

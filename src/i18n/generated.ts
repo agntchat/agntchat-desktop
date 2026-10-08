@@ -3710,6 +3710,13 @@ export const resources = {
         "openConversation": "Open conversation",
         "openTask": "Open task"
       },
+      "artifactKind": {
+        "code": "Code",
+        "document": "Document",
+        "html": "HTML",
+        "markdown": "Markdown",
+        "text": "Text"
+      },
       "closePanel": "Close details",
       "connections_one": "{{count}} connection",
       "connections_other": "{{count}} connections",
@@ -3742,6 +3749,7 @@ export const resources = {
         "members": "Members",
         "nextRun": "Next run",
         "remindAt": "Reminds at",
+        "runtime": "Runs",
         "schedule": "Schedule",
         "status": "Status",
         "stopReason": "Stopped because",
@@ -3750,6 +3758,13 @@ export const resources = {
         "version": "Version"
       },
       "fit": "Fit",
+      "focus": "Focus",
+      "focusDepth": "Focus · {{depth}}",
+      "focusHint": "Dim everything more than one or two hops from the selected node",
+      "fold": "Fold",
+      "foldAll": "Fold all",
+      "folded_one": "{{count}} folded in",
+      "folded_other": "{{count}} folded in",
       "hint": "Your workspace as a map: agents, rooms, tasks, routines and what connects them.",
       "iterations_one": "{{count}} run",
       "iterations_other": "{{count}} runs",
@@ -3771,6 +3786,15 @@ export const resources = {
       "members_other": "{{count}} members",
       "refresh": "Refresh",
       "resetLayout": "Reset layout",
+      "runtime": {
+        "external": "External session",
+        "local": "On this computer",
+        "orgHost": "Hosted"
+      },
+      "schedule": {
+        "cron": "On a cron schedule",
+        "interval": "Every N minutes"
+      },
       "searchPlaceholder": "Find a node…",
       "status": {
         "accepted": "Accepted",
@@ -3783,6 +3807,14 @@ export const resources = {
         "pending": "Pending",
         "waiting": "Waiting"
       },
+      "stopReason": {
+        "agentOffline": "Agent offline",
+        "awaitingOwner": "Waiting for your answer",
+        "consecutiveFailures": "Too many failures in a row",
+        "ownerPaused": "Paused by you",
+        "ownerStopped": "Stopped by you",
+        "tokenBudgetExhausted": "Token budget used up"
+      },
       "subtype": {
         "channel": "Channel",
         "direct": "Direct",
@@ -3791,6 +3823,8 @@ export const resources = {
         "task": "Work room"
       },
       "title": "Work graph",
+      "unfold": "Unfold",
+      "unfoldAll": "Unfold all",
       "untitled": "Untitled"
     },
     "memory": {
@@ -9405,6 +9439,13 @@ export const resources = {
         "openConversation": "Abrir conversación",
         "openTask": "Abrir tarea"
       },
+      "artifactKind": {
+        "code": "Código",
+        "document": "Documento",
+        "html": "HTML",
+        "markdown": "Markdown",
+        "text": "Texto"
+      },
       "closePanel": "Cerrar detalles",
       "connections_one": "{{count}} conexión",
       "connections_other": "{{count}} conexiones",
@@ -9437,6 +9478,7 @@ export const resources = {
         "members": "Miembros",
         "nextRun": "Próxima ejecución",
         "remindAt": "Recuerda el",
+        "runtime": "Se ejecuta",
         "schedule": "Programación",
         "status": "Estado",
         "stopReason": "Detenido por",
@@ -9445,6 +9487,13 @@ export const resources = {
         "version": "Versión"
       },
       "fit": "Ajustar",
+      "focus": "Enfocar",
+      "focusDepth": "Enfocar · {{depth}}",
+      "focusHint": "Atenúa todo lo que esté a más de uno o dos saltos del nodo seleccionado",
+      "fold": "Plegar",
+      "foldAll": "Plegar todo",
+      "folded_one": "{{count}} plegado",
+      "folded_other": "{{count}} plegados",
       "hint": "Tu espacio de trabajo como un mapa: agentes, salas, tareas, rutinas y lo que los conecta.",
       "iterations_one": "{{count}} ejecución",
       "iterations_other": "{{count}} ejecuciones",
@@ -9466,6 +9515,15 @@ export const resources = {
       "members_other": "{{count}} miembros",
       "refresh": "Actualizar",
       "resetLayout": "Restablecer disposición",
+      "runtime": {
+        "external": "Sesión externa",
+        "local": "En este ordenador",
+        "orgHost": "Alojado"
+      },
+      "schedule": {
+        "cron": "Según cron",
+        "interval": "Cada N minutos"
+      },
       "searchPlaceholder": "Buscar un nodo…",
       "status": {
         "accepted": "Aceptada",
@@ -9478,6 +9536,14 @@ export const resources = {
         "pending": "Pendiente",
         "waiting": "Esperando"
       },
+      "stopReason": {
+        "agentOffline": "Agente desconectado",
+        "awaitingOwner": "Esperando tu respuesta",
+        "consecutiveFailures": "Demasiados fallos seguidos",
+        "ownerPaused": "Pausado por ti",
+        "ownerStopped": "Detenido por ti",
+        "tokenBudgetExhausted": "Presupuesto de tokens agotado"
+      },
       "subtype": {
         "channel": "Canal",
         "direct": "Directa",
@@ -9486,6 +9552,8 @@ export const resources = {
         "task": "Sala de trabajo"
       },
       "title": "Grafo de trabajo",
+      "unfold": "Desplegar",
+      "unfoldAll": "Desplegar todo",
       "untitled": "Sin título"
     },
     "memory": {
@@ -15100,6 +15168,13 @@ export const resources = {
         "openConversation": "Unterhaltung öffnen",
         "openTask": "Aufgabe öffnen"
       },
+      "artifactKind": {
+        "code": "Code",
+        "document": "Dokument",
+        "html": "HTML",
+        "markdown": "Markdown",
+        "text": "Text"
+      },
       "closePanel": "Details schließen",
       "connections_one": "{{count}} Verbindung",
       "connections_other": "{{count}} Verbindungen",
@@ -15132,6 +15207,7 @@ export const resources = {
         "members": "Mitglieder",
         "nextRun": "Nächster Lauf",
         "remindAt": "Erinnert am",
+        "runtime": "Läuft",
         "schedule": "Zeitplan",
         "status": "Status",
         "stopReason": "Gestoppt wegen",
@@ -15140,6 +15216,13 @@ export const resources = {
         "version": "Version"
       },
       "fit": "Einpassen",
+      "focus": "Fokus",
+      "focusDepth": "Fokus · {{depth}}",
+      "focusHint": "Blendet alles aus, das mehr als ein oder zwei Schritte vom gewählten Knoten entfernt ist",
+      "fold": "Einklappen",
+      "foldAll": "Alles einklappen",
+      "folded_one": "{{count}} eingeklappt",
+      "folded_other": "{{count}} eingeklappt",
       "hint": "Dein Arbeitsbereich als Karte: Agenten, Räume, Aufgaben, Routinen und was sie verbindet.",
       "iterations_one": "{{count}} Durchlauf",
       "iterations_other": "{{count}} Durchläufe",
@@ -15161,6 +15244,15 @@ export const resources = {
       "members_other": "{{count}} Mitglieder",
       "refresh": "Aktualisieren",
       "resetLayout": "Anordnung zurücksetzen",
+      "runtime": {
+        "external": "Externe Sitzung",
+        "local": "Auf diesem Computer",
+        "orgHost": "Gehostet"
+      },
+      "schedule": {
+        "cron": "Nach Cron-Plan",
+        "interval": "Alle N Minuten"
+      },
       "searchPlaceholder": "Knoten suchen…",
       "status": {
         "accepted": "Angenommen",
@@ -15173,6 +15265,14 @@ export const resources = {
         "pending": "Ausstehend",
         "waiting": "Wartet"
       },
+      "stopReason": {
+        "agentOffline": "Agent offline",
+        "awaitingOwner": "Wartet auf deine Antwort",
+        "consecutiveFailures": "Zu viele Fehler in Folge",
+        "ownerPaused": "Von dir pausiert",
+        "ownerStopped": "Von dir gestoppt",
+        "tokenBudgetExhausted": "Token-Budget aufgebraucht"
+      },
       "subtype": {
         "channel": "Kanal",
         "direct": "Direkt",
@@ -15181,6 +15281,8 @@ export const resources = {
         "task": "Arbeitsraum"
       },
       "title": "Arbeitsgraph",
+      "unfold": "Ausklappen",
+      "unfoldAll": "Alles ausklappen",
       "untitled": "Ohne Titel"
     },
     "memory": {
@@ -20795,6 +20897,13 @@ export const resources = {
         "openConversation": "Ouvrir la conversation",
         "openTask": "Ouvrir la tâche"
       },
+      "artifactKind": {
+        "code": "Code",
+        "document": "Document",
+        "html": "HTML",
+        "markdown": "Markdown",
+        "text": "Texte"
+      },
       "closePanel": "Fermer les détails",
       "connections_one": "{{count}} connexion",
       "connections_other": "{{count}} connexions",
@@ -20827,6 +20936,7 @@ export const resources = {
         "members": "Membres",
         "nextRun": "Prochaine exécution",
         "remindAt": "Rappel le",
+        "runtime": "S'exécute",
         "schedule": "Planification",
         "status": "Statut",
         "stopReason": "Arrêté car",
@@ -20835,6 +20945,13 @@ export const resources = {
         "version": "Version"
       },
       "fit": "Ajuster",
+      "focus": "Focus",
+      "focusDepth": "Focus · {{depth}}",
+      "focusHint": "Estompe tout ce qui est à plus d'un ou deux sauts du nœud sélectionné",
+      "fold": "Replier",
+      "foldAll": "Tout replier",
+      "folded_one": "{{count}} replié",
+      "folded_other": "{{count}} repliés",
       "hint": "Votre espace de travail en carte : agents, salles, tâches, routines et ce qui les relie.",
       "iterations_one": "{{count}} exécution",
       "iterations_other": "{{count}} exécutions",
@@ -20856,6 +20973,15 @@ export const resources = {
       "members_other": "{{count}} membres",
       "refresh": "Actualiser",
       "resetLayout": "Réinitialiser la disposition",
+      "runtime": {
+        "external": "Session externe",
+        "local": "Sur cet ordinateur",
+        "orgHost": "Hébergé"
+      },
+      "schedule": {
+        "cron": "Selon un cron",
+        "interval": "Toutes les N minutes"
+      },
       "searchPlaceholder": "Trouver un nœud…",
       "status": {
         "accepted": "Acceptée",
@@ -20868,6 +20994,14 @@ export const resources = {
         "pending": "En attente",
         "waiting": "En attente"
       },
+      "stopReason": {
+        "agentOffline": "Agent hors ligne",
+        "awaitingOwner": "En attente de votre réponse",
+        "consecutiveFailures": "Trop d'échecs consécutifs",
+        "ownerPaused": "Mis en pause par vous",
+        "ownerStopped": "Arrêté par vous",
+        "tokenBudgetExhausted": "Budget de tokens épuisé"
+      },
       "subtype": {
         "channel": "Canal",
         "direct": "Directe",
@@ -20876,6 +21010,8 @@ export const resources = {
         "task": "Salle de travail"
       },
       "title": "Graphe de travail",
+      "unfold": "Déplier",
+      "unfoldAll": "Tout déplier",
       "untitled": "Sans titre"
     },
     "memory": {
@@ -26490,6 +26626,13 @@ export const resources = {
         "openConversation": "Abrir conversa",
         "openTask": "Abrir tarefa"
       },
+      "artifactKind": {
+        "code": "Código",
+        "document": "Documento",
+        "html": "HTML",
+        "markdown": "Markdown",
+        "text": "Texto"
+      },
       "closePanel": "Fechar detalhes",
       "connections_one": "{{count}} ligação",
       "connections_other": "{{count}} ligações",
@@ -26522,6 +26665,7 @@ export const resources = {
         "members": "Membros",
         "nextRun": "Próxima execução",
         "remindAt": "Lembra em",
+        "runtime": "Executa",
         "schedule": "Agendamento",
         "status": "Estado",
         "stopReason": "Parado por",
@@ -26530,6 +26674,13 @@ export const resources = {
         "version": "Versão"
       },
       "fit": "Ajustar",
+      "focus": "Foco",
+      "focusDepth": "Foco · {{depth}}",
+      "focusHint": "Esbate tudo o que esteja a mais de um ou dois saltos do nó selecionado",
+      "fold": "Dobrar",
+      "foldAll": "Dobrar tudo",
+      "folded_one": "{{count}} dobrado",
+      "folded_other": "{{count}} dobrados",
       "hint": "O seu espaço de trabalho como um mapa: agentes, salas, tarefas, rotinas e o que os liga.",
       "iterations_one": "{{count}} execução",
       "iterations_other": "{{count}} execuções",
@@ -26551,6 +26702,15 @@ export const resources = {
       "members_other": "{{count}} membros",
       "refresh": "Atualizar",
       "resetLayout": "Repor disposição",
+      "runtime": {
+        "external": "Sessão externa",
+        "local": "Neste computador",
+        "orgHost": "Alojado"
+      },
+      "schedule": {
+        "cron": "Segundo cron",
+        "interval": "A cada N minutos"
+      },
       "searchPlaceholder": "Encontrar um nó…",
       "status": {
         "accepted": "Aceite",
@@ -26563,6 +26723,14 @@ export const resources = {
         "pending": "Pendente",
         "waiting": "À espera"
       },
+      "stopReason": {
+        "agentOffline": "Agente offline",
+        "awaitingOwner": "À espera da sua resposta",
+        "consecutiveFailures": "Demasiadas falhas seguidas",
+        "ownerPaused": "Pausado por si",
+        "ownerStopped": "Parado por si",
+        "tokenBudgetExhausted": "Orçamento de tokens esgotado"
+      },
       "subtype": {
         "channel": "Canal",
         "direct": "Direta",
@@ -26571,6 +26739,8 @@ export const resources = {
         "task": "Sala de trabalho"
       },
       "title": "Grafo de trabalho",
+      "unfold": "Desdobrar",
+      "unfoldAll": "Desdobrar tudo",
       "untitled": "Sem título"
     },
     "memory": {
@@ -32185,6 +32355,13 @@ export const resources = {
         "openConversation": "会話を開く",
         "openTask": "タスクを開く"
       },
+      "artifactKind": {
+        "code": "コード",
+        "document": "ドキュメント",
+        "html": "HTML",
+        "markdown": "Markdown",
+        "text": "テキスト"
+      },
       "closePanel": "詳細を閉じる",
       "connections_one": "接続 {{count}} 件",
       "connections_other": "接続 {{count}} 件",
@@ -32217,6 +32394,7 @@ export const resources = {
         "members": "メンバー",
         "nextRun": "次回実行",
         "remindAt": "通知時刻",
+        "runtime": "実行環境",
         "schedule": "スケジュール",
         "status": "状態",
         "stopReason": "停止理由",
@@ -32225,6 +32403,13 @@ export const resources = {
         "version": "バージョン"
       },
       "fit": "全体表示",
+      "focus": "フォーカス",
+      "focusDepth": "フォーカス · {{depth}}",
+      "focusHint": "選択したノードから1〜2ホップより遠いものを薄く表示",
+      "fold": "折りたたむ",
+      "foldAll": "すべて折りたたむ",
+      "folded_one": "{{count}} 件を折りたたみ",
+      "folded_other": "{{count}} 件を折りたたみ",
       "hint": "ワークスペースを地図に：エージェント、ルーム、タスク、ルーティンとそのつながり。",
       "iterations_one": "{{count}} 回実行",
       "iterations_other": "{{count}} 回実行",
@@ -32246,6 +32431,15 @@ export const resources = {
       "members_other": "メンバー {{count}} 人",
       "refresh": "更新",
       "resetLayout": "配置をリセット",
+      "runtime": {
+        "external": "外部セッション",
+        "local": "このコンピューター上",
+        "orgHost": "ホスト型"
+      },
+      "schedule": {
+        "cron": "cron スケジュール",
+        "interval": "N分ごと"
+      },
       "searchPlaceholder": "ノードを検索…",
       "status": {
         "accepted": "受理済み",
@@ -32258,6 +32452,14 @@ export const resources = {
         "pending": "保留中",
         "waiting": "待機中"
       },
+      "stopReason": {
+        "agentOffline": "エージェントがオフライン",
+        "awaitingOwner": "あなたの回答待ち",
+        "consecutiveFailures": "連続して失敗",
+        "ownerPaused": "あなたが一時停止",
+        "ownerStopped": "あなたが停止",
+        "tokenBudgetExhausted": "トークン予算を使い切りました"
+      },
       "subtype": {
         "channel": "チャンネル",
         "direct": "ダイレクト",
@@ -32266,6 +32468,8 @@ export const resources = {
         "task": "作業ルーム"
       },
       "title": "ワークグラフ",
+      "unfold": "展開",
+      "unfoldAll": "すべて展開",
       "untitled": "無題"
     },
     "memory": {
@@ -37880,6 +38084,13 @@ export const resources = {
         "openConversation": "打开对话",
         "openTask": "打开任务"
       },
+      "artifactKind": {
+        "code": "代码",
+        "document": "文档",
+        "html": "HTML",
+        "markdown": "Markdown",
+        "text": "文本"
+      },
       "closePanel": "关闭详情",
       "connections_one": "{{count}} 个连接",
       "connections_other": "{{count}} 个连接",
@@ -37912,6 +38123,7 @@ export const resources = {
         "members": "成员",
         "nextRun": "下次运行",
         "remindAt": "提醒时间",
+        "runtime": "运行于",
         "schedule": "计划",
         "status": "状态",
         "stopReason": "停止原因",
@@ -37920,6 +38132,13 @@ export const resources = {
         "version": "版本"
       },
       "fit": "适配",
+      "focus": "聚焦",
+      "focusDepth": "聚焦 · {{depth}}",
+      "focusHint": "淡化与所选节点相距超过一两跳的所有内容",
+      "fold": "折叠",
+      "foldAll": "全部折叠",
+      "folded_one": "已折叠 {{count}} 项",
+      "folded_other": "已折叠 {{count}} 项",
       "hint": "以地图方式查看工作区：智能体、房间、任务、例程及其关联。",
       "iterations_one": "{{count}} 次运行",
       "iterations_other": "{{count}} 次运行",
@@ -37941,6 +38160,15 @@ export const resources = {
       "members_other": "{{count}} 位成员",
       "refresh": "刷新",
       "resetLayout": "重置布局",
+      "runtime": {
+        "external": "外部会话",
+        "local": "本机",
+        "orgHost": "托管"
+      },
+      "schedule": {
+        "cron": "按 cron 计划",
+        "interval": "每 N 分钟"
+      },
       "searchPlaceholder": "查找节点…",
       "status": {
         "accepted": "已接受",
@@ -37953,6 +38181,14 @@ export const resources = {
         "pending": "待处理",
         "waiting": "等待中"
       },
+      "stopReason": {
+        "agentOffline": "智能体离线",
+        "awaitingOwner": "等待你的回答",
+        "consecutiveFailures": "连续失败过多",
+        "ownerPaused": "由你暂停",
+        "ownerStopped": "由你停止",
+        "tokenBudgetExhausted": "令牌预算已用完"
+      },
       "subtype": {
         "channel": "频道",
         "direct": "私聊",
@@ -37961,6 +38197,8 @@ export const resources = {
         "task": "工作室"
       },
       "title": "工作图谱",
+      "unfold": "展开",
+      "unfoldAll": "全部展开",
       "untitled": "无标题"
     },
     "memory": {
@@ -43575,6 +43813,13 @@ export const resources = {
         "openConversation": "대화 열기",
         "openTask": "작업 열기"
       },
+      "artifactKind": {
+        "code": "코드",
+        "document": "문서",
+        "html": "HTML",
+        "markdown": "Markdown",
+        "text": "텍스트"
+      },
       "closePanel": "세부 정보 닫기",
       "connections_one": "연결 {{count}}개",
       "connections_other": "연결 {{count}}개",
@@ -43607,6 +43852,7 @@ export const resources = {
         "members": "멤버",
         "nextRun": "다음 실행",
         "remindAt": "알림 시각",
+        "runtime": "실행 위치",
         "schedule": "일정",
         "status": "상태",
         "stopReason": "중지 이유",
@@ -43615,6 +43861,13 @@ export const resources = {
         "version": "버전"
       },
       "fit": "맞춤",
+      "focus": "포커스",
+      "focusDepth": "포커스 · {{depth}}",
+      "focusHint": "선택한 노드에서 한두 단계 이상 떨어진 모든 것을 흐리게 표시",
+      "fold": "접기",
+      "foldAll": "모두 접기",
+      "folded_one": "{{count}}개 접힘",
+      "folded_other": "{{count}}개 접힘",
       "hint": "지도처럼 보는 워크스페이스: 에이전트, 방, 작업, 루틴과 그 연결.",
       "iterations_one": "{{count}}회 실행",
       "iterations_other": "{{count}}회 실행",
@@ -43636,6 +43889,15 @@ export const resources = {
       "members_other": "멤버 {{count}}명",
       "refresh": "새로 고침",
       "resetLayout": "배치 초기화",
+      "runtime": {
+        "external": "외부 세션",
+        "local": "이 컴퓨터에서",
+        "orgHost": "호스팅됨"
+      },
+      "schedule": {
+        "cron": "cron 일정",
+        "interval": "N분마다"
+      },
       "searchPlaceholder": "노드 찾기…",
       "status": {
         "accepted": "수락됨",
@@ -43648,6 +43910,14 @@ export const resources = {
         "pending": "대기 중",
         "waiting": "대기 중"
       },
+      "stopReason": {
+        "agentOffline": "에이전트 오프라인",
+        "awaitingOwner": "내 답변 대기 중",
+        "consecutiveFailures": "연속 실패가 너무 많음",
+        "ownerPaused": "내가 일시 중지함",
+        "ownerStopped": "내가 중지함",
+        "tokenBudgetExhausted": "토큰 예산 소진"
+      },
       "subtype": {
         "channel": "채널",
         "direct": "다이렉트",
@@ -43656,6 +43926,8 @@ export const resources = {
         "task": "작업 방"
       },
       "title": "작업 그래프",
+      "unfold": "펼치기",
+      "unfoldAll": "모두 펼치기",
       "untitled": "제목 없음"
     },
     "memory": {
@@ -49270,6 +49542,13 @@ export const resources = {
         "openConversation": "Apri conversazione",
         "openTask": "Apri attività"
       },
+      "artifactKind": {
+        "code": "Codice",
+        "document": "Documento",
+        "html": "HTML",
+        "markdown": "Markdown",
+        "text": "Testo"
+      },
       "closePanel": "Chiudi dettagli",
       "connections_one": "{{count}} collegamento",
       "connections_other": "{{count}} collegamenti",
@@ -49302,6 +49581,7 @@ export const resources = {
         "members": "Membri",
         "nextRun": "Prossima esecuzione",
         "remindAt": "Ricorda il",
+        "runtime": "Esegue",
         "schedule": "Pianificazione",
         "status": "Stato",
         "stopReason": "Fermato per",
@@ -49310,6 +49590,13 @@ export const resources = {
         "version": "Versione"
       },
       "fit": "Adatta",
+      "focus": "Focus",
+      "focusDepth": "Focus · {{depth}}",
+      "focusHint": "Attenua tutto ciò che è a più di uno o due passi dal nodo selezionato",
+      "fold": "Ripiega",
+      "foldAll": "Ripiega tutto",
+      "folded_one": "{{count}} ripiegato",
+      "folded_other": "{{count}} ripiegati",
       "hint": "Il tuo spazio di lavoro come mappa: agenti, stanze, attività, routine e ciò che li collega.",
       "iterations_one": "{{count}} esecuzione",
       "iterations_other": "{{count}} esecuzioni",
@@ -49331,6 +49618,15 @@ export const resources = {
       "members_other": "{{count}} membri",
       "refresh": "Aggiorna",
       "resetLayout": "Reimposta disposizione",
+      "runtime": {
+        "external": "Sessione esterna",
+        "local": "Su questo computer",
+        "orgHost": "Ospitato"
+      },
+      "schedule": {
+        "cron": "Secondo cron",
+        "interval": "Ogni N minuti"
+      },
       "searchPlaceholder": "Trova un nodo…",
       "status": {
         "accepted": "Accettata",
@@ -49343,6 +49639,14 @@ export const resources = {
         "pending": "In attesa",
         "waiting": "In attesa"
       },
+      "stopReason": {
+        "agentOffline": "Agente offline",
+        "awaitingOwner": "In attesa della tua risposta",
+        "consecutiveFailures": "Troppi errori consecutivi",
+        "ownerPaused": "Messo in pausa da te",
+        "ownerStopped": "Fermato da te",
+        "tokenBudgetExhausted": "Budget di token esaurito"
+      },
       "subtype": {
         "channel": "Canale",
         "direct": "Diretta",
@@ -49351,6 +49655,8 @@ export const resources = {
         "task": "Stanza di lavoro"
       },
       "title": "Grafo di lavoro",
+      "unfold": "Espandi",
+      "unfoldAll": "Espandi tutto",
       "untitled": "Senza titolo"
     },
     "memory": {
@@ -54965,6 +55271,13 @@ export const resources = {
         "openConversation": "बातचीत खोलें",
         "openTask": "कार्य खोलें"
       },
+      "artifactKind": {
+        "code": "कोड",
+        "document": "दस्तावेज़",
+        "html": "HTML",
+        "markdown": "Markdown",
+        "text": "टेक्स्ट"
+      },
       "closePanel": "विवरण बंद करें",
       "connections_one": "{{count}} कनेक्शन",
       "connections_other": "{{count}} कनेक्शन",
@@ -54997,6 +55310,7 @@ export const resources = {
         "members": "सदस्य",
         "nextRun": "अगला रन",
         "remindAt": "रिमाइंडर समय",
+        "runtime": "चलता है",
         "schedule": "शेड्यूल",
         "status": "स्थिति",
         "stopReason": "रुकने का कारण",
@@ -55005,6 +55319,13 @@ export const resources = {
         "version": "संस्करण"
       },
       "fit": "फ़िट करें",
+      "focus": "फ़ोकस",
+      "focusDepth": "फ़ोकस · {{depth}}",
+      "focusHint": "चयनित नोड से एक या दो कदम से दूर की हर चीज़ को धुंधला करें",
+      "fold": "समेटें",
+      "foldAll": "सब समेटें",
+      "folded_one": "{{count}} समेटा गया",
+      "folded_other": "{{count}} समेटे गए",
       "hint": "आपका कार्यक्षेत्र एक नक्शे के रूप में: एजेंट, रूम, कार्य, रूटीन और उन्हें जोड़ने वाले संबंध।",
       "iterations_one": "{{count}} रन",
       "iterations_other": "{{count}} रन",
@@ -55026,6 +55347,15 @@ export const resources = {
       "members_other": "{{count}} सदस्य",
       "refresh": "रीफ़्रेश करें",
       "resetLayout": "लेआउट रीसेट करें",
+      "runtime": {
+        "external": "बाहरी सत्र",
+        "local": "इस कंप्यूटर पर",
+        "orgHost": "होस्टेड"
+      },
+      "schedule": {
+        "cron": "क्रॉन शेड्यूल पर",
+        "interval": "हर N मिनट"
+      },
       "searchPlaceholder": "नोड खोजें…",
       "status": {
         "accepted": "स्वीकृत",
@@ -55038,6 +55368,14 @@ export const resources = {
         "pending": "लंबित",
         "waiting": "प्रतीक्षा में"
       },
+      "stopReason": {
+        "agentOffline": "एजेंट ऑफ़लाइन",
+        "awaitingOwner": "आपके उत्तर की प्रतीक्षा में",
+        "consecutiveFailures": "लगातार बहुत सी विफलताएँ",
+        "ownerPaused": "आपने रोका",
+        "ownerStopped": "आपने बंद किया",
+        "tokenBudgetExhausted": "टोकन बजट समाप्त"
+      },
       "subtype": {
         "channel": "चैनल",
         "direct": "सीधी",
@@ -55046,6 +55384,8 @@ export const resources = {
         "task": "कार्य रूम"
       },
       "title": "कार्य ग्राफ़",
+      "unfold": "खोलें",
+      "unfoldAll": "सब खोलें",
       "untitled": "बिना शीर्षक"
     },
     "memory": {

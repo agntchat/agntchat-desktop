@@ -109,12 +109,20 @@ interface WorkGraphState {
   hiddenKinds: Set<GraphNodeKind>;
   query: string;
   selectedId: string | null;
+  /** Agents and rooms folded into one node with their satellites (phase 2 "pockets"). */
+  collapsed: Set<string>;
+  /** Focus mode: 0 = off, else dim everything more than N hops from the selection. */
+  focusDepth: 0 | 1 | 2;
   fetchGraph: () => Promise<void>;
   setPosition: (id: string, pos: Position) => void;
   resetLayout: () => void;
   toggleKind: (kind: GraphNodeKind) => void;
   setQuery: (q: string) => void;
   select: (id: string | null) => void;
+  toggleCollapsed: (id: string) => void;
+  collapseAll: (ids: string[]) => void;
+  expandAll: () => void;
+  cycleFocus: () => void;
   initWsListeners: () => () => void;
 }
 
@@ -131,7 +139,6 @@ const REFRESH_EVENTS = [
   "task_updated",
   "task_assigned",
   "task_completed",
-  "task_abandoned",
   "new_conversation",
   "conversation_deleted",
   "removed_from_conversation",
@@ -187,6 +194,8 @@ export const useWorkGraphStore = create<WorkGraphState>((set, get) => ({
   hiddenKinds: new Set<GraphNodeKind>(),
   query: "",
   selectedId: null,
+  collapsed: new Set<string>(),
+  focusDepth: 0,
 
   fetchGraph: async () => {
     if (!useAuthStore.getState().participant?.features?.work_graph) return;
@@ -219,6 +228,17 @@ export const useWorkGraphStore = create<WorkGraphState>((set, get) => ({
 
   setQuery: (query) => set({ query }),
   select: (selectedId) => set({ selectedId }),
+
+  toggleCollapsed: (id) => {
+    const next = new Set(get().collapsed);
+    if (next.has(id)) next.delete(id);
+    else next.add(id);
+    // A node folded away cannot stay selected.
+    set({ collapsed: next });
+  },
+  collapseAll: (ids) => set({ collapsed: new Set(ids) }),
+  expandAll: () => set({ collapsed: new Set<string>() }),
+  cycleFocus: () => set({ focusDepth: ((get().focusDepth + 1) % 3) as 0 | 1 | 2 }),
 
   initWsListeners: () => {
     let timer: number | undefined;
