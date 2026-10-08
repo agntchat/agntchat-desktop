@@ -1311,9 +1311,12 @@ export const useChatStore = create<ChatState>((set, get) => ({
     // skips the mark) should mark it read now, so our other devices' badges
     // clear once we're actually looking at it again.
     const markActiveReadOnFocus = () => {
-      const { activeHuddleId, activeConversationId } = get();
+      const { activeHuddleId, activeConversationId, openElsewhere } = get();
       const id = activeHuddleId ?? activeConversationId;
       if (id) get().markReadIfActiveAndFocused(id);
+      // Rooms open in graph nodes were badged while the window was away;
+      // coming back to them is reading them.
+      for (const other of openElsewhere) get().markReadFor(other);
     };
     if (typeof window !== "undefined") {
       window.addEventListener("focus", markActiveReadOnFocus);

@@ -1,6 +1,7 @@
 import { create } from "zustand";
 import { listRoutines } from "../lib/api";
 import { ws } from "../services/websocket";
+import { useAuthStore } from "./authStore";
 import type { Routine } from "../lib/api";
 import { isFresh } from "../lib/cache";
 
@@ -58,6 +59,10 @@ export const useRoutineStore = create<RoutineState>((set, get) => ({
   initWsListeners: () =>
     ws.on("routine_updated", (payload) => {
       const routine = payload as unknown as Routine & { deleted?: boolean; change?: string };
+      // Slack-style: a routine in a workspace the user isn't active in stays
+      // out of this list, like tasks and to-dos do.
+      const activeOrg = useAuthStore.getState().participant?.activeOrganizationId;
+      if (routine.organizationId && activeOrg && routine.organizationId !== activeOrg) return;
       if (routine.deleted) {
         set((s) => ({ routines: s.routines.filter((r) => r.id !== routine.id) }));
       } else {
