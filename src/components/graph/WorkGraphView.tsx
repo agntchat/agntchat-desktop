@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useMemo, useRef } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import {
   Background,
   BackgroundVariant,
@@ -10,8 +10,13 @@ import {
   MarkerType,
   useNodesState,
   useReactFlow,
+  type Connection,
   type Edge,
+  type IsValidConnection,
   type NodeMouseHandler,
+  type OnBeforeDelete,
+  type OnConnect,
+  type OnEdgesDelete,
   type OnNodeDrag,
 } from "@xyflow/react";
 import "@xyflow/react/dist/style.css";
@@ -62,6 +67,19 @@ import {
 } from "./GraphNode";
 import { layoutGraph } from "./layout";
 import { GROUP_HOST_KINDS, fold, neighbourhood, satelliteCounts } from "./pockets";
+import { connectWire, createRoomWith, createTaskFor, cuttable, disconnectWire, resolveWire } from "./wiring";
+
+/** Transient outcome of a wire or a new node, shown under the toolbar. */
+type Notice = { tone: "ok" | "error"; text: string };
+const NOTICE_MS = 4000;
+
+/** i18n keys for a drawn wire, by relation — static for the audit. */
+const WIRED_KEYS = {
+  assigned: "graph:wiring.assigned",
+  member: "graph:wiring.member",
+  reports_to: "graph:wiring.reportsTo",
+  depends_on: "graph:wiring.dependsOn",
+} as const;
 
 const NODE_TYPES = { work: GraphNode };
 
@@ -367,6 +385,81 @@ function WorkGraphCanvas() {
     [graph, selectedId]
   );
 
+  // --- Phase 4: wires by hand ------------------------------------------
+  const byId = useMemo(() => new Map((graph?.nodes ?? []).map((n) => [n.id, n])), [graph]);
+  const [notice, setNotice] = useState<Notice | null>(null);
+  const noticeTimer = useRef<number | undefined>(undefined);
+  const say = useCallback((n: Notice) => {
+    window.clearTimeout(noticeTimer.current);
+    setNotice(n);
+    noticeTimer.current = window.setTimeout(() => setNotice(null), NOTICE_MS);
+  }, []);
+  useEffect(() => () => window.clearTimeout(noticeTimer.current), []);
+
+  // A cable may be drawn only between nodes whose relation has an endpoint.
+  const isValidConnection: IsValidConnection = useCallback(
+    (c) => {
+      const a = c.source ? byId.get(c.source) : undefined;
+      const b = c.target ? byId.get(c.target) : undefined;
+      return Boolean(a && b && resolveWire(a, b));
+    },
+    [byId]
+  );
+
+  const onConnect: OnConnect = useCallback(
+    (c: Connection) => {
+      const a = c.source ? byId.get(c.source) : undefined;
+      const b = c.target ? byId.get(c.target) : undefined;
+      const wire = a && b ? resolveWire(a, b) : null;
+      if (!wire) {
+        say({ tone: "error", text: t("wiring.cannotConnect") });
+        return;
+      }
+      void connectWire(wire)
+        .then(() => {
+          say({ tone: "ok", text: t(WIRED_KEYS[wire.kind], { from: titleFor(wire.from), to: titleFor(wire.to) }) });
+          return fetchGraph();
+        })
+        .catch((e: unknown) => say({ tone: "error", text: e instanceof Error ? e.message : t("wiring.failed") }));
+    },
+    [byId, say, t, titleFor, fetchGraph]
+  );
+
+  // Delete/Backspace cuts a selected cable when its relation has an inverse
+  // call; nodes are never deleted from the canvas.
+  const onBeforeDelete: OnBeforeDelete<WorkGraphFlowNode> = useCallback(
+    async ({ edges: toDelete }) => {
+      const serverEdges = toDelete
+        .map((e) => visibleEdges.find((v) => v.id === e.id))
+        .filter((e): e is GraphEdge => Boolean(e));
+      const allowed = serverEdges.filter((e) => cuttable(e, byId));
+      if (allowed.length === 0) {
+        say({ tone: "error", text: t("wiring.cannotCut") });
+        return false;
+      }
+      return { nodes: [], edges: toDelete.filter((e) => allowed.some((a) => a.id === e.id)) };
+    },
+    [visibleEdges, byId, say, t]
+  );
+
+  const onEdgesDelete: OnEdgesDelete = useCallback(
+    (deleted) => {
+      const serverEdges = deleted
+        .map((e) => visibleEdges.find((v) => v.id === e.id))
+        .filter((e): e is GraphEdge => Boolean(e));
+      void Promise.all(serverEdges.map((e) => disconnectWire(e, byId)))
+        .then(() => {
+          say({ tone: "ok", text: t("wiring.cut", { count: serverEdges.length }) });
+          return fetchGraph();
+        })
+        .catch((e: unknown) => {
+          say({ tone: "error", text: e instanceof Error ? e.message : t("wiring.failed") });
+          return fetchGraph();
+        });
+    },
+    [visibleEdges, byId, say, t, fetchGraph]
+  );
+
   // A selected satellite that gets folded away loses its selection.
   useEffect(() => {
     if (selectedId && graph && !visibleNodes.some((n) => n.id === selectedId)) select(null);
@@ -489,7 +582,12 @@ function WorkGraphCanvas() {
             onNodeClick={onNodeClick}
             onNodeDoubleClick={onNodeDoubleClick}
             onPaneClick={() => select(null)}
-            nodesConnectable={false}
+            nodesConnectable
+            isValidConnection={isValidConnection}
+            onConnect={onConnect}
+            onBeforeDelete={onBeforeDelete}
+            onEdgesDelete={onEdgesDelete}
+            deleteKeyCode={["Backspace", "Delete"]}
             minZoom={0.1}
             maxZoom={2}
             proOptions={{ hideAttribution: true }}
@@ -504,6 +602,19 @@ function WorkGraphCanvas() {
               maskColor="color-mix(in oklch, var(--background) 70%, transparent)"
               style={{ background: "var(--card)" }}
             />
+            {notice && (
+              <Panel position="bottom-center">
+                <div
+                  role="status"
+                  className={cn(
+                    "rounded-lg border border-border bg-card px-4 py-2 text-sm shadow-sm",
+                    notice.tone === "error" ? "text-destructive" : "text-foreground"
+                  )}
+                >
+                  {notice.text}
+                </div>
+              </Panel>
+            )}
             {graph && graph.nodes.length === 0 && (
               <Panel position="top-center">
                 <div className="rounded-lg border border-border bg-card px-4 py-3 text-sm text-muted-foreground shadow-sm">
@@ -533,6 +644,11 @@ function WorkGraphCanvas() {
             )}
             chatOpen={openChats.has(selected.id)}
             onToggleChat={() => toggleChat(selected.id)}
+            onCreated={(text) => {
+              say({ tone: "ok", text });
+              void fetchGraph();
+            }}
+            onFailed={(text) => say({ tone: "error", text })}
             onClose={() => select(null)}
           />
         )}
@@ -549,6 +665,8 @@ function NodePanel({
   decisions,
   chatOpen,
   onToggleChat,
+  onCreated,
+  onFailed,
   onClose,
 }: {
   node: GraphNodeData;
@@ -557,10 +675,58 @@ function NodePanel({
   decisions: GraphDecision[];
   chatOpen: boolean;
   onToggleChat: () => void;
+  onCreated: (text: string) => void;
+  onFailed: (text: string) => void;
   onClose: () => void;
 }) {
   const { t } = useTranslation("graph");
   const { t: tDecisions } = useTranslation("decisions");
+  const [newTitle, setNewTitle] = useState("");
+  const [creating, setCreating] = useState(false);
+  const currentUserId = useAuthStore((s) => s.participant?.id);
+  const ownerDm = useChatStore((s) =>
+    node.kind === "agent"
+      ? s.conversations.find(
+          (c) =>
+            c.type === "direct" &&
+            (c.members ?? []).some((m) => m.participantId === node.rowId) &&
+            (c.members ?? []).some((m) => m.participantId === currentUserId)
+        )
+      : undefined
+  );
+
+  // Phase 4b: a new task on a room (unassigned) or on an agent (in the DM
+  // with it, assigned to it); a new room with an agent.
+  const canCreateTask = node.kind === "conversation" || (node.kind === "agent" && Boolean(ownerDm));
+  const createTask = async () => {
+    const title = newTitle.trim();
+    if (!title) return;
+    setCreating(true);
+    try {
+      if (node.kind === "conversation") {
+        await createTaskFor({ conversationId: node.rowId, title });
+      } else if (node.kind === "agent" && ownerDm) {
+        await createTaskFor({ conversationId: ownerDm.id, title, assigneeId: node.rowId });
+      }
+      setNewTitle("");
+      onCreated(t("create.taskCreated", { title }));
+    } catch (e) {
+      onFailed(e instanceof Error ? e.message : t("wiring.failed"));
+    } finally {
+      setCreating(false);
+    }
+  };
+  const createRoom = async () => {
+    setCreating(true);
+    try {
+      await createRoomWith({ agentId: node.rowId });
+      onCreated(t("create.roomCreated", { name: titleFor(node) }));
+    } catch (e) {
+      onFailed(e instanceof Error ? e.message : t("wiring.failed"));
+    } finally {
+      setCreating(false);
+    }
+  };
   const setView = useNavStore((s) => s.setView);
   const setActiveConversation = useChatStore((s) => s.setActiveConversation);
   const selectTask = useTaskStore((s) => s.selectTask);
@@ -758,6 +924,40 @@ function NodePanel({
                 </li>
               ))}
             </ul>
+          </div>
+        )}
+
+        {(canCreateTask || node.kind === "agent") && (
+          <div className="mb-4 rounded-md border border-dashed border-border p-2.5">
+            <p className="mb-1.5 text-[11px] font-semibold uppercase tracking-wide text-muted-foreground">
+              {t("create.title")}
+            </p>
+            {canCreateTask && (
+              <form
+                className="flex gap-1.5"
+                onSubmit={(e) => {
+                  e.preventDefault();
+                  void createTask();
+                }}
+              >
+                <Input
+                  value={newTitle}
+                  onChange={(e) => setNewTitle(e.target.value)}
+                  placeholder={node.kind === "agent" ? t("create.taskForAgent") : t("create.taskInRoom")}
+                  className="h-8 flex-1"
+                  disabled={creating}
+                />
+                <Button type="submit" size="sm" disabled={creating || newTitle.trim().length === 0}>
+                  {t("create.add")}
+                </Button>
+              </form>
+            )}
+            {node.kind === "agent" && (
+              <Button variant="outline" size="sm" className="mt-1.5 w-full" disabled={creating} onClick={() => void createRoom()}>
+                {t("create.roomWith")}
+              </Button>
+            )}
+            <p className="mt-1.5 text-[11px] text-muted-foreground">{t("create.wireHint")}</p>
           </div>
         )}
 

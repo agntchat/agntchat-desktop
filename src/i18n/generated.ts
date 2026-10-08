@@ -3725,6 +3725,16 @@ export const resources = {
       "closePanel": "Close details",
       "connections_one": "{{count}} connection",
       "connections_other": "{{count}} connections",
+      "create": {
+        "add": "Add",
+        "roomCreated": "New room with {{name}}",
+        "roomWith": "New room with this agent",
+        "taskCreated": "Task \"{{title}}\" added",
+        "taskForAgent": "New task for this agent…",
+        "taskInRoom": "New task in this room…",
+        "title": "Add here",
+        "wireHint": "Drag from a node's right connector to another to wire them: task → agent assigns, agent → room adds, routine → room sets where it reports, task → task adds a dependency. Select a cable and press Delete to cut it."
+      },
       "edge": {
         "anchored": "asked in",
         "assigned": "assigned to",
@@ -3833,7 +3843,18 @@ export const resources = {
       "title": "Work graph",
       "unfold": "Unfold",
       "unfoldAll": "Unfold all",
-      "untitled": "Untitled"
+      "untitled": "Untitled",
+      "wiring": {
+        "assigned": "{{from}} is now assigned to {{to}}",
+        "cannotConnect": "These two can't be wired. Try task → agent, agent → room, routine → room, or task → task.",
+        "cannotCut": "That cable can't be cut here. Only assignments, agent memberships, routine reports and task dependencies can.",
+        "cut_one": "Cable cut",
+        "cut_other": "{{count}} cables cut",
+        "dependsOn": "{{from}} now waits on {{to}}",
+        "failed": "That didn't go through.",
+        "member": "{{from}} joined {{to}}",
+        "reportsTo": "{{from}} now reports to {{to}}"
+      }
     },
     "memory": {
       "agentMemories": "Agent Memories",
@@ -9462,6 +9483,16 @@ export const resources = {
       "closePanel": "Cerrar detalles",
       "connections_one": "{{count}} conexión",
       "connections_other": "{{count}} conexiones",
+      "create": {
+        "add": "Añadir",
+        "roomCreated": "Nueva sala con {{name}}",
+        "roomWith": "Nueva sala con este agente",
+        "taskCreated": "Tarea «{{title}}» añadida",
+        "taskForAgent": "Nueva tarea para este agente…",
+        "taskInRoom": "Nueva tarea en esta sala…",
+        "title": "Añadir aquí",
+        "wireHint": "Arrastra desde el conector derecho de un nodo a otro para conectarlos: tarea → agente asigna, agente → sala añade, rutina → sala fija dónde informa, tarea → tarea añade una dependencia. Selecciona un cable y pulsa Suprimir para cortarlo."
+      },
       "edge": {
         "anchored": "pedida en",
         "assigned": "asignada a",
@@ -9570,7 +9601,18 @@ export const resources = {
       "title": "Grafo de trabajo",
       "unfold": "Desplegar",
       "unfoldAll": "Desplegar todo",
-      "untitled": "Sin título"
+      "untitled": "Sin título",
+      "wiring": {
+        "assigned": "{{from}} ahora está asignada a {{to}}",
+        "cannotConnect": "No se pueden conectar. Prueba tarea → agente, agente → sala, rutina → sala o tarea → tarea.",
+        "cannotCut": "Ese cable no se puede cortar aquí. Solo asignaciones, membresías de agentes, informes de rutinas y dependencias de tareas.",
+        "cut_one": "Cable cortado",
+        "cut_other": "{{count}} cables cortados",
+        "dependsOn": "{{from}} ahora depende de {{to}}",
+        "failed": "No se pudo completar.",
+        "member": "{{from}} se unió a {{to}}",
+        "reportsTo": "{{from}} ahora informa en {{to}}"
+      }
     },
     "memory": {
       "agentMemories": "Memorias del agente",
@@ -15199,6 +15241,16 @@ export const resources = {
       "closePanel": "Details schließen",
       "connections_one": "{{count}} Verbindung",
       "connections_other": "{{count}} Verbindungen",
+      "create": {
+        "add": "Hinzufügen",
+        "roomCreated": "Neuer Raum mit {{name}}",
+        "roomWith": "Neuer Raum mit diesem Agenten",
+        "taskCreated": "Aufgabe „{{title}}“ hinzugefügt",
+        "taskForAgent": "Neue Aufgabe für diesen Agenten…",
+        "taskInRoom": "Neue Aufgabe in diesem Raum…",
+        "title": "Hier hinzufügen",
+        "wireHint": "Ziehe vom rechten Anschluss eines Knotens zu einem anderen, um sie zu verbinden: Aufgabe → Agent weist zu, Agent → Raum fügt hinzu, Routine → Raum legt den Berichtsort fest, Aufgabe → Aufgabe fügt eine Abhängigkeit hinzu. Kabel auswählen und Entf drücken, um es zu trennen."
+      },
       "edge": {
         "anchored": "angefragt in",
         "assigned": "zugewiesen an",
@@ -15307,7 +15359,18 @@ export const resources = {
       "title": "Arbeitsgraph",
       "unfold": "Ausklappen",
       "unfoldAll": "Alles ausklappen",
-      "untitled": "Ohne Titel"
+      "untitled": "Ohne Titel",
+      "wiring": {
+        "assigned": "{{from}} ist jetzt {{to}} zugewiesen",
+        "cannotConnect": "Diese beiden lassen sich nicht verbinden. Versuche Aufgabe → Agent, Agent → Raum, Routine → Raum oder Aufgabe → Aufgabe.",
+        "cannotCut": "Dieses Kabel lässt sich hier nicht trennen. Nur Zuweisungen, Agenten-Mitgliedschaften, Routine-Berichte und Aufgabenabhängigkeiten.",
+        "cut_one": "Kabel getrennt",
+        "cut_other": "{{count}} Kabel getrennt",
+        "dependsOn": "{{from}} wartet jetzt auf {{to}}",
+        "failed": "Das hat nicht geklappt.",
+        "member": "{{from}} ist {{to}} beigetreten",
+        "reportsTo": "{{from}} berichtet jetzt an {{to}}"
+      }
     },
     "memory": {
       "agentMemories": "Agenten-Erinnerungen",
@@ -20936,6 +20999,16 @@ export const resources = {
       "closePanel": "Fermer les détails",
       "connections_one": "{{count}} connexion",
       "connections_other": "{{count}} connexions",
+      "create": {
+        "add": "Ajouter",
+        "roomCreated": "Nouvelle salle avec {{name}}",
+        "roomWith": "Nouvelle salle avec cet agent",
+        "taskCreated": "Tâche « {{title}} » ajoutée",
+        "taskForAgent": "Nouvelle tâche pour cet agent…",
+        "taskInRoom": "Nouvelle tâche dans cette salle…",
+        "title": "Ajouter ici",
+        "wireHint": "Faites glisser depuis le connecteur droit d'un nœud vers un autre pour les relier : tâche → agent assigne, agent → salle ajoute, routine → salle définit où elle rapporte, tâche → tâche ajoute une dépendance. Sélectionnez un câble et appuyez sur Suppr pour le couper."
+      },
       "edge": {
         "anchored": "demandée dans",
         "assigned": "assignée à",
@@ -21044,7 +21117,18 @@ export const resources = {
       "title": "Graphe de travail",
       "unfold": "Déplier",
       "unfoldAll": "Tout déplier",
-      "untitled": "Sans titre"
+      "untitled": "Sans titre",
+      "wiring": {
+        "assigned": "{{from}} est maintenant assignée à {{to}}",
+        "cannotConnect": "Ces deux-là ne peuvent pas être reliés. Essayez tâche → agent, agent → salle, routine → salle ou tâche → tâche.",
+        "cannotCut": "Ce câble ne peut pas être coupé ici. Seuls les assignations, appartenances d'agents, rapports de routines et dépendances de tâches le peuvent.",
+        "cut_one": "Câble coupé",
+        "cut_other": "{{count}} câbles coupés",
+        "dependsOn": "{{from}} dépend maintenant de {{to}}",
+        "failed": "Ça n'a pas fonctionné.",
+        "member": "{{from}} a rejoint {{to}}",
+        "reportsTo": "{{from}} rapporte maintenant à {{to}}"
+      }
     },
     "memory": {
       "agentMemories": "Mémoires de l'agent",
@@ -26673,6 +26757,16 @@ export const resources = {
       "closePanel": "Fechar detalhes",
       "connections_one": "{{count}} ligação",
       "connections_other": "{{count}} ligações",
+      "create": {
+        "add": "Adicionar",
+        "roomCreated": "Nova sala com {{name}}",
+        "roomWith": "Nova sala com este agente",
+        "taskCreated": "Tarefa \"{{title}}\" adicionada",
+        "taskForAgent": "Nova tarefa para este agente…",
+        "taskInRoom": "Nova tarefa nesta sala…",
+        "title": "Adicionar aqui",
+        "wireHint": "Arraste do conector direito de um nó para outro para os ligar: tarefa → agente atribui, agente → sala adiciona, rotina → sala define onde reporta, tarefa → tarefa adiciona uma dependência. Selecione um cabo e prima Delete para o cortar."
+      },
       "edge": {
         "anchored": "pedida em",
         "assigned": "atribuída a",
@@ -26781,7 +26875,18 @@ export const resources = {
       "title": "Grafo de trabalho",
       "unfold": "Desdobrar",
       "unfoldAll": "Desdobrar tudo",
-      "untitled": "Sem título"
+      "untitled": "Sem título",
+      "wiring": {
+        "assigned": "{{from}} está agora atribuída a {{to}}",
+        "cannotConnect": "Estes dois não podem ser ligados. Tente tarefa → agente, agente → sala, rotina → sala ou tarefa → tarefa.",
+        "cannotCut": "Esse cabo não pode ser cortado aqui. Só atribuições, pertenças de agentes, relatórios de rotinas e dependências de tarefas.",
+        "cut_one": "Cabo cortado",
+        "cut_other": "{{count}} cabos cortados",
+        "dependsOn": "{{from}} depende agora de {{to}}",
+        "failed": "Não foi possível concluir.",
+        "member": "{{from}} entrou em {{to}}",
+        "reportsTo": "{{from}} reporta agora a {{to}}"
+      }
     },
     "memory": {
       "agentMemories": "Memórias do agente",
@@ -32410,6 +32515,16 @@ export const resources = {
       "closePanel": "詳細を閉じる",
       "connections_one": "接続 {{count}} 件",
       "connections_other": "接続 {{count}} 件",
+      "create": {
+        "add": "追加",
+        "roomCreated": "{{name}} と新しいルーム",
+        "roomWith": "このエージェントと新しいルーム",
+        "taskCreated": "タスク「{{title}}」を追加しました",
+        "taskForAgent": "このエージェントに新しいタスク…",
+        "taskInRoom": "このルームに新しいタスク…",
+        "title": "ここに追加",
+        "wireHint": "ノード右側のコネクタから別のノードへドラッグして接続：タスク → エージェントで割り当て、エージェント → ルームで追加、ルーティン → ルームで報告先を設定、タスク → タスクで依存関係を追加。ケーブルを選んで Delete で切断。"
+      },
       "edge": {
         "anchored": "依頼元",
         "assigned": "担当",
@@ -32518,7 +32633,18 @@ export const resources = {
       "title": "ワークグラフ",
       "unfold": "展開",
       "unfoldAll": "すべて展開",
-      "untitled": "無題"
+      "untitled": "無題",
+      "wiring": {
+        "assigned": "{{from}} を {{to}} に割り当てました",
+        "cannotConnect": "この2つは接続できません。タスク → エージェント、エージェント → ルーム、ルーティン → ルーム、タスク → タスクを試してください。",
+        "cannotCut": "このケーブルはここでは切れません。割り当て、エージェントのメンバーシップ、ルーティンの報告先、タスクの依存関係のみ可能です。",
+        "cut_one": "ケーブルを切りました",
+        "cut_other": "{{count}} 本のケーブルを切りました",
+        "dependsOn": "{{from}} は {{to}} を待つようになりました",
+        "failed": "処理できませんでした。",
+        "member": "{{from}} が {{to}} に参加しました",
+        "reportsTo": "{{from}} の報告先を {{to}} にしました"
+      }
     },
     "memory": {
       "agentMemories": "エージェントメモリー",
@@ -38147,6 +38273,16 @@ export const resources = {
       "closePanel": "关闭详情",
       "connections_one": "{{count}} 个连接",
       "connections_other": "{{count}} 个连接",
+      "create": {
+        "add": "添加",
+        "roomCreated": "与 {{name}} 的新房间",
+        "roomWith": "与此智能体新建房间",
+        "taskCreated": "已添加任务“{{title}}”",
+        "taskForAgent": "为此智能体新建任务…",
+        "taskInRoom": "在此房间新建任务…",
+        "title": "在此添加",
+        "wireHint": "从节点右侧连接点拖到另一个节点即可连线：任务 → 智能体为分配，智能体 → 房间为加入，例程 → 房间为设置汇报位置，任务 → 任务为添加依赖。选中连线按 Delete 可断开。"
+      },
       "edge": {
         "anchored": "发起于",
         "assigned": "分配给",
@@ -38255,7 +38391,18 @@ export const resources = {
       "title": "工作图谱",
       "unfold": "展开",
       "unfoldAll": "全部展开",
-      "untitled": "无标题"
+      "untitled": "无标题",
+      "wiring": {
+        "assigned": "{{from}} 已分配给 {{to}}",
+        "cannotConnect": "这两个节点无法连接。请尝试任务 → 智能体、智能体 → 房间、例程 → 房间或任务 → 任务。",
+        "cannotCut": "此连线无法在此断开。只能断开分配、智能体成员关系、例程汇报和任务依赖。",
+        "cut_one": "已断开连线",
+        "cut_other": "已断开 {{count}} 条连线",
+        "dependsOn": "{{from}} 现在依赖 {{to}}",
+        "failed": "未能完成。",
+        "member": "{{from}} 已加入 {{to}}",
+        "reportsTo": "{{from}} 现在汇报至 {{to}}"
+      }
     },
     "memory": {
       "agentMemories": "智能体记忆",
@@ -43884,6 +44031,16 @@ export const resources = {
       "closePanel": "세부 정보 닫기",
       "connections_one": "연결 {{count}}개",
       "connections_other": "연결 {{count}}개",
+      "create": {
+        "add": "추가",
+        "roomCreated": "{{name}}와(과) 새 방",
+        "roomWith": "이 에이전트와 새 방",
+        "taskCreated": "작업 \"{{title}}\" 추가됨",
+        "taskForAgent": "이 에이전트에게 새 작업…",
+        "taskInRoom": "이 방에 새 작업…",
+        "title": "여기에 추가",
+        "wireHint": "노드의 오른쪽 커넥터에서 다른 노드로 드래그해 연결: 작업 → 에이전트는 할당, 에이전트 → 방은 추가, 루틴 → 방은 보고 위치 설정, 작업 → 작업은 의존성 추가. 케이블을 선택하고 Delete를 누르면 끊어집니다."
+      },
       "edge": {
         "anchored": "요청 위치",
         "assigned": "담당",
@@ -43992,7 +44149,18 @@ export const resources = {
       "title": "작업 그래프",
       "unfold": "펼치기",
       "unfoldAll": "모두 펼치기",
-      "untitled": "제목 없음"
+      "untitled": "제목 없음",
+      "wiring": {
+        "assigned": "{{from}}이(가) {{to}}에게 할당됨",
+        "cannotConnect": "이 둘은 연결할 수 없습니다. 작업 → 에이전트, 에이전트 → 방, 루틴 → 방, 작업 → 작업을 시도하세요.",
+        "cannotCut": "이 케이블은 여기서 끊을 수 없습니다. 할당, 에이전트 멤버십, 루틴 보고, 작업 의존성만 가능합니다.",
+        "cut_one": "케이블 끊음",
+        "cut_other": "케이블 {{count}}개 끊음",
+        "dependsOn": "{{from}}이(가) 이제 {{to}}에 의존함",
+        "failed": "처리되지 않았습니다.",
+        "member": "{{from}}이(가) {{to}}에 참여함",
+        "reportsTo": "{{from}}이(가) 이제 {{to}}에 보고함"
+      }
     },
     "memory": {
       "agentMemories": "에이전트 메모리",
@@ -49621,6 +49789,16 @@ export const resources = {
       "closePanel": "Chiudi dettagli",
       "connections_one": "{{count}} collegamento",
       "connections_other": "{{count}} collegamenti",
+      "create": {
+        "add": "Aggiungi",
+        "roomCreated": "Nuova stanza con {{name}}",
+        "roomWith": "Nuova stanza con questo agente",
+        "taskCreated": "Attività \"{{title}}\" aggiunta",
+        "taskForAgent": "Nuova attività per questo agente…",
+        "taskInRoom": "Nuova attività in questa stanza…",
+        "title": "Aggiungi qui",
+        "wireHint": "Trascina dal connettore destro di un nodo a un altro per collegarli: attività → agente assegna, agente → stanza aggiunge, routine → stanza imposta dove riporta, attività → attività aggiunge una dipendenza. Seleziona un cavo e premi Canc per tagliarlo."
+      },
       "edge": {
         "anchored": "richiesta in",
         "assigned": "assegnata a",
@@ -49729,7 +49907,18 @@ export const resources = {
       "title": "Grafo di lavoro",
       "unfold": "Espandi",
       "unfoldAll": "Espandi tutto",
-      "untitled": "Senza titolo"
+      "untitled": "Senza titolo",
+      "wiring": {
+        "assigned": "{{from}} è ora assegnata a {{to}}",
+        "cannotConnect": "Questi due non si possono collegare. Prova attività → agente, agente → stanza, routine → stanza o attività → attività.",
+        "cannotCut": "Quel cavo non si può tagliare qui. Solo assegnazioni, appartenenze di agenti, report di routine e dipendenze tra attività.",
+        "cut_one": "Cavo tagliato",
+        "cut_other": "{{count}} cavi tagliati",
+        "dependsOn": "{{from}} ora dipende da {{to}}",
+        "failed": "Non è andata a buon fine.",
+        "member": "{{from}} si è unito a {{to}}",
+        "reportsTo": "{{from}} ora riporta a {{to}}"
+      }
     },
     "memory": {
       "agentMemories": "Memorie dell'agente",
@@ -55358,6 +55547,16 @@ export const resources = {
       "closePanel": "विवरण बंद करें",
       "connections_one": "{{count}} कनेक्शन",
       "connections_other": "{{count}} कनेक्शन",
+      "create": {
+        "add": "जोड़ें",
+        "roomCreated": "{{name}} के साथ नया रूम",
+        "roomWith": "इस एजेंट के साथ नया रूम",
+        "taskCreated": "कार्य \"{{title}}\" जोड़ा गया",
+        "taskForAgent": "इस एजेंट के लिए नया कार्य…",
+        "taskInRoom": "इस रूम में नया कार्य…",
+        "title": "यहाँ जोड़ें",
+        "wireHint": "नोड के दाएँ कनेक्टर से दूसरे नोड तक खींचकर जोड़ें: कार्य → एजेंट असाइन करता है, एजेंट → रूम जोड़ता है, रूटीन → रूम रिपोर्ट स्थान तय करता है, कार्य → कार्य निर्भरता जोड़ता है। केबल चुनकर Delete दबाएँ तो वह कट जाती है।"
+      },
       "edge": {
         "anchored": "में माँगा गया",
         "assigned": "को सौंपा गया",
@@ -55466,7 +55665,18 @@ export const resources = {
       "title": "कार्य ग्राफ़",
       "unfold": "खोलें",
       "unfoldAll": "सब खोलें",
-      "untitled": "बिना शीर्षक"
+      "untitled": "बिना शीर्षक",
+      "wiring": {
+        "assigned": "{{from}} अब {{to}} को सौंपा गया",
+        "cannotConnect": "इन दोनों को जोड़ा नहीं जा सकता। कार्य → एजेंट, एजेंट → रूम, रूटीन → रूम या कार्य → कार्य आज़माएँ।",
+        "cannotCut": "यह केबल यहाँ नहीं काटी जा सकती। केवल असाइनमेंट, एजेंट सदस्यता, रूटीन रिपोर्ट और कार्य निर्भरताएँ ही।",
+        "cut_one": "केबल काटी गई",
+        "cut_other": "{{count}} केबल काटी गईं",
+        "dependsOn": "{{from}} अब {{to}} पर निर्भर है",
+        "failed": "यह पूरा नहीं हो सका।",
+        "member": "{{from}} {{to}} में शामिल हुआ",
+        "reportsTo": "{{from}} अब {{to}} को रिपोर्ट करता है"
+      }
     },
     "memory": {
       "agentMemories": "एजेंट मेमोरी",
