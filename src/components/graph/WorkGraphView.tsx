@@ -83,12 +83,6 @@ const WIRED_KEYS = {
 
 const NODE_TYPES = { work: GraphNode };
 
-/**
- * Safety net while mounted: artifact and room-goal changes push on
- * conversation channels only, which the graph does not join. Everything
- * else (tasks, agents, rooms, routines, reminders) arrives as an event.
- */
-const POLL_MS = 5 * 60_000;
 
 /** Edge families: structure is quiet, work is strong, schedules dashed, outputs dotted. */
 const EDGE_STYLE: Record<GraphEdgeKind, { dash?: string; strong?: boolean }> = {
@@ -212,17 +206,13 @@ function WorkGraphCanvas() {
   const theme = useThemeStore((s) => s.theme);
   const { fitView } = useReactFlow();
 
-  // Read once on mount, after the events that change the graph while the
-  // view is open, and on a slow safety poll.
+  // Read once on mount, then after the events that change the graph while
+  // the view is open. Every node kind has a user-channel event now, so
+  // there is no poll.
   useEffect(() => {
     void fetchGraph();
     void fetchDecisions();
-    const unsub = initWsListeners();
-    const id = window.setInterval(() => void fetchGraph(), POLL_MS);
-    return () => {
-      unsub();
-      window.clearInterval(id);
-    };
+    return initWsListeners();
   }, [fetchGraph, fetchDecisions, initWsListeners]);
 
   // Decisions waiting on the person, counted onto the node they belong to:

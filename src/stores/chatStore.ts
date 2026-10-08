@@ -376,6 +376,12 @@ export interface ChatState extends ReplyThreadSlice {
    *  the main pane (if not already there) and keeps BOTH conversations joined
    *  so the parent stays live beside the huddle (Slack "two conversations"). */
   openHuddle: (huddleId: string) => void;
+  /** Rooms shown live somewhere other than the chat view (a work-graph node).
+   *  Messages arriving there are read, not unread, while the window is in front. */
+  openElsewhere: Set<string>;
+  setOpenElsewhere: (conversationId: string, open: boolean) => void;
+  /** Mark a room read now (local badge + server), for a room open elsewhere. */
+  markReadFor: (conversationId: string) => void;
   /** Close the side-pane huddle. Leaves its WS channel unless it's also the
    *  current main conversation. */
   closeHuddle: () => void;
@@ -431,6 +437,7 @@ export const useChatStore = create<ChatState>((set, get) => ({
   clearedAt: readClearedAtStorage(),
   activeConversationId: null,
   activeHuddleId: null,
+  openElsewhere: new Set<string>(),
   unreadCounts: {},
   unreadTurnGroups: {},
   scrollTargetMessageId: null,
@@ -1243,6 +1250,12 @@ export const useChatStore = create<ChatState>((set, get) => ({
   },
 
   incrementUnread: (conversationId, turnGroupKey) => {
+    // A room open in a graph node is being read: mark it, don't badge it.
+    if (get().openElsewhere.has(conversationId) && windowFocused()) {
+      markReadDebounced(conversationId);
+      return;
+    }
+
     // Continuation bubbles and carousel cards from the same agent turn share
     // a turnGroupKey — only the first one seen this unread session bumps the
     // badge (issue #122). The server's own count (fetchUnreadCounts) is the
@@ -1263,12 +1276,31 @@ export const useChatStore = create<ChatState>((set, get) => ({
   },
 
   markReadIfActiveAndFocused: (conversationId) => {
-    const { activeConversationId, activeHuddleId } = get();
-    if (conversationId !== activeConversationId && conversationId !== activeHuddleId) {
+    const { activeConversationId, activeHuddleId, openElsewhere } = get();
+    if (
+      conversationId !== activeConversationId &&
+      conversationId !== activeHuddleId &&
+      !openElsewhere.has(conversationId)
+    ) {
       return;
     }
     if (!windowFocused()) return;
     markReadDebounced(conversationId);
+  },
+
+  setOpenElsewhere: (conversationId, open) => {
+    const next = new Set(get().openElsewhere);
+    if (open) next.add(conversationId);
+    else next.delete(conversationId);
+    set({ openElsewhere: next });
+  },
+
+  markReadFor: (conversationId) => {
+    set((s) => ({
+      unreadCounts: { ...s.unreadCounts, [conversationId]: 0 },
+      unreadTurnGroups: { ...s.unreadTurnGroups, [conversationId]: {} },
+    }));
+    if (windowFocused()) markReadDebounced(conversationId);
   },
 
   initWsListeners: () => {

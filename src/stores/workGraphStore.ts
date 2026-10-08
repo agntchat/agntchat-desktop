@@ -171,11 +171,7 @@ interface WorkGraphState {
 export const useWorkGraphEnabled = () =>
   useAuthStore((s) => s.participant?.features?.work_graph === true);
 
-/**
- * User-channel events after which the graph may have changed. Artifacts and
- * room goals push on conversation channels only, so the view also re-reads
- * on a slow safety timer while it is mounted (`WorkGraphView`).
- */
+/** User-channel events after which the graph may have changed. Every kind has one. */
 const REFRESH_EVENTS = [
   "task_created",
   "task_updated",
@@ -192,6 +188,8 @@ const REFRESH_EVENTS = [
   "agent_deactivated",
   "reminder_fired",
   "routine_updated",
+  "artifact_changed",
+  "room_goals_changed",
   "user_channel_joined",
 ] as const;
 

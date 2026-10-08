@@ -180,6 +180,13 @@ export const useArtifactStore = create<ArtifactState>((set, get) => ({
     };
 
     unsubs.push(ws.on("conv:artifact_created", upsertFromEvent));
+    // User-channel mirror for rooms this client has not joined.
+    unsubs.push(
+      ws.on("artifact_changed", (payload) => {
+        const artifact = (payload as { artifact?: Record<string, unknown> }).artifact;
+        if (artifact) upsertFromEvent(artifact);
+      })
+    );
     unsubs.push(ws.on("conv:artifact_updated", upsertFromEvent));
     unsubs.push(
       ws.on("conv:artifact_comment_added", (payload) => {

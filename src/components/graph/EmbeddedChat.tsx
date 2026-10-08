@@ -30,16 +30,26 @@ export function EmbeddedChat({
   const { t } = useTranslation("graph");
   const setActiveConversation = useChatStore((s) => s.setActiveConversation);
   const setView = useNavStore((s) => s.setView);
+  const setOpenElsewhere = useChatStore((s) => s.setOpenElsewhere);
+  const markReadFor = useChatStore((s) => s.markReadFor);
+  const messageCount = useChatStore((s) => s.messages[conversationId]?.length ?? 0);
 
   useEffect(() => {
     ws.joinConversation(conversationId);
+    setOpenElsewhere(conversationId, true);
     return () => {
+      setOpenElsewhere(conversationId, false);
       const { activeConversationId, activeHuddleId } = useChatStore.getState();
       if (conversationId !== activeConversationId && conversationId !== activeHuddleId) {
         ws.leaveConversation(conversationId);
       }
     };
-  }, [conversationId]);
+  }, [conversationId, setOpenElsewhere]);
+
+  // Reading here counts as reading: on open and as messages land.
+  useEffect(() => {
+    markReadFor(conversationId);
+  }, [conversationId, messageCount, markReadFor]);
 
   return (
     <div

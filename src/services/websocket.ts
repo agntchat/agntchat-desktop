@@ -137,6 +137,10 @@ class WebSocketService {
       // A routine of one of the owner's agents changed or ran. routineStore
       // upserts/drops by id; the work graph re-reads.
       "routine_updated",
+      // An artifact was created or revised, or a room's goals changed, in a
+      // room the person is in — even one this client has not joined.
+      "artifact_changed",
+      "room_goals_changed",
       "agent_busy_redirect",
       "human_status_changed",
       "presence_snapshot",
